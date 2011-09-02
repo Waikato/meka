@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<project name="meka" default="compile" basedir=".">
+
+    <property name="src" value="./src"/>
+    <property name="build" value="./build"/>
+    <property name="docs" value="./docs"/>
+    <property name="jar" value="../"/>
+    <property name="lib" value="../"/>
+    <property name="all" value="./"/>
+
+   <!-- CLASSPATH -->
+   <path id="project.class.path">
+      <pathelement location="." />
+      <fileset dir="${lib}">
+         <include name="*.jar"/>
+      </fileset>
+   </path>
+
+    <target name="init"> 
+	<mkdir dir="${build}"/>
+    </target>
+
+    <target name="compile" depends="init"> 
+	<javac srcdir="${src}" destdir="${build}" debug="true" debuglevel="lines,vars,source">
+	</javac>
+    </target>
+
+    <target name="jar" depends="compile">
+		<jar destfile="${jar}/meka.jar" 
+		     basedir="${build}/"
+		     includes="weka/**"
+		/>
+    </target>
+
+    <target name="src-jar">
+		<jar destfile="${jar}/meka-src.jar" basedir="${src}/"/>
+    </target>
+
+    <target name="full-jar">
+		<jar destfile="${jar}/meka-0.85.jar" basedir="${all}/"/>
+    </target>
+
+	<target name="docs" 
+		description="Generate docs">
+		<mkdir  dir = "./${build}/${releasedir}/${dev}/${api}" />
+		<javadoc
+		defaultexcludes  = "yes"
+		use              = "yes"
+		header           = "MEKA 0.85"
+		doctitle         = "MEKA - Multi-label Extension to weKA"
+		nodeprecatedlist = "yes"
+		sourcepath       = "${src}"
+		destdir          = "${docs}"
+		/>
+	</target>
+
+    <target name="docs-jar">
+		<zip destfile="${jar}/meka-docs.zip" basedir="${docs}/"/>
+    </target>
+
+</project>
