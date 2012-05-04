@@ -8,43 +8,34 @@ import java.util.*;
 
 /**
  * Combining several multi-label classifiers using Bootstrap AGGregatING.
- * Uses Instance weights instead of Instance duplications.
+ * Duplicates Instances instead of assigning higher weights -- should work for methods that do not handle weights at all.
  * @author Jesse Read (jmr30@cs.waikato.ac.nz)
  */
-
-public class FastBaggingML extends MultilabelMetaClassifier {
+public class BaggingMLdup extends MultilabelMetaClassifier {
 
 	public void buildClassifier(Instances train) throws Exception {
 
 		if (getDebug()) System.out.print("-: Models: ");
 
 		m_Classifiers = AbstractClassifier.makeCopies(m_Classifier, m_NumIterations);
-
 		for(int i = 0; i < m_NumIterations; i++) {
 			Random r = new Random(m_Seed+i);
 			Instances bag = new Instances(train,0);
 			if (m_Classifiers[i] instanceof Randomizable) ((Randomizable)m_Classifiers[i]).setSeed(m_Seed+i);
 			if(getDebug()) System.out.print(""+i+" ");
 
-			int ixs[] = new int[train.numInstances()];
-			for(int j = 0; j < ixs.length; j++) {
-				ixs[r.nextInt(ixs.length)]++;
+			int bag_no = (m_BagSizePercent*train.numInstances()/100);
+			//System.out.println(" bag no: "+bag_no);
+			while(bag.numInstances() < bag_no) {
+				bag.add(train.instance(r.nextInt(train.numInstances())));
 			}
-			for(int j = 0; j < ixs.length; j++) {
-				if (ixs[j] > 0) {
-					Instance instance = train.instance(j);
-					instance.setWeight((double)ixs[j]);
-					bag.add(instance);
-				}
-			}
-
 			m_Classifiers[i].buildClassifier(bag);
 		}
 		if (getDebug()) System.out.println(":-");
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new FastBaggingML(),args);
+		MultilabelClassifier.evaluation(new BaggingMLdup(),args);
 	}
 
 }

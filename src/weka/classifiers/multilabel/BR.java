@@ -17,79 +17,49 @@ public class BR extends MultilabelClassifier {
 
 	protected Classifier m_MultiClassifiers[] = null;
 
-	public void buildClassifier(Instances data) throws Exception {
+	@Override
+	public void buildClassifier(Instances D) throws Exception {
 
-		int c = data.classIndex();
+		int L = D.classIndex();
 
-		if(getDebug()) System.out.print("-: Creating "+c+" models ("+m_Classifier.getClass().getName()+"): ");
-		m_MultiClassifiers = AbstractClassifier.makeCopies(m_Classifier,c);
+		if(getDebug()) System.out.print("Creating "+L+" models ("+m_Classifier.getClass().getName()+"): ");
+		m_MultiClassifiers = AbstractClassifier.makeCopies(m_Classifier,L);
 
-		Instances sub_data = null;
+		Instances D_j = null;
 
-		for(int i = 0; i < c; i++) {
+		for(int j = 0; j < L; j++) {
 
-			int indices[][] = new int[c][c - 1];
-			for(int j = 0, k = 0; j < c; j++) {
-				if(j != i) {
-					indices[i][k++] = j;
-				}
-			}
-
-			//Select only class attribute 'i'
-			Remove FilterRemove = new Remove();
-			FilterRemove.setAttributeIndicesArray(indices[i]);
-			FilterRemove.setInputFormat(data);
-			FilterRemove.setInvertSelection(true);
-			sub_data = Filter.useFilter(data, FilterRemove);
-			sub_data.setClassIndex(0);
+			//Select only class attribute 'j'
+			D_j = MLUtils.keepAttributesAt(new Instances(D),new int[]{j},L);
+			D_j.setClassIndex(0);
 
 			//Build the classifier for that class
-			m_MultiClassifiers[i].buildClassifier(sub_data);
-			if(getDebug()) System.out.print(" " + (i+1));
+			m_MultiClassifiers[j].buildClassifier(D_j);
+			if(getDebug()) System.out.print(" " + (D_j.classAttribute().name()));
 
 		}
 
-		if(getDebug()) System.out.println(" :-");
-
-		m_InstancesTemplate = new Instances(sub_data, 0);
+		m_InstancesTemplate = new Instances(D_j, 0);
 
 	}
 
-	protected Instance[] convertInstance(Instance instance, int c) {
-
-		Instance FilteredInstances[] = new Instance[c];
-
-		//for each 'i' classifiers
-		for (int i = 0; i < c; i++) {
-
-			//remove all except 'i'
-			FilteredInstances[i] = (Instance) instance.copy(); 
-			FilteredInstances[i].setDataset(null);
-			for (int j = 0, offset = 0; j < c; j++) {
-				if (j == i) offset = 1;
-				else FilteredInstances[i].deleteAttributeAt(offset);
-			}
-			FilteredInstances[i].setDataset(m_InstancesTemplate);
-		}
-
-		return FilteredInstances;
-
-	}
-
+	@Override
 	public double[] distributionForInstance(Instance x) throws Exception {
 
 		int L = x.classIndex(); 
 
-		double result[] = new double[L];
-
-		Instance x_j[] = convertInstance(x,L);
+		double y[] = new double[L];
 
 		for (int j = 0; j < L; j++) {
-			//result[j] = m_MultiClassifiers[j].classifyInstance(x_j[j]);
-			result[j] = m_MultiClassifiers[j].distributionForInstance(x_j[j])[1];
+			Instance x_j = (Instance)x.copy();
+			x_j.setDataset(null);
+			x_j = MLUtils.keepAttributesAt(x_j,new int[]{j},L);
+			x_j.setDataset(m_InstancesTemplate);
+			//y[j] = m_MultiClassifiers[j].classifyInstance(x_j);
+			y[j] = m_MultiClassifiers[j].distributionForInstance(x_j)[1];
 		}
 
-		return result;
+		return y;
 	}
 
 	public static void main(String args[]) {

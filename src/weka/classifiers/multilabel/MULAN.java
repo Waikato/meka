@@ -25,17 +25,12 @@ import mulan.evaluation.*;
 public class MULAN extends MultilabelClassifier {
 
 	MultiLabelLearner m_MULAN = null;
-	//int m_K = 10, m_M = 10;
 	String m_MethodString = "";
 
 	public Enumeration listOptions() {
 
 		Vector newVector = new Vector();
-		//newVector.addElement(new Option("\tK Parameter\n\tdefault: "+m_K, "K", 1, "-K <value>"));
-		//newVector.addElement(new Option("\tM Parameter\n\tdefault: "+m_M, "M", 1, "-M <value>"));
-		//newVector.addElement(new Option("\tS Parameter\n\tdefault: "+m_M, "S", 1, "-S <value>"));
 		newVector.addElement(new Option("\tAlgorithm Name\n\t {RAkEL1, RAkEL2, MLkNN, IBLR_ML, HOMER.{CLUS/RAND}.{BR/LP}, CLR, MC-Copy, IncludeLabels MC-Ignore MLStacking}", "S", 1, "-S <value>"));
-		String[] methodsToCompare = { };
 
 		Enumeration enu = super.listOptions();
 
@@ -47,37 +42,17 @@ public class MULAN extends MultilabelClassifier {
 
 	public void setOptions(String[] options) throws Exception {
 
-		m_MethodString = ""+Utils.getOption('S', options);
-
-		//try {
-			//m_K = Integer.parseInt(Utils.getOption('K', options));
-		//} catch(Exception e) {
-			//if(getDebug()) System.err.println("Using default K = "+m_K);
-		//}
-//
-		//try {
-			//m_M = Integer.parseInt(Utils.getOption('M', options));
-		//} catch(Exception e) {
-			//if(getDebug()) System.err.println("Using default M = "+m_M);
-		//}
-
+		m_MethodString = Utils.getOption('S', options);
 		super.setOptions(options);
 	}
 
-	/**
-	 * Get Options.
-	 */
 	public String [] getOptions() {
 
 		String [] superOptions = super.getOptions();
 		String [] options = new String [superOptions.length + 2];
 		int current = 0;
-		//options[current++] = "-K";
-		//options[current++] = "" + m_K;
-		//options[current++] = "-M";
-		//options[current++] = "" + m_M;
 		options[current++] = "-S";
-		options[current++] = "" + m_MethodString;
+		options[current++] =  m_MethodString;
 		System.arraycopy(superOptions, 0, options, current, superOptions.length);
 		return options;
 
@@ -85,48 +60,32 @@ public class MULAN extends MultilabelClassifier {
 
 	public void buildClassifier(Instances instances) throws Exception {
 
-		Random r = instances.getRandomNumberGenerator(0);
-		String name = "temp_"+MLUtils.getDatasetName(instances)+"_"+r.nextLong()+".arff";
-		System.out.println("name = "+name);
-		int c = instances.classIndex();
-
 		long before = System.currentTimeMillis();
 
+		Random r = instances.getRandomNumberGenerator(0);
+		String name = "temp_"+MLUtils.getDatasetName(instances)+"_"+r.nextLong()+".arff";
+		System.out.println("Using temporary file: "+name);
+		int L = instances.classIndex();
+
 		// rename attributes, because MULAN doesn't deal well with hypens etc
-		for(int i = c; i < instances.numAttributes(); i++) {
-			instances.renameAttribute(i,"a"+i);
+		for(int i = L; i < instances.numAttributes(); i++) {
+			instances.renameAttribute(i,"a_"+i);
 		}
-		// ALWAYS WRITE IF WE ARE DOING FOLDS !
-		//if (!(new File(name)).exists()) {
-		m_InstancesTemplate = switchAttributes(new Instances(instances),c);
 		BufferedWriter writer = new BufferedWriter(new FileWriter(name));
+		m_InstancesTemplate = switchAttributes(new Instances(instances),L);
 		writer.write(m_InstancesTemplate.toString());
 		writer.flush();
 		writer.close();
-			/*
-		}
-		else {
-			System.err.println("THE TEMPORARY FILE ALREADY EXISTS");
-		}
-		try {
-			MultiLabelInstances temp = new MultiLabelInstances(name,c); 
-		} catch(Exception e) {
-			System.err.println("-- Error --");
-			e.printStackTrace();
-			System.exit(1);
-		}
-			 */
-		MultiLabelInstances train = new MultiLabelInstances(name,c); 
+		MultiLabelInstances train = new MultiLabelInstances(name,L); 
 		try {
 			((File)new File(name)).delete();
 		} catch(Exception e) {
-			System.err.println("-- Error -- : Failed to delete file: "+name);
-			e.printStackTrace();
-			System.exit(1);
+			System.err.println("[Error] Failed to delete temporary file: "+name+". You may want to delete it manually.");
 		}
 
 		long after = System.currentTimeMillis();
-		System.err.println("Note: discount "+((double)(after - before)/1000.0)+ " seconds from this build time");
+
+		System.err.println("[Note] Discount "+((double)(after - before)/1000.0)+ " seconds from this build time");
 
 		m_InstancesTemplate = new Instances(train.getDataSet(),0);
 
@@ -138,12 +97,12 @@ public class MULAN extends MultilabelClassifier {
 		else if (m_MethodString.equals("CLR"))
 			m_MULAN = new CalibratedLabelRanking(m_Classifier);
 		else if (m_MethodString.equals("RAkEL1")) {
-			m_MULAN = new RAkEL(new LabelPowerset(m_Classifier),10,c/2);
-			System.out.println("m=10,k="+(c/2));
+			m_MULAN = new RAkEL(new LabelPowerset(m_Classifier),10,L/2);
+			System.out.println("m=10,k="+(L/2));
 		}
 		else if (m_MethodString.equals("RAkEL2")) {
-			m_MULAN = new RAkEL(new LabelPowerset(m_Classifier),2*c,3);
-			System.out.println("m="+(c*2)+",k=3");
+			m_MULAN = new RAkEL(new LabelPowerset(m_Classifier),2*L,3);
+			System.out.println("m="+(L*2)+",k=3");
 		}
 		else if (m_MethodString.equals("MLkNN"))
 			m_MULAN = new MLkNN(10,1.0);
@@ -193,17 +152,17 @@ public class MULAN extends MultilabelClassifier {
 	}
 
 	public double[] distributionForInstance(Instance instance) throws Exception {
-		int c = instance.classIndex();
-		Instance test = switchAttributes((Instance)instance.copy(),c); 
-		test.setDataset(m_InstancesTemplate);
-		double d[] = new double[c];
+		int L = instance.classIndex();
+		Instance x = switchAttributes((Instance)instance.copy(),L); 
+		x.setDataset(m_InstancesTemplate);
+		double y[] = new double[L];
 		try {
-			d = m_MULAN.makePrediction(test).getConfidences();
+			y = m_MULAN.makePrediction(x).getConfidences();
 		} catch(Exception e) {
 			System.err.println("MULAN Error");
-			System.err.println(":"+Arrays.toString(d));
+			System.err.println(":"+Arrays.toString(y));
 		}
-		return d;
+		return y;
 	}
 
 	public static void main(String args[]) {

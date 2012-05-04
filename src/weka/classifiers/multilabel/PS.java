@@ -32,6 +32,7 @@ public class PS extends LC implements Randomizable {
 			System.out.println("N = "+m_N);
 		}
 	}
+
 	public int getSeed() {
 		return m_S;
 	}
@@ -97,44 +98,44 @@ public class PS extends LC implements Randomizable {
 
 	}
 
-	public Instance convertInstance(Instance x, int C) {
+	public Instance convertInstance(Instance x, int L) {
 		Instance x_sl = (Instance) x.copy(); 
 		x_sl.setDataset(null);
-		for (int i = 0; i < C; i++)
+		for (int i = 0; i < L; i++)
 			x_sl.deleteAttributeAt(0);
 		x_sl.insertAttributeAt(0);
 		x_sl.setDataset(m_InstancesTemplate);
 		return x_sl;
 	}
 
-	public Instances convertInstances(Instances Train, int C) throws Exception {
+	public Instances convertInstances(Instances D, int L) throws Exception {
 
 		//Gather combinations
-		Count distinctCombinations = MLUtils.countCombinations(Train,C);
+		HashMap<String,Integer> distinctCombinations = MLUtils.countCombinations(D,L);
 
 		//Prune combinations
-		distinctCombinations.prune(m_P);
+		MLUtils.pruneCountHashMap(distinctCombinations,m_P);
 
 		//Create class attribute
-		FastVector ClassValues = new FastVector(C);
-		for(Object c : distinctCombinations.keySet()) 
-			ClassValues.addElement(c);
+		FastVector ClassValues = new FastVector(L);
+		for(String y : distinctCombinations.keySet()) 
+			ClassValues.addElement(y);
 		Attribute NewClass = new Attribute("Class", ClassValues);
 
 		//Filter Remove all class attributes
 		Remove FilterRemove = new Remove();
-		FilterRemove.setAttributeIndices("1-"+C);
-		FilterRemove.setInputFormat(Train);
-		Instances NewTrain = Filter.useFilter(Train, FilterRemove);
+		FilterRemove.setAttributeIndices("1-"+L);
+		FilterRemove.setInputFormat(D);
+		Instances NewTrain = Filter.useFilter(D, FilterRemove);
 
 		//Insert new special attribute (which has all possible combinations of labels) 
 		NewTrain.insertAttributeAt(NewClass,0);
 		NewTrain.setClassIndex(0);
 
 		//Add class values
-		for (int i = 0; i < Train.numInstances(); i++) {
+		for (int i = 0; i < D.numInstances(); i++) {
 
-			String comb = MLUtils.toBitString(Train.instance(i),C);
+			String comb = MLUtils.toBitString(D.instance(i),L);
 			// add it
 			if(ClassValues.contains(comb)) 	//if its class value exists
 				NewTrain.instance(i).setClassValue(comb);
@@ -164,7 +165,7 @@ public class PS extends LC implements Randomizable {
 	}
 
 
-	public String[] getTopNSubsets(String comb, Count all, int n) {
+	public String[] getTopNSubsets(String comb, HashMap <String,Integer>all, int n) {
 		LabelSet comp = new LabelSet(all);  
 		ArrayList<String> subsets = new ArrayList<String>();  
 		// add
@@ -182,9 +183,9 @@ public class PS extends LC implements Randomizable {
 
 	private class LabelSet implements Comparator {
 
-		Count c = null;
+		HashMap<String,Integer> c = null;
 
-		public LabelSet(Count c) {
+		public LabelSet(HashMap<String,Integer> c) {
 			this.c = c;
 		} 
 
@@ -226,13 +227,13 @@ public class PS extends LC implements Randomizable {
 		return true;
 	}
 
-	public void buildClassifier(Instances Train) throws Exception {
+	public void buildClassifier(Instances D) throws Exception {
 
-		int C = Train.classIndex();
+		int L = D.classIndex();
 
 		// Check N
 		if (m_N < 0) {
-			double lc = MLUtils.labelCardinality(Train,C);
+			double lc = MLUtils.labelCardinality(D,L);
 			if (lc > 2.0) 
 				m_N = 0;
 			else 
@@ -242,7 +243,7 @@ public class PS extends LC implements Randomizable {
 		}
 
 		// Convert
-		Instances NewTrain = convertInstances(Train,C);
+		Instances NewTrain = convertInstances(D,L);
 
 		// Info
 		if(getDebug()) System.out.println("("+m_InstancesTemplate.attribute(0).numValues()+" classes, "+NewTrain.numInstances()+" ins. )");

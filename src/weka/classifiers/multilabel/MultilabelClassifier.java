@@ -18,7 +18,7 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 	protected Instances m_InstancesTemplate;
 
 	public String toString() {
-		return this.getClass().getName()+":"+m_Classifier.getClass().getName();
+		return "";
 	}
 
 	public Instances getTemplate() {
@@ -34,13 +34,18 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 		return null;
 	}
 
-	public static void evaluation(MultilabelClassifier PTX, String args[]) {
+	// to be deprecated
+	public static void evaluation(MultilabelClassifier h, String args[]) {
+		runClassifier(h,args);
+	}
+
+	public static void runClassifier(MultilabelClassifier h, String args[]) {
 		try {
-			 Evaluation.runExperiment(PTX,args);
+			 Evaluation.runExperiment(h,args);
 		} catch(Exception e) {
-			System.err.println("Evaluation exception ("+e+"); failed to run experiment");
-			e.printStackTrace();
-			Evaluation.printOptions(PTX.listOptions());
+			System.err.println("\n"+e);
+			//e.printStackTrace();
+			Evaluation.printOptions(h.listOptions());
 		}
 	}
 

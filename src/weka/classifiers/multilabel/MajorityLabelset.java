@@ -9,32 +9,28 @@ import java.util.*;
 /**
  * MajorityLabelset.
  * 
- * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
- * @version May 2010
+ * @author 	Jesse Read (jesse@tsc.uc3m.es)
+ * @version October 2011
  */
 public class MajorityLabelset extends MultilabelClassifier {
-
-	// todo: should be protected
 
 	protected double prediction[] = null;
 	protected HashMap<String,Double> classFreqs = new HashMap<String,Double>();
 
 	protected double maxValue = 0.0;
-	protected String maxClass = null;
 
 	protected void updateCount(Instance x, int L) {
-		String c = MLUtils.toBitString(x,L);
+		String y = MLUtils.toBitString(x,L);
 
-		if (classFreqs.containsKey(c)) {
-			double freq = classFreqs.get(c)+x.weight();
-			classFreqs.put(c, freq);
+		if (classFreqs.containsKey(y)) {
+			double freq = classFreqs.get(y)+x.weight();
+			classFreqs.put(y, freq);
 			if (maxValue < freq) {
 				maxValue = freq;
-				maxClass = c;
-				this.prediction = MLUtils.fromBitString(maxClass);
+				this.prediction = MLUtils.fromBitString(y);
 			}
 		} else {
-			classFreqs.put(c, x.weight());
+			classFreqs.put(y, x.weight());
 		}
 	}
 
@@ -44,17 +40,15 @@ public class MajorityLabelset extends MultilabelClassifier {
 	public void buildClassifier(Instances D) throws Exception {
 
 		int L = D.classIndex();
-		maxClass = MLUtils.toBitString(-1,L);
+		this.prediction = new double[L];
 
 		for(int i = 0; i < D.numInstances(); i++) {
 			updateCount(D.instance(i),L);
 		}
 
-		this.prediction = MLUtils.fromBitString(maxClass);
 	}
 
 	public double[] distributionForInstance(Instance test) throws Exception {
-
 		return prediction;
 	}
 
