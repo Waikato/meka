@@ -4,8 +4,8 @@
     <property name="src" value="./src"/>
     <property name="build" value="./build"/>
     <property name="docs" value="./docs"/>
-    <property name="jar" value="../"/>
-    <property name="lib" value="../"/>
+    <property name="jar" value="./"/>
+    <property name="lib" value="./"/>
     <property name="all" value="./"/>
 
    <!-- CLASSPATH -->
