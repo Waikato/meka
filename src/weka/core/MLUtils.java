@@ -43,7 +43,7 @@ public abstract class MLUtils {
 	}
 
 
-	// Shuffle an array given 'r'
+	// Shuffle an array given 'r', @TODO use Collections.shuffle(array.asList());
 	public static final void randomize(int array[], Random r) {
 		for (int i = array.length - 1; i > 0; i--) {
 			int index = r.nextInt(i + 1);
@@ -60,6 +60,15 @@ public abstract class MLUtils {
 			a[i] = Math.round(ins.value(i));
 		}
 		return a;
+	}
+
+	// same as above, no rounding
+	public static final double[] toDoubleArray(Instance x) {
+		double y[] = new double[x.classIndex()];
+		for(int j = 0; j < y.length; j++) {
+			y[j] = x.value(j);
+		}
+		return y;
 	}
 
 	// bit string of c bits where the jth bit is turned on
@@ -163,6 +172,14 @@ public abstract class MLUtils {
 		return y;
 	}
 
+	public static final double[] toDoubleArray(int z[]) {
+		double y[] = new double[z.length];
+		for(int j = 0; j < z.length; j++) {
+			y[j] = (double)z[j];
+		}
+		return y;
+	}
+
 	// Label Cardinality.
 	public static final double labelCardinality(Instances D) {
 		return labelCardinality(D,D.classIndex());
@@ -220,7 +237,7 @@ public abstract class MLUtils {
 		return MLUtils.toBitString(D.instance(max_i),L);
 	}
 
-	// the number of chars different in the two strings
+	// the number of chars different in the two strings (suitable for binary strings)
 	public static final int bitDifference(String s1, String s2) {
 		int sum = 0;
 		for(int i = 0; i < s1.length(); i++) {
@@ -230,6 +247,23 @@ public abstract class MLUtils {
 		return sum;
 	}
 
+	public static final int bitDifference(String y1[], String y2[]) {
+		int sum = 0;
+		for(int i = 0; i < y1.length; i++) {
+			if (!y1[i].equals(y2[i]))
+				sum++;
+		}
+		return sum;
+	}
+
+	public static final int bitDifference(int y1[], int y2[]) {
+		int sum = 0;
+		for(int i = 0; i < y1.length; i++) {
+			if (y1[i] != y2[i])
+				sum++;
+		}
+		return sum;
+	}
 
 	// BitCount. Count relevant labels
 	public static final int bitCount(String s) {
@@ -249,6 +283,45 @@ public abstract class MLUtils {
 		HashMap<String,Integer> map = new HashMap<String,Integer>();  
 		for (int i = 0; i < D.numInstances(); i++) {
 			String y = MLUtils.toBitString(D.instance(i),L);
+			Integer c = map.get(y);
+			map.put(y,c == null ? 1 : c+1);
+		}
+		return map;
+	}
+
+	/*
+	// ["A","B","NEG"] -> "A+B+NEG"
+	public static String encodeValue(String s[]) {
+		StringBuilder sb = new StringBuilder(String.valueOf(s[0]));  
+		for(int i = 1; i < s.length; i++) {
+			sb.append('+').append(s[i]);
+		}
+		return sb.toString();
+	}
+	*/
+
+	// [0,3,2] -> "0+3+2"
+	public static String encodeValue(int s[]) {
+		StringBuilder sb = new StringBuilder(String.valueOf(s[0]));  
+		for(int i = 1; i < s.length; i++) {
+			sb.append('+').append(s[i]);
+		}
+		return sb.toString();
+	}
+
+	// "0+3+2" -> [0,3,2]
+	public static int[] decodeValue(String a) {
+		return toIntArray(a.split("\\+"));
+	}
+
+	// MULTI-TARGET VERSION of 'countCombinations'
+	// returns entries like e.g. [0,2,2,3,2],5
+	public static final HashMap<String,Integer> classCombinationCounts(Instances D) {
+		int L = D.classIndex();
+		System.out.println("L = "+L);
+		HashMap<String,Integer> map = new HashMap<String,Integer>();  
+		for (int i = 0; i < D.numInstances(); i++) {
+			String y = encodeValue(toIntArray(D.instance(i),L));
 			Integer c = map.get(y);
 			map.put(y,c == null ? 1 : c+1);
 		}
@@ -282,6 +355,11 @@ public abstract class MLUtils {
 				}
 			}
 		return max_s;
+	}
+
+	public static final int numberOfUniqueCombinations(Instances D) {
+		HashMap<String,Integer> hm = classCombinationCounts(D);
+		return hm.size();
 	}
 
 	/**
@@ -348,6 +426,21 @@ public abstract class MLUtils {
 			x.deleteAttributeAt(0);
 		x.setDataset(instancesTemplate);
 		return x;
+	}
+
+	/*
+	 * @returns	a copy of x, set with x's attributes, but set to dataset D_template (of which x_template) is a template of this.
+	 */
+	public static final Instance setTemplate(Instance x, Instance x_template, Instances D_template) {
+		Instance x_ = (Instance)x_template.copy();
+		int L_y = x.classIndex();
+		int L_z = D_template.classIndex();
+		MLUtils.copyValues(x_,x,L_y,L_z);
+		for(int j = 0; j < L_z; j++) {
+			x_.setMissing(j);
+		}
+		x_.setDataset(D_template);
+		return x_;
 	}
 
 	// copy x_dest[j+offset] = x_src[i+from]
@@ -497,6 +590,14 @@ public abstract class MLUtils {
 		return b;
 	}
 
+	public static final String toBinaryString(int j, int c) {
+		String sb = new String(Integer.toBinaryString(j));
+		while (sb.length() < c) {
+			sb = "0"+sb;
+		}
+		return sb;
+	}
+
 	private static void permute(String beginningString, String endingString, ArrayList<String> perm) {
 		if (endingString.length() <= 1) {
 			perm.add(beginningString + endingString);
@@ -508,6 +609,7 @@ public abstract class MLUtils {
 			}
 	}
 
+	// AB -> AB,BA
 	public static String[] permute(String s) {
 		ArrayList<String> a = new ArrayList<String>();  
 		permute("", s, a);
@@ -531,12 +633,21 @@ public abstract class MLUtils {
 		}
 	}
 
+	public static void clearLabels(Instance x) {
+		int L = x.classIndex();
+		for(int j = 0; j < L; j++) 
+			x.setValue(j,0.0);
+	}
+
 	public static void main(String args[]) {
+		// NEED THIS FOR SOME SCRIPTS
+		/*
 		String p[] = permute(args[0]);
 		int i = 0;
 		for(String s: p) {
 			System.out.println(""+(i++)+" "+s);
 		}
+		*/
 		//System.out.println(""+Arrays.toString(invert(new int[]{1,2},6)));
 		//System.out.println(""+Arrays.toString(invert(new int[]{0,2},6)));
 		//System.out.println(""+Arrays.toString(invert(new int[]{5,2},6)));
