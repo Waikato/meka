@@ -56,8 +56,6 @@ public class CR extends weka.classifiers.multilabel.BR implements MultiTargetCla
 			y[L+j] = w[(int)y[j]];											 // e.g. 0.8
 		}
 
-		System.out.println("y = "+Arrays.toString(y));
-
 		return y;
 	}
 

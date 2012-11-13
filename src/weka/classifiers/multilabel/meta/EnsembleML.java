@@ -22,7 +22,6 @@ public class EnsembleML extends MultilabelMetaClassifier {
 
 		m_Classifiers = AbstractClassifier.makeCopies(m_Classifier, m_NumIterations);
 		int sub_size = (int)(train.numInstances()*m_BagSizePercent/100);
-		int rst_size = train.numInstances()-sub_size;
 		for(int i = 0; i < m_NumIterations; i++) {
 			if(getDebug()) System.out.print(""+i+" ");
 			if (m_Classifiers[i] instanceof Randomizable) ((Randomizable)m_Classifiers[i]).setSeed(i);

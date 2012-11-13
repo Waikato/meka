@@ -1,5 +1,6 @@
-package weka.classifiers.multilabel;
+package weka.classifiers.multilabel.meta;
 
+import weka.classifiers.multilabel.*;
 import weka.classifiers.*;
 import weka.core.*;
 import java.util.*;
@@ -12,7 +13,6 @@ import mulan.classifier.lazy.*;
 import mulan.classifier.meta.*;
 import mulan.classifier.transformation.*;
 import mulan.classifier.neural.*;
-import mulan.evaluation.*;
 
 /**
  * MULAN.
@@ -61,6 +61,7 @@ public class MULAN extends MultilabelClassifier {
 	public void buildClassifier(Instances instances) throws Exception {
 
 		long before = System.currentTimeMillis();
+		if (getDebug()) System.out.print(" moving target attributes to the beginning ... ");
 
 		Random r = instances.getRandomNumberGenerator(0);
 		String name = "temp_"+MLUtils.getDatasetName(instances)+"_"+r.nextLong()+".arff";
@@ -83,6 +84,7 @@ public class MULAN extends MultilabelClassifier {
 			System.err.println("[Error] Failed to delete temporary file: "+name+". You may want to delete it manually.");
 		}
 
+		if (getDebug()) System.out.println(" done ");
 		long after = System.currentTimeMillis();
 
 		System.err.println("[Note] Discount "+((double)(after - before)/1000.0)+ " seconds from this build time");
@@ -108,8 +110,12 @@ public class MULAN extends MultilabelClassifier {
 			m_MULAN = new MLkNN(10,1.0);
 		else if (m_MethodString.equals("IBLR_ML"))
 			m_MULAN = new IBLR_ML(10);
-		else if (m_MethodString.equals("BPMLL")) //BPMLL is run withthe number of hidden units equal to 20% of the input units.
+		else if (m_MethodString.equals("BPMLL")) { //BPMLL is run withthe number of hidden units equal to 20% of the input units.
 			m_MULAN = new BPMLL();
+			((BPMLL)m_MULAN).setLearningRate(0.01);
+			((BPMLL)m_MULAN).setHiddenLayers(new int[]{30});
+			((BPMLL)m_MULAN).setTrainingEpochs(100);
+		}
 		else if (m_MethodString.equals("HOMER.RAND.LP"))
 			m_MULAN = new HOMER(new LabelPowerset(m_Classifier), 3, HierarchyBuilder.Method.Random);
 		else if (m_MethodString.equals("HOMER.RAND.BR"))
@@ -130,7 +136,6 @@ public class MULAN extends MultilabelClassifier {
 	 */
 	public static final Instances switchAttributes(Instances instances, int N) {
 		for(int j = 0; j < N; j++) {
-			System.out.print(".");
 			//instances.insertAttributeAt(new Attribute(instances.attribute(0).name()+"-"),instances.numAttributes());
 			instances.insertAttributeAt(instances.attribute(0).copy(instances.attribute(0).name()+"-"),instances.numAttributes());
 			for(int i = 0; i < instances.numInstances(); i++) {
@@ -138,7 +143,6 @@ public class MULAN extends MultilabelClassifier {
 			}
 			instances.deleteAttributeAt(0);
 		}
-		System.out.println("");
 		return instances;
 	}
 

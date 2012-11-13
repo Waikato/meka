@@ -71,13 +71,13 @@ public class Evaluation {
 			// end
 			allInstances.setClassIndex(c);
 		} catch(Exception e) {
-			System.err.println("[Error] Failed to Set Options from Command Line -- Check\n\t The spelling of the SL classifier\n\t That an option isn't on the wrong side of the '--'");
+			System.err.println("[Error] Failed to Set Options from Command Line -- Check\n\t the spelling of the base classifier;\n \t that options are specified in the correct order (respective to  the '--' divider); and\n\t that the class index is set properly.");
 			System.exit(1);
 		}
 
 		//Check for the essential -C option. If still nothing set, we can't continue
 		if(allInstances.classIndex() < 0) 
-			throw new Exception("You must supply the number of labels either in the @Relation Name or on the command line: -C <num> !");
+			throw new Exception("You must supply the number of labels either in the @Relation Name of the dataset or on the command line using the option: -C <num. labels>");
 
 		//Set Range
 		if(Utils.getOptionPos('p',options) >= 0) {
@@ -102,10 +102,16 @@ public class Evaluation {
 			}
 		}
 
-		// Randomize
+		int seed = (Utils.getOptionPos('s',options) >= 0) ? Integer.parseInt(Utils.getOption('s',options)) : 0;
+
+		// Randomize (Instances)
 		if(Utils.getOptionPos('R',options) >= 0) {
-			int seed = (Utils.getOptionPos('s',options) >= 0) ? Integer.parseInt(Utils.getOption('s',options)) : 0;
 			allInstances.randomize(new Random(seed));
+		}
+
+		// Randomize (Method)
+		if (h instanceof Randomizable) {
+			((Randomizable)h).setSeed(seed + 1); // (@NOTE because previously we were using seed '1' as the default in BaggingML, we want to maintain reproducibility of older results with the same seed).
 		}
 
 		try {
@@ -154,6 +160,15 @@ public class Evaluation {
 					Instances holder = test;
 					test = train;
 					train = holder;
+				}
+
+				// We're going to do parameter tuning
+				if(Utils.getOptionPos('u',options) >= 0) {
+					double percentageSplit = Double.parseDouble(Utils.getOption('u',options));
+					TRAIN = (int)(train.numInstances() * percentageSplit);
+					TEST = train.numInstances() - TRAIN;
+					train = new Instances(train,0,TRAIN);
+					test = new Instances(train,TRAIN,TEST);
 				}
 
 				if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(allInstances)+"\tL="+allInstances.classIndex()+"\tD(t:T)=("+train.numInstances()+":"+test.numInstances()+")\tLC(t:T)="+Utils.roundDouble(MLUtils.labelCardinality(train,allInstances.classIndex()),2)+":"+Utils.roundDouble(MLUtils.labelCardinality(test,allInstances.classIndex()),2)+")");
@@ -317,6 +332,8 @@ public class Evaluation {
 		text.append("\tSets the type of thresholding; where 'c' automatically calibrates a threshold (the default); 'C' automatically calibrates one threshold for each label; and any double number, e.g. 0.5, specifies that threshold.\n");
 		text.append("-C <number of target attributes>\n");
 		text.append("\tSets the number of target attributes to expect (indexed from the beginning).\n");
+		text.append("-f <results_file>\n");
+		text.append("\tSpecify a file to output results and evaluation statistics into.\n");
 		// Multilabel Options
 		text.append("\n\nClassifier Options:\n\n");
 		while (e.hasMoreElements()) {

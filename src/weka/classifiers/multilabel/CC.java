@@ -7,6 +7,7 @@ import weka.core.*;
 import weka.filters.unsupervised.attribute.*;
 import weka.filters.*;
 import java.util.*;
+import java.io.*;
 
 /**
  * Classifier Chains method.
@@ -17,18 +18,18 @@ import java.util.*;
  */
 public class CC extends MultilabelClassifier implements Randomizable {
 
-	protected Link root = null;
+	protected Link2 root = null;
 
-	protected class Link {
+	protected class Link2 implements Serializable {
 
-		private Link next = null;
+		private Link2 next = null;
 		private AbstractClassifier classifier = null;
 		public Instances _template = null;
 		private int index = -1;
 		private int excld[]; // to contain the indices to delete
 		private int j = 0; //@temp
 
-		public Link(int chain[], int j, Instances train) throws Exception {
+		public Link2(int chain[], int j, Instances train) throws Exception {
 			this.j = j;
 
 			this.index = chain[j];
@@ -60,7 +61,7 @@ public class CC extends MultilabelClassifier implements Randomizable {
 			new_train = null;
 
 			if(j+1 < chain.length) 
-				next = new Link(chain, ++j, train);
+				next = new Link2(chain, ++j, train);
 		}
 
 		protected void classify(Instance test) throws Exception {
@@ -118,7 +119,7 @@ public class CC extends MultilabelClassifier implements Randomizable {
 			MLUtils.randomize(indices,new Random(m_S));
 		}
 		if(getDebug()) System.out.print(":- Chain (");
-		root = new Link(indices,0,D);
+		root = new Link2(indices,0,D);
 		if (getDebug()) System.out.println(" ) -:");
 	}
 

@@ -31,10 +31,10 @@ public abstract class MLEvalUtils {
 		}
 		Collections.sort(big);
 
-		System.out.println("we will take = "+(int)Math.round(LC_train * (double)N));
+		//System.out.println("we will take = "+(int)Math.round(LC_train * (double)N));
 		int i = big.size() - (int)Math.round(LC_train * (double)N);
 
-		System.out.println("from "+i);
+		//System.out.println("from "+i);
 		if (N == big.size()) { // special cases
 			if (i+1 == N) // only one!
 				return (big.get(N-2)+big.get(N-1)/2.0);
@@ -48,7 +48,7 @@ public abstract class MLEvalUtils {
 		//System.out.println("N = "+N);
 		//System.out.println("big.size = "+big.size());
 		*/
-		System.out.println("LCard ("+LC_train+") between "+i+" and "+(Math.max(i+1,N-1)));
+		//System.out.println("LCard ("+LC_train+") between "+i+" and "+(Math.max(i+1,N-1)));
 		//if (i == big.size) // we have to set the threshold very low
 		//	return 0.00001
 		return Math.max(((double)(big.get(i)+big.get(Math.max(i+1,N-1))))/2.0 , 0.00001);
@@ -110,7 +110,6 @@ public abstract class MLEvalUtils {
 		double accuracy = 0.0, f1_macro_D = 0.0, f1_macro_L = 0.0;
 		int hloss_total = 0;
 		int[] o_tp = new int[L], o_fp = new int[L], o_fn = new int[L], o_tn = new int[L];
-		int[] d_tp = new int[(int)N], d_fp = new int[(int)N], d_fn = new int[(int)N], d_tn = new int[(int)N];
 		//double average_accuracy_online = 0.0;
 
 
@@ -142,7 +141,6 @@ public abstract class MLEvalUtils {
 						r_sum++;
 						tp++;
 						o_tp[j]++;			// f1 macro (L)
-						d_tp[i]++;			// f1 macro (D)
 						set_inter++;
 						set_union++;
 					}
@@ -150,7 +148,6 @@ public abstract class MLEvalUtils {
 					else {
 						fp++;
 						o_fp[j]++;			// f1 macro (L)
-						d_fp[i]++;			// f1 macro (D)
 						hloss_total++;
 						set_union++;
 					}
@@ -161,7 +158,6 @@ public abstract class MLEvalUtils {
 						r_sum++;
 						fn++;
 						o_fn[j]++;			// f1 macro (L)
-						d_fn[i]++;			// f1 macro (D)
 						hloss_total++;
 						set_union++;
 					}
@@ -169,7 +165,6 @@ public abstract class MLEvalUtils {
 					else {   
 						tn++;
 						o_tn[j]++;			// f1 macro (L)
-						d_tn[i]++;			// f1 macro (D)
 					}
 				}
 
@@ -223,6 +218,14 @@ public abstract class MLEvalUtils {
 
 		double precision = (double)set_inter_total / (double)p_sum_total;
 		double recall = (double)set_inter_total / (double)r_sum_total;
+
+		// @ temp
+		double a[] = new double[L];
+		for(int j = 0; j < L; j++) {
+			a[j] = (o_tp[j] + o_tn[j]) / (double)N;
+		}
+		System.out.println("Individual accuracies: "+Arrays.toString(a));
+		// @ temp
 		
 		HashMap<String,Double> results = new LinkedHashMap<String,Double>();
 		results.put("N"					,N);
@@ -270,30 +273,37 @@ public abstract class MLEvalUtils {
 		double N = Rankings.size();
 		int L = Actuals.iterator().next().length;
 		double h_loss = 0.0, e_loss = 0.0;
-		for (int i = 0, c = 0; i < N; i++) {
+		double h_acc[] = new double[L]; // new
+		for (int i = 0; i < N; i++) {
 
 			double y_pred[] = Rankings.get(i);
 			int y_real[] = Actuals.get(i);
 
 			double loss = 0.0;
 			for(int j = 0; j < L; j++) {
-				loss += (y_real[j] != (int)Math.round(y_pred[j])) ? 1.0 : 0.0;
+				double l = (y_real[j] != (int)Math.round(y_pred[j])) ? 1.0 : 0.0;
+				loss += l;
+				h_acc[j] += l;
 			}
 			h_loss += loss;
 			e_loss += (loss > 0.0) ? 1.0 : 0.0;
+
 
 			//System.out.print(" eval : "+MLUtils.toBitString(y_real));
 			//System.out.print(" vs " +MLUtils.toBitString(y_pred));
 			//System.out.println(" : "+loss);
 		}
 
-		HashMap<String,Double> output = new HashMap<String,Double>();
+		HashMap<String,Double> output = new LinkedHashMap<String,Double>();
 		output.put("N"					,N);
 		output.put("L"					,(double)L);
 		output.put("L_loss"			,((double)h_loss/((double)N*(double)L)));
 		output.put("L_acc"				,1.0-((double)h_loss/((double)N*(double)L)));
 		output.put("E_loss"			,(e_loss/N));
 		output.put("E_acc"				,1.0-(e_loss/N));
+		for(int j = 0; j < L; j++) {
+			output.put("L"+j+"_acc"				,1.0-(h_acc[j]/N));
+		}
 		return output;
 	}
 

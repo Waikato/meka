@@ -88,6 +88,22 @@ public class Result { // implements Serializable {
 		return MLUtils.toIntArray(rowRanking(i),t);
 	}
 
+	public double[][] allPredictions() {
+		double Y[][] = new double[predictions.size()][];
+		for(int i = 0; i < predictions.size(); i++) {
+			Y[i] = rowRanking(i);
+		}
+		return Y;
+	}
+
+	public int[][] allPredictions(double t) {
+		int Y[][] = new int[predictions.size()][];
+		for(int i = 0; i < predictions.size(); i++) {
+			Y[i] = rowPrediction(i,t);
+		}
+		return Y;
+	}
+
 	public void addValue(String op, double v) {
 		Double freq = vals.get(op);
 		vals.put(op,(freq == null) ? v : freq + v);
@@ -209,10 +225,57 @@ public class Result { // implements Serializable {
 
 	public static void main (String args[]) {
 
-		if (Utils.getOptionPos('f',args) >= 0) {
+		// CROSS-FOLD-VALIDATION
+		if (Utils.getOptionPos('f',args) >= 0 && Utils.getOptionPos('x',args) >= 0) {
+
+			// Read folds in from file.meka.0 , ... , file.meka.<numFolds-1>
+			int numFolds = 0;
+			try {
+				numFolds = Integer.parseInt(Utils.getOption('x',args));
+			} catch(Exception e) {
+				System.err.println("Failed to parse the number of folds");
+				e.printStackTrace();
+				System.exit(1);
+			}
+			Result fold[] = new Result[numFolds];
+			String basename = null;
+			try {
+				basename = Utils.getOption('f',args);
+				for(int i = 0; i < numFolds; i++) {
+					fold[i] = Result.readResultFromFile(basename+"."+i);
+					// check for threshold
+					if (fold[i].getInfo("Threshold")==null) {
+						System.out.println("Having to calculate a threshold ...");
+						System.exit(1);
+					}
+				}
+			} catch(Exception e) {
+				System.err.println("Error finding/loading files ... Was looking for "+basename+".0 ... "+basename+"."+numFolds);
+				e.printStackTrace();
+				System.exit(1);
+			}
+			// Create a super-Result, and get the results
+			Result r = new Result();
+			r.info = fold[0].info;
+			for(String v : fold[0].vals.keySet()) {
+				// add to super-result
+				r.info.put(v,Result.getValues(v,fold));
+			}
+
+			// Print out Results
+			HashMap<String,double[]> o = Result.getStats(fold);
+			for(String s : o.keySet()) {
+				double values[] = o.get(s);
+				r.info.put(s,Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3));
+			}
+			r.setInfo("Type","CV");
+			System.out.println(r.toString());
+		}
+
+		// REGULAR-VALIDATION
+		else if (Utils.getOptionPos('f',args) >= 0) {
 
 			Result r = null;
-
 			try {
 				r = Result.readResultFromFile(Utils.getOption('f',args));
 			} catch(Exception e) {

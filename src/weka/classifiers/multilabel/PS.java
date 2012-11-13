@@ -165,8 +165,7 @@ public class PS extends LC implements Randomizable {
 	}
 
 
-	public String[] getTopNSubsets(String comb, HashMap <String,Integer>all, int n) {
-		LabelSet comp = new LabelSet(all);  
+	public static String[] getTopNSubsets(String comb, HashMap <String,Integer>all, int n) {
 		ArrayList<String> subsets = new ArrayList<String>();  
 		// add
 		for(String s : all.keySet()) {
@@ -175,13 +174,13 @@ public class PS extends LC implements Randomizable {
 			}
 		}
 		// rank
-		Collections.sort(subsets,comp);
+		Collections.sort(subsets,new LabelSet(all));
 		String s[] = (String[])subsets.toArray(new String[subsets.size()]);
 
 		return Arrays.copyOf(s,Math.min(n,s.length));
 	}
 
-	private class LabelSet implements Comparator {
+	private static class LabelSet implements Comparator {
 
 		HashMap<String,Integer> c = null;
 
