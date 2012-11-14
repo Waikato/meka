@@ -96,6 +96,7 @@
 	    <fileset dir="${pdfs}" includes="*.pdf"/>
 	    <fileset dir="${jar}" includes="meka*-${version}.jar" excludes="meka-full-*.jar"/>
 	    <fileset dir="${basedir}" includes="lib/*.jar"/>
+	    <fileset dir="${basedir}" includes="data/*.*"/>
 	    <zipfileset dir="${javadoc}" prefix="api"/>
 	  </zip>
     </target>
