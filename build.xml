@@ -4,10 +4,12 @@
     <!-- directories -->
     <property name="src" value="src"/>
     <property name="build" value="build"/>
-	<property name="docs" value="doc/api"/>
+	<property name="javadoc" value="doc/api"/>
+	<property name="pdfs" value="doc/pdf"/>
     <property name="jar" value="."/>
     <property name="lib" value="lib"/>
     <property name="all" value="."/>
+    <property name="release" value="."/>
 
     <property name="version" value="1.0"/>
 
@@ -21,7 +23,7 @@
 
     <target name="clean" description="Removes the build directory, generated jars and temp files."> 
 	<delete dir="${build}" failonerror="false"/>
-	<delete dir="${docs}"/>
+	<delete dir="${javadoc}"/>
         <delete>
           <fileset dir="${basedir}" includes="*.jar"/>
           <fileset dir="${basedir}" includes="*.zip"/>
@@ -55,14 +57,19 @@
     </target>
 
     <target name="src-jar" description="Creates a source archive.">
-	<jar destfile="${jar}/meka-src-${version}.jar" basedir="${src}/"/>
+	<jar destfile="${jar}/meka-src-${version}.jar">
+ 		<zipfileset dir="${src}" prefix="src"/>
+		<fileset file="build.xml"/>
+		<fileset file="LICENSE.txt"/>
+		<fileset file="README.txt"/>
+	</jar>
     </target>
 
     <target name="full-jar" description="Creates full archive.">
-	<jar destfile="${jar}/meka-${version}.jar" basedir="${all}/"/>
+	<jar destfile="${jar}/meka-full-${version}.jar" basedir="${all}/"/>
     </target>
 
-    <target name="docs" description="Generate Javadoc documentation.">
+    <target name="javadoc" description="Generate Javadoc documentation.">
         <javadoc
 			classpathref 	 = "project.class.path"
 			access           = "public"
@@ -72,14 +79,25 @@
             doctitle         = "MEKA - Multi-label Extension to weKA"
             nodeprecatedlist = "yes"
             sourcepath       = "${src}"
-            destdir          = "${docs}"
+            destdir          = "${javadoc}"
             />
     </target>
 
-    <target name="docs-jar" depends="docs" description="Creates an archive from the Javadoc.">
-	<zip destfile="${jar}/meka-docs-${version}.zip" basedir="${docs}/"/>
+    <target name="javadoc-jar" depends="javadoc" description="Creates an archive from the Javadoc.">
+	<zip destfile="${jar}/meka-javadoc-${version}.zip" basedir="${javadoc}/"/>
     </target>
 
-    <target name="all" depends="full-jar, src-jar, docs-jar" description="Generates all jars."/>
+    <target name="all" depends="jar, src-jar, javadoc-jar" description="Generates all jars."/>
+
+    <target name="release" depends="clean, all" description="Generates a release archive.">
+	  <zip destfile="${release}/meka-release-${version}.zip">
+	    <fileset dir="${basedir}" includes="README.txt"/>
+	    <fileset dir="${basedir}" includes="LICENSE.txt"/>
+	    <fileset dir="${pdfs}" includes="*.pdf"/>
+	    <fileset dir="${jar}" includes="meka*-${version}.jar" excludes="meka-full-*.jar"/>
+	    <fileset dir="${basedir}" includes="lib/*.jar"/>
+	    <zipfileset dir="${javadoc}" prefix="api"/>
+	  </zip>
+    </target>
 
 </project>
