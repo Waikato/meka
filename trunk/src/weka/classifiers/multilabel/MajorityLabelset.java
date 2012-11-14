@@ -1,10 +1,25 @@
+/*
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package weka.classifiers.multilabel;
 
-import weka.classifiers.*;
-import weka.core.*;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.*;
-import java.util.*;
+import java.util.HashMap;
+
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.MLUtils;
 
 /**
  * MajorityLabelset.
@@ -14,10 +29,24 @@ import java.util.*;
  */
 public class MajorityLabelset extends MultilabelClassifier {
 
+	/** for serialization. */
+	private static final long serialVersionUID = -5932291001079843869L;
+	
 	protected double prediction[] = null;
 	protected HashMap<String,Double> classFreqs = new HashMap<String,Double>();
 
 	protected double maxValue = 0.0;
+
+	/**
+	 * Description to display in the GUI.
+	 * 
+	 * @return		the description
+	 */
+	@Override
+	public String globalInfo() {
+		return 
+				"MajorityLabelset";
+	}
 
 	protected void updateCount(Instance x, int L) {
 		String y = MLUtils.toBitString(x,L);
@@ -37,6 +66,7 @@ public class MajorityLabelset extends MultilabelClassifier {
 	/**
 	 * Build Classifier.
 	 */
+	@Override
 	public void buildClassifier(Instances D) throws Exception {
 
 		int L = D.classIndex();
@@ -48,6 +78,7 @@ public class MajorityLabelset extends MultilabelClassifier {
 
 	}
 
+	@Override
 	public double[] distributionForInstance(Instance test) throws Exception {
 		return prediction;
 	}

@@ -1,17 +1,16 @@
 /*
- *    This program is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 2 of the License, or
- *    (at your option) any later version.
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
  *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
  *
- *    You should have received a copy of the GNU General Public License
- *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -22,16 +21,16 @@
 
 package weka.classifiers.functions.supportVector;
 
+import java.util.Enumeration;
+import java.util.Vector;
+
 import weka.core.Capabilities;
+import weka.core.Capabilities.Capability;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Option;
 import weka.core.RevisionUtils;
 import weka.core.Utils;
-import weka.core.Capabilities.Capability;
-
-import java.util.Enumeration;
-import java.util.Vector;
 
 /**
  <!-- globalinfo-start -->
@@ -94,7 +93,8 @@ public class PolyKernel
    * Frees the cache used by the kernel.
    * This function modified Fri 6 March, 2009
    */
-  public void clean() {
+  @Override
+	public void clean() {
 	  if (getExponent() == 1.0) {
 		  m_data = null;
 	  }
@@ -130,7 +130,8 @@ public class PolyKernel
    * @return a description suitable for displaying in the
    *         explorer/experimenter gui
    */
-  public String globalInfo() {
+  @Override
+	public String globalInfo() {
     return 
         "The polynomial kernel : K(x, y) = <x, y>^p or K(x, y) = (<x, y>+1)^p";
   }
@@ -140,7 +141,8 @@ public class PolyKernel
    *
    * @return 		an enumeration of all the available options.
    */
-  public Enumeration listOptions() {
+  @Override
+	public Enumeration listOptions() {
     Vector		result;
     Enumeration		en;
     
@@ -195,7 +197,8 @@ public class PolyKernel
    * @param options 	the list of options as an array of strings
    * @throws Exception 	if an option is not supported
    */
-  public void setOptions(String[] options) throws Exception {
+  @Override
+	public void setOptions(String[] options) throws Exception {
     String	tmpStr;
     
     tmpStr = Utils.getOption('E', options);
@@ -214,7 +217,8 @@ public class PolyKernel
    *
    * @return an array of strings suitable for passing to setOptions
    */
-  public String[] getOptions() {
+  @Override
+	public String[] getOptions() {
     int       i;
     Vector    result;
     String[]  options;
@@ -241,7 +245,8 @@ public class PolyKernel
    * @return 		the dot product
    * @throws Exception 	if something goes wrong
    */
-  protected double evaluate(int id1, int id2, Instance inst1)
+  @Override
+	protected double evaluate(int id1, int id2, Instance inst1)
     throws Exception {
 		
     double result;
@@ -266,7 +271,8 @@ public class PolyKernel
    * @return            the capabilities of this object
    * @see               Capabilities
    */
-  public Capabilities getCapabilities() {
+  @Override
+	public Capabilities getCapabilities() {
     Capabilities result = super.getCapabilities();
     
     result.enable(Capability.NUMERIC_ATTRIBUTES);
@@ -337,7 +343,8 @@ public class PolyKernel
    * 
    * @return 		a string representaiton of the kernel
    */
-  public String toString() {
+  @Override
+	public String toString() {
     String	result;
     
     if (getExponent() == 1.0) {
@@ -358,7 +365,8 @@ public class PolyKernel
    * 
    * @return		the revision
    */
-  public String getRevision() {
+  @Override
+	public String getRevision() {
     return RevisionUtils.extract("$Revision: 1.9 $");
   }
 }

@@ -1,11 +1,27 @@
+/*
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package weka.classifiers.multitarget.meta;
 
-import weka.core.*;
-import weka.classifiers.*;
-import weka.classifiers.multilabel.meta.*;
-import weka.classifiers.multilabel.*;
-import weka.classifiers.multitarget.*;
-import java.util.*;
+import java.util.HashMap;
+
+import weka.classifiers.multilabel.MultilabelClassifier;
+import weka.classifiers.multilabel.meta.BaggingML;
+import weka.classifiers.multitarget.MultiTargetClassifier;
+import weka.core.Instance;
+import weka.core.MLUtils;
 
 /**
  * The Multi-Target Version of FastBaggingML.
@@ -15,6 +31,21 @@ import java.util.*;
  */
 
 public class BaggingMT extends BaggingML implements MultiTargetClassifier {
+
+	/** for serialization. */
+	private static final long serialVersionUID = -8107887827513707843L;
+
+	/**
+	 * Description to display in the GUI.
+	 * 
+	 * @return		the description
+	 */
+	@Override
+	public String globalInfo() {
+		return 
+				"The Multi-Target Version of FastBaggingML.\n"
+				+ "It takes votes using the confidence outputs of the base classifier.";
+	}
 
 	@Override
 	public double[] distributionForInstance(Instance x) throws Exception {

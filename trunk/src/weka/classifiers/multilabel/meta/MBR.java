@@ -1,9 +1,31 @@
+/*
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package weka.classifiers.multilabel.meta;
 
-import weka.classifiers.multilabel.*;
-import weka.classifiers.*;
-import weka.core.*;
-import java.util.*;
+import weka.classifiers.AbstractClassifier;
+import weka.classifiers.multilabel.BR;
+import weka.classifiers.multilabel.MultilabelClassifier;
+import weka.core.Attribute;
+import weka.core.FastVector;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.TechnicalInformation;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
+import weka.core.TechnicalInformationHandler;
 
 /**
  * BR stacked with feature outputs.
@@ -11,11 +33,44 @@ import java.util.*;
  * 
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
-public class MBR extends MultilabelClassifier {
+public class MBR extends MultilabelClassifier 
+  implements TechnicalInformationHandler {
 
+	/** for serialization. */
+	private static final long serialVersionUID = 865889198021748917L;
+	
 	protected BR m_BASE = null;
 	protected BR m_META = null;
 
+	/**
+	 * Description to display in the GUI.
+	 * 
+	 * @return		the description
+	 */
+	public String globalInfo() {
+		return 
+				"BR stacked with feature outputs.\n"
+				+ "For more information see:\n"
+				+ getTechnicalInformation().toString();
+	}
+
+	@Override
+	public TechnicalInformation getTechnicalInformation() {
+		TechnicalInformation	result;
+		
+		result = new TechnicalInformation(Type.INPROCEEDINGS);
+		result.setValue(Field.AUTHOR, "Shantanu Godbole, Sunita Sarawagi");
+		result.setValue(Field.TITLE, "Discriminative Methods for Multi-labeled Classification");
+    result.setValue(Field.BOOKTITLE, "Advances in Knowledge Discovery and Data Mining");
+    result.setValue(Field.YEAR, "2004");
+    result.setValue(Field.PAGES, "22-30");
+    result.setValue(Field.SERIES, "LNCS");
+		
+		return result;
+	}
+
+
+	@Override
 	public void buildClassifier(Instances data) throws Exception {
 
 		int c = data.classIndex();
@@ -57,6 +112,7 @@ public class MBR extends MultilabelClassifier {
 
 	}
 
+	@Override
 	public double[] distributionForInstance(Instance instance) throws Exception {
 
 		int c = instance.classIndex();
@@ -81,5 +137,4 @@ public class MBR extends MultilabelClassifier {
 	public static void main(String args[]) {
 		MultilabelClassifier.evaluation(new MBR(),args);
 	}
-
 }

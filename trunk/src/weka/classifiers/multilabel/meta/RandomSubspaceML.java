@@ -1,10 +1,32 @@
+/*
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package weka.classifiers.multilabel.meta;
 
-import weka.core.*;
-import weka.classifiers.*;
-import weka.classifiers.meta.*;
-import weka.classifiers.multilabel.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Random;
+import java.util.Vector;
+
+import weka.classifiers.AbstractClassifier;
+import weka.classifiers.multilabel.MultilabelClassifier;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.Option;
+import weka.core.Randomizable;
+import weka.core.Utils;
 
 /**
  * RandomSupspaceML.java - Downsize the attribute space randomly for each ensemble member.
@@ -14,6 +36,9 @@ import java.util.*;
  */
 
 public class RandomSubspaceML extends MultilabelMetaClassifier {
+
+	/** for serialization. */
+	private static final long serialVersionUID = 3608541911971484299L;
 
 	int m_AttSizePercent = 50;
 

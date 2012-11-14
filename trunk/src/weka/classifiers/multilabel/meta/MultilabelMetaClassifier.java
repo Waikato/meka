@@ -1,12 +1,28 @@
+/*
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package weka.classifiers.multilabel.meta;
 
-import weka.classifiers.multilabel.*;
+import java.util.Enumeration;
+import java.util.Vector;
 
-import weka.classifiers.*;
-import weka.classifiers.meta.*;
-import weka.core.*;
-import java.util.*;
-import java.text.*;
+import weka.classifiers.Classifier;
+import weka.classifiers.multilabel.MultilabelClassifier;
+import weka.core.Instance;
+import weka.core.Option;
+import weka.core.Utils;
 
 /**
  * MultilabelMetaClassifier.java - For ensembles of multi-label methods.
@@ -14,10 +30,25 @@ import java.text.*;
  */
 public abstract class MultilabelMetaClassifier extends MultilabelClassifier {
 
+	/** for serialization. */
+	private static final long serialVersionUID = -6604797895790690612L;
+	
 	public Classifier m_Classifiers[] = null;
 	public int m_Seed = 1;
 	public int m_NumIterations = 10;
 	public int m_BagSizePercent = 67;
+
+	/**
+	 * Description to display in the GUI.
+	 * 
+	 * @return		the description
+	 */
+	@Override
+	public String globalInfo() {
+		return 
+				"For ensembles of multi-label methods.";
+	}
+
 
 	@Override
 	public double[] distributionForInstance(Instance instance) throws Exception {

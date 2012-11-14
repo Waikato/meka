@@ -1,11 +1,25 @@
+/*
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package weka.classifiers.multilabel;
 
-import weka.classifiers.*;
-import weka.classifiers.meta.*;
-import weka.core.*;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.*;
-import java.util.*;
+import weka.core.Attribute;
+import weka.core.FastVector;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.MLUtils;
 
 /**
  * RT.java - Use a multi-class classifier as a multi-label classifier by <i>Ranking</i> outputs and using a <i>Threshold</i>.
@@ -15,9 +29,26 @@ import java.util.*;
  */
 public class RT extends MultilabelClassifier {
 
+	/** for serialization. */
+	private static final long serialVersionUID = 7348139531854838421L;
+
+	/**
+	 * Description to display in the GUI.
+	 * 
+	 * @return		the description
+	 */
+	@Override
+	public String globalInfo() {
+		return 
+				"Use a multi-class classifier as a multi-label classifier by 'Ranking' outputs and using a 'Threshold'.\n"
+				+ "See also MULAN framework:\n"
+				+ "http://mulan.sourceforge.net";
+	}
+
 	/**
 	 * Build Classifier.
 	 */
+	@Override
 	public void buildClassifier(Instances D) throws Exception {
 
 		int L = D.classIndex();
@@ -83,6 +114,7 @@ public class RT extends MultilabelClassifier {
 		return real;
 	}
 
+	@Override
 	public double[] distributionForInstance(Instance test) throws Exception {
 		return m_Classifier.distributionForInstance(convertInstance(test));
 	}

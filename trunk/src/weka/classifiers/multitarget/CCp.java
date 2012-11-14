@@ -1,12 +1,29 @@
+/*
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package weka.classifiers.multitarget;
 
-import weka.classifiers.*;
-import weka.classifiers.meta.*;
-import weka.classifiers.multilabel.*;
-import weka.core.*;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Random;
+
+import weka.classifiers.AbstractClassifier;
+import weka.classifiers.multilabel.MultilabelClassifier;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.MLUtils;
+import weka.core.Utils;
 
 /**
  * CC method with probabilistic output (CCp).
@@ -19,6 +36,9 @@ import java.util.*;
 
 public class CCp extends weka.classifiers.multilabel.CC implements MultiTargetClassifier {
 
+	/** for serialization. */
+	private static final long serialVersionUID = 7139310187485439658L;
+	
 	protected weka.classifiers.multitarget.CCp.Link root = null;
 
 	protected class Link {
@@ -93,6 +113,7 @@ public class CCp extends weka.classifiers.multilabel.CC implements MultiTargetCl
 			if (next!=null) next.classify(test);
 		}
 
+		@Override
 		public String toString() {
 			return (next == null) ? String.valueOf(this.index) : String.valueOf(this.index)+">"+next.toString();
 		}
@@ -101,20 +122,37 @@ public class CCp extends weka.classifiers.multilabel.CC implements MultiTargetCl
 
 	protected int m_S = 0;
 
+	/**
+	 * Description to display in the GUI.
+	 * 
+	 * @return		the description
+	 */
+	@Override
+	public String globalInfo() {
+		return 
+				"CC method with probabilistic output (CCp).\n"
+				+ "This version includes probabilistic output in the distributionForInstance, like other MT methods.\n"
+				+ "i.e.: y[j+L] := P(y[j]|x) (this is usefull when used in an ensemble).";
+	}
+
+	@Override
 	public void setSeed(int s) {
 		m_S = s;
 	}
 
+	@Override
 	public int getSeed() {
 		return m_S;
 	}
 
 	protected int m_Chain[] = null;
 
+	@Override
 	public void setChain(int chain[]) {
 		m_Chain = chain;
 	}
 
+	@Override
 	public int[] getChain() {
 		return m_Chain;
 	}
