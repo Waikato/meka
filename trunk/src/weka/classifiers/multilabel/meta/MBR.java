@@ -7,7 +7,7 @@ import java.util.*;
 
 /**
  * BR stacked with feature outputs.
- * described in ``Discriminative Methods for Multi-labeled Classification'' by Godbole and Sarawagi 
+ * Described in: Godbole and Sarawagi, <i>Discriminative Methods for Multi-labeled Classification</i>. 
  * 
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */

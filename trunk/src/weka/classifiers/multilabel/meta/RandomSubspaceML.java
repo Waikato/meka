@@ -7,17 +7,20 @@ import weka.classifiers.multilabel.*;
 import java.util.*;
 
 /**
- * Bagging Method 'quick' : an option to downsize the attribute space randomly for each ensemble member
+ * RandomSupspaceML.java - Downsize the attribute space randomly for each ensemble member.
+ * As used in: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer. Vol. 85(3), pp 333-359. (May 2011).
+ * Previously this class was called <i>BaggingMLq</i>.
  * @author Jesse Read (jmr30@cs.waikato.ac.nz)
  */
 
-public class BaggingMLq extends MultilabelMetaClassifier {
+public class RandomSubspaceML extends MultilabelMetaClassifier {
 
 	int m_AttSizePercent = 50;
 
 	ArrayList m_Indices[] = null;
 	Instances m_Dsets[] = null;
 
+	@Override
 	public void buildClassifier(Instances train) throws Exception {
 
 		m_Indices = new ArrayList[m_NumIterations];
@@ -68,6 +71,7 @@ public class BaggingMLq extends MultilabelMetaClassifier {
 	}
 
 
+	@Override
 	public double[] distributionForInstance(Instance instance) throws Exception {
 
 		double r[] = new double[instance.classIndex()];
@@ -89,6 +93,7 @@ public class BaggingMLq extends MultilabelMetaClassifier {
 		return r;
 	}
 
+	@Override
 	public Enumeration listOptions() {
 		Vector newVector = new Vector();
 		newVector.addElement(new Option("\t@Size of attribute space, as a percentage of total attribute space size (default "+m_AttSizePercent+")", "A", 1, "-A <size percentage>"));
@@ -99,11 +104,13 @@ public class BaggingMLq extends MultilabelMetaClassifier {
 		return newVector.elements();
 	}
 
+	@Override
 	public void setOptions(String[] options) throws Exception {
 		try { m_AttSizePercent = Integer.parseInt(Utils.getOption('A',options)); } catch(Exception e) { }
 		super.setOptions(options);
 	}
 
+	@Override
 	public String [] getOptions() {
 		String [] superOptions = super.getOptions();
 		String [] options = new String [superOptions.length + 2];
@@ -115,7 +122,7 @@ public class BaggingMLq extends MultilabelMetaClassifier {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new BaggingMLq(),args);
+		MultilabelClassifier.evaluation(new RandomSubspaceML(),args);
 	}
 
 }

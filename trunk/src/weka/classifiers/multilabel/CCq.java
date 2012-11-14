@@ -9,9 +9,9 @@ import weka.filters.*;
 import java.util.*;
 
 /**
- * Classifier Chains method 'quick' version.
- * This version is able to downsample the number of training instances across the chain
- * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer. 2011.
+ * The Classifier Chains  Method - Random Subspace ('quick') Version.
+ * This version is able to downsample the number of training instances across the binary models.
+ * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer. Vol. 85(3), pp 333-359. (May 2011).
  * @author Jesse Read (jesse@tsc.uc3m.es)
  * @version January 2009
  */

@@ -1,10 +1,8 @@
 package weka.classifiers.multilabel;
 
 /**
- * BR.
- *
- * The Binary Relevance Method
- * see also `BR' from the <a href=http://mulan.sourceforge.net>MULAN</a> framework
+ * BR.java - The Binary Relevance Method.
+ * See also <i>BR</i> from the <a href=http://mulan.sourceforge.net>MULAN</a> framework
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
 import weka.classifiers.*;
