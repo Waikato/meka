@@ -42,7 +42,7 @@
     </target>
 
     <target name="jar" depends="compile">
-	<jar destfile="${jar}/meka.jar" 
+	<jar destfile="${jar}/meka-${version}.jar" 
 	     basedir="${build}/"
 	     includes="weka/**"
 	/>
@@ -56,10 +56,8 @@
 	<jar destfile="${jar}/meka-${version}.jar" basedir="${all}/"/>
     </target>
 
-    <target name="docs" 
-            description="Generate Javadoc documentation.">
-            <mkdir  dir = "./${build}/${releasedir}/${dev}/${api}" />
-            <javadoc
+    <target name="docs" description="Generate Javadoc documentation.">
+        <javadoc
             defaultexcludes  = "yes"
             use              = "yes"
             header           = "MEKA ${version}"
