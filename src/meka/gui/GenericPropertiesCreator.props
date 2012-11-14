@@ -1,0 +1,18 @@
+# Customises the list of options given by the GenericObjectEditor
+# for various superclasses.
+#
+# Version: $Revision$
+
+# Lists the MultiLabelClassifiers-Packages I want to choose from
+weka.classifiers.multilabel.MultilabelClassifier=\
+ weka.classifiers.multilabel,\
+ weka.classifiers.multilabel.meta
+
+# Lists the MultiTargetClassifiers-Packages I want to choose from
+weka.classifiers.multitarget.MultiTargetClassifier=\
+ weka.classifiers.multitarget,\
+ weka.classifiers.multitarget.meta
+
+# Lists the SemisupervisedClassifier-Packages I want to choose from
+weka.classifiers.multilabel.SemisupervisedClassifier=\
+ weka.classifiers.multilabel
