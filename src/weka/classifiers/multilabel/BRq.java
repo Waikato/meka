@@ -1,9 +1,9 @@
 package weka.classifiers.multilabel;
 
 /**
- * The Binary Relevance Method 'quick' version.
- * This version is able to downsample the number of instances across the binary models
- * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer. 2011.
+ * The Binary Relevance Method - Random Subspace ('quick') Version.
+ * This version is able to downsample the number of instances across the binary models.
+ * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer. Vol. 85(3), pp 333-359. (May 2011).
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  * @version January 2009
  */

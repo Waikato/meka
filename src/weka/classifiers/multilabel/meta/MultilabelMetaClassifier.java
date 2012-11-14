@@ -9,7 +9,7 @@ import java.util.*;
 import java.text.*;
 
 /**
- * For Ensembles of Multi-label Methods.
+ * MultilabelMetaClassifier.java - For ensembles of multi-label methods.
  * @author Jesse Read (jmr30@cs.waikato.ac.nz)
  */
 public abstract class MultilabelMetaClassifier extends MultilabelClassifier {
@@ -19,6 +19,7 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier {
 	public int m_NumIterations = 10;
 	public int m_BagSizePercent = 67;
 
+	@Override
 	public double[] distributionForInstance(Instance instance) throws Exception {
 
 		double r[] = new double[instance.classIndex()];
@@ -38,6 +39,7 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier {
 		return r;
 	}
 
+	@Override
 	public Enumeration listOptions() {
 		Vector newVector = new Vector();
 		newVector.addElement(new Option("\t@Sets the number of models (default "+m_NumIterations+")", "I", 1, "-I <num>"));
@@ -52,6 +54,7 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier {
 		return newVector.elements();
 	}
 
+	@Override
 	public void setOptions(String[] options) throws Exception {
 		try { m_Seed = Integer.parseInt(Utils.getOption('S',options)); } catch(Exception e) { }
 		try { m_NumIterations = Integer.parseInt(Utils.getOption('I',options)); } catch(Exception e) { }
@@ -59,6 +62,7 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier {
 		super.setOptions(options);
 	}
 
+	@Override
 	public String [] getOptions() {
 		String [] superOptions = super.getOptions();
 		String [] options = new String [superOptions.length + 6];
