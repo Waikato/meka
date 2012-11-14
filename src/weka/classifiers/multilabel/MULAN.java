@@ -1,4 +1,4 @@
-package weka.classifiers.multilabel.meta;
+package weka.classifiers.multilabel;
 
 import weka.classifiers.multilabel.*;
 import weka.classifiers.*;
@@ -15,9 +15,8 @@ import mulan.classifier.transformation.*;
 import mulan.classifier.neural.*;
 
 /**
- * MULAN.
- *
- * Meta Classifier for wrapping around <a href=http://mulan.sourceforge.net>MULAN</a> classifiers. 
+ * MULAN.java - A wrapper for MULAN <a href=http://mulan.sourceforge.net>MULAN</a> classifiers. 
+ * <br>
  * The classifiers are instantiated here with suitable parameters.
  *
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
@@ -27,6 +26,7 @@ public class MULAN extends MultilabelClassifier {
 	MultiLabelLearner m_MULAN = null;
 	String m_MethodString = "";
 
+	@Override
 	public Enumeration listOptions() {
 
 		Vector newVector = new Vector();
@@ -40,12 +40,14 @@ public class MULAN extends MultilabelClassifier {
 		return newVector.elements();
 	}
 
+	@Override
 	public void setOptions(String[] options) throws Exception {
 
 		m_MethodString = Utils.getOption('S', options);
 		super.setOptions(options);
 	}
 
+	@Override
 	public String [] getOptions() {
 
 		String [] superOptions = super.getOptions();
@@ -58,6 +60,7 @@ public class MULAN extends MultilabelClassifier {
 
 	}
 
+	@Override
 	public void buildClassifier(Instances instances) throws Exception {
 
 		long before = System.currentTimeMillis();
@@ -155,6 +158,7 @@ public class MULAN extends MultilabelClassifier {
 		return instance;
 	}
 
+	@Override
 	public double[] distributionForInstance(Instance instance) throws Exception {
 		int L = instance.classIndex();
 		Instance x = switchAttributes((Instance)instance.copy(),L); 

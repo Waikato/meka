@@ -8,6 +8,7 @@ import java.util.*;
 
 /**
  * PS.java - The Pruned Sets Method.
+ * <br>
  * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes. <i>Multi-label Classification using Ensembles of Pruned Sets</i>. Proc. of IEEE International Conference on Data Mining (ICDM 2008), Pisa, Italy, 2008
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
