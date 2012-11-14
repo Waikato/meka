@@ -7,7 +7,9 @@ import weka.filters.*;
 import java.util.*;
 
 /**
- * PSt. Pruned Sets with Thresholding.
+ * PSt.java -  Pruned Sets with a a threshold so as to be able to predict sets not seen in the training set..
+ * See: Jesse Read. <i>A Pruned Problem Transformation Method for Multi-label Classification</i>. In Proc. of the NZ Computer Science Research Student Conference. Christchurch, New Zealand (2008).
+ * @see PS
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
 public class PSt extends PS {
@@ -28,6 +30,7 @@ public class PSt extends PS {
 		return newr;
 	}
 
+	@Override
 	public double[] distributionForInstance(Instance TestInstance) throws Exception {
 
 		int c = TestInstance.classIndex();

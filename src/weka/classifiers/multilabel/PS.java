@@ -7,8 +7,7 @@ import weka.filters.*;
 import java.util.*;
 
 /**
- * PS. Pruned Sets.
- * Modified to simplify the decomposition parameter.
+ * PS.java - The Pruned Sets Method.
  * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes. <i>Multi-label Classification using Ensembles of Pruned Sets</i>. Proc. of IEEE International Conference on Data Mining (ICDM 2008), Pisa, Italy, 2008
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
@@ -21,6 +20,7 @@ public class PS extends LC implements Randomizable {
 	protected int m_S = 1;
 
 	// For Random P/N values
+	@Override
 	public void setSeed(int s) {
 		m_S = s;
 		if (m_sP != null)
@@ -33,10 +33,12 @@ public class PS extends LC implements Randomizable {
 		}
 	}
 
+	@Override
 	public int getSeed() {
 		return m_S;
 	}
 
+	@Override
 	public Enumeration listOptions() {
 
 		Vector newVector = new Vector();
@@ -63,6 +65,7 @@ public class PS extends LC implements Randomizable {
 			return Integer.parseInt(s);
 	}
 
+	@Override
 	public void setOptions(String[] options) throws Exception {
 
 		try {
@@ -84,6 +87,7 @@ public class PS extends LC implements Randomizable {
 		super.setOptions(options);
 	}
 
+	@Override
 	public String [] getOptions() {
 
 		String [] superOptions = super.getOptions();
@@ -226,6 +230,7 @@ public class PS extends LC implements Randomizable {
 		return true;
 	}
 
+	@Override
 	public void buildClassifier(Instances D) throws Exception {
 
 		int L = D.classIndex();
