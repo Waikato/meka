@@ -34,7 +34,7 @@ public class CR extends weka.classifiers.multilabel.BR implements MultiTargetCla
 	/** for serialization. */
 	private static final long serialVersionUID = 1627371180786293843L;
 	
-	Instances m_Templates[] = null; // TEMPLATES
+	protected Instances m_Templates[] = null; // TEMPLATES
 
 	/**
 	 * Description to display in the GUI.

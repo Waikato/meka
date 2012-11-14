@@ -171,7 +171,8 @@ public class CCp extends weka.classifiers.multilabel.CC implements MultiTargetCl
 		if (getDebug()) System.out.println(" ) -:");
 	}
 
-	double confidences[] = null;
+	protected double confidences[] = null;
+	
 	@Override
 	public double[] distributionForInstance(Instance x) throws Exception {
 		int L = x.classIndex();

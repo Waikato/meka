@@ -33,10 +33,10 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier {
 	/** for serialization. */
 	private static final long serialVersionUID = -6604797895790690612L;
 	
-	public Classifier m_Classifiers[] = null;
-	public int m_Seed = 1;
-	public int m_NumIterations = 10;
-	public int m_BagSizePercent = 67;
+	protected Classifier m_Classifiers[] = null;
+	protected int m_Seed = 1;
+	protected int m_NumIterations = 10;
+	protected int m_BagSizePercent = 67;
 
 	/**
 	 * Description to display in the GUI.

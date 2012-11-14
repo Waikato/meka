@@ -52,8 +52,9 @@ public class MULAN extends MultilabelClassifier {
 	/** for serialization. */
 	private static final long serialVersionUID = 1720289364996202350L;
 	
-	MultiLabelLearner m_MULAN = null;
-	String m_MethodString = "";
+	protected MultiLabelLearner m_MULAN = null;
+
+	protected String m_MethodString = "";
 
 	/**
 	 * Description to display in the GUI.
