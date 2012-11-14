@@ -1,3 +1,18 @@
+/*
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package weka.classifiers.multitarget;
 
 /**
@@ -8,12 +23,36 @@ package weka.classifiers.multitarget;
  * @version	Feb 2012
  * @author 	Jesse Read (jesse@tsc.uc3m.es)
  */
-import weka.classifiers.*;
-import weka.classifiers.multilabel.*;
-import weka.core.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+
+import weka.classifiers.multilabel.MultilabelClassifier;
+import weka.core.Attribute;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.MLUtils;
+import weka.core.Utils;
 
 public class PS extends weka.classifiers.multilabel.PS implements MultiTargetClassifier {
+
+	/** for serialization. */
+	private static final long serialVersionUID = 8373228150066785001L;
+
+	/**
+	 * Description to display in the GUI.
+	 * 
+	 * @return		the description
+	 */
+	@Override
+	public String globalInfo() {
+		return 
+				"The Pruned Sets (PS) method. Multi-target version.\n"
+				+ "Because pruned sets are duplicated as the closest sets, rather than subsets.\n"
+				+ "Note: currently can only handle 10 values (or fewer) per target variable.";
+	}
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {

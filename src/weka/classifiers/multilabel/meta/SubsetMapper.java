@@ -1,12 +1,35 @@
+/*
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package weka.classifiers.multilabel.meta;
 
-import weka.classifiers.*;
-import weka.classifiers.meta.*;
-import weka.classifiers.multilabel.*;
-import weka.core.*;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Random;
+import java.util.Set;
+import java.util.Vector;
+
+import weka.classifiers.multilabel.MultilabelClassifier;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.MLUtils;
+import weka.core.TechnicalInformation;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
+import weka.core.TechnicalInformationHandler;
 
 /**
  * Maps the output of a multi-label classifier to a known label combination using the hamming distance.
@@ -14,7 +37,40 @@ import java.util.*;
  *
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
-public class SubsetMapper extends MultilabelClassifier {
+public class SubsetMapper extends MultilabelClassifier 
+  implements TechnicalInformationHandler {
+
+	/** for serialization. */
+	private static final long serialVersionUID = -6587406787943635084L;
+
+	/**
+	 * Description to display in the GUI.
+	 * 
+	 * @return		the description
+	 */
+	@Override
+	public String globalInfo() {
+		return 
+				"Maps the output of a multi-label classifier to a known label combination using the hamming distance."
+				+ "For more information see:\n"
+				+ getTechnicalInformation().toString();
+	}
+
+	@Override
+	public TechnicalInformation getTechnicalInformation() {
+		TechnicalInformation	result;
+		
+		result = new TechnicalInformation(Type.ARTICLE);
+		result.setValue(Field.AUTHOR, "Robert E. Schapire, Yoram Singer ");
+		result.setValue(Field.TITLE, "Improved Boosting Algorithms Using Confidence-rated Predictions");
+    result.setValue(Field.JOURNAL, "Machine Learning Journal");
+    result.setValue(Field.YEAR, "1999");
+    result.setValue(Field.VOLUME, "37");
+    result.setValue(Field.NUMBER, "3");
+    result.setValue(Field.PAGES, "297-336");
+		
+		return result;
+	}
 
 	protected HashMap<String,Integer> m_Count = new HashMap<String,Integer>();
 
@@ -58,6 +114,7 @@ public class SubsetMapper extends MultilabelClassifier {
     	return result;
     }
 
+	@Override
 	public void buildClassifier(Instances D) throws Exception {
 
 		for (int i = 0; i < D.numInstances(); i++) {
@@ -68,6 +125,7 @@ public class SubsetMapper extends MultilabelClassifier {
 
 	}
 
+	@Override
 	public double[] distributionForInstance(Instance TestInstance) throws Exception {
 
 		double r[] = ((MultilabelClassifier)m_Classifier).distributionForInstance(TestInstance);

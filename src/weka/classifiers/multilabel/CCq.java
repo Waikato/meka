@@ -1,12 +1,37 @@
+/*
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package weka.classifiers.multilabel;
 
-import weka.classifiers.*;
-import weka.classifiers.meta.*;
-import weka.classifiers.multilabel.*;
-import weka.core.*;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Random;
+import java.util.Vector;
+
+import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.MLUtils;
+import weka.core.Option;
+import weka.core.Randomizable;
+import weka.core.TechnicalInformation;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
+import weka.core.TechnicalInformationHandler;
+import weka.core.Utils;
 
 /**
  * The Classifier Chains  Method - Random Subspace ('quick') Version.
@@ -15,7 +40,10 @@ import java.util.*;
  * @author Jesse Read (jesse@tsc.uc3m.es)
  * @version January 2009
  */
-public class CCq extends MultilabelClassifier implements Randomizable {
+public class CCq extends MultilabelClassifier implements Randomizable, TechnicalInformationHandler {
+
+	/** for serialization. */
+	private static final long serialVersionUID = 7881602808389873411L;
 
 	/** The downsample ratio*/
 	public double m_DownSampleRatio = 0.75;
@@ -106,10 +134,41 @@ public class CCq extends MultilabelClassifier implements Randomizable {
 			if (next!=null) next.classify(test);
 		}
 
+		@Override
 		public String toString() {
 			return (next == null) ? String.valueOf(this.index) : String.valueOf(this.index)+">"+next.toString();
 		}
 
+	}
+
+	/**
+	 * Description to display in the GUI.
+	 * 
+	 * @return		the description
+	 */
+	@Override
+	public String globalInfo() {
+		return 
+				"The Classifier Chains  Method - Random Subspace ('quick') Version.\n"
+				+ "This version is able to downsample the number of training instances across the binary models."
+				+ "For more information see:\n"
+				+ getTechnicalInformation().toString();
+	}
+
+	@Override
+	public TechnicalInformation getTechnicalInformation() {
+		TechnicalInformation	result;
+		
+		result = new TechnicalInformation(Type.ARTICLE);
+		result.setValue(Field.AUTHOR, "Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank");
+		result.setValue(Field.TITLE, "Classifier Chains for Multi-label Classification");
+    result.setValue(Field.JOURNAL, "Machine Learning Journal");
+    result.setValue(Field.YEAR, "2011");
+    result.setValue(Field.VOLUME, "85");
+    result.setValue(Field.NUMBER, "3");
+    result.setValue(Field.PAGES, "333-359");
+		
+		return result;
 	}
 
 	public void setSeed(int s) {
@@ -117,6 +176,7 @@ public class CCq extends MultilabelClassifier implements Randomizable {
 		m_Random = new Random(m_S);
 	}
 
+	@Override
 	public Enumeration listOptions() {
 
 		Vector newVector = new Vector();
@@ -130,6 +190,7 @@ public class CCq extends MultilabelClassifier implements Randomizable {
 		return newVector.elements();
 	}
 
+	@Override
 	public void setOptions(String[] options) throws Exception {
 
 		try {
@@ -141,6 +202,7 @@ public class CCq extends MultilabelClassifier implements Randomizable {
 		super.setOptions(options);
 	}
 
+	@Override
 	public String [] getOptions() {
 
 		String [] superOptions = super.getOptions();
@@ -157,6 +219,7 @@ public class CCq extends MultilabelClassifier implements Randomizable {
 		return m_S;
 	}
 
+	@Override
 	public void buildClassifier(Instances Train) throws Exception {
 		this.m_NumClasses = Train.classIndex();
 
@@ -167,6 +230,7 @@ public class CCq extends MultilabelClassifier implements Randomizable {
 		if (getDebug()) System.out.println(" ) -:");
 	}
 
+	@Override
 	public double[] distributionForInstance(Instance test) throws Exception {
 		root.classify(test);
 		return MLUtils.toDoubleArray(test,m_NumClasses);
