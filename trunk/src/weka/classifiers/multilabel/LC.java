@@ -8,10 +8,11 @@ import weka.filters.*;
 import java.util.*;
 
 /**
- * LC.
- *
+ * LC.java - aka LP (Laber Powerset) Method.
+ * <br>
  * @TODO PS should really extend this class
- * see also `LP' from the <a href=http://mulan.sourceforge.net>MULAN</a> framework
+ * <br>
+ * See also <i>LP</i> from the <a href=http://mulan.sourceforge.net>MULAN</a> framework.
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
 public class LC extends MultilabelClassifier implements OptionHandler {
