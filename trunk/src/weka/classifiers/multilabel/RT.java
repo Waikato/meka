@@ -8,9 +8,9 @@ import weka.filters.*;
 import java.util.*;
 
 /**
- * RT.
- *
- * see also from the <a href=http://mulan.sourceforge.net>MULAN</a> framework
+ * RT.java - Use a multi-class classifier as a multi-label classifier by <i>Ranking</i> outputs and using a <i>Threshold</i>.
+ * <br>
+ * See also from the <a href=http://mulan.sourceforge.net>MULAN</a> framework.
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
 public class RT extends MultilabelClassifier {

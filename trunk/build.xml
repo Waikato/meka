@@ -4,7 +4,7 @@
     <!-- directories -->
     <property name="src" value="src"/>
     <property name="build" value="build"/>
-    <property name="docs" value="docs"/>
+	<property name="docs" value="doc/api"/>
     <property name="jar" value="."/>
     <property name="lib" value="lib"/>
     <property name="all" value="."/>
@@ -64,6 +64,8 @@
 
     <target name="docs" description="Generate Javadoc documentation.">
         <javadoc
+			classpathref 	 = "project.class.path"
+			access           = "public"
             defaultexcludes  = "yes"
             use              = "yes"
             header           = "MEKA ${version}"

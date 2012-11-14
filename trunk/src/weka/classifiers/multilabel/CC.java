@@ -11,8 +11,11 @@ import java.io.*;
 
 /**
  * CC.java - The Classifier Chains Method.
+ * <br>
  * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer. Vol. 85(3), pp 333-359. (May 2011).
+ * <br>
  * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. In Proc. of 20th European Conference on Machine Learning (ECML 2009). Bled, Slovenia, September 2009.
+ * <br>
  * @author Jesse Read (jmr30@cs.waikato.ac.nz)
  * @version January 2009
  */
