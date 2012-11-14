@@ -1,61 +1,79 @@
 <?xml version="1.0"?>
 <project name="meka" default="compile" basedir=".">
 
-    <property name="src" value="./src"/>
-    <property name="build" value="./build"/>
-    <property name="docs" value="./docs"/>
-    <property name="jar" value="./"/>
-    <property name="lib" value="./"/>
-    <property name="all" value="./"/>
+    <!-- directories -->
+    <property name="src" value="src"/>
+    <property name="build" value="build"/>
+    <property name="docs" value="docs"/>
+    <property name="jar" value="."/>
+    <property name="lib" value="lib"/>
+    <property name="all" value="."/>
 
-   <!-- CLASSPATH -->
-   <path id="project.class.path">
+    <property name="version" value="1.0"/>
+
+    <!-- CLASSPATH -->
+    <path id="project.class.path">
       <pathelement location="." />
       <fileset dir="${lib}">
          <include name="*.jar"/>
       </fileset>
-   </path>
+    </path>
+
+    <target name="clean" description="Removes the build directory, generated jars and temp files."> 
+	<delete dir="${build}" failonerror="false"/>
+	<delete dir="${docs}"/>
+        <delete>
+          <fileset dir="${basedir}" includes="*.jar"/>
+        </delete>
+        <delete defaultexcludes="no">
+          <fileset dir="${basedir}" includes="**/*~" defaultexcludes="no"/>
+          <fileset dir="${basedir}" includes="**/.DS_Store" defaultexcludes="no"/>
+          <fileset dir="${basedir}" includes="hs_err_pid*"/>
+        </delete>
+    </target>
 
     <target name="init"> 
 	<mkdir dir="${build}"/>
     </target>
 
-    <target name="compile" depends="init"> 
-	<javac srcdir="${src}" destdir="${build}" debug="true" debuglevel="lines,vars,source">
+    <target name="compile" depends="init" description="Compiles the source code."> 
+	<javac srcdir="${src}" destdir="${build}" debug="true" debuglevel="lines,vars,source" classpathref="project.class.path">
 	</javac>
     </target>
 
     <target name="jar" depends="compile">
-		<jar destfile="${jar}/meka.jar" 
-		     basedir="${build}/"
-		     includes="weka/**"
-		/>
+	<jar destfile="${jar}/meka.jar" 
+	     basedir="${build}/"
+	     includes="weka/**"
+	/>
     </target>
 
-    <target name="src-jar">
-		<jar destfile="${jar}/meka-src.jar" basedir="${src}/"/>
+    <target name="src-jar" description="Creates a source archive.">
+	<jar destfile="${jar}/meka-src-${version}.jar" basedir="${src}/"/>
     </target>
 
-    <target name="full-jar">
-		<jar destfile="${jar}/meka-0.85.jar" basedir="${all}/"/>
+    <target name="full-jar" description="Creates full archive.">
+	<jar destfile="${jar}/meka-${version}.jar" basedir="${all}/"/>
     </target>
 
-	<target name="docs" 
-		description="Generate docs">
-		<mkdir  dir = "./${build}/${releasedir}/${dev}/${api}" />
-		<javadoc
-		defaultexcludes  = "yes"
-		use              = "yes"
-		header           = "MEKA 0.85"
-		doctitle         = "MEKA - Multi-label Extension to weKA"
-		nodeprecatedlist = "yes"
-		sourcepath       = "${src}"
-		destdir          = "${docs}"
-		/>
-	</target>
-
-    <target name="docs-jar">
-		<zip destfile="${jar}/meka-docs.zip" basedir="${docs}/"/>
+    <target name="docs" 
+            description="Generate Javadoc documentation.">
+            <mkdir  dir = "./${build}/${releasedir}/${dev}/${api}" />
+            <javadoc
+            defaultexcludes  = "yes"
+            use              = "yes"
+            header           = "MEKA ${version}"
+            doctitle         = "MEKA - Multi-label Extension to weKA"
+            nodeprecatedlist = "yes"
+            sourcepath       = "${src}"
+            destdir          = "${docs}"
+            />
     </target>
+
+    <target name="docs-jar" depends="docs" description="Creates an archive from the Javadoc.">
+	<zip destfile="${jar}/meka-docs-${version}.zip" basedir="${docs}/"/>
+    </target>
+
+    <target name="all" depends="full-jar, src-jar, docs-jar" description="Generates all jars."/>
 
 </project>
