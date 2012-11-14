@@ -46,12 +46,12 @@ public class BRq extends MultilabelClassifier
 	private static final long serialVersionUID = 398261703726763108L;
 
 	/** The downsample ratio*/
-	public double m_DownSampleRatio = 0.75;
+	protected double m_DownSampleRatio = 0.75;
 
 	/** The random generator */
 	protected int m_S = 0;
 
-	public Random m_Random = new Random(m_S);
+	protected Random m_Random = new Random(m_S);
 
 	protected Classifier m_MultiClassifiers[] = null;
 

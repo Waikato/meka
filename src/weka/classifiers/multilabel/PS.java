@@ -48,8 +48,8 @@ public class PS extends LC implements Randomizable {
 	
 	protected int m_P = 0; 
 	protected int m_N = 0;
-	private String m_sP = String.valueOf(m_P);
-	private String m_sN = String.valueOf(m_N);
+	protected String m_sP = String.valueOf(m_P);
+	protected String m_sN = String.valueOf(m_N);
 	protected int m_S = 1;
 
 	// For Random P/N values

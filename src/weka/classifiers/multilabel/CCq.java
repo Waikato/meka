@@ -46,14 +46,15 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 	private static final long serialVersionUID = 7881602808389873411L;
 
 	/** The downsample ratio*/
-	public double m_DownSampleRatio = 0.75;
+	protected double m_DownSampleRatio = 0.75;
 
 	/** The random generator */
 	protected int m_S = 0;
-	public Random m_Random = new Random(m_S);
+	
+	protected Random m_Random = new Random(m_S);
 
 	/** The number of classes*/
-	public int m_NumClasses = -1;
+	protected int m_NumClasses = -1;
 
 	protected Tink root = null;
 

@@ -40,10 +40,10 @@ public class RandomSubspaceML extends MultilabelMetaClassifier {
 	/** for serialization. */
 	private static final long serialVersionUID = 3608541911971484299L;
 
-	int m_AttSizePercent = 50;
+	protected int m_AttSizePercent = 50;
 
-	ArrayList m_Indices[] = null;
-	Instances m_Dsets[] = null;
+	protected ArrayList m_Indices[] = null;
+	protected Instances m_Dsets[] = null;
 
 	@Override
 	public void buildClassifier(Instances train) throws Exception {
