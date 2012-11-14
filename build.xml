@@ -24,6 +24,7 @@
 	<delete dir="${docs}"/>
         <delete>
           <fileset dir="${basedir}" includes="*.jar"/>
+          <fileset dir="${basedir}" includes="*.zip"/>
         </delete>
         <delete defaultexcludes="no">
           <fileset dir="${basedir}" includes="**/*~" defaultexcludes="no"/>
@@ -34,6 +35,11 @@
 
     <target name="init"> 
 	<mkdir dir="${build}"/>
+        <copy todir="${build}" >
+            <fileset dir="${src}">
+              <include name="**/*.png"/>
+            </fileset>
+        </copy>
     </target>
 
     <target name="compile" depends="init" description="Compiles the source code."> 
@@ -44,7 +50,7 @@
     <target name="jar" depends="compile">
 	<jar destfile="${jar}/meka-${version}.jar" 
 	     basedir="${build}/"
-	     includes="weka/**"
+	     includes="weka/** meka/**"
 	/>
     </target>
 
