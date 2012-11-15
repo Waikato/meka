@@ -68,9 +68,7 @@ public class ResultHistoryList
 		protected ResultHistory m_History;
 		
 		/**
-		 * Initializes the model with the history.
-		 * 
-		 * @param history the history to use
+		 * Initializes the model with an empty history.
 		 */
 		public ResultHistoryModel() {
 			this(new ResultHistory());
