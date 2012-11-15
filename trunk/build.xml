@@ -54,6 +54,9 @@
 	<jar destfile="${jar}/meka-${version}.jar" 
 	     basedir="${build}/"
 	     includes="weka/** meka/**"
+		<manifest>
+			<attribute name="Main-Class" value="meka.gui.explorer.Explorer"/>
+		</manifest>
 	/>
     </target>
 
