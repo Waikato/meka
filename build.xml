@@ -3,6 +3,7 @@
 
     <!-- directories -->
     <property name="src" value="src/main/java"/>
+    <property name="resources" value="src/main/resources"/>
     <property name="build" value="target/classes"/>
 	<property name="javadoc" value="doc/api"/>
 	<property name="pdfs" value="doc/pdf"/>
@@ -38,8 +39,8 @@
     <target name="init"> 
 	<mkdir dir="${build}"/>
         <copy todir="${build}" >
-            <fileset dir="${src}">
-              <include name="**/*.png"/>
+            <fileset dir="${resources}">
+              <include name="**/*.*"/>
             </fileset>
         </copy>
     </target>
@@ -59,6 +60,7 @@
     <target name="src-jar" description="Creates a source archive.">
 	<jar destfile="${jar}/meka-src-${version}.jar">
  		<zipfileset dir="${src}" prefix="src/main/java"/>
+ 		<zipfileset dir="${resources}" prefix="src/main/resources"/>
 		<fileset file="build.xml"/>
 		<fileset file="LICENSE.txt"/>
 		<fileset file="README.txt"/>
