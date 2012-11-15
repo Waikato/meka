@@ -2,8 +2,8 @@
 <project name="meka" default="compile" basedir=".">
 
     <!-- directories -->
-    <property name="src" value="src"/>
-    <property name="build" value="build"/>
+    <property name="src" value="src/main/java"/>
+    <property name="build" value="target/classes"/>
 	<property name="javadoc" value="doc/api"/>
 	<property name="pdfs" value="doc/pdf"/>
     <property name="jar" value="."/>
@@ -58,7 +58,7 @@
 
     <target name="src-jar" description="Creates a source archive.">
 	<jar destfile="${jar}/meka-src-${version}.jar">
- 		<zipfileset dir="${src}" prefix="src"/>
+ 		<zipfileset dir="${src}" prefix="src/main/java"/>
 		<fileset file="build.xml"/>
 		<fileset file="LICENSE.txt"/>
 		<fileset file="README.txt"/>
@@ -96,6 +96,7 @@
 	    <fileset dir="${pdfs}" includes="*.pdf"/>
 	    <fileset dir="${jar}" includes="meka*-${version}.jar" excludes="meka-full-*.jar"/>
 	    <fileset dir="${basedir}" includes="lib/*.jar"/>
+	    <fileset dir="${basedir}" includes="lib/README.txt"/>
 	    <fileset dir="${basedir}" includes="data/*.*"/>
 	    <zipfileset dir="${javadoc}" prefix="api"/>
 	  </zip>
