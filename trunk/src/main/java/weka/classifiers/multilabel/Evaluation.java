@@ -15,9 +15,6 @@
 
 package weka.classifiers.multilabel;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -32,6 +29,7 @@ import weka.core.Option;
 import weka.core.Randomizable;
 import weka.core.Result;
 import weka.core.Utils;
+import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
 import weka.filters.unsupervised.instance.RemoveRange;
 
@@ -58,11 +56,12 @@ public class Evaluation {
 
 		//Load Instances
 		Instances allInstances = null;
+		String filename = null;
 		try {
-			String filename = Utils.getOption('t', options);
-			allInstances = new Instances(new BufferedReader(new FileReader(filename)));
-		} catch(IOException e) {
-			throw new Exception("[Error] Failed to Load Instances from file");
+			filename = Utils.getOption('t', options);
+			allInstances = DataSource.read(filename);
+		} catch(Exception e) {
+			throw new Exception("[Error] Failed to Load Instances from file '" + filename + "'", e);
 		}
 
 		//Get the Options in the @relation name (in format 'dataset-name: <options>')
@@ -70,7 +69,7 @@ public class Evaluation {
 		try {
 			doptions = MLUtils.getDatasetOptions(allInstances);
 		} catch(Exception e) {
-			throw new Exception("[Error] Failed to Get Options from @Relation Name");
+			throw new Exception("[Error] Failed to Get Options from @Relation Name", e);
 		}
 
 		//Concatenate the Options in the @relation name to the cmd line options
@@ -123,7 +122,7 @@ public class Evaluation {
 			} catch(Exception e) {
 				System.out.println(""+e);
 				e.printStackTrace();
-				throw new Exception("Failed to Remove Range");
+				throw new Exception("Failed to Remove Range", e);
 			}
 		}
 
