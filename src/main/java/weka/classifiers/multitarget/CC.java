@@ -17,10 +17,10 @@ package weka.classifiers.multitarget;
 
 /**
  * The Classifier Chains (CC) method.
- * Multi-target version of the BR-based CC method (directly applicable).
+ * Multi-target version of CC method (directly applicable).
  * @see 	weka.classifiers.multilabel.CC
- * @version	Jan 2012
  * @author 	Jesse Read (jesse@tsc.uc3m.es)
+ * @version	Jan 2012
  */
 import java.util.Arrays;
 

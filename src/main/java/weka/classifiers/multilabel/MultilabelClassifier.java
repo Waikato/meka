@@ -20,8 +20,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- *  Multilabel Classifier.
- *  All problem transformation methods need a base (single-label) classifier supplied.
+ *  MultilabelClassifier.java - A Multilabel Classifier.
  * 	@author Jesse Read (jmr30@cs.waikato.ac.nz)
  */
 
@@ -49,6 +48,7 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 		return m_InstancesTemplate;
 	}
 
+	@Override
 	public abstract void buildClassifier(Instances trainingSet) throws Exception;
 
 	@Override
@@ -60,11 +60,20 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 		return null;
 	}
 
-	// to be deprecated
+	/**
+	 * Evaluation. 
+	 * To be deprecated, and replaced with runClassifier(h,args)
+	 */
 	public static void evaluation(MultilabelClassifier h, String args[]) {
 		runClassifier(h,args);
 	}
 
+	/**
+	 * runClassifier. 
+	 * Called by classifier's main() method upon initialisation from the command line. 
+	 * @param	h		A classifier
+	 * @param	args	Command-line options.
+	 */
 	public static void runClassifier(MultilabelClassifier h, String args[]) {
 		try {
 			 Evaluation.runExperiment(h,args);

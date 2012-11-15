@@ -16,7 +16,7 @@
 package weka.classifiers.multitarget;
 
 /**
- * CR. The Class-Relevance Method.
+ * CR.java - The Class-Relevance Method.
  * (The generalised, multi-target version of the Binary Relevance (BR) method).
  * @see		BR.java
  * @version	Jan 2012
