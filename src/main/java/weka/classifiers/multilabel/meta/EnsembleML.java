@@ -23,7 +23,7 @@ import weka.core.Instances;
 import weka.core.Randomizable;
 
 /**
- * Combining several multi-label classifiers in a simple-subset ensemble.
+ * EnsembleML.java - Combines several multi-label classifiers in a simple-subset ensemble.
  * @author Jesse Read (jmr30@cs.waikato.ac.nz)
  */
 
@@ -41,7 +41,6 @@ public class EnsembleML extends MultilabelMetaClassifier {
 		return 
 				"Combining several multi-label classifiers in a simple-subset ensemble.";
 	}
-
 
 	/**
 	 * Build Classifier

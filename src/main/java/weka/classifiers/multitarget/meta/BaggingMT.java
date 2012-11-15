@@ -24,7 +24,7 @@ import weka.core.Instance;
 import weka.core.MLUtils;
 
 /**
- * The Multi-Target Version of FastBaggingML.
+ * BaggingMT.java - The Multi-Target Version of BaggingML.
  * It takes votes using the confidence outputs of the base classifier.
  * @author Jesse Read (jesse@tsc.uc3m.es)
  * @version	March 2012

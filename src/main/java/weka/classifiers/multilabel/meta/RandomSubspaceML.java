@@ -27,15 +27,21 @@ import weka.core.Instances;
 import weka.core.Option;
 import weka.core.Randomizable;
 import weka.core.Utils;
+import weka.core.TechnicalInformation;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
+import weka.core.TechnicalInformationHandler;
 
 /**
  * RandomSupspaceML.java - Downsize the attribute space randomly for each ensemble member.
- * As used in: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer. Vol. 85(3), pp 333-359. (May 2011).
+ * <br>
+ * As used with CC in: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer. Vol. 85(3), pp 333-359. (May 2011).
+ * <br>
  * Previously this class was called <i>BaggingMLq</i>.
  * @author Jesse Read (jmr30@cs.waikato.ac.nz)
  */
 
-public class RandomSubspaceML extends MultilabelMetaClassifier {
+public class RandomSubspaceML extends MultilabelMetaClassifier implements TechnicalInformationHandler {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 3608541911971484299L;
@@ -148,6 +154,32 @@ public class RandomSubspaceML extends MultilabelMetaClassifier {
 
 	public static void main(String args[]) {
 		MultilabelClassifier.evaluation(new RandomSubspaceML(),args);
+	}
+
+	/**
+	 * Description to display in the GUI.
+	 * 
+	 * @return		the description
+	 */
+	@Override
+	public String globalInfo() {
+		return "Combining several multi-label classifiers in an ensemble where the attribute space for each model is a random subset of the original space.";
+	}
+
+	@Override
+	public TechnicalInformation getTechnicalInformation() {
+		TechnicalInformation	result;
+		
+		result = new TechnicalInformation(Type.ARTICLE);
+		result.setValue(Field.AUTHOR, "Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank");
+		result.setValue(Field.TITLE, "Classifier Chains for Multi-label Classification");
+		result.setValue(Field.JOURNAL, "Machine Learning Journal");
+		result.setValue(Field.YEAR, "2011");
+		result.setValue(Field.VOLUME, "85");
+		result.setValue(Field.NUMBER, "3");
+		result.setValue(Field.PAGES, "333-359");
+		
+		return result;
 	}
 
 }

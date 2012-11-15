@@ -24,7 +24,7 @@ import weka.core.Instances;
 import weka.core.Randomizable;
 
 /**
- * Combining several multi-label classifiers using Bootstrap AGGregatING.
+ * BaggingML.java - Combining several multi-label classifiers using Bootstrap AGGregatING.
  * Uses Instance weights instead of Instance duplications.
  * @author Jesse Read (jmr30@cs.waikato.ac.nz)
  */

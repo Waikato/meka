@@ -17,7 +17,7 @@ package weka.classifiers.multitarget;
 
 /**
  * The Classifier Chains (CC) method.
- * Multi-target version of CC method (directly applicable).
+ * Multi-target version of CC method (directly applicable) -- only the confidence information is different.
  * @see 	weka.classifiers.multilabel.CC
  * @author 	Jesse Read (jesse@tsc.uc3m.es)
  * @version	Jan 2012
