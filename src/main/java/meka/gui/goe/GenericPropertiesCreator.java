@@ -17,7 +17,7 @@
  * GenericPropertiesCreator.java
  * Copyright (C) 2012 University of Waikato, Hamilton, New Zealand
  */
-package meka.gui;
+package meka.gui.goe;
 
 import java.util.Enumeration;
 import java.util.Properties;
@@ -32,7 +32,7 @@ public class GenericPropertiesCreator
   extends weka.gui.GenericPropertiesCreator {
   
   /** The name of the properties file to use as a template. */
-  protected static String MEKA_CREATOR_FILE = "meka/gui/GenericPropertiesCreator.props";
+  protected static String MEKA_CREATOR_FILE = "meka/gui/goe/GenericPropertiesCreator.props";
   
   /**
    * initializes the creator, locates the props file with the Utils class.
