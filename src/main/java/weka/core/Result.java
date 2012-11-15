@@ -1,13 +1,15 @@
 package weka.core;
 
-import weka.core.*;
-import weka.classifiers.*;
-import weka.classifiers.evaluation.*;
-
-import weka.classifiers.multilabel.*;
-
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Result. 
@@ -25,7 +27,7 @@ import java.io.*;
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  * @version	March 2012 - Multi-target Compatible
  */
-public class Result { // implements Serializable {
+public class Result implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -59,6 +61,7 @@ public class Result { // implements Serializable {
 		return predictions.size();
 	}
 
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();  
 		for (String v : output.keySet()) {
