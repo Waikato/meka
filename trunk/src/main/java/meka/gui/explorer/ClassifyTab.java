@@ -29,6 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -46,7 +47,7 @@ import weka.core.Result;
  * @version $Revision$
  */
 public class ClassifyTab
-	extends AbstractExplorerTab {
+	extends AbstractThreadedExplorerTab {
 	
 	/** for serialization. */
 	private static final long serialVersionUID = 2158821659456232147L;
@@ -144,26 +145,50 @@ public class ClassifyTab
 	 * Starts the classification.
 	 */
 	protected void startClassification() {
-		MultilabelClassifier classifier;
-		Result[] results;
-
-		// TODO CV or train/test, random seed
+		Runnable run;
 		
-		try {
-			classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
-			results = Evaluation.cvModel(classifier, getData(), 10, "C");
-			for (Result result: results)
+		run = new Runnable() {
+			@Override
+			public void run() {
+				MultilabelClassifier classifier;
+				Result[] results;
+
+				// TODO CV or train/test, random seed
+				
+				try {
+					classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
+					results = Evaluation.cvModel(classifier, getData(), 10, "C");
+					for (Result result: results)
+						addResultToHistory(result);
+				}
+				catch (Exception e) {
+					System.err.println("Evaluation failed:");
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(
+							ClassifyTab.this, 
+							"Evaluation failed:\n" + e, 
+							"Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		};
+		
+		start(run);
+	}
+	
+	/**
+	 * Adds the result to the history.
+	 */
+	protected void addResultToHistory(final Result result) {
+		Runnable run;
+		
+		run = new Runnable() {
+			@Override
+			public void run() {
 				m_ResultHistoryList.addResult(result);
-		}
-		catch (Exception e) {
-			System.err.println("Evaluation failed:");
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(
-					this, 
-					"Evaluation failed:\n" + e, 
-					"Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
+			}
+		};
+		SwingUtilities.invokeLater(run);
 	}
 	
 	/**
@@ -200,5 +225,32 @@ public class ClassifyTab
 	@Override
 	protected void update() {
 		m_ButtonStart.setEnabled(hasData());
+	}
+
+	/**
+	 * Gets called when the thread starts.
+	 */
+	@Override
+	protected void executionStarted() {
+		m_ButtonStart.setEnabled(false);
+	}
+
+	/**
+	 * Gets called when the thread finishes or gets stopped.
+	 * 
+	 * @param t if the execution generated an exception, null if no errors
+	 */
+	@Override
+	protected void executionFinished(Throwable t) {
+		m_ButtonStart.setEnabled(true);
+		if (t != null) {
+			System.err.println("Execution failed:");
+			t.printStackTrace();
+			JOptionPane.showMessageDialog(
+					this, 
+					"Execution failed:\n" + t, 
+					"Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }
