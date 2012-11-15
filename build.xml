@@ -51,13 +51,13 @@
     </target>
 
     <target name="jar" depends="compile">
-	<jar destfile="${jar}/meka-${version}.jar" 
+	<jar destfile="${jar}/meka-${version}.jar"
 	     basedir="${build}/"
 	     includes="weka/** meka/**"
+		 />
 		<manifest>
 			<attribute name="Main-Class" value="meka.gui.explorer.Explorer"/>
 		</manifest>
-	/>
     </target>
 
     <target name="src-jar" description="Creates a source archive.">
