@@ -1,6 +1,0 @@
-weka.classifiers.functions.supportVector
-weka.classifiers.multilabel
-weka.classifiers.multilabel.meta
-weka.classifiers.multitarget
-weka.classifiers.multitarget.meta
-weka.core
