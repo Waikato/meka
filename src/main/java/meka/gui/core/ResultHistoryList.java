@@ -24,9 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.util.Date;
 
 import javax.swing.AbstractListModel;
@@ -179,7 +177,7 @@ public class ResultHistoryList
 			}
 		});
 		m_FileChooser = new JFileChooser(System.getProperty("user.home"));
-		ExtensionFileFilter filter = new ExtensionFileFilter("txt", "Text files (*.txt)");
+		ExtensionFileFilter filter = new ExtensionFileFilter("txt", "Meka results format (*.txt)");
 		m_FileChooser.addChoosableFileFilter(filter);
 		m_FileChooser.setFileFilter(filter);
 		m_FileChooser.setMultiSelectionEnabled(false);
@@ -252,7 +250,6 @@ public class ResultHistoryList
 		int retVal;
 		Result res;
 		File file;
-		BufferedWriter writer;
 		
 		retVal = m_FileChooser.showSaveDialog(this);
 		if (retVal != JFileChooser.APPROVE_OPTION)
@@ -261,10 +258,7 @@ public class ResultHistoryList
 		file = m_FileChooser.getSelectedFile();
 		res  = getResultAt(index);
 		try {
-			writer = new BufferedWriter(new FileWriter(file));
-			writer.append(res.toString());
-			writer.flush();
-			writer.close();
+			Result.writeResultToFile(res, file.getAbsolutePath());
 			result = true;
 		}
 		catch (Exception e) {
