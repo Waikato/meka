@@ -33,7 +33,7 @@ import weka.core.TechnicalInformationHandler;
 
 /**
  * Maps the output of a multi-label classifier to a known label combination using the hamming distance.
- * described in	``Improved Boosting Algorithms Using Confidence-rated Predictions'' by Schapire, Robert E. and Singer, Yoram  
+ * described in	</i>Improved Boosting Algorithms Using Confidence-rated Predictions</i> by Schapire, Robert E. and Singer, Yoram  
  *
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
@@ -63,11 +63,11 @@ public class SubsetMapper extends MultilabelClassifier
 		result = new TechnicalInformation(Type.ARTICLE);
 		result.setValue(Field.AUTHOR, "Robert E. Schapire, Yoram Singer ");
 		result.setValue(Field.TITLE, "Improved Boosting Algorithms Using Confidence-rated Predictions");
-    result.setValue(Field.JOURNAL, "Machine Learning Journal");
-    result.setValue(Field.YEAR, "1999");
-    result.setValue(Field.VOLUME, "37");
-    result.setValue(Field.NUMBER, "3");
-    result.setValue(Field.PAGES, "297-336");
+		result.setValue(Field.JOURNAL, "Machine Learning Journal");
+		result.setValue(Field.YEAR, "1999");
+		result.setValue(Field.VOLUME, "37");
+		result.setValue(Field.NUMBER, "3");
+		result.setValue(Field.PAGES, "297-336");
 		
 		return result;
 	}

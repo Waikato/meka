@@ -22,7 +22,8 @@ package weka.classifiers.multitarget;
  *  and a different evaluation output is made. Training and Classification is the same, using the 
  *  methods <i>buildClassifier(Instances)</i> and <i>distributionForInstance(Instance)</i> except that
  *  the latter may return a vector of L*2 doubles instead of L. The extra values are probabalistic 
- *  information that may be used by e.g. ensemble classifiers.
+ *  information (i.e., the probability of class y[j] for the jth target is y[j*2]) that may be used by 
+ *  ensemble classifiers.
  *
  * 	@author 	Jesse Read (jesse@tsc.uc3m.es)
  * 	@version	January 2012

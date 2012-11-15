@@ -17,8 +17,10 @@ package weka.classifiers.multilabel;
 
 /**
  * The Binary Relevance Method - Random Subspace ('quick') Version.
- * This version is able to downsample the number of instances across the binary models.
+ * Like BR, but randomly samples the attribute space for each binary model. Intended for use in an ensemble.
+ * <br>
  * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer. Vol. 85(3), pp 333-359. (May 2011).
+ * <br>
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  * @version January 2009
  */
@@ -76,11 +78,11 @@ public class BRq extends MultilabelClassifier
 		result = new TechnicalInformation(Type.ARTICLE);
 		result.setValue(Field.AUTHOR, "Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank");
 		result.setValue(Field.TITLE, "Classifier Chains for Multi-label Classification");
-    result.setValue(Field.JOURNAL, "Machine Learning Journal");
-    result.setValue(Field.YEAR, "2011");
-    result.setValue(Field.VOLUME, "85");
-    result.setValue(Field.NUMBER, "3");
-    result.setValue(Field.PAGES, "333-359");
+		result.setValue(Field.JOURNAL, "Machine Learning Journal");
+		result.setValue(Field.YEAR, "2011");
+		result.setValue(Field.VOLUME, "85");
+		result.setValue(Field.NUMBER, "3");
+		result.setValue(Field.PAGES, "333-359");
 		
 		return result;
 	}

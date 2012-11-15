@@ -28,7 +28,7 @@ import weka.core.TechnicalInformation.Type;
 import weka.core.TechnicalInformationHandler;
 
 /**
- * BR stacked with feature outputs.
+ * MBR.java - Meta BR: BR stacked with feature outputs into another BR.
  * Described in: Godbole and Sarawagi, <i>Discriminative Methods for Multi-labeled Classification</i>. 
  * 
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
@@ -61,10 +61,10 @@ public class MBR extends MultilabelClassifier
 		result = new TechnicalInformation(Type.INPROCEEDINGS);
 		result.setValue(Field.AUTHOR, "Shantanu Godbole, Sunita Sarawagi");
 		result.setValue(Field.TITLE, "Discriminative Methods for Multi-labeled Classification");
-    result.setValue(Field.BOOKTITLE, "Advances in Knowledge Discovery and Data Mining");
-    result.setValue(Field.YEAR, "2004");
-    result.setValue(Field.PAGES, "22-30");
-    result.setValue(Field.SERIES, "LNCS");
+		result.setValue(Field.BOOKTITLE, "Advances in Knowledge Discovery and Data Mining");
+		result.setValue(Field.YEAR, "2004");
+		result.setValue(Field.PAGES, "22-30");
+		result.setValue(Field.SERIES, "LNCS");
 		
 		return result;
 	}
