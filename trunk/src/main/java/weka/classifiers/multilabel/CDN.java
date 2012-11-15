@@ -1,19 +1,39 @@
+/*
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package weka.classifiers.multilabel;
+
+import java.util.*;
 
 import weka.classifiers.*;
 import weka.classifiers.multilabel.*;
 import weka.core.*;
-import java.util.*;
+import weka.core.TechnicalInformation;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
+import weka.core.TechnicalInformationHandler;
 
 /**
  * CDN.java - Conditional Dependency Networks.
  * <br>
- * See: Yuhong Guoand Suicheng Gu. <i>Multi-Label Classification Using Conditional Dependency Networks</i>. IJCAI '11. 2011.
+ * See: Yuhong Guoand and Suicheng Gu. <i>Multi-Label Classification Using Conditional Dependency Networks</i>. IJCAI '11. 2011.
  * <br>
  * @author 	Jesse Read (jesse@tsc.uc3m.es)
  * @version	November 2012
  */
-public class CDN extends MultilabelClassifier implements Randomizable {
+public class CDN extends MultilabelClassifier implements Randomizable, TechnicalInformationHandler {
 
 	Classifier h[] = null;
 	Random u = null;
@@ -131,5 +151,30 @@ public class CDN extends MultilabelClassifier implements Randomizable {
 		MultilabelClassifier.evaluation(new CDN(),args);
 	}
 
+	/**
+	 * Description to display in the GUI.
+	 * 
+	 * @return		the description
+	 */
+	@Override
+	public String globalInfo() {
+		return 
+				"A Conditional Dependency Network. "
+				+ "For more information see:\n"
+				+ getTechnicalInformation().toString();
+	}
+
+	@Override
+	public TechnicalInformation getTechnicalInformation() {
+		TechnicalInformation	result;
+
+		result = new TechnicalInformation(Type.ARTICLE);
+		result.setValue(Field.AUTHOR, "Yuhong Guoand and Suicheng Gu");
+		result.setValue(Field.TITLE, "Multi-Label Classification Using Conditional Dependency Networks");
+		result.setValue(Field.BOOKTITLE, "IJCAI '11");
+		result.setValue(Field.YEAR, "2011");
+
+		return result;
+	}
 }
 

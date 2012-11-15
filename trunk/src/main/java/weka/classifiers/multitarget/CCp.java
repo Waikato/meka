@@ -26,10 +26,13 @@ import weka.core.MLUtils;
 import weka.core.Utils;
 
 /**
- * CC method with probabilistic output (CCp).
+ * CCp.java - Multitarget CC with probabilistic output.
+ * <br>
  * This version includes probabilistic output in the distributionForInstance, like other MT methods.
+ * <br>
  * i.e.: y[j+L] := P(y[j]|x) (this is usefull when used in an ensemble).
- * @see		CCp.java
+ * <br>
+ * @see		CC
  * @version	March 2012
  * @author 	Jesse Read (jesse@tsc.uc3m.es)
  */
