@@ -23,6 +23,7 @@ import java.util.Random;
 import weka.classifiers.multitarget.MultiTargetClassifier;
 import weka.core.AbstractInstance;
 import weka.core.Instances;
+import weka.core.Instance;
 import weka.core.MLEvalUtils;
 import weka.core.MLUtils;
 import weka.core.Option;
@@ -34,8 +35,12 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.instance.RemoveRange;
 
 /**
- * Evaluation.
- * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
+ * Evaluation.java - Evaluation functionality.
+ * @author 		Jesse Read (jmr30@cs.waikato.ac.nz)
+ * @version 	November 2012
+ *
+ * @todo:	need to change current -H to -T for loading test instances from a separate file
+ *          need to change current -T to -threshold (so that there is no conflict for -T)
  */
 public class Evaluation {
 
@@ -161,17 +166,38 @@ public class Evaluation {
 				System.out.println(r.toString());
 			}
 			else {
-				// TRAIN/TEST SPLIT
-				int TRAIN = (int)(allInstances.numInstances() * 0.60), TEST;
-				if(Utils.getOptionPos("split-percentage",options) >= 0) {
+				int TRAIN = -1;
+				if(Utils.getOptionPos('H',options) >= 0) {
+					// split by train / test files
+					TRAIN = allInstances.numInstances();
+					// load test set
+					Instances testInstances = null;
+					try {
+						filename = Utils.getOption('H', options);
+						testInstances = DataSource.read(filename);
+						for(Instance x : testInstances) {
+							x.setDataset(allInstances);
+							allInstances.add(x);
+						}
+					} catch(Exception e) {
+						throw new Exception("[Error] Failed to Load Test Instances from file '" + filename + "'", e);
+					}
+				}
+				else if(Utils.getOptionPos("split-percentage",options) >= 0) {
+					// split by percentage
 					double percentTrain = Double.parseDouble(Utils.getOption("split-percentage",options));
 					TRAIN = (int)Math.round((allInstances.numInstances() * (percentTrain/100.0)));
 				}
 				else if(Utils.getOptionPos("split-number",options) >= 0) {
+					// split by number
 					TRAIN = Integer.parseInt(Utils.getOption("split-number",options));
 				}
+				else {
+					// default split
+					TRAIN = (int)(allInstances.numInstances() * 0.60);
+				}
 
-				TEST = allInstances.numInstances() - TRAIN;
+				int TEST = allInstances.numInstances() - TRAIN;
 				Instances train = new Instances(allInstances,0,TRAIN);
 				train.setClassIndex(allInstances.classIndex());
 				Instances test = new Instances(allInstances,TRAIN,TEST);
