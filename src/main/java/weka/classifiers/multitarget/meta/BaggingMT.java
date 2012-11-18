@@ -22,6 +22,7 @@ import weka.classifiers.multilabel.meta.BaggingML;
 import weka.classifiers.multitarget.MultiTargetClassifier;
 import weka.core.Instance;
 import weka.core.MLUtils;
+import weka.core.RevisionUtils;
 
 /**
  * BaggingMT.java - The Multi-Target Version of BaggingML.
@@ -74,6 +75,11 @@ public class BaggingMT extends BaggingML implements MultiTargetClassifier {
 		}
 
 		return y;
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {

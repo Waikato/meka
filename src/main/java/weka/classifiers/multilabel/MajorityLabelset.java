@@ -20,6 +20,7 @@ import java.util.HashMap;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.MLUtils;
+import weka.core.RevisionUtils;
 
 /**
  * MajorityLabelset.
@@ -68,7 +69,8 @@ public class MajorityLabelset extends MultilabelClassifier {
 	 */
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
-
+	  	getCapabilities().testWithFail(D);
+	  	
 		int L = D.classIndex();
 		this.prediction = new double[L];
 
@@ -81,6 +83,11 @@ public class MajorityLabelset extends MultilabelClassifier {
 	@Override
 	public double[] distributionForInstance(Instance test) throws Exception {
 		return prediction;
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {

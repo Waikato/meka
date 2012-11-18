@@ -26,6 +26,7 @@ import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.MLUtils;
+import weka.core.RevisionUtils;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
@@ -116,7 +117,8 @@ public class SubsetMapper extends MultilabelClassifier
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
-
+	  	getCapabilities().testWithFail(D);
+	  	
 		for (int i = 0; i < D.numInstances(); i++) {
 			m_Count.put(MLUtils.toBitString(D.instance(i),D.classIndex()),0);
 		}
@@ -147,6 +149,11 @@ public class SubsetMapper extends MultilabelClassifier
 			dist += Math.abs(MLUtils.char2int(s1.charAt(i)) - MLUtils.char2int(s2.charAt(i)));
 		}
 		return dist;
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {

@@ -15,15 +15,22 @@
 
 package weka.classifiers.multilabel;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Random;
 
-import weka.classifiers.*;
-import weka.classifiers.multilabel.*;
-import weka.core.*;
+import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.MLUtils;
+import weka.core.Randomizable;
+import weka.core.RevisionUtils;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.core.TechnicalInformationHandler;
+import weka.core.Utils;
 
 /**
  * CDN.java - Conditional Dependency Networks.
@@ -35,18 +42,24 @@ import weka.core.TechnicalInformationHandler;
  */
 public class CDN extends MultilabelClassifier implements Randomizable, TechnicalInformationHandler {
 
-	Classifier h[] = null;
-	Random u = null;
-	Instances D_templates[];
+	/** for serialization. */
+  	private static final long serialVersionUID = -4571133392057899417L;
+  	
+	protected Classifier h[] = null;
+	protected Random u = null;
+	protected Instances D_templates[];
 
-	int I = 1000;	// total iterations
-	int I_c = 100;	// collection iterations
+	protected int I = 1000;	// total iterations
+	protected int I_c = 100;	// collection iterations
 
 	/**
 	 *  Build Classifier.
 	 *  Build L probabilistic models, each to predict Y_i | X, Y_{-y}; save the templates.
 	 */
+	@Override
 	public void buildClassifier(Instances D) throws Exception {
+	  	getCapabilities().testWithFail(D);
+	  	
 		int N = D.numInstances();
 		int L = D.classIndex();
 		h = new Classifier[L];
@@ -146,6 +159,10 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 	public int getSeed() {
 		return m_S;
 	}
+	
+	public String seedTipText() {
+	  return "The seed value for randomization.";
+	}
 
 	public static void main(String args[]) {
 		MultilabelClassifier.evaluation(new CDN(),args);
@@ -175,6 +192,11 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 		result.setValue(Field.YEAR, "2011");
 
 		return result;
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 }
 

@@ -24,13 +24,14 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.MLUtils;
 import weka.core.OptionHandler;
+import weka.core.RevisionUtils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
  * LC.java - aka LP (Laber Powerset) Method.
  * <br>
- * @TODO PS should really extend this class
+ * TODO PS should really extend this class
  * <br>
  * See also <i>LP</i> from the <a href=http://mulan.sourceforge.net>MULAN</a> framework.
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
@@ -55,7 +56,8 @@ public class LC extends MultilabelClassifier implements OptionHandler {
 
 	@Override
 	public void buildClassifier(Instances Train) throws Exception {
-
+	  	getCapabilities().testWithFail(Train);
+	  	
 		int C = Train.classIndex();
 
 		//Create a nominal class attribute of all (existing) possible combinations of labels as possible values
@@ -142,6 +144,11 @@ public class LC extends MultilabelClassifier implements OptionHandler {
 	  result[(int)m_Classifier.classifyInstance(slInstance)] = 1.0;
 
 	  return convertDistribution(result,c);
+  }
+
+  @Override
+  public String getRevision() {
+    return RevisionUtils.extract("$Revision: 9117 $");
   }
 
   public static void main(String args[]) {

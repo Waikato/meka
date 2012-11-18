@@ -17,6 +17,7 @@ package weka.classifiers.multilabel;
 
 import weka.core.Instance;
 import weka.core.MLUtils;
+import weka.core.RevisionUtils;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
@@ -91,6 +92,11 @@ public class PSt extends PS implements TechnicalInformationHandler {
 
 		//Get a classification
 		return convertDistribution(m_Classifier.distributionForInstance(mlInstance),c);
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {

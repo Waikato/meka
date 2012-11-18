@@ -21,6 +21,7 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instances;
 import weka.core.Randomizable;
+import weka.core.RevisionUtils;
 
 /**
  * EnsembleML.java - Combines several multi-label classifiers in a simple-subset ensemble.
@@ -37,6 +38,7 @@ public class EnsembleML extends MultilabelMetaClassifier {
 	 * 
 	 * @return		the description
 	 */
+	@Override
 	public String globalInfo() {
 		return 
 				"Combining several multi-label classifiers in a simple-subset ensemble.";
@@ -47,11 +49,13 @@ public class EnsembleML extends MultilabelMetaClassifier {
 	 */
 	@Override
 	public void buildClassifier(Instances train) throws Exception {
-
+	  	getCapabilities().testWithFail(train);
+	  	
 		if (getDebug()) System.out.print("-: Models: ");
 
+		train = new Instances(train);
 		m_Classifiers = AbstractClassifier.makeCopies(m_Classifier, m_NumIterations);
-		int sub_size = (int)(train.numInstances()*m_BagSizePercent/100);
+		int sub_size = (train.numInstances()*m_BagSizePercent/100);
 		for(int i = 0; i < m_NumIterations; i++) {
 			if(getDebug()) System.out.print(""+i+" ");
 			if (m_Classifiers[i] instanceof Randomizable) ((Randomizable)m_Classifiers[i]).setSeed(i);
@@ -61,6 +65,11 @@ public class EnsembleML extends MultilabelMetaClassifier {
 		}
 
 		if (getDebug()) System.out.println(":-");
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {

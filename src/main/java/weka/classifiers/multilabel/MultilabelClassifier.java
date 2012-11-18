@@ -16,8 +16,11 @@
 package weka.classifiers.multilabel;
 
 import weka.classifiers.SingleClassifierEnhancer;
+import weka.core.Capabilities;
+import weka.core.Capabilities.Capability;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.RevisionUtils;
 
 /**
  *  MultilabelClassifier.java - A Multilabel Classifier.
@@ -47,6 +50,20 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 	public Instances getTemplate() {
 		return m_InstancesTemplate;
 	}
+	
+	@Override
+	public Capabilities getCapabilities() {
+	  Capabilities	result;
+	  
+	  result = super.getCapabilities();
+	  
+	  result.disable(Capability.NUMERIC_CLASS);
+	  result.disable(Capability.DATE_CLASS);
+	  result.disable(Capability.STRING_CLASS);
+	  result.disable(Capability.RELATIONAL_CLASS);
+	  
+	  return result;
+	}
 
 	@Override
 	public abstract void buildClassifier(Instances trainingSet) throws Exception;
@@ -54,10 +71,9 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 	@Override
 	public abstract double[] distributionForInstance(Instance i) throws Exception;
 
-	// The new version of WEKA insists on this
 	@Override
 	public String getRevision() {
-		return null;
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	/**

@@ -31,9 +31,11 @@ import java.util.HashMap;
 
 import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Attribute;
+import weka.core.Capabilities;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.MLUtils;
+import weka.core.RevisionUtils;
 import weka.core.Utils;
 
 public class PS extends weka.classifiers.multilabel.PS implements MultiTargetClassifier {
@@ -53,9 +55,21 @@ public class PS extends weka.classifiers.multilabel.PS implements MultiTargetCla
 				+ "Because pruned sets are duplicated as the closest sets, rather than subsets.\n"
 				+ "Note: currently can only handle 10 values (or fewer) per target variable.";
 	}
+	
+	@Override
+	public Capabilities getCapabilities() {
+	  Capabilities	result;
+	  
+	  result = super.getCapabilities();
+	  result.setMinimumNumberInstances(1);
+	  
+	  return result;
+	}
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
+	  	getCapabilities().testWithFail(D);
+	  	
 		int L = D.classIndex();
 		try {
 			m_Classifier.buildClassifier(convertInstances(D,L));
@@ -200,9 +214,14 @@ public class PS extends weka.classifiers.multilabel.PS implements MultiTargetCla
 			} 
 		}
 		);
-		String Y_strings[] = (String[])Y.toArray(new String[Y.size()]);
+		String Y_strings[] = Y.toArray(new String[Y.size()]);
 		//System.out.println("returning "+N+"of "+Arrays.toString(Y_strings));
 		return Arrays.copyOf(Y_strings,Math.min(N,Y_strings.length));
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {

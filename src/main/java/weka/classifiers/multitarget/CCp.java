@@ -23,6 +23,7 @@ import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.MLUtils;
+import weka.core.RevisionUtils;
 import weka.core.Utils;
 
 /**
@@ -108,7 +109,7 @@ public class CCp extends weka.classifiers.multilabel.CC implements MultiTargetCl
 
 			//set class
 			double dist[] = this.classifier.distributionForInstance(copy);
-			int max_index = (int)Utils.maxIndex(dist);
+			int max_index = Utils.maxIndex(dist);
 			confidences[this.index] = dist[max_index];
 			test.setValue(this.index,max_index);
 
@@ -162,6 +163,8 @@ public class CCp extends weka.classifiers.multilabel.CC implements MultiTargetCl
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
+	  	getCapabilities().testWithFail(D);
+	  	
 		int L = D.classIndex();
 
 		int indices[] = getChain();
@@ -187,6 +190,11 @@ public class CCp extends weka.classifiers.multilabel.CC implements MultiTargetCl
 			y[j+L] = confidences[j]; // <--- this is the extra line
 		}
 		return y;
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {

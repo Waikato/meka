@@ -27,6 +27,7 @@ import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.MLUtils;
+import weka.core.RevisionUtils;
 import weka.core.Utils;
 
 public class CR extends weka.classifiers.multilabel.BR implements MultiTargetClassifier {
@@ -50,7 +51,8 @@ public class CR extends weka.classifiers.multilabel.BR implements MultiTargetCla
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
-
+	  	getCapabilities().testWithFail(D);
+	  	
 		int L = D.classIndex();
 
 		if(getDebug()) System.out.print("Creating "+L+" models ("+m_Classifier.getClass().getName()+"): ");
@@ -89,6 +91,11 @@ public class CR extends weka.classifiers.multilabel.BR implements MultiTargetCla
 		}
 
 		return y;
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {

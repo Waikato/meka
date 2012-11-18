@@ -31,6 +31,7 @@ import weka.core.Instances;
 import weka.core.MLUtils;
 import weka.core.Option;
 import weka.core.Randomizable;
+import weka.core.RevisionUtils;
 import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
@@ -71,6 +72,10 @@ public class PS extends LC implements Randomizable {
 		return m_S;
 	}
 
+	public String seedTipText() {
+	  return "The seed value for randomization.";
+	}
+	
 	@Override
 	public Enumeration listOptions() {
 
@@ -213,7 +218,7 @@ public class PS extends LC implements Randomizable {
 		}
 		// rank
 		Collections.sort(subsets,new LabelSet(all));
-		String s[] = (String[])subsets.toArray(new String[subsets.size()]);
+		String s[] = subsets.toArray(new String[subsets.size()]);
 
 		return Arrays.copyOf(s,Math.min(n,s.length));
 	}
@@ -266,7 +271,8 @@ public class PS extends LC implements Randomizable {
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
-
+	  	getCapabilities().testWithFail(D);
+	  	
 		int L = D.classIndex();
 
 		// Check N
@@ -289,6 +295,11 @@ public class PS extends LC implements Randomizable {
 		// Build
 		m_Classifier.buildClassifier(NewTrain);
 
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {

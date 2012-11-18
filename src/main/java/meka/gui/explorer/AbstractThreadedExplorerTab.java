@@ -81,6 +81,9 @@ public abstract class AbstractThreadedExplorerTab
 				Runnable r = new Runnable() {
 					@Override
 					public void run() {
+					  if (t instanceof ThreadDeath)
+						m_Owner.executionFinished(null);
+					  else
 						m_Owner.executionFinished(t);
 						m_Owner.executionFinalized();
 					}
@@ -143,8 +146,9 @@ public abstract class AbstractThreadedExplorerTab
 	 * Stops the execution.
 	 */
 	public void stop() {
-		if (m_Task != null)
-			m_Task.stop();
+		if (m_Task != null) {
+		    m_Task.stop();
+		}
 	}
 	
 	/**
