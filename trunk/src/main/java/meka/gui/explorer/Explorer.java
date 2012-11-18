@@ -115,6 +115,7 @@ public class Explorer
 		add(m_TabbedPane, BorderLayout.CENTER);
 		
 		// tabs
+		m_Tabs.add(new PreprocessTab(this));
 		m_Tabs.add(new ClassifyTab(this));
 		for (AbstractExplorerTab tab: m_Tabs)
 			m_TabbedPane.addTab(tab.getTitle(), tab);

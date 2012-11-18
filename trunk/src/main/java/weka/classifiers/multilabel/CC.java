@@ -16,18 +16,24 @@
 package weka.classifiers.multilabel;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Random;
+import java.util.Vector;
 
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.MLUtils;
+import weka.core.Option;
 import weka.core.Randomizable;
+import weka.core.RevisionUtils;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.core.TechnicalInformationHandler;
+import weka.core.Utils;
 
 /**
  * CC.java - The Classifier Chains Method.
@@ -165,6 +171,10 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 		return m_S;
 	}
 
+	public String seedTipText() {
+	  return "The seed value for randomizing the data.";
+	}
+
 	protected int m_Chain[] = null;
 
 	public void setChain(int chain[]) {
@@ -174,9 +184,16 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 	public int[] getChain() {
 		return m_Chain;
 	}
+	
+	// FIXME
+	public String chainTipText() {
+	  return "Should this be a command-line option?";
+	}
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
+	  	getCapabilities().testWithFail(D);
+	  	
 		int L = D.classIndex();
 
 		int indices[] = getChain();
@@ -194,6 +211,49 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 		int L = x.classIndex();
 		root.classify(x);
 		return MLUtils.toDoubleArray(x,L);
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
+	}
+
+	@Override
+	public Enumeration listOptions() {
+
+		Vector newVector = new Vector();
+		newVector.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
+
+		Enumeration enu = super.listOptions();
+
+		while (enu.hasMoreElements()) 
+			newVector.addElement(enu.nextElement());
+
+		return newVector.elements();
+	}
+
+	@Override
+	public void setOptions(String[] options) throws Exception {
+	  String	tmpStr;
+	  
+	  
+	  tmpStr = Utils.getOption('S', options);
+	  if (tmpStr.length() > 0)
+	    m_S = Integer.parseInt(tmpStr);
+	  else
+	    m_S = 0;
+
+	  super.setOptions(options);
+	}
+
+	@Override
+	public String [] getOptions() {
+	  	ArrayList<String> result;
+	  	result = new ArrayList<String>(Arrays.asList(super.getOptions()));
+	  	result.add("-S");
+	  	result.add("" + m_S);
+		return result.toArray(new String[result.size()]);
+
 	}
 
 	public static void main(String args[]) {

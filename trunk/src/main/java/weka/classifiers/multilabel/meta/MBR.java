@@ -22,6 +22,7 @@ import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.RevisionUtils;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
@@ -47,6 +48,7 @@ public class MBR extends MultilabelClassifier
 	 * 
 	 * @return		the description
 	 */
+	@Override
 	public String globalInfo() {
 		return 
 				"BR stacked with feature outputs.\n"
@@ -72,7 +74,8 @@ public class MBR extends MultilabelClassifier
 
 	@Override
 	public void buildClassifier(Instances data) throws Exception {
-
+	  	getCapabilities().testWithFail(data);
+	  	
 		int c = data.classIndex();
 
 		//BASE
@@ -132,6 +135,11 @@ public class MBR extends MultilabelClassifier
 		}
 
 		return m_META.distributionForInstance(instance);
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {

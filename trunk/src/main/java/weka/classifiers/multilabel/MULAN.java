@@ -38,6 +38,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.MLUtils;
 import weka.core.Option;
+import weka.core.RevisionUtils;
 import weka.core.Utils;
 
 /**
@@ -104,7 +105,8 @@ public class MULAN extends MultilabelClassifier {
 
 	@Override
 	public void buildClassifier(Instances instances) throws Exception {
-
+	  	getCapabilities().testWithFail(instances);
+	  	
 		long before = System.currentTimeMillis();
 		if (getDebug()) System.out.print(" moving target attributes to the beginning ... ");
 
@@ -124,7 +126,7 @@ public class MULAN extends MultilabelClassifier {
 		writer.close();
 		MultiLabelInstances train = new MultiLabelInstances(name,L); 
 		try {
-			((File)new File(name)).delete();
+			new File(name).delete();
 		} catch(Exception e) {
 			System.err.println("[Error] Failed to delete temporary file: "+name+". You may want to delete it manually.");
 		}
@@ -132,7 +134,7 @@ public class MULAN extends MultilabelClassifier {
 		if (getDebug()) System.out.println(" done ");
 		long after = System.currentTimeMillis();
 
-		System.err.println("[Note] Discount "+((double)(after - before)/1000.0)+ " seconds from this build time");
+		System.err.println("[Note] Discount "+((after - before)/1000.0)+ " seconds from this build time");
 
 		m_InstancesTemplate = new Instances(train.getDataSet(),0);
 
@@ -213,6 +215,11 @@ public class MULAN extends MultilabelClassifier {
 			System.err.println(":"+Arrays.toString(y));
 		}
 		return y;
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {

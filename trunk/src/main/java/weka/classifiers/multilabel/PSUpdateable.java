@@ -1,10 +1,31 @@
+/*
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package weka.classifiers.multilabel;
 
-import weka.classifiers.*;
-import weka.core.*;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.*;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Vector;
+
+import weka.classifiers.UpdateableClassifier;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.MLUtils;
+import weka.core.Option;
+import weka.core.Utils;
+import weka.core.WindowIncrementalEvaluator;
 
 /**
  * PSUpdateable.java - Pruned Sets Updateable.
@@ -13,21 +34,24 @@ import java.util.*;
  * While the initial training set is being buffered, it will predict the majority labelset.
  * <br>
  * Note that this version buffers training examples, not just combinations.
- * @see PS.java
+ * @see PS
  * @author 		Jesse Read (jesse@tsc.uc3m.es)
  * @version 	September, 2011
  */
 public class PSUpdateable extends PS implements UpdateableClassifier {
 
-	private int m_Counter = 0;
-	public int m_Limit = 1000;
-	public int m_Support = 10;
+	/** for serialization. */
+  	private static final long serialVersionUID = -3909203248118831224L;
+  	
+	protected int m_Counter = 0;
+	protected int m_Limit = 1000;
+	protected int m_Support = 10;
 	protected int L = -1;
 
 	protected HashMap<String,Integer> combinations = null;
-	private Instances batch = null;
-	private Instance m_InstanceTemplate = null;
-	private MajorityLabelsetUpdateable mlu = new MajorityLabelsetUpdateable();
+	protected Instances batch = null;
+	protected Instance m_InstanceTemplate = null;
+	protected MajorityLabelsetUpdateable mlu = new MajorityLabelsetUpdateable();
 
 	@Override
 	public String globalInfo() {
@@ -36,7 +60,8 @@ public class PSUpdateable extends PS implements UpdateableClassifier {
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
-
+	  	getCapabilities().testWithFail(D);
+	  	
 		L = D.classIndex();
 		m_Counter = D.numInstances();
 

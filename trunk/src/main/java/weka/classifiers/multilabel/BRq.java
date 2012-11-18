@@ -24,6 +24,8 @@ package weka.classifiers.multilabel;
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  * @version January 2009
  */
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.Vector;
@@ -33,6 +35,7 @@ import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Option;
+import weka.core.RevisionUtils;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
@@ -89,6 +92,7 @@ public class BRq extends MultilabelClassifier
 
 	@Override
 	public void buildClassifier(Instances data) throws Exception {
+	  	getCapabilities().testWithFail(data);
 
 		int c = data.classIndex();
 
@@ -115,7 +119,7 @@ public class BRq extends MultilabelClassifier
 			sub_data.setClassIndex(0);
 			/* BEGIN downsample for this link */
 			sub_data.randomize(m_Random);
-			int numToRemove = sub_data.numInstances() - (int)Math.round((double)sub_data.numInstances() * m_DownSampleRatio);
+			int numToRemove = sub_data.numInstances() - (int)Math.round(sub_data.numInstances() * m_DownSampleRatio);
 			for(int m = 0, removed = 0; m < sub_data.numInstances(); m++) {
 				if (sub_data.instance(m).classValue() <= 0.0) {
 					sub_data.instance(m).setClassMissing();
@@ -187,7 +191,8 @@ public class BRq extends MultilabelClassifier
 	public Enumeration listOptions() {
 
 		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tSets the downsampling ratio        \n\tdefault: "+m_DownSampleRatio+"\t(% of original)", "P", 1, "-P <value>"));
+		newVector.addElement(new Option("\tSets the downsampling ratio\n\tdefault: "+m_DownSampleRatio+"\t(% of original)", "P", 1, "-P <value>"));
+		newVector.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
 
 		Enumeration enu = super.listOptions();
 
@@ -199,31 +204,46 @@ public class BRq extends MultilabelClassifier
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
+	  String	tmpStr;
+	  
+	  tmpStr = Utils.getOption('P', options);
+	  if (tmpStr.length() > 0)
+	    m_DownSampleRatio = Double.parseDouble(tmpStr);
+	  else
+	    m_DownSampleRatio = 0.75;
+	  
+	  tmpStr = Utils.getOption('S', options);
+	  if (tmpStr.length() > 0)
+	    m_S = Integer.parseInt(tmpStr);
+	  else
+	    m_S = 0;
 
-		try {
-			m_DownSampleRatio = Double.parseDouble(Utils.getOption('P', options));
-		} catch(Exception e) {
-			if(getDebug()) System.err.println("Using default P = "+m_DownSampleRatio);
-		}
-
-		super.setOptions(options);
+	  super.setOptions(options);
 	}
 
 	@Override
 	public String [] getOptions() {
-
-		String [] superOptions = super.getOptions();
-		String [] options = new String [superOptions.length + 2];
-		int current = 0;
-		options[current++] = "-P";
-		options[current++] = "" + m_DownSampleRatio;
-		System.arraycopy(superOptions, 0, options, current, superOptions.length);
-		return options;
+	  	ArrayList<String> result;
+	  	result = new ArrayList<String>(Arrays.asList(super.getOptions()));
+	  	result.add("-P");
+	  	result.add("" + m_DownSampleRatio);
+	  	result.add("-S");
+	  	result.add("" + m_S);
+		return result.toArray(new String[result.size()]);
 
 	}
 
 	public int getSeed() {
 		return m_S;
+	}
+
+	public String seedTipText() {
+	  return "The seed value for randomizing the data.";
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {

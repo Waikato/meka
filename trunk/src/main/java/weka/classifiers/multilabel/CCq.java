@@ -27,6 +27,7 @@ import weka.core.Instances;
 import weka.core.MLUtils;
 import weka.core.Option;
 import weka.core.Randomizable;
+import weka.core.RevisionUtils;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
@@ -77,7 +78,7 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 			// sort out excludes [0,1,2,3,5]
 			Arrays.sort(this.excld); 
 
-			this.classifier = (AbstractClassifier)AbstractClassifier.forName(getClassifier().getClass().getName(),((AbstractClassifier)getClassifier()).getOptions());
+			this.classifier = AbstractClassifier.forName(getClassifier().getClass().getName(),((AbstractClassifier)getClassifier()).getOptions());
 
 			Instances new_train = new Instances(train);
 
@@ -95,7 +96,7 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 
 			/* BEGIN downsample for this link */
 			new_train.randomize(m_Random);
-			int numToRemove = new_train.numInstances() - (int)Math.round((double)new_train.numInstances() * m_DownSampleRatio);
+			int numToRemove = new_train.numInstances() - (int)Math.round(new_train.numInstances() * m_DownSampleRatio);
 			for(int i = 0, removed = 0; i < new_train.numInstances(); i++) {
 				if (new_train.instance(i).classValue() <= 0.0) {
 					new_train.instance(i).setClassMissing();
@@ -176,6 +177,10 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 		m_S = s;
 		m_Random = new Random(m_S);
 	}
+	
+	public String seedTipText() {
+	  return "The seed value for randomization.";
+	}
 
 	@Override
 	public Enumeration listOptions() {
@@ -222,6 +227,8 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 
 	@Override
 	public void buildClassifier(Instances Train) throws Exception {
+	  	getCapabilities().testWithFail(Train);
+	  	
 		this.m_NumClasses = Train.classIndex();
 
 		int indices[] = MLUtils.gen_indices(m_NumClasses);
@@ -235,6 +242,11 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 	public double[] distributionForInstance(Instance test) throws Exception {
 		root.classify(test);
 		return MLUtils.toDoubleArray(test,m_NumClasses);
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {

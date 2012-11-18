@@ -21,6 +21,7 @@ import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.classifiers.multilabel.meta.EnsembleML;
 import weka.core.Instance;
 import weka.core.MLUtils;
+import weka.core.RevisionUtils;
 
 /**
  * The Multi-Target Version of EnsembleML.
@@ -75,6 +76,10 @@ public class EnsembleMT extends EnsembleML {
 		return y;
 	}
 
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
+	}
 
 	public static void main(String args[]) {
 		MultilabelClassifier.evaluation(new EnsembleMT(),args);

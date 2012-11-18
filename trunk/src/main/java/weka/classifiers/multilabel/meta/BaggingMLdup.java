@@ -21,6 +21,7 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instances;
 import weka.core.Randomizable;
+import weka.core.RevisionUtils;
 
 /**
  * BaggingMLdup.java - A version of BaggingML where Instances are duplicated instead of assigned higher weighs.
@@ -37,6 +38,7 @@ public class BaggingMLdup extends MultilabelMetaClassifier {
 	 * 
 	 * @return		the description
 	 */
+	@Override
 	public String globalInfo() {
 		return 
 				"Combining several multi-label classifiers using Bootstrap AGGregatING.\n"
@@ -45,7 +47,8 @@ public class BaggingMLdup extends MultilabelMetaClassifier {
 	
 	@Override
 	public void buildClassifier(Instances train) throws Exception {
-
+	  	getCapabilities().testWithFail(train);
+	  	
 		if (getDebug()) System.out.print("-: Models: ");
 
 		m_Classifiers = AbstractClassifier.makeCopies(m_Classifier, m_NumIterations);
@@ -63,6 +66,11 @@ public class BaggingMLdup extends MultilabelMetaClassifier {
 			m_Classifiers[i].buildClassifier(bag);
 		}
 		if (getDebug()) System.out.println(":-");
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {

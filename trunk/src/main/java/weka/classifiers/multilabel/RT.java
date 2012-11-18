@@ -20,6 +20,7 @@ import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.MLUtils;
+import weka.core.RevisionUtils;
 
 /**
  * RT.java - Use a multi-class classifier as a multi-label classifier by <i>Ranking</i> outputs and using a <i>Threshold</i>.
@@ -50,7 +51,8 @@ public class RT extends MultilabelClassifier {
 	 */
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
-
+	  	getCapabilities().testWithFail(D);
+	  	
 		int L = D.classIndex();
 
 		//Create header
@@ -78,7 +80,7 @@ public class RT extends MultilabelClassifier {
 					for (int k = 1; k < L; k++)
 						inew.deleteAttributeAt(1); 
 					inew.setDataset(D_);
-					inew.setClassValue((double)j); // (*) this just ponts to the right index
+					inew.setClassValue(j); // (*) this just ponts to the right index
 					D_.add(inew);
 				}
 			}
@@ -117,6 +119,11 @@ public class RT extends MultilabelClassifier {
 	@Override
 	public double[] distributionForInstance(Instance test) throws Exception {
 		return m_Classifier.distributionForInstance(convertInstance(test));
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {

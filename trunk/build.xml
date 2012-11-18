@@ -3,13 +3,17 @@
 
     <!-- directories -->
     <property name="src" value="src/main/java"/>
+    <property name="src-tests" value="src/test/java"/>
     <property name="resources" value="src/main/resources"/>
+    <property name="resources-tests" value="src/test/resources"/>
     <property name="build" value="target/classes"/>
+    <property name="build-tests" value="target/test-classes"/>
 	<property name="javadoc" value="doc/api"/>
 	<property name="pdfs" value="doc/pdf"/>
     <property name="jar" value="."/>
     <property name="lib" value="lib"/>
     <property name="all" value="."/>
+    <property name="scripts" value="scripts"/>
     <property name="release" value="."/>
 
     <property name="version" value="1.0"/>
@@ -34,6 +38,9 @@
           <fileset dir="${basedir}" includes="**/.DS_Store" defaultexcludes="no"/>
           <fileset dir="${basedir}" includes="hs_err_pid*"/>
         </delete>
+        <delete>
+        	<fileset dir="${basedir}" includes="temp_Testdata_*.arff"/>
+        </delete>
     </target>
 
     <target name="init"> 
@@ -43,10 +50,24 @@
               <include name="**/*.*"/>
             </fileset>
         </copy>
+	<mkdir dir="${build-tests}"/>
+        <copy todir="${build-tests}" >
+            <fileset dir="${resources-tests}">
+              <include name="**/*.*"/>
+            </fileset>
+        </copy>
     </target>
 
     <target name="compile" depends="init" description="Compiles the source code."> 
 	<javac srcdir="${src}" destdir="${build}" debug="true" debuglevel="lines,vars,source" classpathref="project.class.path">
+	</javac>
+	<javac srcdir="${src-tests}" destdir="${build-tests}" debug="true" debuglevel="lines,vars,source">
+		<classpath>
+	      <fileset dir="${lib}">
+    	     <include name="*.jar"/>
+	      </fileset>
+	      <pathelement path="${build}"/>
+		</classpath>
 	</javac>
     </target>
 
@@ -58,12 +79,37 @@
 			<attribute name="Main-Class" value="meka.gui.explorer.Explorer"/>
 		</manifest>
 	</jar>
+	<jar destfile="${jar}/meka-${version}-tests.jar"
+	     basedir="${build-tests}/"
+	     includes="weka/** meka/**">
+	</jar>
+    </target>
+
+    <target name="tests" depends="compile" description="Executes the tests.">
+     <java fork="yes" dir="."
+      classname="junit.textui.TestRunner"
+      taskname="junit" failonerror="true">
+		 <arg value="weka.MekaTests"/>
+    		<classpath>
+		      <fileset dir="${lib}">
+    		     <include name="*.jar"/>
+	    	  </fileset>
+		      <pathelement path="${build}"/>
+		      <pathelement path="${build-tests}"/>
+    		</classpath>
+         <jvmarg value="-Duser.timezone=Pacific/Auckland"/>
+   	 </java>
+     <delete>
+      	<fileset dir="${basedir}" includes="temp_Testdata_*.arff"/>
+     </delete>
     </target>
 
     <target name="src-jar" description="Creates a source archive.">
 	<jar destfile="${jar}/meka-src-${version}.jar">
  		<zipfileset dir="${src}" prefix="src/main/java"/>
  		<zipfileset dir="${resources}" prefix="src/main/resources"/>
+ 		<zipfileset dir="${src-tests}" prefix="src/test/java"/>
+ 		<zipfileset dir="${resources-tests}" prefix="src/test/resources"/>
 		<fileset file="build.xml"/>
 		<fileset file="LICENSE.txt"/>
 		<fileset file="README.txt"/>
@@ -94,7 +140,7 @@
 
     <target name="all" depends="jar, src-jar, javadoc-jar" description="Generates all jars."/>
 
-    <target name="release" depends="clean, all" description="Generates a release archive.">
+    <target name="release" depends="clean, all, tests" description="Generates a release archive.">
 	  <zip destfile="${release}/meka-release-${version}.zip">
 	    <fileset dir="${basedir}" includes="README.txt"/>
 	    <fileset dir="${basedir}" includes="LICENSE.txt"/>
@@ -104,6 +150,7 @@
 	    <fileset dir="${basedir}" includes="lib/README.txt"/>
 	    <fileset dir="${basedir}" includes="data/*.*"/>
 	    <zipfileset dir="${javadoc}" prefix="api"/>
+	    <zipfileset dir="${scripts}"/>
 	  </zip>
     </target>
 

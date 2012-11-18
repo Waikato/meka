@@ -26,11 +26,12 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Option;
 import weka.core.Randomizable;
-import weka.core.Utils;
+import weka.core.RevisionUtils;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.core.TechnicalInformationHandler;
+import weka.core.Utils;
 
 /**
  * RandomSupspaceML.java - Downsize the attribute space randomly for each ensemble member.
@@ -53,7 +54,8 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 
 	@Override
 	public void buildClassifier(Instances train) throws Exception {
-
+	  	getCapabilities().testWithFail(train);
+	  	
 		m_Indices = new ArrayList[m_NumIterations];
 		m_Dsets = new Instances[m_NumIterations];
 
@@ -67,14 +69,14 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 			m_Indices[i] = new ArrayList<Integer>();
 			Instances trainCut = new Instances(train);
 			trainCut.setClassIndex(-1);
-			double d = (double)m_AttSizePercent / 100.0;
+			double d = m_AttSizePercent / 100.0;
 			for(int a = trainCut.numAttributes()-1; a >= train.classIndex(); a--) {
 				if (r.nextDouble() > d && !m_Indices[i].contains(a)) {
-					m_Indices[i].add((Integer)a);
+					m_Indices[i].add(a);
 				}
 			}
 			for(Object a : m_Indices[i]) {
-				trainCut.deleteAttributeAt((int)(Integer)a);
+				trainCut.deleteAttributeAt((Integer)a);
 			}
 			Instances bag = new Instances(trainCut,0);
 			m_Dsets[i] = bag;
@@ -89,7 +91,7 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 			for(int j = 0; j < ixs.length; j++) {
 				if (ixs[j] > 0) {
 					Instance instance = trainCut.instance(j);
-					instance.setWeight((double)ixs[j]);
+					instance.setWeight(ixs[j]);
 					bag.add(instance);
 				}
 			}
@@ -112,7 +114,7 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 			Instance copy = (Instance) instance.copy(); 
 			copy.setDataset(null);
 			for(Object a : m_Indices[i]) 
-				copy.deleteAttributeAt((int)(Integer)a);
+				copy.deleteAttributeAt((Integer)a);
 			copy.setDataset(m_Dsets[i]);
 			//
 			double d[] = ((MultilabelClassifier)m_Classifiers[i]).distributionForInstance(copy);
@@ -182,4 +184,21 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 		return result;
 	}
 
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
+	}
+	
+	public void setAttSizePercent(int value) {
+	  if ((value > 0) && (value <= 100))
+	    m_AttSizePercent = value;
+	}
+	
+	public int getAttSizePercent() {
+	  return m_AttSizePercent;
+	}
+	
+	public String attSizePercentTipText() {
+	  return "Size of attribute space, as a percentage of total attribute space size";
+	}
 }

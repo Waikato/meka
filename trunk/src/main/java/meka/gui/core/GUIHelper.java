@@ -41,7 +41,10 @@ public class GUIHelper {
 	
 	/** the empty icon name. */
 	public final static String EMPTY_ICON = "empty.gif";
-	
+
+	/** the mnemonic character indicator. */
+	public final static char MNEMONIC_INDICATOR = '_';
+
 	/**
 	 * Checks whether the image is available.
 	 *
@@ -210,5 +213,22 @@ public class GUIHelper {
    */
   public static Dialog getParentDialog(Container cont) {
     return (Dialog) getParent(cont, Dialog.class);
+  }
+
+  /**
+   * Returns the mnemonic for this caption, preceded by an underscore "_".
+   *
+   * @param caption	the caption to extract
+   * @return		the extracted mnemonic, \0 if none available
+   * @see		#MNEMONIC_INDICATOR
+   */
+  public static char getMnemonic(String caption) {
+    int		pos;
+
+    pos = caption.indexOf(MNEMONIC_INDICATOR);
+    if ((pos > -1) && (pos < caption.length() - 1))
+      return caption.charAt(pos + 1);
+    else
+      return '\0';
   }
 }

@@ -22,8 +22,8 @@ import java.util.Random;
 
 import weka.classifiers.multitarget.MultiTargetClassifier;
 import weka.core.AbstractInstance;
-import weka.core.Instances;
 import weka.core.Instance;
+import weka.core.Instances;
 import weka.core.MLEvalUtils;
 import weka.core.MLUtils;
 import weka.core.Option;
@@ -39,7 +39,7 @@ import weka.filters.unsupervised.instance.RemoveRange;
  * @author 		Jesse Read (jmr30@cs.waikato.ac.nz)
  * @version 	November 2012
  *
- * @todo:	need to change current -H to -T for loading test instances from a separate file
+ * TODO	need to change current -H to -T for loading test instances from a separate file
  *          need to change current -T to -threshold (so that there is no conflict for -T)
  */
 public class Evaluation {
@@ -308,9 +308,9 @@ public class Evaluation {
 		result.setValue("LCard_train",MLUtils.labelCardinality(D_train));
 		result.setValue("LCard_test",MLUtils.labelCardinality(D_test));
 
-		result.setValue("Build_time",(double)(after - before)/1000.0);
-		result.setValue("Test_time",(double)(after_test - before_test)/1000.0);
-		result.setValue("Total_time",(double)(after_test - before)/1000.0);
+		result.setValue("Build_time",(after - before)/1000.0);
+		result.setValue("Test_time",(after_test - before_test)/1000.0);
+		result.setValue("Total_time",(after_test - before)/1000.0);
 
 		result.setInfo("Classifier_name",h.getClass().getName());
 		result.setInfo("Classifier_ops",Arrays.toString(h.getOptions()));

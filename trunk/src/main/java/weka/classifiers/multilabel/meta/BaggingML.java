@@ -22,6 +22,7 @@ import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Randomizable;
+import weka.core.RevisionUtils;
 
 /**
  * BaggingML.java - Combining several multi-label classifiers using Bootstrap AGGregatING.
@@ -39,6 +40,7 @@ public class BaggingML extends MultilabelMetaClassifier {
 	 * 
 	 * @return		the description
 	 */
+	@Override
 	public String globalInfo() {
 		return 
 				"Combining several multi-label classifiers using Bootstrap AGGregatING.\n"
@@ -47,9 +49,11 @@ public class BaggingML extends MultilabelMetaClassifier {
 
 	@Override
 	public void buildClassifier(Instances train) throws Exception {
-
+	  	getCapabilities().testWithFail(train);
+	  	
 		if (getDebug()) System.out.print("-: Models: ");
 
+		train = new Instances(train);
 		m_Classifiers = AbstractClassifier.makeCopies(m_Classifier, m_NumIterations);
 
 		for(int i = 0; i < m_NumIterations; i++) {
@@ -65,7 +69,7 @@ public class BaggingML extends MultilabelMetaClassifier {
 			for(int j = 0; j < ixs.length; j++) {
 				if (ixs[j] > 0) {
 					Instance instance = train.instance(j);
-					instance.setWeight((double)ixs[j]);
+					instance.setWeight(ixs[j]);
 					bag.add(instance);
 				}
 			}
@@ -73,6 +77,11 @@ public class BaggingML extends MultilabelMetaClassifier {
 			m_Classifiers[i].buildClassifier(bag);
 		}
 		if (getDebug()) System.out.println(":-");
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {

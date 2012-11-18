@@ -26,6 +26,7 @@ import java.util.Arrays;
 
 import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instance;
+import weka.core.RevisionUtils;
 
 public class CC extends weka.classifiers.multilabel.CC implements MultiTargetClassifier {
 
@@ -50,6 +51,11 @@ public class CC extends weka.classifiers.multilabel.CC implements MultiTargetCla
 		double y_long[] = Arrays.copyOf(super.distributionForInstance(x),L*2);
 		Arrays.fill(y_long,L,y_long.length,1.0);
 		return y_long;
+	}
+
+	@Override
+	public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {
