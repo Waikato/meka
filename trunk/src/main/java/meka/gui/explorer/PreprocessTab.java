@@ -98,7 +98,7 @@ public class PreprocessTab
 
     m_GenericObjectEditor = new GenericObjectEditor(true);
     m_GenericObjectEditor.setClassType(Filter.class);
-    m_GenericObjectEditor.setValue(new weka.filters.unsupervised.attribute.MekaClassAttributes());
+    m_GenericObjectEditor.setValue(new weka.filters.AllFilter());
   }
 
   /**
@@ -120,6 +120,7 @@ public class PreprocessTab
     m_ButtonApplyFilter.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
+	getOwner().addUndoPoint();
 	filterData((Filter) m_GenericObjectEditor.getValue(), null);
       }
     });
@@ -228,6 +229,8 @@ public class PreprocessTab
     int[] 	indices;
     Remove 	remove;
     
+    getOwner().addUndoPoint();
+    
     indices = m_PanelAttributes.getSelectedAttributes();
     remove  = new Remove();
     remove.setAttributeIndicesArray(indices);
@@ -242,6 +245,8 @@ public class PreprocessTab
     StringBuilder 	range;
     MekaClassAttributes	catts;
     String		newName;
+    
+    getOwner().addUndoPoint();
     
     indices = m_PanelClassAttributes.getSelectedAttributes();
     range   = new StringBuilder();
