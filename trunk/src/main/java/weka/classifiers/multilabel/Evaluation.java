@@ -223,8 +223,7 @@ public class Evaluation {
 
 				if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(allInstances)+"\tL="+allInstances.classIndex()+"\tD(t:T)=("+train.numInstances()+":"+test.numInstances()+")\tLC(t:T)="+Utils.roundDouble(MLUtils.labelCardinality(train,allInstances.classIndex()),2)+":"+Utils.roundDouble(MLUtils.labelCardinality(test,allInstances.classIndex()),2)+")");
 
-				r = evaluateModel(h,train,test,(Utils.getOptionPos('T',options) >= 0) ? Utils.getOption('T',options) : "c");
-				r.output = Result.getStats(r);
+				r = evaluateModel(h,train,test,(Utils.getOptionPos('T',options) >= 0) ? Utils.getOption('T',options) : "PCut1");
 				System.out.println(r.toString());
 
 			}
@@ -244,6 +243,10 @@ public class Evaluation {
 	}
 
 
+	/**
+	 * EvaluateModel.
+	 * Build model 'h' on 'D_train', test it on 'D_test', threshold it according to 'top'
+	 */
 	public static Result evaluateModel(MultilabelClassifier h, Instances D_train, Instances D_test, String top) throws Exception {
 		Result r = evaluateModel(h,D_train,D_test);
 		if (h instanceof MultiTargetClassifier) {
@@ -253,10 +256,14 @@ public class Evaluation {
 			r.setInfo("Threshold",MLEvalUtils.getThreshold(r.predictions,D_train,top));
 			r.setInfo("Type","ML");
 		}
+		r.output = Result.getStats(r);
 		return r;
-
 	}
 
+	/**
+	 * CVModel.
+	 * Split D into train/test folds, and evaluate them according to evaluateModel.
+	 */
 	public static Result[] cvModel(MultilabelClassifier h, Instances D, int numFolds, String top) throws Exception {
 		Result r[] = new Result[numFolds];
 		for(int i = 0; i < numFolds; i++) {
