@@ -117,6 +117,7 @@ public class Explorer
 		// tabs
 		m_Tabs.add(new PreprocessTab(this));
 		m_Tabs.add(new ClassifyTab(this));
+		m_Tabs.add(new VisualizeTab(this));
 		for (AbstractExplorerTab tab: m_Tabs)
 			m_TabbedPane.addTab(tab.getTitle(), tab);
 	}

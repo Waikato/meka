@@ -377,7 +377,7 @@ extends AbstractThreadedExplorerTab {
    */
   @Override
   public String getTitle() {
-    return "Classification";
+    return "Classify";
   }
 
   /**
