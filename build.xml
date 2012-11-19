@@ -10,11 +10,11 @@
     <property name="build-tests" value="target/test-classes"/>
 	<property name="javadoc" value="doc/api"/>
 	<property name="pdfs" value="doc/pdf"/>
-    <property name="jar" value="."/>
+    <property name="jar" value="target"/>
     <property name="lib" value="lib"/>
     <property name="all" value="."/>
     <property name="scripts" value="scripts"/>
-    <property name="release" value="."/>
+    <property name="release" value="target"/>
 
     <property name="version" value="1.0"/>
 
@@ -145,7 +145,7 @@
 	    <fileset dir="${basedir}" includes="README.txt"/>
 	    <fileset dir="${basedir}" includes="LICENSE.txt"/>
 	    <fileset dir="${pdfs}" includes="*.pdf"/>
-	    <fileset dir="${jar}" includes="meka*-${version}.jar" excludes="meka-full-*.jar"/>
+	    <zipfileset dir="${jar}" includes="meka*-${version}.jar" excludes="meka-full-*.jar" prefix="lib"/>
 	    <fileset dir="${basedir}" includes="lib/*.jar"/>
 	    <fileset dir="${basedir}" includes="lib/README.txt"/>
 	    <fileset dir="${basedir}" includes="data/*.*"/>
