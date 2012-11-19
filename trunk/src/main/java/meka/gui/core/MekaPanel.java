@@ -56,14 +56,14 @@ extends JPanel {
 	/**
 	 * Initializes the widgets.
 	 */
-	public void initGUI() {
+	protected void initGUI() {
 		setLayout(new BorderLayout());
 	}
 
 	/**
 	 * Finishes the initialization.
 	 */
-	public void finishInit() {
+	protected void finishInit() {
 	}
 
 	/**
