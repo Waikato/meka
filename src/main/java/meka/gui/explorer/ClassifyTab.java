@@ -124,7 +124,7 @@ extends AbstractThreadedExplorerTab {
    * Initializes the widgets.
    */
   @Override
-  public void initGUI() {
+  protected void initGUI() {
     JPanel panel;
     JPanel panelSplit;
     JPanel panelLeft;

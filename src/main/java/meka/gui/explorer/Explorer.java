@@ -108,7 +108,7 @@ public class Explorer
 	 * Initializes the widgets.
 	 */
 	@Override
-	public void initGUI() {
+	protected void initGUI() {
 		super.initGUI();
 		
 		m_TabbedPane = new JTabbedPane();
@@ -125,7 +125,7 @@ public class Explorer
 	 * Finishes the initialization.
 	 */
 	@Override
-	public void finishInit() {
+	protected void finishInit() {
 		m_TabbedPane.setSelectedIndex(0);
 		for (AbstractExplorerTab tab: m_Tabs)
 			tab.update();
