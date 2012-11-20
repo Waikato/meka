@@ -43,6 +43,7 @@ import meka.gui.core.GUIHelper;
 import meka.gui.core.ResultHistoryList;
 import meka.gui.goe.GenericObjectEditor;
 import weka.classifiers.multilabel.Evaluation;
+import weka.core.WindowIncrementalEvaluator;
 import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instances;
 import weka.core.Result;
@@ -64,6 +65,9 @@ extends AbstractThreadedExplorerTab {
 
   /** train/test split. */
   public final static String TYPE_TRAINTESTSPLIT = "Train/test split";
+  
+  /** incremental batch train/test split. */
+  public final static String TYPE_INCREMENTAL    = "Incremental eval.";
   
   /** the GOE for the classifier. */
   protected GenericObjectEditor m_GenericObjectEditor;
@@ -153,7 +157,8 @@ extends AbstractThreadedExplorerTab {
     m_ComboBoxExperiment = new JComboBox(
 	new String[]{
 	    TYPE_CROSSVALIDATION, 
-	    TYPE_TRAINTESTSPLIT
+	    TYPE_TRAINTESTSPLIT,
+		TYPE_INCREMENTAL
 	});
     m_ComboBoxExperiment.setSelectedIndex(0);
     panel.add(m_ComboBoxExperiment);
@@ -268,6 +273,31 @@ extends AbstractThreadedExplorerTab {
 	  }
 	  catch (Exception e) {
 	    System.err.println("Evaluation failed (train/test split):");
+	    e.printStackTrace();
+	    JOptionPane.showMessageDialog(
+		ClassifyTab.this, 
+		"Evaluation failed:\n" + e, 
+		"Error",
+		JOptionPane.ERROR_MESSAGE);
+	  }
+	}
+      };
+    }
+	else if (type.equals(TYPE_INCREMENTAL)) {
+      run = new Runnable() {
+	@Override
+	public void run() {
+	  MultilabelClassifier classifier;
+	  Result results[];
+	  try {
+	    classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
+		System.out.println("data.classIndex() "+data.classIndex());
+	    results    = WindowIncrementalEvaluator.evaluateModel(classifier, data, 20);
+	    for (Result result: results)
+	      addResultToHistory(result);
+	  }
+	  catch (Exception e) {
+	    System.err.println("Evaluation failed (incremental splits):");
 	    e.printStackTrace();
 	    JOptionPane.showMessageDialog(
 		ClassifyTab.this, 

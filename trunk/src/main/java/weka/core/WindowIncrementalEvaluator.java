@@ -33,26 +33,33 @@ public class WindowIncrementalEvaluator {
 		evaluateModel(h,args);
 	}
 
-	static String measures[] = new String[]{"Accuracy", "Exact_match", "H_acc", "LogLossD", "F1_micro", "F1_macro_D", "F1_macro_L", "Build_time", "Total_time"};
+	static String measures[] = new String[]{"Accuracy", "Exact_match", "H_acc", "Build_time", "Total_time"};
+
+	public static Result[] evaluateModel(MultilabelClassifier h, Instances D) throws Exception {
+		return evaluateModel(h,D,20);
+	}
 
 	/**
 	 * Evaluate a multi-label data-stream model over a moving window.
 	 * The window is sampled every N/20 instances, for a total of 20 windows.
 	 */
-	public static Result evaluateModel(MultilabelClassifier h, Instances D) throws Exception {
+	public static Result[] evaluateModel(MultilabelClassifier h, Instances D, int numWindows) throws Exception {
+
 
 		if (h.getDebug())
 			System.out.println(":- Classifier -: "+h.getClass().getName()+": "+Arrays.toString(h.getOptions()));
 
 		int L = D.classIndex();
-		Result result = new Result(L);
-		int w = (int)Math.floor(D.numInstances() / 20.0);
-		Instances D_init = new Instances(D,0,w);
-		D = new Instances(D,w,D.numInstances()-w);
-		h.buildClassifier(D_init);
-		double t = 0.5;
+		Result results[] = new Result[numWindows-1];		// we don't record the results from the initial window
+		results[0] = new Result(L);
+		int windowSize = (int)Math.floor(D.numInstances() / (double)numWindows);
+		Instances D_init = new Instances(D,0,windowSize); 	// initial window
+		h.buildClassifier(D_init); 							// initial classifir
+		double t = 0.5;										// initial thtreshold
+
 		long train_time = 0;
 		long test_time = 0;
+
 		System.out.print("    #i ");
 		for (String m : measures) {
 			System.out.print(" , ");
@@ -60,46 +67,58 @@ public class WindowIncrementalEvaluator {
 		}
 		System.out.println("");
 
+		int w_num = 0;
+		D = new Instances(D,windowSize,D.numInstances()-windowSize);
 		for(int i = 0; i < D.numInstances(); i++) {
-			// instance
 			Instance x = D.instance(i);
-			// clear
-			AbstractInstance x_ = (AbstractInstance)((AbstractInstance) x).copy(); 
-			// don't clear the values, we'll need this for ADWIN
+			AbstractInstance x_ = (AbstractInstance)((AbstractInstance) x).copy(); 		// copy 
+																						// but don't clear the values, we may need this for ADWIN
 			//for(int j = 0; j < L; j++)  
 			//	x_.setValue(j,0.0);
+
+			// test & record prediction
 			long before_test = System.currentTimeMillis();
 			double y[] = h.distributionForInstance(x_);
 			long after_test = System.currentTimeMillis();
 			test_time += (after_test-before_test);
-			// record
-			result.addResult(y,x);
+			results[w_num].addResult(y,x);
+
 			// update 
 			long before = System.currentTimeMillis();
 			((UpdateableClassifier)h).updateClassifier(x);
 			long after = System.currentTimeMillis();
 			train_time += (after-before);
-			// evaluate ?
-			if (i > 0 && i % w == 0) {
+
+			// evaluate every windowSize-th instance
+			if (i > 0 && i % windowSize == 0) {
 				System.out.print("#"+Utils.doubleToString((double)i,6,0));
-				// output
-				HashMap<String,Double> o = MLEvalUtils.getMLStats(result.predictions,result.actuals,String.valueOf(t));
-				o.put("Test_time",(test_time)/1000.0);
-				o.put("Build_time",(train_time)/1000.0);
-				o.put("Total_time",(test_time+train_time)/1000.0);
+				// calculate results
+				results[w_num].setInfo("Type","ML");
+				results[w_num].setInfo("Threshold",String.valueOf(t));
+				results[w_num].output = Result.getStats(results[w_num]);
+				//HashMap<String,Double> o = MLEvalUtils.getMLStats(results[w_num].predictions,results[w_num].actuals,String.valueOf(t));
+				results[w_num].output.put("Test_time",(test_time)/1000.0);
+				results[w_num].output.put("Build_time",(train_time)/1000.0);
+				results[w_num].output.put("Total_time",(test_time+train_time)/1000.0);
+				// display results (to CLI)
 				for (String m : measures) {
 					System.out.print(" , ");
-					System.out.print(Utils.doubleToString(o.get(m),7,4));
+					System.out.print(Utils.doubleToString(results[w_num].output.get(m),7,4));
 				}
 				System.out.println("");
+
 				// set threshold for next window
-				//result.setValue("LCard_train",o.get("LCard_real"));
-				t = MLEvalUtils.calibrateThreshold(result.predictions,o.get("LCard_real"));
-				result = new Result(L);
+				t = MLEvalUtils.calibrateThreshold(results[w_num].predictions,results[w_num].output.get("LCard_real"));
+				w_num++;
+				if (w_num < results.length) {
+					results[w_num] = new Result(L);
+				}
+				else
+					break;
 			}
 		}
 
-		return result;
+		return results;
 	}
 
 	/**
@@ -149,8 +168,14 @@ public class WindowIncrementalEvaluator {
 
 		if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(D)+"\tL="+D.classIndex()+"");
 
-		return evaluateModel(h,D);
 
+		Result results[] = evaluateModel(h,D,20);
+		/*
+		for (Result result: results) {
+			System.out.println(""+result.output.get("Accuracy"));
+		}
+		*/
+		return results[results.length-1];
 	}
 
 	public static void printOptions(Enumeration e) {
