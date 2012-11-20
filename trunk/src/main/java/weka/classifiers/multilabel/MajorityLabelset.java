@@ -45,8 +45,7 @@ public class MajorityLabelset extends MultilabelClassifier {
 	 */
 	@Override
 	public String globalInfo() {
-		return 
-				"MajorityLabelset";
+		return "Majority Labelset Classifier: Always predict the combination of labels which occurs most frequently in the training set.";
 	}
 
 	protected void updateCount(Instance x, int L) {
@@ -64,9 +63,6 @@ public class MajorityLabelset extends MultilabelClassifier {
 		}
 	}
 
-	/**
-	 * Build Classifier.
-	 */
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
 	  	getCapabilities().testWithFail(D);

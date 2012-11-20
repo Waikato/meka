@@ -231,6 +231,7 @@ extends AbstractThreadedExplorerTab {
 	  Result[] results;
 	  try {
 	    classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
+		System.out.println("data.classIndex() "+data.classIndex());
 	    results = Evaluation.cvModel(classifier, data, m_Folds, "PCutL");
 	    for (Result result: results)
 	      addResultToHistory(result);
@@ -261,6 +262,7 @@ extends AbstractThreadedExplorerTab {
 	    train      = new Instances(data, 0, trainSize);
 	    test       = new Instances(data, trainSize, data.numInstances() - trainSize);
 	    classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
+		System.out.println("data.classIndex() "+train.classIndex());
 	    result     = Evaluation.evaluateModel(classifier, train, test, "PCutL");
 	    addResultToHistory(result);
 	  }

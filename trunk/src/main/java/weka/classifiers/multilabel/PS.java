@@ -53,9 +53,38 @@ public class PS extends LC implements Randomizable {
 	protected String m_sN = String.valueOf(m_N);
 	protected int m_S = 1;
 
+	private int parseValue(String s) {
+		int i = s.indexOf('-');
+		Random m_R = new Random(m_S);
+		if(i > 0 && i < s.length()) {
+			int lo = Integer.parseInt(s.substring(0,i));
+			int hi  = Integer.parseInt(s.substring(i+1,s.length()));
+			return lo + m_R.nextInt(hi-lo+1);
+		}
+		else
+			return Integer.parseInt(s);
+	}
+
+	public int getP() {
+		return m_P;
+	}
+
+	public void setP(int p) {
+		m_P = p;
+	}
+
+	public int getN() {
+		return m_N;
+	}
+
+	public void setN(int n) {
+		m_N = n;
+	}
+
 	// For Random P/N values
 	@Override
 	public void setSeed(int s) {
+		// set random P / N values here (used by, e.g., EnsembleML)
 		m_S = s;
 		if (m_sP != null)
 			m_P = parseValue(m_sP);
@@ -91,35 +120,23 @@ public class PS extends LC implements Randomizable {
 		return newVector.elements();
 	}
 
-	private int parseValue(String s) {
-		int i = s.indexOf('-');
-		Random m_R = new Random(m_S);
-		if(i > 0 && i < s.length()) {
-			int lo = Integer.parseInt(s.substring(0,i));
-			int hi  = Integer.parseInt(s.substring(i+1,s.length()));
-			return lo + m_R.nextInt(hi-lo+1);
-		}
-		else
-			return Integer.parseInt(s);
-	}
-
 	@Override
 	public void setOptions(String[] options) throws Exception {
 
 		try {
 			m_sP = Utils.getOption('P', options);
-			m_P = parseValue(m_sP);
+			setP(parseValue(m_sP));
 		} catch(Exception e) {
-			m_sP = String.valueOf(m_P);
-			if(getDebug()) System.err.println("Using default P = "+m_P);
+			m_sP = String.valueOf(getP());
+			if(getDebug()) System.err.println("Using default P = "+getP());
 		}
 
 		try {
 			m_sN = Utils.getOption('N', options);
-			m_N = parseValue(m_sN);
+			setN(parseValue(m_sN));
 		} catch(Exception e) {
 			m_sN = String.valueOf(m_N);
-			if(getDebug()) System.err.println("Using default N = "+m_N);
+			if(getDebug()) System.err.println("Using default N = "+getN());
 		}
 
 		super.setOptions(options);
