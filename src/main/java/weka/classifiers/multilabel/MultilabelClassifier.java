@@ -57,10 +57,10 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 	  
 	  result = super.getCapabilities();
 	  
-	  result.disable(Capability.NUMERIC_CLASS);
-	  result.disable(Capability.DATE_CLASS);
-	  result.disable(Capability.STRING_CLASS);
-	  result.disable(Capability.RELATIONAL_CLASS);
+	  //result.disable(Capability.NUMERIC_CLASS);
+	  //result.disable(Capability.DATE_CLASS);
+	  //result.disable(Capability.STRING_CLASS);
+	  //result.disable(Capability.RELATIONAL_CLASS);
 	  
 	  return result;
 	}
