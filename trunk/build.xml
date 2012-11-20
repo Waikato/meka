@@ -142,15 +142,16 @@
 
     <target name="release" depends="clean, all, tests" description="Generates a release archive.">
 	  <zip destfile="${release}/meka-release-${version}.zip">
-	    <fileset dir="${basedir}" includes="README.txt"/>
-	    <fileset dir="${basedir}" includes="LICENSE.txt"/>
-	    <fileset dir="${pdfs}" includes="*.pdf"/>
-	    <zipfileset dir="${jar}" includes="meka*-${version}.jar" excludes="meka-full-*.jar" prefix="lib"/>
-	    <fileset dir="${basedir}" includes="lib/*.jar"/>
-	    <fileset dir="${basedir}" includes="lib/README.txt"/>
-	    <fileset dir="${basedir}" includes="data/*.*"/>
-	    <zipfileset dir="${javadoc}" prefix="api"/>
-	    <zipfileset dir="${scripts}"/>
+	    <zipfileset dir="${basedir}" includes="README.txt" prefix="meka-${version}"/>
+	    <zipfileset dir="${basedir}" includes="LICENSE.txt" prefix="meka-${version}"/>
+	    <zipfileset dir="${pdfs}" includes="*.pdf" prefix="meka-${version}"/>
+	    <zipfileset dir="${jar}" includes="meka-src-${version}.jar" prefix="meka-${version}"/>
+	    <zipfileset dir="${jar}" includes="meka-${version}.jar" prefix="meka-${version}/lib"/>
+	    <zipfileset dir="${basedir}" includes="lib/*.jar" prefix="meka-${version}"/>
+	    <zipfileset dir="${basedir}" includes="lib/README.txt" prefix="meka-${version}"/>
+	    <zipfileset dir="${basedir}" includes="data/*.*" prefix="meka-${version}"/>
+	    <zipfileset dir="${javadoc}" prefix="meka-${version}/api"/>
+	    <zipfileset dir="${scripts}" prefix="meka-${version}"/>
 	  </zip>
     </target>
 
