@@ -21,15 +21,14 @@ import java.util.*;
 public abstract class MLEvalUtils {
 
 	public static String getThreshold(ArrayList<double[]> Y, Instances D, String top) throws Exception {
-		if (top.equals("PCut1")) {			// Proportional Cut threshold (1 general threshold)
+		if (top.equals("PCut1") || top.equals("c")) {			// Proportional Cut threshold (1 general threshold)
 			return String.valueOf(MLEvalUtils.calibrateThreshold(Y,MLUtils.labelCardinality(D)));
 		}	
-		else if (top.equals("PCutL")) {		// Proportional Cut thresholds (one for each Label)
+		else if (top.equals("PCutL") || top.equals("C")) {		// Proportional Cut thresholds (one for each Label)
 			return Arrays.toString(MLEvalUtils.calibrateThresholds(Y,MLUtils.labelCardinalities(D)));
 		}
 		else { 								// Set our own threshold (we assume top = "0.5" or top = "[0.1,...,0.3]"
-											// (we make no checks here!)
-			//return String.valueOf(Double.parseDouble(top));
+											// (we make no checks here!) // X return String.valueOf(Double.parseDouble(top));
 			return top;
 		}
 	}

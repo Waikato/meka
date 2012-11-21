@@ -45,8 +45,8 @@ import weka.filters.unsupervised.instance.RemoveRange;
 public class Evaluation {
 
 	/**
-	 * Build and evaluate a model.
-	 * With command-line options.
+	 * RunExperiment.
+	 * Build and evaluate a model with command-line options.
 	 */
 	public static void runExperiment(MultilabelClassifier h, String options[]) throws Exception {
 
@@ -246,6 +246,11 @@ public class Evaluation {
 	/**
 	 * EvaluateModel.
 	 * Build model 'h' on 'D_train', test it on 'D_test', threshold it according to 'top'
+	 * @param	h		a multi-dim. classifier
+	 * @param	D_train	training data
+	 * @param	D_test 	test data
+	 * @param	top    	Threshold OPtion (pertains to multi-label data only)
+	 * @return	Result	raw prediction data with evaluation statistics included.
 	 */
 	public static Result evaluateModel(MultilabelClassifier h, Instances D_train, Instances D_test, String top) throws Exception {
 		Result r = evaluateModel(h,D_train,D_test);
@@ -262,7 +267,12 @@ public class Evaluation {
 
 	/**
 	 * CVModel.
-	 * Split D into train/test folds, and evaluate them according to evaluateModel.
+	 * @param	h		 a multi-dim. classifier
+	 * @param	D      	 data
+	 * @param	numFolds test data
+	 * @param	top    	 Threshold OPtion (pertains to multi-label data only)
+	 * @param	r        an array of 'numFolds' Results
+	 * Split D into train/test folds, and then train and evaluate on each one.
 	 */
 	public static Result[] cvModel(MultilabelClassifier h, Instances D, int numFolds, String top) throws Exception {
 		Result r[] = new Result[numFolds];
@@ -290,8 +300,14 @@ public class Evaluation {
 
 
 	/**
-	 * Build and evaluate a multi-label model.
-	 * with train and test split pre-supplied.
+	 * EvaluateModel.
+	 * Build model 'h' on 'D_train', test it on 'D_test'.
+	 * Note that raw multi-label predictions returned in Result may not have been thresholded yet.
+	 * However, data statistics, classifier info, and running times are inpregnated into the Result here.
+	 * @param	h		a multi-dim. classifier
+	 * @param	D_train	training data
+	 * @param	D_test 	test data
+	 * @return	Result	raw prediction data (no evaluation yet)
 	 */
 	public static Result evaluateModel(MultilabelClassifier h, Instances D_train, Instances D_test) throws Exception {
 
@@ -329,7 +345,10 @@ public class Evaluation {
 	}
 
 	/**
-	 * Evaluate a multi-label model.
+	 * TestClassifier.
+	 * @param	h		a multi-dim. classifier, ALREADY PREVIOUSLY TRAINED
+	 * @param	D_test 	test data
+	 * @return	Result	with raw prediction data ONLY
 	 */
 	public static Result testClassifier(MultilabelClassifier h, Instances D_test) throws Exception {
 
@@ -348,7 +367,7 @@ public class Evaluation {
 
 			// Get and store ranking
 			double y[] = h.distributionForInstance(x);
-			// Cut off [no-longer-needed] probabalistic information from MT classifiers.
+			// Cut off any [no-longer-needed] probabalistic information from MT classifiers.
 			if (h instanceof MultiTargetClassifier)
 				y = Arrays.copyOf(y,L);
 
@@ -369,8 +388,8 @@ public class Evaluation {
 		text.append("\tOutput help information.\n");
 		text.append("-t <name of training file>\n");
 		text.append("\tSets training file.\n");
-		//text.append("-T <name of test file>\n");
-		//text.append("\tSets test file.\n");
+		text.append("-H <name of test file>\n");
+		text.append("\tSets test file.\n");
 		text.append("-x <number of folds>\n");
 		text.append("\tDo cross-validation with this many folds.\n");
 		text.append("-p\n");
