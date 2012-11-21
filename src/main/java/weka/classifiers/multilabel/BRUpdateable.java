@@ -58,7 +58,6 @@ public class BRUpdateable extends BR implements UpdateableClassifier {
 		if(getDebug()) System.out.println(":- ");
 	}
 
-
 	public static void main(String args[]) {
 		WindowIncrementalEvaluator.evaluation(new BRUpdateable(),args);
 	}

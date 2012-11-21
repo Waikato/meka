@@ -19,6 +19,7 @@ import java.util.HashMap;
 
 import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.classifiers.multilabel.meta.EnsembleML;
+import weka.classifiers.multitarget.MultiTargetClassifier;
 import weka.core.Instance;
 import weka.core.MLUtils;
 import weka.core.RevisionUtils;
@@ -30,7 +31,7 @@ import weka.core.RevisionUtils;
  * @version	Sepetember 2012
  */
 
-public class EnsembleMT extends EnsembleML {
+public class EnsembleMT extends EnsembleML implements MultiTargetClassifier {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 1213045324147680550L;
