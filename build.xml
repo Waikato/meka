@@ -15,6 +15,8 @@
     <property name="all" value="."/>
     <property name="scripts" value="scripts"/>
     <property name="release" value="target"/>
+    <property name="mainclass" value="meka.gui.explorer.Explorer"/>
+    <property name="memory" value="512m"/>
 
     <property name="version" value="1.0"/>
 
@@ -153,6 +155,17 @@
 	    <zipfileset dir="${javadoc}" prefix="meka-${version}/api"/>
 	    <zipfileset dir="${scripts}" prefix="meka-${version}"/>
 	  </zip>
+    </target>
+
+    <target name="run" depends="compile" description="Starts the GUI.">
+      <java classname="${mainclass}" fork="true" maxmemory="${memory}">
+    	<classpath>
+	  <fileset dir="${lib}">
+    	  <include name="*.jar"/>
+	    </fileset>
+	  <pathelement path="${build}"/>
+    	</classpath>
+      </java>
     </target>
 
 </project>
