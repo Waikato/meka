@@ -163,7 +163,7 @@ public class CCp extends weka.classifiers.multilabel.CC implements MultiTargetCl
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
-	  	getCapabilities().testWithFail(D);
+	  	testCapabilities(D);
 	  	
 		int L = D.classIndex();
 

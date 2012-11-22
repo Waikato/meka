@@ -55,7 +55,7 @@ public class MULAN extends MultilabelClassifier {
 	
 	protected MultiLabelLearner m_MULAN = null;
 
-	protected String m_MethodString = "";
+	protected String m_MethodString = "RAkEL1";
 
 	/**
 	 * Description to display in the GUI.
@@ -69,11 +69,19 @@ public class MULAN extends MultilabelClassifier {
 				+ "http://mulan.sourceforge.net";
 	}
 
+	public void setS(String m) {
+		m_MethodString = m;
+	}
+
+	public String getS() {
+		return m_MethodString;
+	}
+
 	@Override
 	public Enumeration listOptions() {
 
 		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tAlgorithm Name\n\t {RAkEL1, RAkEL2, MLkNN, IBLR_ML, HOMER.{CLUS/RAND}.{BR/LP}, CLR, MC-Copy, IncludeLabels MC-Ignore MLStacking}", "S", 1, "-S <value>"));
+		newVector.addElement(new Option("\tMethod Name\n\t {RAkEL1, RAkEL2, MLkNN, IBLR_ML, HOMER.{CLUS/RAND}.{BR/LP}, CLR, MC-Copy, IncludeLabels MC-Ignore MLStacking}", "S", 1, "-S <value>"));
 
 		Enumeration enu = super.listOptions();
 
@@ -86,7 +94,7 @@ public class MULAN extends MultilabelClassifier {
 	@Override
 	public void setOptions(String[] options) throws Exception {
 
-		m_MethodString = Utils.getOption('S', options);
+		setS(Utils.getOption('S', options));
 		super.setOptions(options);
 	}
 
@@ -97,7 +105,7 @@ public class MULAN extends MultilabelClassifier {
 		String [] options = new String [superOptions.length + 2];
 		int current = 0;
 		options[current++] = "-S";
-		options[current++] =  m_MethodString;
+		options[current++] =  getS();
 		System.arraycopy(superOptions, 0, options, current, superOptions.length);
 		return options;
 
@@ -105,14 +113,14 @@ public class MULAN extends MultilabelClassifier {
 
 	@Override
 	public void buildClassifier(Instances instances) throws Exception {
-	  	getCapabilities().testWithFail(instances);
+	  	testCapabilities(instances);
 	  	
 		long before = System.currentTimeMillis();
-		if (getDebug()) System.out.print(" moving target attributes to the beginning ... ");
+		if (getDebug()) System.err.print(" moving target attributes to the beginning ... ");
 
 		Random r = instances.getRandomNumberGenerator(0);
 		String name = "temp_"+MLUtils.getDatasetName(instances)+"_"+r.nextLong()+".arff";
-		System.out.println("Using temporary file: "+name);
+		System.err.println("Using temporary file: "+name);
 		int L = instances.classIndex();
 
 		// rename attributes, because MULAN doesn't deal well with hypens etc

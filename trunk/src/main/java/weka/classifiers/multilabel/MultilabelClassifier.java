@@ -50,6 +50,14 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 	public Instances getTemplate() {
 		return m_InstancesTemplate;
 	}
+
+	/**
+	 * TestCapabilities.
+	 * Make sure the training data is suitable.
+	 */
+	public void testCapabilities(Instances D) throws Exception {
+		// D here.
+	}
 	
 	@Override
 	public Capabilities getCapabilities() {

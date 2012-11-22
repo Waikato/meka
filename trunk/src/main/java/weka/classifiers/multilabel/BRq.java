@@ -92,7 +92,7 @@ public class BRq extends MultilabelClassifier
 
 	@Override
 	public void buildClassifier(Instances data) throws Exception {
-	  	getCapabilities().testWithFail(data);
+	  	testCapabilities(data);
 
 		int c = data.classIndex();
 

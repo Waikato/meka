@@ -88,24 +88,43 @@ public class Result implements Serializable {
 		return MLUtils.hashmapToString(info) + "\n" + sb.toString() + "\n" + MLUtils.hashmapToString(vals);
 	}
 
-	// add entry
+	/**
+	 * AddResult.
+	 * Add an entry.
+	 */
 	public void addResult(double pred[], Instance real) {
 		predictions.add(pred);
 		actuals.add(MLUtils.toIntArray(real,pred.length));
 	}
 
+	/**
+	 * RowActual.
+	 * Retrive the true values for the i-th instance.
+	 */
 	public int[] rowActual(int i) {
 		return actuals.get(i);
 	}
 
+	/**
+	 * RowRanking.
+	 * Retrive the prediction confidences for the i-th instance.
+	 */
 	public double[] rowRanking(int i) {
 		return predictions.get(i);
 	}
 
+	/**
+	 * RowPrediction.
+	 * Retrive the predicted values for the i-th instance according to threshold t.
+	 */
 	public int[] rowPrediction(int i, double t) {
 		return MLUtils.toIntArray(rowRanking(i),t);
 	}
 
+	/**
+	 * AllPredictions.
+	 * Retrive all prediction confidences in an L * N matrix.
+	 */
 	public double[][] allPredictions() {
 		double Y[][] = new double[predictions.size()][];
 		for(int i = 0; i < predictions.size(); i++) {
@@ -114,6 +133,10 @@ public class Result implements Serializable {
 		return Y;
 	}
 
+	/**
+	 * AllPredictions.
+	 * Retrive all predictions (according to threshold t) in an L * N matrix.
+	 */
 	public int[][] allPredictions(double t) {
 		int Y[][] = new int[predictions.size()][];
 		for(int i = 0; i < predictions.size(); i++) {
@@ -122,25 +145,45 @@ public class Result implements Serializable {
 		return Y;
 	}
 
-	public void addValue(String op, double v) {
-		Double freq = vals.get(op);
-		vals.put(op,(freq == null) ? v : freq + v);
+	/**
+	 * AddValue.
+	 * Add v to an existing metric value.
+	 */
+	public void addValue(String metric, double v) {
+		Double freq = vals.get(metric);
+		vals.put(metric,(freq == null) ? v : freq + v);
 	}
 
-	public void setValue(String op, double v) {
-		vals.put(op,v);
+	/**
+	 * SetValue.
+	 * Add an evaluation metric and a value for it.
+	 */
+	public void setValue(String metric, double v) {
+		vals.put(metric,v);
 	}
 
-	public double getValue(String op) {
-		return vals.get(op);
+	/**
+	 * AddValue.
+	 * Add an evaluation metric and a value for it.
+	 */
+	public double getValue(String metric) {
+		return vals.get(metric);
 	}
 
-	public void setInfo(String op, String val) {
-		info.put(op,val);
+	/**
+	 * SetInfo.
+	 * Set a String value to an information category.
+	 */
+	public void setInfo(String cat, String val) {
+		info.put(cat,val);
 	}
 
-	public String getInfo(String op) {
-		return info.get(op);
+	/**
+	 * GetInfo.
+	 * Get the String value of category 'cat'.
+	 */
+	public String getInfo(String cat) {
+		return info.get(cat);
 	}
 
 	// ********************************************************************************************************
@@ -149,19 +192,21 @@ public class Result implements Serializable {
 	//
 
 	/**
-	 * Get a single result.
-	 * For a mean+/-var result for 'op' under cross validation.
+	 * GetValues.
+	 * For a mean +/- var value for 'metric' over a series of results (e.g., under cross validation)
 	 */
-	public static final String getValues(String op, Result rs[]) {
+	public static final String getValues(String metric, Result rs[]) {
 		double values[] = new double[rs.length];
 		for(int i = 0; i < rs.length; i++) {
-			values[i] = rs[i].vals.get(op);
+			values[i] = rs[i].vals.get(metric);
 		}
 		return Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3);
 	}
 
 	/**
-	 * Get Performance Measures. 
+	 * GetStats.
+	 * Return the evaluation statistics given predictions and real values stored in r.
+	 * In the multi-label case, a Threshold category must exist, containing a string defining the type of threshold we want to use/calibrate.
 	 */
 	public static HashMap<String,Double> getStats(Result r) {
 		if (r.getInfo("Type").equalsIgnoreCase("MT"))
@@ -171,8 +216,9 @@ public class Result implements Serializable {
 	}
 
 	/**
-	 * Get Average Performance Measures. 
-	 * Across multiple results.
+	 * GetStats.
+	 * Return the evaluation statistics given a series of predictions and real values (e.g., from cross validation).
+	 * In the multi-label case, a Threshold category must exist, containing a string defining the type of threshold we want to use/calibrate.
 	 */
 	public static HashMap<String,double[]> getStats(Result r[]) {
 

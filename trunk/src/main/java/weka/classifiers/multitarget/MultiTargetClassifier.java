@@ -16,11 +16,11 @@
 package weka.classifiers.multitarget;
 
 /**
- *  Multi-target Classifier.
+ *  MultiTargetClassifier.java - A Multi-target Classifier.
  *  To implement this interface, it is also necessary to extend MultilabelClassifier.
  *  Implementing this interface only signals to the Evaluator that we are dealing with multi-target data, 
- *  and a different evaluation output is made. Training and Classification is the same, using the 
- *  methods <i>buildClassifier(Instances)</i> and <i>distributionForInstance(Instance)</i> except that
+ *  and a different evaluation output is made. Training and classification is the same, using the 
+ *  methods <i>buildClassifier(Instances)</i> and <i>distributionForInstance(Instance)</i>, except that
  *  the latter may return a vector of L*2 doubles instead of L. The extra values are probabalistic 
  *  information (i.e., the probability of class y[j] for the jth target is y[j*2]) that may be used by 
  *  ensemble classifiers.
@@ -31,7 +31,7 @@ package weka.classifiers.multitarget;
 
 public interface MultiTargetClassifier {
 
-	/*
+	/*Utils.getOption('S', options)
 	 * Everything is the same as MultilabelClassifier except for the Evaluation
 	 */
 }
