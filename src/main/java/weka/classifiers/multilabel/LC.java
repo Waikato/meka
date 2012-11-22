@@ -56,7 +56,7 @@ public class LC extends MultilabelClassifier implements OptionHandler {
 
 	@Override
 	public void buildClassifier(Instances Train) throws Exception {
-	  	getCapabilities().testWithFail(Train);
+	  	testCapabilities(Train);
 	  	
 		int C = Train.classIndex();
 

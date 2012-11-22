@@ -60,7 +60,7 @@ public class PSUpdateable extends PS implements UpdateableClassifier {
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
-	  	getCapabilities().testWithFail(D);
+	  	testCapabilities(D);
 	  	
 		L = D.classIndex();
 		m_Counter = D.numInstances();

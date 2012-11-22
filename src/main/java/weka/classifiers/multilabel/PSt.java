@@ -25,7 +25,7 @@ import weka.core.TechnicalInformationHandler;
 import weka.core.Utils;
 
 /**
- * PSt.java -  Pruned Sets with a a threshold so as to be able to predict sets not seen in the training set..
+ * PSt.java -  Pruned Sets with a a threshold so as to be able to predict sets not seen in the training set.
  * <br>
  * See: Jesse Read. <i>A Pruned Problem Transformation Method for Multi-label Classification</i>. In Proc. of the NZ Computer Science Research Student Conference. Christchurch, New Zealand (2008).
  * @see PS

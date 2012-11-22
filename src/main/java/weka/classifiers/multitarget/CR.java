@@ -51,7 +51,7 @@ public class CR extends weka.classifiers.multilabel.BR implements MultiTargetCla
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
-	  	getCapabilities().testWithFail(D);
+	  	testCapabilities(D);
 	  	
 		int L = D.classIndex();
 

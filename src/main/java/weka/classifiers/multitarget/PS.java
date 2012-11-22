@@ -19,7 +19,7 @@ package weka.classifiers.multitarget;
  * The Pruned Sets (PS) method. Multi-target version. 
  * Because pruned sets are duplicated as the closest sets, rather than subsets.
  * Note: currently can only handle 10 values (or fewer) per target variable.
- * @see		weka.classifiers.multilabel.BR
+ * @see		weka.classifiers.multilabel.PS
  * @version	Feb 2012
  * @author 	Jesse Read (jesse@tsc.uc3m.es)
  */
@@ -68,7 +68,7 @@ public class PS extends weka.classifiers.multilabel.PS implements MultiTargetCla
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
-	  	getCapabilities().testWithFail(D);
+	  	testCapabilities(D);
 	  	
 		int L = D.classIndex();
 		try {
@@ -76,14 +76,11 @@ public class PS extends weka.classifiers.multilabel.PS implements MultiTargetCla
 		} catch(Exception e) {
 			if (m_P > 0) {
 				m_P--;
-				System.out.println("trying with P = "+m_P+" ...");
+				System.err.println("Not enough distinct class values, trying again with P = "+m_P+" ...");
 				buildClassifier(D);
 			}
-			else {
-				System.out.println("give up ...");
-				System.out.println(""+e);
-				e.printStackTrace();
-			}
+			else 
+				throw new Exception("Failed to construct a classifier.");
 		}
 	}
 

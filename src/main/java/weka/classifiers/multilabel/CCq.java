@@ -227,7 +227,7 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 
 	@Override
 	public void buildClassifier(Instances Train) throws Exception {
-	  	getCapabilities().testWithFail(Train);
+	  	testCapabilities(Train);
 	  	
 		this.m_NumClasses = Train.classIndex();
 

@@ -20,6 +20,13 @@ import java.util.*;
 
 public abstract class MLEvalUtils {
 
+	/**
+	 * GetThreshold.
+	 * Get a threshold from a Threshold OPtion string 'top'.
+	 * @param	Y	label space; for calculating a threshold with PCut
+	 * @param	D	training data; for calculating a threshold with PCut
+	 * @param	top Threshold OPtion (either "PCut1", "PCutL" or a real value e.g. "0.5" or L real values e.g. "[0.1, 0.2, 0.8]" for L = 3
+	 */
 	public static String getThreshold(ArrayList<double[]> Y, Instances D, String top) throws Exception {
 		if (top.equals("PCut1") || top.equals("c")) {			// Proportional Cut threshold (1 general threshold)
 			return String.valueOf(MLEvalUtils.calibrateThreshold(Y,MLUtils.labelCardinality(D)));
@@ -34,8 +41,8 @@ public abstract class MLEvalUtils {
 	}
 
 	/**
-	 * Calibrate a threshold.
-	 * Based upon a supplied label cardinality from the training set.
+	 * CalibrateThreshold.
+	 * Calibrate a threshold using PCut.
 	 */
 	public static double calibrateThreshold(ArrayList<double[]> Y, double LC_train) { 
 		int N = Y.size();
@@ -47,10 +54,8 @@ public abstract class MLEvalUtils {
 		}
 		Collections.sort(big);
 
-		//System.out.println("we will take = "+(int)Math.round(LC_train * (double)N));
 		int i = big.size() - (int)Math.round(LC_train * (double)N);
 
-		//System.out.println("from "+i);
 		if (N == big.size()) { // special cases
 			if (i+1 == N) // only one!
 				return (big.get(N-2)+big.get(N-1)/2.0);
@@ -59,21 +64,14 @@ public abstract class MLEvalUtils {
 			else
 				return Math.max(((double)(big.get(i)+big.get(i+1))/2.0), 0.00001);
 		}
-		/*
-		//System.out.println(""+big);
-		//System.out.println("N = "+N);
-		//System.out.println("big.size = "+big.size());
-		*/
-		//System.out.println("LCard ("+LC_train+") between "+i+" and "+(Math.max(i+1,N-1)));
-		//if (i == big.size) // we have to set the threshold very low
-		//	return 0.00001
+
 		return Math.max(((double)(big.get(i)+big.get(Math.max(i+1,N-1))))/2.0 , 0.00001);
 	}
 
 	/**
-	 * Calibrate the threshold[] vector.
-	 * Based upon a supplied label cardinality from the training set.
-	 * Assumes that each double[] is of length L;
+	 * CalibrateThresholds.
+	 * Calibrate a vector of thresholds (one for each label) using PCut.
+	 * Calibrate a threshold using PCut.
 	 */
 	public static double[] calibrateThresholds(ArrayList<double[]> Y, double LC_train[]) { 
 
@@ -98,26 +96,38 @@ public abstract class MLEvalUtils {
 		return t;
 	}
 
-	public static HashMap<String,Double> getMLStats(ArrayList<double[]> Rankings, ArrayList<int[]> Actuals, String t) {
+	/**
+	 * GetMLStats.
+	 * Given predictions and corresponding true values and a threshold string, retreive statistics.
+	 * @param	Confidences	predictions (may be real-valued confidences)
+	 * @param	TrueValues	corresponding true values
+	 * @param	t			a threshold string, e.g. "0.387"
+	 * @return	the evaluation statistics
+	 */
+	public static HashMap<String,Double> getMLStats(ArrayList<double[]> Confidences, ArrayList<int[]> TrueValues, String t) {
 		double ts[] = null;
 		if (t.startsWith("[")) {
 			ts = MLUtils.toDoubleArray(t);							// threshold vector       [t1 t2 ... tL]]
 		}
 		else {
-			ts = new double[Rankings.iterator().next().length];
+			ts = new double[Confidences.iterator().next().length];
 			Arrays.fill(ts,Double.parseDouble(t));					// make a threshold vector [t t t ... t]
 		}
-		return getMLStats(Rankings,Actuals,ts);
+		return getMLStats(Confidences,TrueValues,ts);
 	}
 
 	/**
-	 * Calculate Performance Measures. 
-	 * A threshold is supplied. Rankings.size() must equal Actuals.size(), and they must correspond.
+	 * GetMLStats.
+	 * Given predictions and corresponding true values and a threshold string, retreive statistics.
+	 * @param	Confidences	predictions (may be double-valued confidences in the multi-label case)
+	 * @param	TrueValues	corresponding true values
+	 * @param	t[]			a vector of thresholds, e.g. [0.1,0.1,0.1] or [0.1,0.5,0.4,0.001]
+	 * @return	the evaluation statistics
 	 */
-	public static HashMap<String,Double> getMLStats(ArrayList<double[]> Rankings, ArrayList<int[]> Actuals, double t[]) {
+	public static HashMap<String,Double> getMLStats(ArrayList<double[]> Confidences, ArrayList<int[]> TrueValues, double t[]) {
 
-		double N = Rankings.size();
-		int L = Rankings.iterator().next().length;
+		double N = Confidences.size();
+		int L = Confidences.iterator().next().length;
 		int fp = 0, tp = 0, tn = 0, fn = 0;
 		int p_sum_total = 0, r_sum_total = 0;
 		double log_loss_D = 0.0, log_loss_L = 0.0;
@@ -130,8 +140,8 @@ public abstract class MLEvalUtils {
 
 
 		for(int i = 0; i < N; i++) {
-			double ranking[] = Rankings.get(i);
-			int actual[] = Actuals.get(i);
+			double ranking[] = Confidences.get(i);
+			int actual[] = TrueValues.get(i);
 
 			int pred[] = new int[actual.length];
 			for(int j = 0; j < L; j++) {
@@ -278,22 +288,29 @@ public abstract class MLEvalUtils {
 
 	}
 
-	public static double calcLogLoss(double R, double P, double C) {
+	private static double calcLogLoss(double R, double P, double C) {
 		// base 2 ?
 		double ans = Math.min(Utils.eq(R,P) ? 0.0 : -( (R * Math.log(P)) + ((1.0 - R) * Math.log(1.0 - P)) ),C);
 		return (Double.isNaN(ans) ? 0.0 : ans);
 	}
 
-	public static HashMap<String,Double> getMTStats(ArrayList<double[]> Rankings, ArrayList<int[]> Actuals) {
+	/**
+	 * GetMTStats.
+	 * Given multi-target predictions and corresponding true values, retreive evaluation statistics.
+	 * @param	Predictions	predictions
+	 * @param	TrueValues	corresponding true values
+	 * @return	the evaluation statistics
+	 */
+	public static HashMap<String,Double> getMTStats(ArrayList<double[]> Predictions, ArrayList<int[]> TrueValues) {
 
-		double N = Rankings.size();
-		int L = Actuals.iterator().next().length;
+		double N = Predictions.size();
+		int L = TrueValues.iterator().next().length;
 		double h_loss = 0.0, e_loss = 0.0;
 		double h_acc[] = new double[L]; // new
 		for (int i = 0; i < N; i++) {
 
-			double y_pred[] = Rankings.get(i);
-			int y_real[] = Actuals.get(i);
+			double y_pred[] = Predictions.get(i);
+			int y_real[] = TrueValues.get(i);
 
 			double loss = 0.0;
 			for(int j = 0; j < L; j++) {
@@ -324,9 +341,6 @@ public abstract class MLEvalUtils {
 	}
 
 	public static void main(String args[]) {
-		//for(int i = 0; i < ; i++) {
-		//}
-		//System.out.println(""+Arrays.toString(invert(new int[]{5,2},6)));
 	}
 
 }

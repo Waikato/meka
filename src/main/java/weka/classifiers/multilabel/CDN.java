@@ -58,7 +58,7 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 	 */
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
-	  	getCapabilities().testWithFail(D);
+	  	testCapabilities(D);
 	  	
 		int N = D.numInstances();
 		int L = D.classIndex();

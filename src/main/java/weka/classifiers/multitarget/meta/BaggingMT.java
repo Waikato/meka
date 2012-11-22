@@ -43,9 +43,7 @@ public class BaggingMT extends BaggingML implements MultiTargetClassifier {
 	 */
 	@Override
 	public String globalInfo() {
-		return 
-				"The Multi-Target Version of FastBaggingML.\n"
-				+ "It takes votes using the confidence outputs of the base classifier.";
+		return "Multi-Target Version of BaggingML\n" + "It takes votes using the confidence outputs of the base classifier.";
 	}
 
 	@Override

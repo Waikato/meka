@@ -46,12 +46,9 @@ public class RT extends MultilabelClassifier {
 				+ "http://mulan.sourceforge.net";
 	}
 
-	/**
-	 * Build Classifier.
-	 */
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
-	  	getCapabilities().testWithFail(D);
+	  	testCapabilities(D);
 	  	
 		int L = D.classIndex();
 
@@ -95,6 +92,12 @@ public class RT extends MultilabelClassifier {
 
 	}
 
+	/**
+	 * ConvertInstance.
+	 * Convert an Instance to multi-class format by deleting all but one of the label attributes.
+	 * @param	test	incoming Instance
+	 * @return	the converted Instance
+	 */
 	public Instance convertInstance(Instance test) {
 
 		int L = test.classIndex();
