@@ -75,7 +75,7 @@ public class SubsetMapper extends MultilabelClassifier
 
 	protected HashMap<String,Integer> m_Count = new HashMap<String,Integer>();
 
-    public double[] nearestSubset(double d[]) throws Exception {   
+    protected double[] nearestSubset(double d[]) throws Exception {   
 
 		String comb = MLUtils.toBitString(doubles2ints(d));
 
@@ -117,7 +117,7 @@ public class SubsetMapper extends MultilabelClassifier
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
-	  	getCapabilities().testWithFail(D);
+	  	testCapabilities(D);
 	  	
 		for (int i = 0; i < D.numInstances(); i++) {
 			m_Count.put(MLUtils.toBitString(D.instance(i),D.classIndex()),0);

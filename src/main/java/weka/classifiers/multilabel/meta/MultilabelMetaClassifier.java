@@ -70,6 +70,22 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier {
 		return r;
 	}
 
+	public int getNumIterations() {
+		return m_NumIterations;
+	}
+
+	public void setNumIterations(int n) {
+		m_NumIterations = n;
+	}
+
+	public int getBagSizePercent() {
+		return m_BagSizePercent;
+	}
+
+	public void setBagSizePercent(int p) {
+		m_BagSizePercent = p;
+	}
+
 	@Override
 	public Enumeration listOptions() {
 		Vector newVector = new Vector();
