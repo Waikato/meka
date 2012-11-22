@@ -47,7 +47,7 @@ public class BaggingMLdup extends MultilabelMetaClassifier {
 	
 	@Override
 	public void buildClassifier(Instances train) throws Exception {
-	  	getCapabilities().testWithFail(train);
+	  	testCapabilities(train);
 	  	
 		if (getDebug()) System.out.print("-: Models: ");
 

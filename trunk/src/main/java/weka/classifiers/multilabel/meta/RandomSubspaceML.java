@@ -54,7 +54,7 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 
 	@Override
 	public void buildClassifier(Instances train) throws Exception {
-	  	getCapabilities().testWithFail(train);
+	  	testCapabilities(train);
 	  	
 		m_Indices = new ArrayList[m_NumIterations];
 		m_Dsets = new Instances[m_NumIterations];
@@ -192,6 +192,9 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 	public void setAttSizePercent(int value) {
 	  if ((value > 0) && (value <= 100))
 	    m_AttSizePercent = value;
+	  else {
+		  System.err.println("Bad percentage (must be between 1 and 100");
+	  }
 	}
 	
 	public int getAttSizePercent() {
