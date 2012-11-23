@@ -18,6 +18,7 @@ package weka.classifiers.multilabel;
 import weka.classifiers.SingleClassifierEnhancer;
 import weka.core.Capabilities;
 import weka.core.Capabilities.Capability;
+import weka.core.SerializedObject;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.RevisionUtils;
@@ -54,11 +55,21 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 	/**
 	 * TestCapabilities.
 	 * Make sure the training data is suitable.
+	 * @param D	the data
 	 */
 	public void testCapabilities(Instances D) throws Exception {
-		// D here.
+		// get the classifier's capabilities, enable all class attributes and do the usual test
+		Capabilities cap = getCapabilities();
+		cap.enableAllClasses();
+		getCapabilities().testWithFail(D);
+		// get the capabilities again, test class attributes individually
+		int L = D.classIndex();
+		for(int j = 0; j < L; j++) {
+			Attribute c = D.attribute(j);
+			cap.testWithFail(c,true);
+		}
 	}
-	
+
 	@Override
 	public Capabilities getCapabilities() {
 	  Capabilities	result;
@@ -87,10 +98,32 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 
 	/**
 	 * Evaluation. 
-	 * To be deprecated, and replaced with runClassifier(h,args)
+	 * Use runClassifier(MultilabelClassifier,String[]) instead.
 	 */
+	@Deprecated
 	public static void evaluation(MultilabelClassifier h, String args[]) {
 		runClassifier(h,args);
+	}
+
+	/**
+	 * Creates a given number of deep copies of the given multi-label classifier using serialization.
+	 *
+	 * @param model the classifier to copy
+	 * @param num the number of classifier copies to create.
+	 * @return an array of classifiers.
+	 * @exception Exception if an error occurs
+	 */
+	public static MultilabelClassifier[] makeCopies(MultilabelClassifier model, int num) throws Exception {
+
+		if (model == null) {
+			throw new Exception("No model classifier set");
+		}
+		MultilabelClassifier classifiers[] = new MultilabelClassifier[num];
+		SerializedObject so = new SerializedObject(model);
+		for(int i = 0; i < classifiers.length; i++) {
+			classifiers[i] = (MultilabelClassifier) so.getObject();
+		}
+		return classifiers;
 	}
 
 	/**

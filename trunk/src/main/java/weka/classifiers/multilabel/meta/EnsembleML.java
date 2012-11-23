@@ -54,7 +54,7 @@ public class EnsembleML extends MultilabelMetaClassifier {
 		if (getDebug()) System.out.print("-: Models: ");
 
 		train = new Instances(train);
-		m_Classifiers = AbstractClassifier.makeCopies(m_Classifier, m_NumIterations);
+		m_Classifiers = MultilabelClassifier.makeCopies((MultilabelClassifier)m_Classifier, m_NumIterations);
 		int sub_size = (train.numInstances()*m_BagSizePercent/100);
 		for(int i = 0; i < m_NumIterations; i++) {
 			if(getDebug()) System.out.print(""+i+" ");
