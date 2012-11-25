@@ -19,6 +19,17 @@
  */
 package meka.gui.explorer;
 
+import weka.core.Instances;
+import weka.core.MLUtils;
+import weka.core.Utils;
+import weka.core.converters.AbstractFileLoader;
+import weka.core.converters.AbstractFileSaver;
+import weka.core.converters.ConverterUtils;
+import weka.core.converters.SerializedInstancesLoader;
+import weka.gui.BrowserHelper;
+import weka.gui.ConverterFileChooser;
+import weka.gui.ViewerDialog;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,16 +55,6 @@ import javax.swing.event.ChangeListener;
 import meka.gui.core.GUIHelper;
 import meka.gui.core.MekaPanel;
 import meka.gui.goe.GenericObjectEditor;
-import weka.core.Instances;
-import weka.core.MLUtils;
-import weka.core.Utils;
-import weka.core.converters.AbstractFileLoader;
-import weka.core.converters.AbstractFileSaver;
-import weka.core.converters.ConverterUtils;
-import weka.core.converters.SerializedInstancesLoader;
-import weka.gui.BrowserHelper;
-import weka.gui.ConverterFileChooser;
-import weka.gui.ViewerDialog;
 
 /**
  * Explorer GUI for MEKA.
@@ -183,6 +184,7 @@ extends MekaPanel {
       menu = new JMenu("File");
       menu.setMnemonic('F');
       menu.addChangeListener(new ChangeListener() {
+	@Override
 	public void stateChanged(ChangeEvent e) {
 	  updateMenu();
 	}
@@ -246,6 +248,7 @@ extends MekaPanel {
       menu = new JMenu("Edit");
       menu.setMnemonic('E');
       menu.addChangeListener(new ChangeListener() {
+	@Override
 	public void stateChanged(ChangeEvent e) {
 	  updateMenu();
 	}
@@ -281,6 +284,7 @@ extends MekaPanel {
       menu = new JMenu("Help");
       menu.setMnemonic('H');
       menu.addChangeListener(new ChangeListener() {
+	@Override
 	public void stateChanged(ChangeEvent e) {
 	  updateMenu();
 	}
@@ -362,6 +366,7 @@ extends MekaPanel {
 
     try {
       addUndoPoint();
+      loader.setFile(file);
       data          = loader.getDataSet();
       m_CurrentFile = file;
       prepareData(data);
