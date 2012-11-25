@@ -16,12 +16,13 @@
 package weka.classifiers.multilabel;
 
 import weka.classifiers.SingleClassifierEnhancer;
+import weka.core.Attribute;
 import weka.core.Capabilities;
 import weka.core.Capabilities.Capability;
-import weka.core.SerializedObject;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.RevisionUtils;
+import weka.core.SerializedObject;
 
 /**
  *  MultilabelClassifier.java - A Multilabel Classifier.
