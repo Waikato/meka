@@ -61,7 +61,8 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 
 		if (getDebug()) System.out.print("-: Models: ");
 
-		m_Classifiers = (MultilabelClassifier[]) AbstractClassifier.makeCopies(m_Classifier,m_NumIterations);
+		//m_Classifiers = (MultilabelClassifier[]) AbstractClassifier.makeCopies(m_Classifier,m_NumIterations);
+		m_Classifiers = MultilabelClassifier.makeCopies((MultilabelClassifier)m_Classifier, m_NumIterations);
 
 		for(int i = 0; i < m_NumIterations; i++) {
 			Random r = new Random(m_Seed+i);

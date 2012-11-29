@@ -53,8 +53,7 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 	protected int I_c = 100;	// collection iterations
 
 	/**
-	 *  Build Classifier.
-	 *  Build L probabilistic models, each to predict Y_i | X, Y_{-y}; save the templates.
+	 *  BuildClassifier - Build L probabilistic models, each to predict Y_i | X, Y_{-y}; save the templates.
 	 */
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
@@ -100,8 +99,7 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 	*/
 
 	/**
-	 *  Probabilistic Classification.
-	 *  Use Gibbs sampling.
+	 *  Probabilistic Classification using Gibbs sampling.
 	 */
 	@Override
 	public double[] distributionForInstance(Instance x) throws Exception {

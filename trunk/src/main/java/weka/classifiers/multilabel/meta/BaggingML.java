@@ -54,7 +54,8 @@ public class BaggingML extends MultilabelMetaClassifier {
 		if (getDebug()) System.out.print("-: Models: ");
 
 		train = new Instances(train);
-		m_Classifiers = (MultilabelClassifier[]) AbstractClassifier.makeCopies(m_Classifier, m_NumIterations);
+		//m_Classifiers = (MultilabelClassifier[]) AbstractClassifier.makeCopies(m_Classifier, m_NumIterations);
+		m_Classifiers = MultilabelClassifier.makeCopies((MultilabelClassifier)m_Classifier, m_NumIterations);
 
 		for(int i = 0; i < m_NumIterations; i++) {
 			Random r = new Random(m_Seed+i);
