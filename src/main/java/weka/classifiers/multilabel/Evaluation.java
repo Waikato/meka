@@ -45,8 +45,7 @@ import weka.filters.unsupervised.instance.RemoveRange;
 public class Evaluation {
 
 	/**
-	 * RunExperiment.
-	 * Build and evaluate a model with command-line options.
+	 * RunExperiment - Build and evaluate a model with command-line options.
 	 */
 	public static void runExperiment(MultilabelClassifier h, String options[]) throws Exception {
 
@@ -244,8 +243,7 @@ public class Evaluation {
 
 
 	/**
-	 * EvaluateModel.
-	 * Build model 'h' on 'D_train', test it on 'D_test', threshold it according to 'top'
+	 * EvaluateModel - Build model 'h' on 'D_train', test it on 'D_test', threshold it according to 'top'
 	 * @param	h		a multi-dim. classifier
 	 * @param	D_train	training data
 	 * @param	D_test 	test data
@@ -266,13 +264,12 @@ public class Evaluation {
 	}
 
 	/**
-	 * CVModel.
+	 * CVModel - Split D into train/test folds, and then train and evaluate on each one.
 	 * @param	h		 a multi-dim. classifier
 	 * @param	D      	 data
 	 * @param	numFolds test data
 	 * @param	top    	 Threshold OPtion (pertains to multi-label data only)
-	 * @param	r        an array of 'numFolds' Results
-	 * Split D into train/test folds, and then train and evaluate on each one.
+	 * @return	an array of 'numFolds' Results
 	 */
 	public static Result[] cvModel(MultilabelClassifier h, Instances D, int numFolds, String top) throws Exception {
 		Result r[] = new Result[numFolds];
@@ -300,14 +297,13 @@ public class Evaluation {
 
 
 	/**
-	 * EvaluateModel.
-	 * Build model 'h' on 'D_train', test it on 'D_test'.
+	 * EvaluateModel - Build model 'h' on 'D_train', test it on 'D_test'.
 	 * Note that raw multi-label predictions returned in Result may not have been thresholded yet.
 	 * However, data statistics, classifier info, and running times are inpregnated into the Result here.
 	 * @param	h		a multi-dim. classifier
 	 * @param	D_train	training data
 	 * @param	D_test 	test data
-	 * @return	Result	raw prediction data (no evaluation yet)
+	 * @return	raw prediction data (no evaluation yet)
 	 */
 	public static Result evaluateModel(MultilabelClassifier h, Instances D_train, Instances D_test) throws Exception {
 
@@ -345,7 +341,7 @@ public class Evaluation {
 	}
 
 	/**
-	 * TestClassifier.
+	 * TestClassifier - test classifier h on D_test
 	 * @param	h		a multi-dim. classifier, ALREADY PREVIOUSLY TRAINED
 	 * @param	D_test 	test data
 	 * @return	Result	with raw prediction data ONLY

@@ -93,8 +93,7 @@ public class RT extends MultilabelClassifier {
 	}
 
 	/**
-	 * ConvertInstance.
-	 * Convert an Instance to multi-class format by deleting all but one of the label attributes.
+	 * ConvertInstance - Convert an Instance to multi-class format by deleting all but one of the label attributes.
 	 * @param	test	incoming Instance
 	 * @return	the converted Instance
 	 */

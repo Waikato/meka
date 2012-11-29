@@ -44,9 +44,6 @@ public class EnsembleML extends MultilabelMetaClassifier {
 				"Combining several multi-label classifiers in a simple-subset ensemble.";
 	}
 
-	/**
-	 * Build Classifier
-	 */
 	@Override
 	public void buildClassifier(Instances train) throws Exception {
 	  	testCapabilities(train);

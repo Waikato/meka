@@ -196,7 +196,7 @@ public class MULAN extends MultilabelClassifier {
 	}
 
 	/**
-	 * SwitchAttributes. Move L Label Attributes from the Beginning to end of attribute space. 
+	 * SwitchAttributes - Move L label attributes from the beginning to end of attribute space of an Instances. 
 	 * Necessary because MULAN assumes label attributes are at the end, not the beginning.
 	 * (the extra time for this process is not counted in the running-time analysis of published work).
 	 */
@@ -213,7 +213,7 @@ public class MULAN extends MultilabelClassifier {
 	}
 
 	/**
-	 * SwitchAttributes. Move L Label Attributes from the Beginning to end of attribute space. 
+	 * SwitchAttributes - Move L label attributes from the beginning to end of attribute space of an Instance. 
 	 * Necessary because MULAN assumes label attributes are at the end, not the beginning.
 	 * (the extra time for this process is not counted in the running-time analysis of published work).
 	 */
