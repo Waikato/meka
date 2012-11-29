@@ -101,9 +101,9 @@ public class PS extends LC implements Randomizable {
 		return m_S;
 	}
 
-	public String seedTipText() {
-	  return "The seed value for randomization.";
-	}
+	//public String seedTipText() {
+//	  return "The seed value for randomization.";
+//	}
 	
 	@Override
 	public Enumeration listOptions() {

@@ -141,7 +141,7 @@ public class CCUpdateable extends CC implements UpdateableClassifier {
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
-	  	getCapabilities().testWithFail(D);
+	  	testCapabilities(D);
 	  	
 		int L = D.classIndex();
 
