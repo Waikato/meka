@@ -42,7 +42,10 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 	 * 
 	 * @return		the description
 	 */
-	public abstract String globalInfo();
+	public String globalInfo() {
+		// highly recommended to overwrite this method!
+		return "A multi-label classifier";
+	}
 
 	@Override
 	public String toString() {
