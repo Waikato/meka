@@ -31,7 +31,8 @@ package weka.classifiers.multitarget;
 
 public interface MultiTargetClassifier {
 
-	/*Utils.getOption('S', options)
+	/*
 	 * Everything is the same as MultilabelClassifier except for the Evaluation
+	 * ... but in the future I would like to add getProbabilities() or something here.
 	 */
 }

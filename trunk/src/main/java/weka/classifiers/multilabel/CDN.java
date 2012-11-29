@@ -52,9 +52,6 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 	protected int I = 1000;	// total iterations
 	protected int I_c = 100;	// collection iterations
 
-	/**
-	 *  BuildClassifier - Build L probabilistic models, each to predict Y_i | X, Y_{-y}; save the templates.
-	 */
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
 	  	testCapabilities(D);
@@ -65,6 +62,7 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 		u = new Random(m_S);
 		D_templates = new Instances[L];
 
+		// Build L probabilistic models, each to predict Y_i | X, Y_{-y}; save the templates.
 		for(int j = 0; j < L; j++) {
 			// X = [Y[0],...,Y[j-1],Y[j+1],...,Y[L],X]
 			D_templates[j] = new Instances(D);

@@ -193,8 +193,7 @@ public class PS extends weka.classifiers.multilabel.PS implements MultiTargetCla
 	}
 
 	/**
-	 * GetTopNSubsets.
-	 * We take only the subsets which differ by a single class value, then rank by frequency, and take the top N
+	 * GetTopNSubsets - return the top N subsets which differ from y by a single class value, ranked by the frequency storte in masterCombinations.
 	 */
 	public static String[] getTopNSubsets(String y, final HashMap <String,Integer>masterCombinations, int N) {
 		String y_bits[] = y.split("\\+");

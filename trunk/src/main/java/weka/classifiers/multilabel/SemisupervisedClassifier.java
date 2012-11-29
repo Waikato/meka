@@ -25,7 +25,7 @@ import weka.core.Instances;
 public interface SemisupervisedClassifier {
 
 	/**
-	 *  Set Unlabelled Data.
+	 *  Set Unlabelled Data - provide unlabelled Data prior to calling buildClassifier(Instances).
 	 *  @param	unlabeledInstances	Instances for which the true class labels are not available for each instance.
 	 */
 	void setUnlabelledData(Instances unlabeledInstances);
