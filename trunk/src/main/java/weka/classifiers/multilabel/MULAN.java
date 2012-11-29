@@ -104,7 +104,6 @@ public class MULAN extends MultilabelClassifier {
 		super.setOptions(options);
 	}
 
-	@Override
 	public String methodTipText() {
 		return "Any of the following: "+MethodSelection+". If you wish to add more, you will have to add code to the buildClassifier(Instances) function in MULAN.java";
 	}
