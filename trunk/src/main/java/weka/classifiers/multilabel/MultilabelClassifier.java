@@ -62,7 +62,7 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 		// get the classifier's capabilities, enable all class attributes and do the usual test
 		Capabilities cap = getCapabilities();
 		cap.enableAllClasses();
-		getCapabilities().testWithFail(D);
+		//getCapabilities().testWithFail(D);
 		// get the capabilities again, test class attributes individually
 		int L = D.classIndex();
 		for(int j = 0; j < L; j++) {
@@ -77,11 +77,11 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 	  
 	  result = super.getCapabilities();
 	  
-	  result.enable(Capability.NUMERIC_CLASS);
-	  //result.disable(Capability.NUMERIC_CLASS);
-	  //result.disable(Capability.DATE_CLASS);
-	  //result.disable(Capability.STRING_CLASS);
-	  //result.disable(Capability.RELATIONAL_CLASS);
+	  //result.enable(Capability.NUMERIC_CLASS);
+	  result.disable(Capability.NUMERIC_CLASS);
+	  result.disable(Capability.DATE_CLASS);
+	  result.disable(Capability.STRING_CLASS);
+	  result.disable(Capability.RELATIONAL_CLASS);
 	  
 	  return result;
 	}

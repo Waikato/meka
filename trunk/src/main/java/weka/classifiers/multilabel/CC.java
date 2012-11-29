@@ -185,14 +185,13 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 		return m_Chain;
 	}
 	
-	// FIXME
 	public String chainTipText() {
-	  return "Should this be a command-line option?";
+	  return "This option was meant to be called by other classifiers.";
 	}
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
-	  	getCapabilities().testWithFail(D);
+	  	testCapabilities(D);
 	  	
 		int L = D.classIndex();
 
