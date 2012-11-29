@@ -55,6 +55,8 @@ public class MULAN extends MultilabelClassifier {
 	
 	protected MultiLabelLearner m_MULAN = null;
 
+	private String MethodSelection = "BR, LP, CLR, RAkEL1, RAkEL2, MLkNN, IBLR_ML, BPMLL";
+
 	protected String m_MethodString = "RAkEL1";
 
 	/**
@@ -69,11 +71,15 @@ public class MULAN extends MultilabelClassifier {
 				+ "http://mulan.sourceforge.net";
 	}
 
-	public void setS(String m) {
+	/**
+	 * Set a prescribed MULAN classifier configuration.
+	 * @param	m	key; one of: BR, LP, CLR, RAkEL1, RAkEL2, MLkNN, IBLR_ML, BPMLL (you can add more in the MULAN.java code)
+	 */
+	public void setMethod(String m) {
 		m_MethodString = m;
 	}
 
-	public String getS() {
+	public String getMethod() {
 		return m_MethodString;
 	}
 
@@ -81,7 +87,7 @@ public class MULAN extends MultilabelClassifier {
 	public Enumeration listOptions() {
 
 		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tMethod Name\n\t {RAkEL1, RAkEL2, MLkNN, IBLR_ML, HOMER.{CLUS/RAND}.{BR/LP}, CLR, MC-Copy, IncludeLabels MC-Ignore MLStacking}", "S", 1, "-S <value>"));
+		newVector.addElement(new Option("\tMethod Name\n\t {"+MethodSelection+"}", "S", 1, "-S <value>"));
 
 		Enumeration enu = super.listOptions();
 
@@ -94,8 +100,13 @@ public class MULAN extends MultilabelClassifier {
 	@Override
 	public void setOptions(String[] options) throws Exception {
 
-		setS(Utils.getOption('S', options));
+		setMethod(Utils.getOption('S', options));
 		super.setOptions(options);
+	}
+
+	@Override
+	public String methodTipText() {
+		return "Any of the following: "+MethodSelection+". If you wish to add more, you will have to add code to the buildClassifier(Instances) function in MULAN.java";
 	}
 
 	@Override
@@ -105,7 +116,7 @@ public class MULAN extends MultilabelClassifier {
 		String [] options = new String [superOptions.length + 2];
 		int current = 0;
 		options[current++] = "-S";
-		options[current++] =  getS();
+		options[current++] =  getMethod();
 		System.arraycopy(superOptions, 0, options, current, superOptions.length);
 		return options;
 
@@ -185,12 +196,12 @@ public class MULAN extends MultilabelClassifier {
 	}
 
 	/**
-	 * Move Label Attributes From Beginning To End of Attribute Space. 
+	 * SwitchAttributes. Move L Label Attributes from the Beginning to end of attribute space. 
 	 * Necessary because MULAN assumes label attributes are at the end, not the beginning.
-	 * (the extra time for this process is not counted in any build time analysis of published work).
+	 * (the extra time for this process is not counted in the running-time analysis of published work).
 	 */
-	public static final Instances switchAttributes(Instances instances, int N) {
-		for(int j = 0; j < N; j++) {
+	public static final Instances switchAttributes(Instances instances, int L) {
+		for(int j = 0; j < L; j++) {
 			//instances.insertAttributeAt(new Attribute(instances.attribute(0).name()+"-"),instances.numAttributes());
 			instances.insertAttributeAt(instances.attribute(0).copy(instances.attribute(0).name()+"-"),instances.numAttributes());
 			for(int i = 0; i < instances.numInstances(); i++) {
@@ -201,9 +212,14 @@ public class MULAN extends MultilabelClassifier {
 		return instances;
 	}
 
-	public static final Instance switchAttributes(Instance instance, int N) {
+	/**
+	 * SwitchAttributes. Move L Label Attributes from the Beginning to end of attribute space. 
+	 * Necessary because MULAN assumes label attributes are at the end, not the beginning.
+	 * (the extra time for this process is not counted in the running-time analysis of published work).
+	 */
+	public static final Instance switchAttributes(Instance instance, int L) {
 		instance.setDataset(null);
-		for(int j = 0; j < N; j++) {
+		for(int j = 0; j < L; j++) {
 			instance.insertAttributeAt(instance.numAttributes());
 			instance.deleteAttributeAt(0);
 		}
