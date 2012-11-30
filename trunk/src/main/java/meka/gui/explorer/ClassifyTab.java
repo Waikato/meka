@@ -43,6 +43,7 @@ import meka.gui.core.GUIHelper;
 import meka.gui.core.ResultHistoryList;
 import meka.gui.goe.GenericObjectEditor;
 import weka.classifiers.multilabel.Evaluation;
+import weka.core.MLEvalUtils;
 import weka.core.WindowIncrementalEvaluator;
 import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instances;
@@ -96,6 +97,12 @@ extends AbstractThreadedExplorerTab {
   /** the percentage split. */
   protected double m_SplitPercentage;
   
+  /** the threshold option. */
+  protected String m_TOP;
+  
+  /** the randomize option. */
+  protected boolean m_Randomize;
+  
   /** the number of folds. */
   protected int m_Folds;
   
@@ -122,6 +129,8 @@ extends AbstractThreadedExplorerTab {
     m_Seed            = 1;
     m_SplitPercentage = 66.0;
     m_Folds           = 10;
+	m_Randomize       = true;
+	m_TOP             = "PCut1";
   }
 
   /**
@@ -156,8 +165,8 @@ extends AbstractThreadedExplorerTab {
     
     m_ComboBoxExperiment = new JComboBox(
 	new String[]{
-	    TYPE_CROSSVALIDATION, 
 	    TYPE_TRAINTESTSPLIT,
+		TYPE_CROSSVALIDATION, 
 		TYPE_INCREMENTAL
 	});
     m_ComboBoxExperiment.setSelectedIndex(0);
@@ -224,7 +233,8 @@ extends AbstractThreadedExplorerTab {
       return;
     
     data = new Instances(getData());
-    data.randomize(new Random(m_Seed));
+	if (m_Randomize)
+		data.randomize(new Random(m_Seed));
     type = m_ComboBoxExperiment.getSelectedItem().toString();
     run  = null;
     
@@ -237,9 +247,10 @@ extends AbstractThreadedExplorerTab {
 	  try {
 	    classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
 		System.out.println("data.classIndex() "+data.classIndex());
-	    results = Evaluation.cvModel(classifier, data, m_Folds, "PCutL");
-	    for (Result result: results)
-	      addResultToHistory(result);
+	    results = Evaluation.cvModel(classifier, data, m_Folds, m_TOP);
+		addResultToHistory(
+				MLEvalUtils.averageResults(results)
+				);
 	  }
 	  catch (Exception e) {
 	    System.err.println("Evaluation failed:");
@@ -268,7 +279,7 @@ extends AbstractThreadedExplorerTab {
 	    test       = new Instances(data, trainSize, data.numInstances() - trainSize);
 	    classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
 		System.out.println("data.classIndex() "+train.classIndex());
-	    result     = Evaluation.evaluateModel(classifier, train, test, "PCutL");
+	    result     = Evaluation.evaluateModel(classifier, train, test, m_TOP);
 	    addResultToHistory(result);
 	  }
 	  catch (Exception e) {
@@ -340,6 +351,8 @@ extends AbstractThreadedExplorerTab {
     panel.setSeed(m_Seed);
     panel.setFolds(m_Folds);
     panel.setSplitPercentage(m_SplitPercentage);
+	panel.setTOP(m_TOP);
+	panel.setRandomize(m_Randomize);
     dialog.getContentPane().add(panel, BorderLayout.CENTER);
     panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     dialog.getContentPane().add(panelButtons, BorderLayout.SOUTH);
@@ -350,6 +363,8 @@ extends AbstractThreadedExplorerTab {
 	m_Seed            = panel.getSeed();
 	m_SplitPercentage = panel.getSplitPercentage();
 	m_Folds           = panel.getFolds();
+	m_TOP             = panel.getTOP();
+	m_Randomize 	  = panel.getRandomize();
 	dialog.setVisible(false);
 	dialog.dispose();
       }

@@ -20,6 +20,7 @@
 package meka.gui.explorer;
 
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 
 import meka.gui.core.ParameterPanel;
 
@@ -44,6 +45,12 @@ public class ClassifyTabOptions
   /** the number of folds for CV. */
   protected JTextField m_TextFolds;
   
+  /** the threshold option. */
+  protected JTextField m_TextTOP;
+  
+  /** for randomizing. */
+  protected JToggleButton m_ToggleRandomize;
+  
   /**
    * Initializes the widgets.
    */
@@ -59,6 +66,50 @@ public class ClassifyTabOptions
     
     m_TextFolds = new JTextField("10", 5);
     addParameter("CV folds", m_TextFolds);
+
+	m_TextTOP = new JTextField("PCut1", 5);
+    addParameter("Threshold", m_TextTOP);
+
+	m_ToggleRandomize = new JToggleButton("Randomize", false);
+    addParameter("", m_ToggleRandomize);
+  }
+  
+  /**
+   * Sets the Randomize option
+   * 
+   * @param value	the Randomize value to use
+   */
+  public void setRandomize(boolean B) {
+	  m_ToggleRandomize.setSelected(B);
+  }
+  
+  /**
+   * Returns the currently set Randomize value.
+   * 
+   * @return		the Randomize value
+   */
+  public boolean getRandomize() {
+	  // should probably do some checks here!
+      return m_ToggleRandomize.isSelected();
+  }
+  
+  /**
+   * Sets the threshold option
+   * 
+   * @param value	the threshold value to use
+   */
+  public void setTOP(String value) {
+    m_TextTOP.setText("" + value);
+  }
+  
+  /**
+   * Returns the currently set seed value.
+   * 
+   * @return		the threshold value
+   */
+  public String getTOP() {
+	  // should probably do some checks here!
+      return m_TextTOP.getText();
   }
   
   /**
