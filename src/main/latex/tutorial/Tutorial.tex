@@ -336,7 +336,7 @@ java weka.classifiers.multilabel.meta.EnsembleML \
     -P 1-5 -N 1 -W weka.classifiers.functions.SMO
 \end{verbatim}
 
-\paragraph{Ensembles of Classifier Chains} (ECC; see \cite{ECC2}) With 50 ensemble members (\texttt{-I 50}), and some textual output (\texttt{-D}) on the \textit{Enron} dataset with Support Vector Machines as a base classifier:
+\paragraph{Ensembles of Classifier Chains} (ECC; see \cite{ECC2}) With 50 ensemble members (\texttt{-I 50}) {\blue also need to specify the -P option here}, and some textual output (\texttt{-D}) on the \textit{Enron} dataset with Support Vector Machines as a base classifier:
 \begin{verbatim}
 java weka.classifiers.multilabel.meta.BaggingML -I 50 -D \
   -t data/Enron.arff -W weka.classifiers.multilabel.CC -- \
