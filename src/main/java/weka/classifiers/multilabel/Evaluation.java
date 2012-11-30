@@ -150,18 +150,8 @@ public class Evaluation {
 			if(Utils.getOptionPos('x',options) >= 0) {
 				// CROSS-FOLD-VALIDATION
 				int numFolds = MLUtils.getIntegerOption(Utils.getOption('x',options),10); // default 10
-				r = new Result();
 				Result fold[] = Evaluation.cvModel(h,allInstances,numFolds,(Utils.getOptionPos('T',options) >= 0) ? Utils.getOption('T',options) : "c");
-				r.info = fold[0].info;
-				for(String v : fold[0].vals.keySet()) {
-					r.info.put(v,Result.getValues(v,fold));
-				}
-				HashMap<String,double[]> o = Result.getStats(fold);
-				for(String s : o.keySet()) {
-					double values[] = o.get(s);
-					r.info.put(s,Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3));
-				}
-				r.setInfo("Type","CV");
+				r = MLEvalUtils.averageResults(fold);
 				System.out.println(r.toString());
 			}
 			else {

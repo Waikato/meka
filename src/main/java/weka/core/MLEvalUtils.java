@@ -340,6 +340,26 @@ public abstract class MLEvalUtils {
 		return output;
 	}
 
+	/**
+	 * AverageResults - Create a Result with the average of an array of Results
+	 * @param	folds[]	array of Results (e.g., from CV-validation)
+	 * @return	A result reporting the average of these folds.
+	 */
+	public static Result averageResults(Result folds[]) { 
+		Result r = new Result();
+		r.info = folds[0].info;
+		for(String v : folds[0].vals.keySet()) {
+			r.info.put(v,Result.getValues(v,folds));
+		}
+		HashMap<String,double[]> o = Result.getStats(folds);
+		for(String s : o.keySet()) {
+			double values[] = o.get(s);
+			r.info.put(s,Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3));
+		}
+		r.setInfo("Type","CV");
+		return r;
+	}
+
 	public static void main(String args[]) {
 	}
 
