@@ -105,6 +105,9 @@ extends AbstractThreadedExplorerTab {
   
   /** the number of folds. */
   protected int m_Folds;
+
+  /** the test Instances. */
+  protected Instances m_TestInstances;
   
   /**
    * Initializes the tab.
@@ -131,6 +134,7 @@ extends AbstractThreadedExplorerTab {
     m_Folds           = 10;
 	m_Randomize       = true;
 	m_TOP             = "PCut1";
+	m_TestInstances   = null;
   }
 
   /**
@@ -274,9 +278,16 @@ extends AbstractThreadedExplorerTab {
 	  Instances train;
 	  Instances test;
 	  try {
-	    trainSize  = (int) (data.numInstances() * m_SplitPercentage / 100.0);
-	    train      = new Instances(data, 0, trainSize);
-	    test       = new Instances(data, trainSize, data.numInstances() - trainSize);
+		  if (m_TestInstances == null) {
+			  trainSize  = (int) (data.numInstances() * m_SplitPercentage / 100.0);
+			  train      = new Instances(data, 0, trainSize);
+			  test       = new Instances(data, trainSize, data.numInstances() - trainSize);
+		  }
+		  else {
+			  train      = new Instances(data);
+			  test       = new Instances(m_TestInstances);
+			  test.setClassIndex(data.classIndex());
+		  }
 	    classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
 		System.out.println("data.classIndex() "+train.classIndex());
 	    result     = Evaluation.evaluateModel(classifier, train, test, m_TOP);
@@ -353,6 +364,7 @@ extends AbstractThreadedExplorerTab {
     panel.setSplitPercentage(m_SplitPercentage);
 	panel.setTOP(m_TOP);
 	panel.setRandomize(m_Randomize);
+	panel.setTestFile(null);
     dialog.getContentPane().add(panel, BorderLayout.CENTER);
     panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     dialog.getContentPane().add(panelButtons, BorderLayout.SOUTH);
@@ -365,6 +377,7 @@ extends AbstractThreadedExplorerTab {
 	m_Folds           = panel.getFolds();
 	m_TOP             = panel.getTOP();
 	m_Randomize 	  = panel.getRandomize();
+	m_TestInstances   = panel.getTestFile();
 	dialog.setVisible(false);
 	dialog.dispose();
       }
