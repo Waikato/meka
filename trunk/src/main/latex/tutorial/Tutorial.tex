@@ -315,7 +315,7 @@ java weka.classifiers.multilabel.BR -t data/Music.arff \
   -f BR-NB.meka \
   -W weka.classifiers.bayes.NaiveBayes
 \end{verbatim}
-which produces the plain-text file \texttt{BR-NB.meka}. This provides a way to analyse individual classifications and evaluate other software with \framework{\MEKA}'s evaluation framework. Note that when cross validation (\texttt{-x}) is used, one file will be created for each fold, e.g., \texttt{BR-NB.meka.0},\texttt{BR-NB.meka.1},\ldots,\texttt{BR-NB.meka.4} for a 5-fold validation. The results can be recalculated for any of these files with, e.g.:
+which produces the plain-text file \texttt{BR-NB.meka}. This provides a way to analyse individual classifications and evaluate other software with \framework{\MEKA}'s evaluation framework. Note that when cross validation (\texttt{-x}) is used, one file will be created for each fold, e.g., \texttt{BR-NB.meka.0},\ldots,\texttt{BR-NB.meka.4} for a 5-fold validation. The results can be recalculated for any of these files with, e.g.:
 \begin{verbatim}
 	java weka.core.Result -f BR-NB.meka
 \end{verbatim}
@@ -328,18 +328,13 @@ More examples are given in the following subsection.
 
 %The methods used in the following examples are detailed in papers papers detailing these methods are available here.
 
-\paragraph{Binary Relevance} (BR) On the \textit{Music} data, loading from two separate sets, using Support Vector Machines as a base classifier: 
+\paragraph{Binary Relevance} (BR) On the \textit{Music} data, loading from two separate sets, using Naive Bayes as a base classifier, using a separate threshold for each label: 
 \begin{verbatim}
 java weka.classifiers.multilabel.BR \
   -t data/Music_train.arff \
   -T data/Music_test.arff \
-  -W weka.classifiers.functions.SMO
-\end{verbatim}
-
-\paragraph{Label Powerset} (LP) On the \textit{Music} data, using a separate threshold for each label: 
-\begin{verbatim}
-java weka.classifiers.multilabel.LP -t data/Music.arff -threshold PCutL
-  -W weka.classifiers.functions.SMO
+  -threshold PCutL
+  -W weka.classifiers.bayes.NaiveBayes
 \end{verbatim}
 
 \paragraph{Ensembles of Pruned Sets} (EPS; see \cite{EPS}) With 10 ensemble members (the default) on the \textit{Enron} dataset with Support Vector Machines as the base classifier; each \texttt{PS} model is set with \texttt{N=1} and \texttt{P} to a random selection of \texttt{\{1,2,3,4,5\}}:
@@ -351,14 +346,14 @@ java weka.classifiers.multilabel.meta.EnsembleML \
     -P 1-5 -N 1 -W weka.classifiers.functions.SMO
 \end{verbatim}
 
-\paragraph{Ensembles of Classifier Chains} (ECC; see \cite{ECC2}) With 50 ensemble members (\texttt{-I 50}) {\blue also need to specify the -P option here}, and some textual output (\texttt{-D}) on the \textit{Enron} dataset with Support Vector Machines as a base classifier:
+\paragraph{Ensembles of Classifier Chains} (ECC; see \cite{ECC2}) With 50 ensemble members (\texttt{-I 50}), and some textual output (\texttt{-D}) on the \textit{Enron} dataset with Support Vector Machines as a base classifier:
 \begin{verbatim}
-java weka.classifiers.multilabel.meta.BaggingML -I 50 -D \
+java weka.classifiers.multilabel.meta.BaggingML -I 50 -P 100 -D \
   -t data/Enron.arff -W weka.classifiers.multilabel.CC -- \
     -W weka.classifiers.functions.SMO
 \end{verbatim}
 
-\paragraph{Mulan Classifier} (\texttt{RAkEL} see \cite{RAKEL}) With parameters \texttt{\texttt{k=3}, \texttt{m=2C}} (where \texttt{C} is the number of labels) on the \textit{Scene} dataset with Decision Trees as the base classifier ({\texttt{mulan.jar} from the \framework{\MULAN} package must be added to the classpath}):
+\paragraph{Mulan Classifier} (\texttt{RAkEL} see \cite{RAKEL}) With parameters \texttt{\texttt{k=3}, \texttt{m=2C}} where \texttt{C} is the number of labels (these options are hardwired; you need to edit \texttt{MULAN.java} to specify new parameter configurations) on the \textit{Scene} dataset with Decision Trees as the base classifier (remember {\texttt{mulan.jar} must be in the classpath}):
 \begin{verbatim}
 java weka.classifiers.multilabel.MULAN -t data/Scene.arff \ 
   -S RAkEL2 -W weka.classifiers.trees.J48
@@ -382,12 +377,12 @@ java weka.classifiers.multilabel.meta.EnsembleMLUpdateable -B 20\
     -W weka.classifiers.bayes.NaiveBayesUpdateable
 \end{verbatim}
 
-Evaluating incremental classifiers will carry out evaluation and display statistics for the data over $\texttt{B}-1$ evaluation windows (an initial window is used for the initial training; making \texttt{B} windows in total). Note that the \framework{\MOA} framework \cite{MOA} for evaluating incremental classifiers is much more sophisticated; and a new release will include a wrapper to \framework{\MEKA}. 
+Evaluating incremental classifiers will carry out evaluation and display statistics for the data over $\texttt{B}-1$ evaluation windows (an initial window is used for the initial training; making \texttt{B} windows in total). %Note that the \framework{\MOA} framework \cite{MOA} for evaluating incremental classifiers is much more sophisticated; and a new release will include a wrapper to \framework{\MEKA}. 
 
 \paragraph{Multi-target: Ensembles of Class Relevance} (see \cite{UPM}) The multi-target version of the Binary Relevance classifier) on the \textit{solar flare} dataset with Logistic Regression as a base classifier under $5$-fold cross-validation:
 \begin{verbatim}
 java weka.classifiers.multitarget.meta.BaggingMT -x 10 -R \
-  -t solar_flare.arff \
+  -t data/solar_flare.arff \
   -W weka.classifiers.multitarget.CR -- \
     -W weka.classifiers.functions.Logistic
 \end{verbatim}
@@ -396,18 +391,9 @@ java weka.classifiers.multitarget.meta.BaggingMT -x 10 -R \
 %java -cp meka.jar:weka.jar weka.classifiers.multitarget.meta.BaggingMT -x 5 -R -t data/solar_flare.arff -W weka.%classifiers.multitarget.C    C -- -W weka.classifiers.functions.Logistic
 %\end{verbatim}
 
-\section{Using \framework{\MEKA} with other frameworks} \label{sec:others}
-
-. The results can be displayed again with:
-\begin{verbatim}
-	java weka.core.Result -f out.dat 
-\end{verbatim}
-
-
-
 \section{\label{sec:extending}Extending \framework{\MEKA}}%: Writing New Classifiers
 
-The source code is available in the release under the \texttt{src/} folder. Note that you can also check out the latest SVN repository from \url{SourceForge.net} \textsf{Code}: 
+The source code is available in the release (\texttt{meka-src-\version-jar}). You can also check out the latest SVN repository from \url{SourceForge.net} \textsf{Code}: 
 \begin{verbatim}
 	svn co https://meka.svn.sourceforge.net/svnroot/meka meka 
 \end{verbatim}
@@ -452,7 +438,7 @@ In the multi-label case, for a test \texttt{Instance x}, the \texttt{double[]} a
 \begin{verbatim}
 	[0.1, 0.0, 0.9, 0.9, 0.2]
 \end{verbatim} 
-where clearly the third and fourth labels are most relevant. Thus, these values may be label relevances, votes, or posterior probabilities. Under a threshold of $0.5$ the final classification for \texttt{x} would be \texttt{[0,0,1,1,0]}. \framework{\MEKA} will {\blue automatically calibrate a threshold} to convert all values into $0/1$ relevances like these (see Section \ref{sec:evaluation}). Naturally, a multi-label classifier may return $0/1$ binary relevances directly (represented as doubles).
+where clearly the third and fourth labels are most relevant. Thus, these values may be label relevances, votes, or posterior probabilities. Under a threshold of $0.5$ the final classification for \texttt{x} would be \texttt{[0,0,1,1,0]}. \framework{\MEKA} will by default automatically calibrate a threshold to convert all values into $0/1$ relevances like these (see Section \ref{sec:evaluation}). Naturally, a multi-label classifier may return $0/1$ binary relevances directly (represented as doubles, i.e., $0.0/1.0$).
 
 \subsection{Multi-target Classifiers}
 
@@ -491,7 +477,7 @@ public class TestClassifierUpdateable extends TestClassifier
 \end{verbatim}
 }
 
-Note that the \texttt{WindowIncrementalEvaluator} class is called for evaluation in this case; see Section \ref{sec:evaluation}. {\blue The \framework{\MOA} framework \cite{MOA} for learning in data streams is currently being developed to support multi-label classification with a wrapper for \framework{\MEKA} classifiers, and will offer more types of evaluation for incremental classification in a data stream.}
+Note that the \texttt{WindowIncrementalEvaluator} class is called for evaluation in this case; see Section \ref{sec:evaluation}. The \framework{\MOA} framework \cite{MOA} for learning in data streams is currently being developed to support multi-label classification with a wrapper for \framework{\MEKA} classifiers, and will offer more types of evaluation for incremental classification in a data stream.
 
 \section{Getting Help / Reporting Bugs / Contributing}
 
