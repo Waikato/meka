@@ -84,12 +84,12 @@ These files are found in the \texttt{lib} directory. See \texttt{lib/README.txt}
 
 \framework{\MEKA} can be used very easily from the command line. For example, to run the Binary Relevance (BR) classifier on the \textit{Music} dataset; type:
 \begin{verbatim}
-	java -cp meka.jar:lib/*.jar weka.classifiers.multilabel.BR -t data/Music.arff
+	java -cp lib/*.jar weka.classifiers.multilabel.BR -t data/Music.arff
 \end{verbatim}\marginpar{true?}
 
 If you are on a Microsoft Windows system, the \texttt{jar}s in the classpath are separated by a semicolon '\texttt{;}' instead of a colon. If you add the \texttt{jar} files to the system's \texttt{CLASSPATH}, you do not need to supply the \texttt{-cp} option at runtime. For the remainder of examples in this tutorial we will assume that this is the case.%; and thus the \texttt{-cp} option is not required.
 
-Since Version 1.2 \framework{\MEKA} has a graphical user interface (GUI). Run this with either the \texttt{run.sh} (under Linux, OSX) or \texttt{run.bat} (under Microsoft windows) scripts, e.g.: \marginpar{true?} 
+Since Version 1.2 \framework{\MEKA} has a graphical user interface (GUI). Run this with either the \texttt{run.sh} script (under Linux, OSX) or \texttt{run.bat} (under Microsoft windows) scripts, e.g.:
 \begin{verbatim}
 	./run.sh
 \end{verbatim}
@@ -126,7 +126,7 @@ Since the number of target attributes tends to vary with each dataset, for conve
 
 Note that the format of the \texttt{label} attribute (binary) is the \emph{only} kind of target attribute in multi-\emph{label} datasets. For more examples of \framework{\MEKA} ARFF files; see the \texttt{data/} directory for several multi-label and multi-target datasets.
 
-\framework{\MEKA} can also read ARFF files in the \framework{\MULAN} format where target attributes are the \emph{last} attributes, rather than the first ones. This format can also be read by \framework{\MEKA} by specifying a minus sign `\texttt{-}' before the number of target attributes in the \texttt{-C} option. For example, \texttt{-C -3} will set the \emph{last} \texttt{3} attributes as the target attributes automatically when the file is loaded. Alternatively, the class attributes can be moved using \framework{\WEKA}'s \texttt{Reorder} filter. %weka.filters.unsupervised.attribute.
+\framework{\MEKA} can also read ARFF files in the \framework{\MULAN} format where target attributes are the \emph{last} attributes, rather than the first ones. This format can also be read by \framework{\MEKA} by specifying a minus sign `\texttt{-}' before the number of target attributes in the \texttt{-C} option. For example, \texttt{-C -3} will set the \emph{last} \texttt{3} attributes as the target attributes automatically when the file is loaded. Alternatively, the class attributes can be moved using \framework{\WEKA}'s \texttt{Reorder} filter, or in the GUI, as in the following. %weka.filters.unsupervised.attribute.
 
 %Note that the \framework{\MULAN} format expects the target attributes to be indexed \emph{last} rather than the first. Specifying \texttt{-c $-L$} to \framework{\MEKA} will automatically move the last $L$ attributes to the beginning upon loading. 
 
@@ -159,32 +159,35 @@ With the exception of the different use of the \texttt{-c} flag (see the previou
 Evaluation Options:
 
 -h
-    Output help information.
+        Output help information.
 -t <name of training file>
-    Sets training file.
+        Sets training file.
+-T <name of test file>
+        Sets test file.
 -x <number of folds>
-    Do cross-validation with this many folds.
+        Do cross-validation with this many folds.
 -p
-    Specify a range in the dataset (@see weka.core.Range)
+        Specify a range in the dataset (@see weka.core.Range)
 -R
-    Randomise the dataset 
-    (done after a range is removed, but before the train/test split)
+        Randomise the dataset (done after a range is removed, but before the 
+        train/test split)
 -split-percentage <percentage>
-    Sets the percentage for the train/test set split, e.g., 66.
+        Sets the percentage for the train/test set split, e.g., 66.
 -split-number <number>
-    Sets the number of training examples, e.g., 800.
+        Sets the number of training examples, e.g., 800.
 -i
-    Invert the specified train/test split
+        Invert the specified train/test split
 -s <random number seed>
-    Sets random number seed.
--T <threshold>
-    Sets the type of thresholding; where 
-    'c' automatically calibrates a threshold (the default); 
-    'C' automatically calibrates one threshold for each label; and 
-    any double number, e.g. 0.5, specifies that threshold.
+        Sets random number seed.
+-threshold <threshold>
+        Sets the type of thresholding; where 
+            'PCut1' automatically calibrates a threshold (the default); 
+            'PCutL' automatically calibrates one threshold for each label; and 
+            any double number, e.g. '0.5', specifies that threshold.
 -C <number of target attributes>
-    Sets the number of target attributes to expect 
-    (indexed from the beginning).
+        Sets the number of target attributes to expect (indexed from the beginning).
+-f <results_file>
+        Specify a file to output results and evaluation statistics into.
 \end{verbatim}
 }
 
@@ -225,7 +228,7 @@ The CLI is the most powerful way to work with \framework{\MEKA}, but the GUI is 
 	\item Click on the \textsf{Classify} tab.
 	\item \textsf{Choose} a multi-label or multi-target classifier and (in most cases) an appropriate \framework{\WEKA} base classifier, as well as its options. For \framework{\MEKA}'s meta classifiers, you will need to choose a \framework{\MEKA} base classifier, and a single-label \framework{\WEKA} base classifier for this classifier. See, for example, \Fig{screen:eval}, using Bagging of Classifier Chains with SMO.
 	\item In the \textsf{Evaluation} panel you configure what type of evaluation you want to do, and some of the options given in the previous section are available here. For example, a 50/50 train/test split, as being specified in \Fig{screen:split}.
-	\item When you click \textsf{Start} the experiment will be run. When finished, the result will appear in the \textsf{History} panel; {\blue or multiple results in the case of cross-fold or incremental validation. This is the same output as would be seen on the command line, and explained in the following section.}
+	\item When you click \textsf{Start} the experiment will be run. When finished, the result will appear in the \textsf{History} panel; or multiple results in the case of incremental validation. This is the same output as would be seen on the command line, and explained in the following section.
 	%\item You can export results to text, or copy of paste it.
 	\item Optionally, you can click on the \textsf{Visualize} tab and visualize the results.
 \end{enumerate}
@@ -248,7 +251,7 @@ The CLI is the most powerful way to work with \framework{\MEKA}, but the GUI is 
 
 Running a BR classifier with Naive Bayes on the \textit{Enron} data will output the following:
 
-{\small \marginpar{{\blue to update!}}
+{\small
 \begin{verbatim}
 Classifier_name : weka.classifiers.multilabel.BR
  Classifier_ops : [-W, weka.classifiers.bayes.NaiveBayes, --, , , ]
@@ -291,24 +294,13 @@ Most of these measures are described in \cite{Thesis,ECC2,MMD}. The most common 
 
 %\subsection{Thresholds}
 
-Note that a \texttt{Threshold} has been calibrated automatically; to minimise the difference between the label cardinality of the training set and the predictions on the test set; a practice described in \cite{ECC2}. To calibrate a threshold for \emph{each} label, add the \texttt{-T C} option. This gives a vector of thresholds which, in this case, increases \texttt{Accuracy} slightly (to \texttt{0.456}). Different thresholds are calculated for different methods and datasets.
+Note that a \texttt{Threshold} has been calibrated automatically; to minimise the difference between the label cardinality of the training set and the predictions on the test set; a practice described in \cite{ECC2}. To calibrate a threshold for \emph{each} label, add the \texttt{-threshold PCutL} option\footnote{Note: this was \texttt{-T C} in previous versions of \framework{\MEKA}}. This gives a vector of thresholds which, in this case, increases \texttt{Accuracy} slightly (to \texttt{0.456}). Different thresholds are calculated for different methods and datasets.
 
 %\begin{verbatim}
 %          Threshold : [0.29971988795518206, 0.26330532212885155, \
 %			  0.4257703081232493, 0.22128851540616246, 0.23809523809523808, \
 %			  0.3473389355742297]
 %\end{verbatim}
-
-Sometimes it can be useful to save predictions and information about an experiment. \framework{\MEKA} can produce plain-text files with the option \texttt{-f <file name>}; for example:
-\begin{verbatim}
-java weka.classifiers.multilabel.BR -t data/Music.arff \ 
-  -f BR-NB.dat \
-  -W weka.classifiers.bayes.NaiveBayes
-\end{verbatim}
-which produces the plain-text file \texttt{BR-NB.dat}. This provides a way to analyse individual classifications and evaluate other software with \framework{\MEKA}'s evaluation framework. The results can be displayed again with:
-\begin{verbatim}
-	java weka.core.Result -f out.dat 
-\end{verbatim}
 
 \framework{\MEKA} also supports \emph{cross validation}; for example:
 \begin{verbatim}
@@ -317,7 +309,16 @@ java weka.classifiers.multilabel.BR -x 10 -R -t ~/data/Music.arff \
 \end{verbatim}
 conducts 10 fold cross validation on a randomised version of the \textit{Music.arff} data and outputs the average results across all folds with standard deviation. %Note that using the \texttt{-f} option in this case to save output to a file will output only the results of the validation; which can be useful for compiling results later.
 
-{\blue Note that with cross validation \ldots}
+Sometimes it can be useful to analyse the actual predictions made at test time. \framework{\MEKA} can produce plain-text files with the option \texttt{-f <file name>}; for example:
+\begin{verbatim}
+java weka.classifiers.multilabel.BR -t data/Music.arff \ 
+  -f BR-NB.meka \
+  -W weka.classifiers.bayes.NaiveBayes
+\end{verbatim}
+which produces the plain-text file \texttt{BR-NB.meka}. This provides a way to analyse individual classifications and evaluate other software with \framework{\MEKA}'s evaluation framework. Note that when cross validation (\texttt{-x}) is used, one file will be created for each fold, e.g., \texttt{BR-NB.meka.0},\texttt{BR-NB.meka.1},\ldots,\texttt{BR-NB.meka.4} for a 5-fold validation. The results can be recalculated for any of these files with, e.g.:
+\begin{verbatim}
+	java weka.core.Result -f BR-NB.meka
+\end{verbatim}
 
 More examples are given in the following subsection.
 
@@ -326,6 +327,20 @@ More examples are given in the following subsection.
 %\paragraph{Multi-label}
 
 %The methods used in the following examples are detailed in papers papers detailing these methods are available here.
+
+\paragraph{Binary Relevance} (BR) On the \textit{Music} data, loading from two separate sets, using Support Vector Machines as a base classifier: 
+\begin{verbatim}
+java weka.classifiers.multilabel.BR \
+  -t data/Music_train.arff \
+  -T data/Music_test.arff \
+  -W weka.classifiers.functions.SMO
+\end{verbatim}
+
+\paragraph{Label Powerset} (LP) On the \textit{Music} data, using a separate threshold for each label: 
+\begin{verbatim}
+java weka.classifiers.multilabel.LP -t data/Music.arff -threshold PCutL
+  -W weka.classifiers.functions.SMO
+\end{verbatim}
 
 \paragraph{Ensembles of Pruned Sets} (EPS; see \cite{EPS}) With 10 ensemble members (the default) on the \textit{Enron} dataset with Support Vector Machines as the base classifier; each \texttt{PS} model is set with \texttt{N=1} and \texttt{P} to a random selection of \texttt{\{1,2,3,4,5\}}:
 
@@ -358,16 +373,16 @@ java weka.classifiers.multilabel.MULAN -t data/Scene.arff \
 %  -W weka.classifiers.functions.Logistic
 %\end{verbatim}
 
-\paragraph{Incremental Classification: Ensembles of Binary Relevance} (see \cite{ECC2,MEDS2}) With 10 ensemble members (default) on the \textit{Enron} dataset with \texttt{NaiveBayesUpdateable} as a base classifier (\texttt{mice.jar} from the \framework{\MEKA} package must be added to the classpath):
+\paragraph{Incremental Classification: Ensembles of Binary Relevance} (see \cite{ECC2,MEDS2}) With 10 ensemble members (default) on the \textit{Enron} dataset with \texttt{NaiveBayesUpdateable} as a base classifier; using over 20 evaluation windows:
 
 \begin{verbatim}
-java weka.classifiers.multilabel.meta.EnsembleMLUpdateable \
+java weka.classifiers.multilabel.meta.EnsembleMLUpdateable -B 20\
   -t data/Enron.arff \
   -W weka.classifiers.multilabel.BRUpdateable -- \
     -W weka.classifiers.bayes.NaiveBayesUpdateable
 \end{verbatim}
 
-Evaluating incremental classifiers will carry out evaluation and display statistics for the data over 19 evaluation windows (an initial window is used for the initial training; making 20 windows in total). Note that the \framework{\MOA} framework \cite{MOA} for evaluating incremental classifiers is much more sophisticated; and a new release is will include a wrapper to \framework{\MEKA}. 
+Evaluating incremental classifiers will carry out evaluation and display statistics for the data over $\texttt{B}-1$ evaluation windows (an initial window is used for the initial training; making \texttt{B} windows in total). Note that the \framework{\MOA} framework \cite{MOA} for evaluating incremental classifiers is much more sophisticated; and a new release will include a wrapper to \framework{\MEKA}. 
 
 \paragraph{Multi-target: Ensembles of Class Relevance} (see \cite{UPM}) The multi-target version of the Binary Relevance classifier) on the \textit{solar flare} dataset with Logistic Regression as a base classifier under $5$-fold cross-validation:
 \begin{verbatim}
@@ -380,6 +395,15 @@ java weka.classifiers.multitarget.meta.BaggingMT -x 10 -R \
 %\begin{verbatim}
 %java -cp meka.jar:weka.jar weka.classifiers.multitarget.meta.BaggingMT -x 5 -R -t data/solar_flare.arff -W weka.%classifiers.multitarget.C    C -- -W weka.classifiers.functions.Logistic
 %\end{verbatim}
+
+\section{Using \framework{\MEKA} with other frameworks} \label{sec:others}
+
+. The results can be displayed again with:
+\begin{verbatim}
+	java weka.core.Result -f out.dat 
+\end{verbatim}
+
+
 
 \section{\label{sec:extending}Extending \framework{\MEKA}}%: Writing New Classifiers
 

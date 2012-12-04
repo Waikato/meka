@@ -38,9 +38,6 @@ import weka.filters.unsupervised.instance.RemoveRange;
  * Evaluation.java - Evaluation functionality.
  * @author 		Jesse Read (jmr30@cs.waikato.ac.nz)
  * @version 	November 2012
- *
- * TODO	need to change current -H to -T for loading test instances from a separate file
- *          need to change current -T to -threshold (so that there is no conflict for -T)
  */
 public class Evaluation {
 
@@ -150,9 +147,15 @@ public class Evaluation {
 			if(Utils.getOptionPos('x',options) >= 0) {
 				// CROSS-FOLD-VALIDATION
 				int numFolds = MLUtils.getIntegerOption(Utils.getOption('x',options),10); // default 10
-				Result fold[] = Evaluation.cvModel(h,allInstances,numFolds,(Utils.getOptionPos('H',options) >= 0) ? Utils.getOption('H',options) : "PCut1");
+				Result fold[] = Evaluation.cvModel(h,allInstances,numFolds,(Utils.getOptionPos("threshold",options) >= 0) ? Utils.getOption("threshold",options) : "PCut1");
 				r = MLEvalUtils.averageResults(fold);
 				System.out.println(r.toString());
+				if (Utils.getOptionPos('f',options) >= 0) {
+					String fname = Utils.getOption('f',options);
+					for(int i = 0; i < fold.length; i++) {
+						Result.writeResultToFile(fold[i],fname+"."+i);
+					}
+				}
 			}
 			else {
 				int TRAIN = -1;
@@ -212,7 +215,7 @@ public class Evaluation {
 
 				if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(allInstances)+"\tL="+allInstances.classIndex()+"\tD(t:T)=("+train.numInstances()+":"+test.numInstances()+")\tLC(t:T)="+Utils.roundDouble(MLUtils.labelCardinality(train,allInstances.classIndex()),2)+":"+Utils.roundDouble(MLUtils.labelCardinality(test,allInstances.classIndex()),2)+")");
 
-				r = evaluateModel(h,train,test,(Utils.getOptionPos('H',options) >= 0) ? Utils.getOption('H',options) : "PCut1");
+				r = evaluateModel(h,train,test,(Utils.getOptionPos("threshold",options) >= 0) ? Utils.getOption("threshold",options) : "PCut1");
 				System.out.println(r.toString());
 
 			}
@@ -389,8 +392,8 @@ public class Evaluation {
 		text.append("-i\n");
 		text.append("\tInvert the specified train/test split\n");
 		text.append("-s <random number seed>\n");
-		text.append("\tSets random number seed. If used with -x then it specifies the specific fold to run.\n");
-		text.append("-H <threshold>\n");
+		text.append("\tSets random number seed.");
+		text.append("-threshold <threshold>\n");
 		text.append("\tSets the type of thresholding; where 'PCut1' automatically calibrates a threshold (the default); 'PCutL' automatically calibrates one threshold for each label; and any double number, e.g. '0.5', specifies that threshold.\n");
 		text.append("-C <number of target attributes>\n");
 		text.append("\tSets the number of target attributes to expect (indexed from the beginning).\n");
