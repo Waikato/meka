@@ -154,6 +154,9 @@
       <exec executable="pdflatex" dir="${src-latex}/tutorial">
          <arg value="Tutorial.tex"/>
       </exec>
+      <exec executable="pdflatex" dir="${src-latex}/tutorial">
+         <arg value="Tutorial.tex"/>
+      </exec>
       <copy todir="${target}" >
           <fileset dir="${src-latex}/tutorial">
             <include name="Tutorial.pdf"/>
