@@ -45,7 +45,9 @@
         </delete>
        <delete>
         	<fileset dir="${src-latex}" includes="**/*.aux"/>
-        	<fileset dir="${src-latex}" includes="**/*.bbl"/>
+        	<fileset dir="${src-latex}" includes="**/*.blg"/>
+        	<fileset dir="${src-latex}" includes="**/*.dvi"/>
+        	<fileset dir="${src-latex}" includes="**/*.out"/>
          	<fileset dir="${src-latex}" includes="**/*.log"/>
          	<fileset dir="${src-latex}" includes="**/*.pdf"/>
         	<fileset dir="${src-latex}" includes="**/*.toc"/>
