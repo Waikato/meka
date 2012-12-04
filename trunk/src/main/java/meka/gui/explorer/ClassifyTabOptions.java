@@ -21,6 +21,15 @@ package meka.gui.explorer;
 
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+import weka.core.converters.ConverterUtils.DataSource;
+import weka.core.Instances;
+import java.io.FileInputStream;
 
 import meka.gui.core.ParameterPanel;
 
@@ -51,6 +60,11 @@ public class ClassifyTabOptions
   /** for randomizing. */
   protected JToggleButton m_ToggleRandomize;
   
+  /** for test file. */
+  protected JButton m_ButtonFile;
+  private JFileChooser fc = new JFileChooser();
+  protected Instances m_FileTestset = null;
+  
   /**
    * Initializes the widgets.
    */
@@ -71,13 +85,47 @@ public class ClassifyTabOptions
     addParameter("Threshold", m_TextTOP);
 
 	m_ToggleRandomize = new JToggleButton("Randomize", false);
-    addParameter("", m_ToggleRandomize);
+    addParameter("Randomize?", m_ToggleRandomize);
+
+	m_ButtonFile = new JButton("Open");
+	m_ButtonFile.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+		  if ( fc.showOpenDialog(ClassifyTabOptions.this) == JFileChooser.APPROVE_OPTION) {
+			  try {
+				  m_FileTestset = DataSource.read(new FileInputStream(fc.getSelectedFile()));
+			  } catch(Exception exp) {
+				  System.err.println("[Error] Failed to load file.");
+				  exp.printStackTrace();
+			  }
+		  }
+      }
+    });
+    addParameter("Test File", m_ButtonFile);
+  }
+  
+  /**
+   * Sets the Test File option
+   * 
+   * @param B	the Randomize value to use
+   */
+  public void setTestFile(Instances file) {
+	  m_FileTestset = file;
+  }
+  
+  /**
+   * Returns the currently selected Test File (if any).
+   * 
+   * @return		the Randomize value
+   */
+  public Instances getTestFile() {
+      return m_FileTestset;
   }
   
   /**
    * Sets the Randomize option
    * 
-   * @param value	the Randomize value to use
+   * @param B	the Randomize value to use
    */
   public void setRandomize(boolean B) {
 	  m_ToggleRandomize.setSelected(B);

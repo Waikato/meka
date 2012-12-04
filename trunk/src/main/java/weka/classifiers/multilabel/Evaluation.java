@@ -150,19 +150,19 @@ public class Evaluation {
 			if(Utils.getOptionPos('x',options) >= 0) {
 				// CROSS-FOLD-VALIDATION
 				int numFolds = MLUtils.getIntegerOption(Utils.getOption('x',options),10); // default 10
-				Result fold[] = Evaluation.cvModel(h,allInstances,numFolds,(Utils.getOptionPos('T',options) >= 0) ? Utils.getOption('T',options) : "c");
+				Result fold[] = Evaluation.cvModel(h,allInstances,numFolds,(Utils.getOptionPos('H',options) >= 0) ? Utils.getOption('H',options) : "PCut1");
 				r = MLEvalUtils.averageResults(fold);
 				System.out.println(r.toString());
 			}
 			else {
 				int TRAIN = -1;
-				if(Utils.getOptionPos('H',options) >= 0) {
+				if(Utils.getOptionPos('T',options) >= 0) {
 					// split by train / test files
 					TRAIN = allInstances.numInstances();
 					// load test set
 					Instances testInstances = null;
 					try {
-						filename = Utils.getOption('H', options);
+						filename = Utils.getOption('T', options);
 						testInstances = DataSource.read(filename);
 						for(Instance x : testInstances) {
 							x.setDataset(allInstances);
@@ -212,7 +212,7 @@ public class Evaluation {
 
 				if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(allInstances)+"\tL="+allInstances.classIndex()+"\tD(t:T)=("+train.numInstances()+":"+test.numInstances()+")\tLC(t:T)="+Utils.roundDouble(MLUtils.labelCardinality(train,allInstances.classIndex()),2)+":"+Utils.roundDouble(MLUtils.labelCardinality(test,allInstances.classIndex()),2)+")");
 
-				r = evaluateModel(h,train,test,(Utils.getOptionPos('T',options) >= 0) ? Utils.getOption('T',options) : "PCut1");
+				r = evaluateModel(h,train,test,(Utils.getOptionPos('H',options) >= 0) ? Utils.getOption('H',options) : "PCut1");
 				System.out.println(r.toString());
 
 			}
@@ -374,7 +374,7 @@ public class Evaluation {
 		text.append("\tOutput help information.\n");
 		text.append("-t <name of training file>\n");
 		text.append("\tSets training file.\n");
-		text.append("-H <name of test file>\n");
+		text.append("-T <name of test file>\n");
 		text.append("\tSets test file.\n");
 		text.append("-x <number of folds>\n");
 		text.append("\tDo cross-validation with this many folds.\n");
@@ -390,8 +390,8 @@ public class Evaluation {
 		text.append("\tInvert the specified train/test split\n");
 		text.append("-s <random number seed>\n");
 		text.append("\tSets random number seed. If used with -x then it specifies the specific fold to run.\n");
-		text.append("-T <threshold>\n");
-		text.append("\tSets the type of thresholding; where 'c' automatically calibrates a threshold (the default); 'C' automatically calibrates one threshold for each label; and any double number, e.g. 0.5, specifies that threshold.\n");
+		text.append("-H <threshold>\n");
+		text.append("\tSets the type of thresholding; where 'PCut1' automatically calibrates a threshold (the default); 'PCutL' automatically calibrates one threshold for each label; and any double number, e.g. '0.5', specifies that threshold.\n");
 		text.append("-C <number of target attributes>\n");
 		text.append("\tSets the number of target attributes to expect (indexed from the beginning).\n");
 		text.append("-f <results_file>\n");

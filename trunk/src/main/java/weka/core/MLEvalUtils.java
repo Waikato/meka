@@ -121,7 +121,7 @@ public abstract class MLEvalUtils {
 	 * Given predictions and corresponding true values and a threshold string, retreive statistics.
 	 * @param	Confidences	predictions (may be double-valued confidences in the multi-label case)
 	 * @param	TrueValues	corresponding true values
-	 * @param	t[]			a vector of thresholds, e.g. [0.1,0.1,0.1] or [0.1,0.5,0.4,0.001]
+	 * @param	t			a vector of thresholds, e.g. [0.1,0.1,0.1] or [0.1,0.5,0.4,0.001]
 	 * @return	the evaluation statistics
 	 */
 	public static HashMap<String,Double> getMLStats(ArrayList<double[]> Confidences, ArrayList<int[]> TrueValues, double t[]) {
@@ -342,7 +342,7 @@ public abstract class MLEvalUtils {
 
 	/**
 	 * AverageResults - Create a Result with the average of an array of Results
-	 * @param	folds[]	array of Results (e.g., from CV-validation)
+	 * @param	folds	array of Results (e.g., from CV-validation)
 	 * @return	A result reporting the average of these folds.
 	 */
 	public static Result averageResults(Result folds[]) { 
