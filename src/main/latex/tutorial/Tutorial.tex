@@ -394,10 +394,7 @@ java weka.classifiers.multitarget.meta.BaggingMT -x 10 -R \
 
 \section{\label{sec:extending}Extending \framework{\MEKA}}%: Writing New Classifiers
 
-The source code is available in the release (\texttt{meka-src-\version-jar}). You can also check out the latest SVN repository from \url{SourceForge.net} \textsf{Code}: 
-\begin{verbatim}
-	svn co https://meka.svn.sourceforge.net/svnroot/meka meka 
-\end{verbatim}
+The source code is available in the release (\texttt{meka-src-\version-jar}). You can also check out the latest SVN repository from \url{SourceForge.net} \textsf{Code}; see \url{https://sourceforge.net/p/meka/code/} for details. 
 
 Writing \framework{\MEKA} classifiers involves writing regular \framework{\WEKA} classifiers that extend either the \texttt{MultilabelClassifier} or \texttt{MultiTargetClassifier} class, and expect the \texttt{classIndex()} of \texttt{Instance}s and \texttt{Instances}s to indicate the number of target attributes (indexed at the beginning) rather than the class index (as explained in Section \ref{sec:format}). 
 
@@ -416,6 +413,7 @@ import weka.core.*;
 public class TestClassifier extends MultilabelClassifier {
 	
     public void buildClassifier(Instances D) throws Exception {
+        testCapabilities(D);
         int C = D.classIndex();
     }
     
@@ -431,7 +429,7 @@ public class TestClassifier extends MultilabelClassifier {
 \end{verbatim}
 }
 
-This shows how easy it is to create a new classifier. However, for more useful examples see the source code of existing \framework{\MEKA} classifiers. Note that the \texttt{distributionForInstance} method returns a \texttt{double[]} array exactly like in \framework{\WEKA}. However, whereas in \framework{\WEKA}, there is one value in the array for each possible value of the single target attribute, in \framework{\MEKA} this function returns an array of $C$ values, where $C$ is the \emph{number} of target attributes, and the $j$th value of the array is the \emph{value} corresponding to the $j$th target attribute.
+This shows how easy it is to create a new classifier. However, for more useful examples see the source code of existing \framework{\MEKA} classifiers. The \texttt{testCapabilities(D)} line is optional but highly recommended. Note that the \texttt{distributionForInstance} method returns a \texttt{double[]} array exactly like in \framework{\WEKA}. However, whereas in \framework{\WEKA}, there is one value in the array for each possible value of the single target attribute, in \framework{\MEKA} this function returns an array of $C$ values, where $C$ is the \emph{number} of target attributes, and the $j$th value of the array is the \emph{value} corresponding to the $j$th target attribute.
 
 \subsection{Multi-label Classifiers}
 
