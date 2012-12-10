@@ -125,7 +125,7 @@ Since the number of target attributes tends to vary with each dataset, for conve
 \end{verbatim}
 }
 
-Note that the format of the \texttt{label} attribute (binary) is the \emph{only} kind of target attribute in multi-\emph{label} datasets. For more examples of \framework{\MEKA} ARFF files; see the \texttt{data/} directory for several multi-label and multi-target datasets.
+Note that the format of the \texttt{label} attribute (binary) is the \emph{only} kind of target attribute in multi-\emph{label} datasets. For more examples of \framework{\MEKA} ARFF files; see the \texttt{data/} directory for several multi-label and multi-target datasets (some of these are in a compressed format).
 
 \framework{\MEKA} can also read ARFF files in the \framework{\MULAN} format where target attributes are the \emph{last} attributes, rather than the first ones. This format can also be read by \framework{\MEKA} by specifying a minus sign `\texttt{-}' before the number of target attributes in the \texttt{-C} option. For example, \texttt{-C -3} will set the \emph{last} \texttt{3} attributes as the target attributes automatically when the file is loaded. Alternatively, the class attributes can be moved using \framework{\WEKA}'s \texttt{Reorder} filter, or in the GUI, as in the following. %weka.filters.unsupervised.attribute.
 
