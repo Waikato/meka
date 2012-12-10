@@ -1,0 +1,498 @@
+%%%%%%%%%%
+%
+%
+%
+%
+%
+%
+%
+%   both types of threshold
+%
+%
+%
+%
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{my_symbols}
+\usepackage{hyperref}
+\newcommand{\MEKA}{Meka}
+\newcommand{\MICE}{Mice}
+\newcommand{\MOA}{Moa}
+\newcommand{\WEKA}{Weka}
+\newcommand{\MULAN}{Mulan}
+\def\version{{\tt 1.2}}
+
+\begin{document}
+
+\title{Tutorial. \framework{\MEKA} \version }
+
+\author{Jesse Read}
+
+\date{December 2012}
+
+\maketitle
+
+\begin{center}
+	\includegraphics{MEKA.png}\\
+		A Multilabel/multitarget Extension to WEKA.\\
+		\url{http://meka.sourceforge.net}
+\end{center}
+
+\tableofcontents
+
+\pagestyle{empty}
+\pagebreak
+
+\section{Introduction}
+
+This is a tutorial for the open source machine learning framework \framework{\MEKA}. \framework{\MEKA} is closely based upon the \framework{\WEKA} framework \cite{WEKA}; providing support for development, running and evaluation of \keyword{multi-label} and \keyword{multi-target} classifiers (which \framework{WEKA} does not).
+
+In the \keyword{multi-label} problem, a data instance may be associated with multiple labels. This is as opposed to the traditional task of single-label classification (\ie multi-class, or binary) where each instance is only associated with a single class label. The multi-label context is receiving increased attention and is applicable to a wide variety of domains, including text, music, images and video, and bioinformatics. A good introduction can be found in \cite{MMD} and \cite{Thesis}.
+
+The multi-label problem is in fact a special case of \keyword{multi-target} learning. In multi-target, or \textit{multi-dimensional} learning, a data instance is associated with multiple target variables, where each variable takes a number of values. In the multi-label case, all variables are binary, indicating label relevance ($1$) or irrelevance ($0$). The multi-target case has been investigated by, for example, \cite{UPM} and \cite{MT}.  
+
+\framework{\MEKA} can also includes \emph{incremental} classifiers suitable for the \keyword{data streams} context. An overview of some of the methods included in \framework{\MEKA} for learning from incremental data streams is given in \cite{MEDS2}.
+
+\framework{\MEKA} is released under the GNU GPL licence. The latest release, source code, API reference, this tutorial, and further information and links to additional material, can be found at the website: \url{http://meka.sourceforge.net}. 
+
+This tutorial applies to \framework{\MEKA} version {\version}. 
+
+\section{Getting Started}
+
+\framework{\MEKA} can be download from: \url{http://sourceforge.net/projects/meka/files/}. This tutorial is written for version \version; and assumes that you have downloaded the \texttt{meka-release-\version} full release package, have extracted the folder \texttt{meka-\version} found within, and that this folder is your current working directory.
+
+\subsection{Requirements}
+
+\framework{\MEKA} requires:
+
+\begin{itemize}
+	 \item Java version 1.6 or above
+\end{itemize}
+
+%\subsection{Downloading}
+\framework{\MEKA} comes bundled with \framework{\WEKA}'s \texttt{weka.jar}, and also \framework{\MULAN}'s \texttt{mulan.jar} for running classifiers from this framework. % If \framework{\WEKA} is already installed on your system, it must be at least version release (\texttt{3.7.X}) to be compatible with \texttt{\MEKA}.
+These files are found in the \texttt{lib} directory. See \texttt{lib/README.txt} for version information.
+
+
+%\framework{\MEKA}'s incremental classification extension (\texttt{mice.jar}) comes packaged in a separate jar file. 
+
+\subsection{Running}
+\label{sec:running}
+
+\framework{\MEKA} can be used very easily from the command line. For example, to run the Binary Relevance (BR) classifier on the \textit{Music} dataset; type:
+\begin{verbatim}
+	java -cp lib/*.jar weka.classifiers.multilabel.BR -t data/Music.arff
+\end{verbatim}\marginpar{true?}
+
+If you are on a Microsoft Windows system, the \texttt{jar}s in the classpath are separated by a semicolon '\texttt{;}' instead of a colon. If you add the \texttt{jar} files to the system's \texttt{CLASSPATH}, you do not need to supply the \texttt{-cp} option at runtime. For the remainder of examples in this tutorial we will assume that this is the case.%; and thus the \texttt{-cp} option is not required.
+
+Since Version 1.2 \framework{\MEKA} has a graphical user interface (GUI). Run this with either the \texttt{run.sh} script (under Linux, OSX) or \texttt{run.bat} (under Microsoft windows) scripts, e.g.:
+\begin{verbatim}
+	./run.sh
+\end{verbatim}
+
+
+%\begin{verbatim}
+%	export CLASSPATH=$MEKA/meka.jar:$MEKA/weka.jar:$CLASSPATH
+%\end{verbatim}
+%
+%where \texttt{\$MEKA} is the folder you extracted the software to; or by supplying the classpath directly when running java with :
+
+
+\section{\label{sec:format}\framework{\MEKA}'s Dataset Format}
+
+\framework{\MEKA} uses \framework{\WEKA}'s ARFF file format. See \url{http://weka.wikispaces.com/ARFF} to learn about this format. \framework{\MEKA} uses multiple attributes -- one for each target or label -- rather than a single class attribute. The \emph{number} of target attributes is specified with either \texttt{-C} or \texttt{-c}; \emph{unlike} in \framework{\WEKA} where the \texttt{-c} flag indicates the position of the \emph{class index}. \framework{\MEKA} uses the reference to the \texttt{classIndex} internally to denote the number of target attributes. %This is important when creating new \framework{\MEKA} classifiers (see Section \ref{sec:extending}).
+
+Since the number of target attributes tends to vary with each dataset, for convenience \framework{\MEKA} allows this option (as well as other dataset options like the train/test split percentage) to be stored in the \texttt{@relation} name of an ARFF file, where a colon (\texttt{:}) is used to separate the dataset name and the options. The following is an example ARFF header for multi-target classification with three target variables and four attributes:
+
+{\small
+\begin{verbatim}
+@relation 'Example_Dataset: -C 3 -split-percentage 50'
+
+@attribute category {A,B,C,NEG}
+@attribute label {0,1}
+@attribute rank {1,2,3}
+@attribute X1 {0,1}
+@attribute X2 {0,1}
+@attribute X3 numeric
+@attribute X4 numeric
+
+@data
+\end{verbatim}
+}
+
+Note that the format of the \texttt{label} attribute (binary) is the \emph{only} kind of target attribute in multi-\emph{label} datasets. For more examples of \framework{\MEKA} ARFF files; see the \texttt{data/} directory for several multi-label and multi-target datasets (some of these are in a compressed format).
+
+\framework{\MEKA} can also read ARFF files in the \framework{\MULAN} format where target attributes are the \emph{last} attributes, rather than the first ones. This format can also be read by \framework{\MEKA} by specifying a minus sign `\texttt{-}' before the number of target attributes in the \texttt{-C} option. For example, \texttt{-C -3} will set the \emph{last} \texttt{3} attributes as the target attributes automatically when the file is loaded. Alternatively, the class attributes can be moved using \framework{\WEKA}'s \texttt{Reorder} filter, or in the GUI, as in the following. %weka.filters.unsupervised.attribute.
+
+%Note that the \framework{\MULAN} format expects the target attributes to be indexed \emph{last} rather than the first. Specifying \texttt{-c $-L$} to \framework{\MEKA} will automatically move the last $L$ attributes to the beginning upon loading. 
+
+\subsection{Manipulating Datasets in the GUI}
+\label{sec:data.gui}
+
+A good way to set up an ARFF file for multi-dimensional classification is using the GUI. Open an ARFF file with `\textsf{Open}' from the \textsf{File} menu. In the \textsf{Preprocess} tab in the right-hand column (see \Fig{screen:arff}), simply select the attributes you wish to use as class attributes and click the button `\textsf{Use class attributes}'. You can then save this file using `\textsf{Save}' from the \textsf{File} menu, which will also save the \texttt{-C} flag into the \texttt{@relation} tag as described above (displayed under '\textsf{Relation:}' in the GUI), so next time the classes will be set automatically.
+
+The datasets that come with \framework{\MEKA} already come with the \texttt{-C} flag specified correctly, so you do not need to set this information.
+
+You can also run any of \framework{\WEKA}'s filters on the dataset with the \textsf{Choose} button. See the \framework{\WEKA} documentation for more information.
+
+\begin{figure}
+	\includegraphics[height=0.75\textwidth]{GUI01.png}
+	\caption{\label{screen:arff} \framework{MEKA}'s GUI interface; having loaded the \textit{Music} dataset.}
+\end{figure}
+
+\section{Using \framework{\MEKA}}%: Running Experiments
+
+%With any suitable dataset it is possible t\framework{\MEKA} classifiers.
+A suitable dataset is the only requirement to begin running experiments with \framework{\MEKA}.
+
+\subsection{Command Line Interface}
+
+With the exception of the different use of the \texttt{-c} flag (see the previous section), many of \framework{\WEKA}'s command line options for evaluation work identically in \framework{\MEKA} too. You can obtain a list of them by running any classifier with the \texttt{-h} flag, for example: \texttt{java weka.classifiers.multilabel.BR -h} displays the following:
+	 
+\marginpar{\blue @TODO: Update}
+{\small
+\begin{verbatim}
+Evaluation Options:
+
+-h
+        Output help information.
+-t <name of training file>
+        Sets training file.
+-T <name of test file>
+        Sets test file.
+-x <number of folds>
+        Do cross-validation with this many folds.
+-p
+        Specify a range in the dataset (@see weka.core.Range)
+-R
+        Randomise the dataset (done after a range is removed, but before the 
+        train/test split)
+-split-percentage <percentage>
+        Sets the percentage for the train/test set split, e.g., 66.
+-split-number <number>
+        Sets the number of training examples, e.g., 800.
+-i
+        Invert the specified train/test split
+-s <random number seed>
+        Sets random number seed.
+-threshold <threshold>
+        Sets the type of thresholding; where 
+            'PCut1' automatically calibrates a threshold (the default); 
+            'PCutL' automatically calibrates one threshold for each label; and 
+            any double number, e.g. '0.5', specifies that threshold.
+-C <number of target attributes>
+        Sets the number of target attributes to expect (indexed from the beginning).
+-f <results_file>
+        Specify a file to output results and evaluation statistics into.
+\end{verbatim}
+}
+
+The only required options are \texttt{-t} to specify the dataset, and \texttt{-C} to specify the number of target attributes; the latter is typically included within the dataset, as explained in the previous section. 
+
+Below this output, we also see the output for \texttt{Classifier Options}:
+
+{\small
+\begin{verbatim}
+Classifier Options:
+
+-D
+        If set, classifier is run in debug mode and
+        may output additional info to the console
+-W
+        Full name of base classifier.
+        (default: weka.classifiers.rules.ZeroR)
+\end{verbatim}
+}
+
+which in this case (for \texttt{java weka.classifiers.multilabel.BR}) are not very extensive. However, to get decent results with this classifier, we will have to specify a more competitive \emph{base classifier} with the \texttt{-W} option, for example Naive Bayes. To run this on the \textit{Music} data, we would type\footnote{If typed on one line, the bar `\texttt{\textbackslash}' should be omitted command line}:
+
+\begin{verbatim}
+java weka.classifiers.multilabel.BR -t data/Music.arff \
+  -W weka.classifiers.bayes.NaiveBayes
+\end{verbatim}
+
+\subsection{Graphical User Interface}
+
+The CLI is the most powerful way to work with \framework{\MEKA}, but the GUI is a good way to get started. Refer to \Sec{sec:running} on how to open the GUI. Once opened, you will see three tabs: \textsf{Preprocess}, \textsf{Classify}, \textsf{Visualize}. The following process will guide you through a simple experiment.
+
+%Again, to run \framework{\MEKA}'s GUI, simply type \texttt{ant run} from the X directory, or run either the \texttt{run.sh} (under Linux) or \texttt{run.bat} (under Microsoft windows) scripts in the \texttt{scripts/} folder. 
+
+
+
+\begin{enumerate}
+	\item Load a dataset file using \textsf{Open} from the file menu. %See \Sec{sec:data.gui} for information on preprocessing the datasets.
+	\item Click on the \textsf{Classify} tab.
+	\item \textsf{Choose} a multi-label or multi-target classifier and (in most cases) an appropriate \framework{\WEKA} base classifier, as well as its options. For \framework{\MEKA}'s meta classifiers, you will need to choose a \framework{\MEKA} base classifier, and a single-label \framework{\WEKA} base classifier for this classifier. See, for example, \Fig{screen:eval}, using Bagging of Classifier Chains with SMO.
+	\item In the \textsf{Evaluation} panel you configure what type of evaluation you want to do, and some of the options given in the previous section are available here. For example, a 50/50 train/test split, as being specified in \Fig{screen:split}.
+	\item When you click \textsf{Start} the experiment will be run. When finished, the result will appear in the \textsf{History} panel; or multiple results in the case of incremental validation. This is the same output as would be seen on the command line, and explained in the following section.
+	%\item You can export results to text, or copy of paste it.
+	\item Optionally, you can click on the \textsf{Visualize} tab and visualize the results.
+\end{enumerate}
+
+
+
+
+\begin{figure}
+	\includegraphics[height=0.60\textwidth]{GUI02.png}
+	\caption{\label{screen:eval} \framework{MEKA}'s GUI interface; setting Bagging of Classifier Chains with SMO.}
+\end{figure}
+
+
+\begin{figure}
+	\includegraphics[height=0.60\textwidth]{GUI03.png}
+	\caption{\label{screen:split} \framework{MEKA}'s GUI interface; setting a train/test split.}
+\end{figure}
+
+\subsection{\label{sec:evaluation}Evaluation}
+
+Running a BR classifier with Naive Bayes on the \textit{Enron} data will output the following:
+
+{\small
+\begin{verbatim}
+Classifier_name : weka.classifiers.multilabel.BR
+ Classifier_ops : [-W, weka.classifiers.bayes.NaiveBayes, --, , , ]
+Classifier_info : 
+   Dataset_name : Music
+      Threshold : 0.9974578524138343
+           Type : ML
+
+              N : 237
+              L : 6    
+       Accuracy : 0.436
+         H_loss : 0.255
+          H_acc : 0.745
+    Exact_match : 0.215
+   ZeroOne_loss : 0.785
+      One_error : 0.414
+       LogLossD : 7.302
+       LogLossL : 2.972
+      Precision : 0.629
+         Recall : 0.564
+       F1_micro : 0.594
+     F1_macro_D : 0.508
+     F1_macro_L : 0.551
+   EmptyVectors : 0.177
+     LCard_pred : 1.785
+     LCard_real : 1.992
+
+        N_train : 355.0
+         N_test : 237.0
+    LCard_train : 1.7887323943661972
+     LCard_test : 1.9915611814345993
+     Build_time : 0.148
+      Test_time : 0.118
+     Total_time : 0.266
+
+\end{verbatim}
+}
+
+Most of these measures are described in \cite{Thesis,ECC2,MMD}. The most common measures in the multi-label literature are \textit{Hamming Loss} (\texttt{H\_loss}), which is the accuracy for each label, averaged across all labels; \textit{Exact Match} (\texttt{Exact\_match}), which is the is the accuracy of each \emph{example} -- where all label relevances must match exactly for an example to be correct; and \textit{Accuracy} (\texttt{Accuracy}), which is neither as strict as Exact Match nor as `easy' as Hamming Loss.
+
+%\subsection{Thresholds}
+
+Note that a \texttt{Threshold} has been calibrated automatically; to minimise the difference between the label cardinality of the training set and the predictions on the test set; a practice described in \cite{ECC2}. To calibrate a threshold for \emph{each} label, add the \texttt{-threshold PCutL} option\footnote{Note: this was \texttt{-T C} in previous versions of \framework{\MEKA}}. This gives a vector of thresholds which, in this case, increases \texttt{Accuracy} slightly (to \texttt{0.456}). Different thresholds are calculated for different methods and datasets.
+
+%\begin{verbatim}
+%          Threshold : [0.29971988795518206, 0.26330532212885155, \
+%			  0.4257703081232493, 0.22128851540616246, 0.23809523809523808, \
+%			  0.3473389355742297]
+%\end{verbatim}
+
+\framework{\MEKA} also supports \emph{cross validation}; for example:
+\begin{verbatim}
+java weka.classifiers.multilabel.BR -x 10 -R -t ~/data/Music.arff \
+  -W weka.classifiers.bayes.NaiveBayes
+\end{verbatim}
+conducts 10 fold cross validation on a randomised version of the \textit{Music.arff} data and outputs the average results across all folds with standard deviation. %Note that using the \texttt{-f} option in this case to save output to a file will output only the results of the validation; which can be useful for compiling results later.
+
+Sometimes it can be useful to analyse the actual predictions made at test time. \framework{\MEKA} can produce plain-text files with the option \texttt{-f <file name>}; for example:
+\begin{verbatim}
+java weka.classifiers.multilabel.BR -t data/Music.arff \ 
+  -f BR-NB.meka \
+  -W weka.classifiers.bayes.NaiveBayes
+\end{verbatim}
+which produces the plain-text file \texttt{BR-NB.meka}. This provides a way to analyse individual classifications and evaluate other software with \framework{\MEKA}'s evaluation framework. Note that when cross validation (\texttt{-x}) is used, one file will be created for each fold, e.g., \texttt{BR-NB.meka.0},\ldots,\texttt{BR-NB.meka.4} for a 5-fold validation. The results can be recalculated for any of these files with, e.g.:
+\begin{verbatim}
+	java weka.core.Result -f BR-NB.meka
+\end{verbatim}
+
+More examples are given in the following subsection.
+
+\subsection{Examples} 
+
+%\paragraph{Multi-label}
+
+%The methods used in the following examples are detailed in papers papers detailing these methods are available here.
+
+\paragraph{Binary Relevance} (BR) On the \textit{Music} data, loading from two separate sets, using Naive Bayes as a base classifier, using a separate threshold for each label: 
+\begin{verbatim}
+java weka.classifiers.multilabel.BR \
+  -t data/Music_train.arff \
+  -T data/Music_test.arff \
+  -threshold PCutL
+  -W weka.classifiers.bayes.NaiveBayes
+\end{verbatim}
+
+\paragraph{Ensembles of Pruned Sets} (EPS; see \cite{EPS}) With 10 ensemble members (the default) on the \textit{Enron} dataset with Support Vector Machines as the base classifier; each \texttt{PS} model is set with \texttt{N=1} and \texttt{P} to a random selection of \texttt{\{1,2,3,4,5\}}:
+
+\begin{verbatim}
+java weka.classifiers.multilabel.meta.EnsembleML \
+  -t data/Yeast.arff \
+  -W weka.classifiers.multilabel.PS -- \
+    -P 1-5 -N 1 -W weka.classifiers.functions.SMO
+\end{verbatim}
+
+\paragraph{Ensembles of Classifier Chains} (ECC; see \cite{ECC2}) With 50 ensemble members (\texttt{-I 50}), and some textual output (\texttt{-D}) on the \textit{Enron} dataset with Support Vector Machines as a base classifier:
+\begin{verbatim}
+java weka.classifiers.multilabel.meta.BaggingML -I 50 -P 100 -D \
+  -t data/Enron.arff -W weka.classifiers.multilabel.CC -- \
+    -W weka.classifiers.functions.SMO
+\end{verbatim}
+
+\paragraph{Mulan Classifier} (\texttt{RAkEL} see \cite{RAKEL}) With parameters \texttt{\texttt{k=3}, \texttt{m=2C}} where \texttt{C} is the number of labels (these options are hardwired; you need to edit \texttt{MULAN.java} to specify new parameter configurations) on the \textit{Scene} dataset with Decision Trees as the base classifier (remember {\texttt{mulan.jar} must be in the classpath}):
+\begin{verbatim}
+java weka.classifiers.multilabel.MULAN -t data/Scene.arff \ 
+  -S RAkEL2 -W weka.classifiers.trees.J48
+\end{verbatim}
+
+%\paragraph{Cross Validation} the following carries out cross validation on ECC using Logistic Regression as a base classifier, on the \textit{Music} data.
+
+%\begin{verbatim}
+%java weka.classifiers.multilabel.meta.BaggingML \
+%  -x 10 -R -t data/Music.arff \
+%  -I 10 -W weka.classifiers.multilabel.CC -- \
+%  -W weka.classifiers.functions.Logistic
+%\end{verbatim}
+
+\paragraph{Incremental Classification: Ensembles of Binary Relevance} (see \cite{ECC2,MEDS2}) With 10 ensemble members (default) on the \textit{Enron} dataset with \texttt{NaiveBayesUpdateable} as a base classifier; using over 20 evaluation windows:
+
+\begin{verbatim}
+java weka.classifiers.multilabel.meta.EnsembleMLUpdateable -B 20\
+  -t data/Enron.arff \
+  -W weka.classifiers.multilabel.BRUpdateable -- \
+    -W weka.classifiers.bayes.NaiveBayesUpdateable
+\end{verbatim}
+
+Evaluating incremental classifiers will carry out evaluation and display statistics for the data over $\texttt{B}-1$ evaluation windows (an initial window is used for the initial training; making \texttt{B} windows in total). %Note that the \framework{\MOA} framework \cite{MOA} for evaluating incremental classifiers is much more sophisticated; and a new release will include a wrapper to \framework{\MEKA}. 
+
+\paragraph{Multi-target: Ensembles of Class Relevance} (see \cite{UPM}) The multi-target version of the Binary Relevance classifier) on the \textit{solar flare} dataset with Logistic Regression as a base classifier under $5$-fold cross-validation:
+\begin{verbatim}
+java weka.classifiers.multitarget.meta.BaggingMT -x 10 -R \
+  -t data/solar_flare.arff \
+  -W weka.classifiers.multitarget.CR -- \
+    -W weka.classifiers.functions.Logistic
+\end{verbatim}
+
+%\begin{verbatim}
+%java -cp meka.jar:weka.jar weka.classifiers.multitarget.meta.BaggingMT -x 5 -R -t data/solar_flare.arff -W weka.%classifiers.multitarget.C    C -- -W weka.classifiers.functions.Logistic
+%\end{verbatim}
+
+\section{\label{sec:extending}Extending \framework{\MEKA}}%: Writing New Classifiers
+
+The source code is available in the release (\texttt{meka-src-\version-jar}). You can also check out the latest SVN repository from \url{SourceForge.net} \textsf{Code}: 
+\begin{verbatim}
+	svn co https://meka.svn.sourceforge.net/svnroot/meka meka 
+\end{verbatim}
+
+Writing \framework{\MEKA} classifiers involves writing regular \framework{\WEKA} classifiers that extend either the \texttt{MultilabelClassifier} or \texttt{MultiTargetClassifier} class, and expect the \texttt{classIndex()} of \texttt{Instance}s and \texttt{Instances}s to indicate the number of target attributes (indexed at the beginning) rather than the class index (as explained in Section \ref{sec:format}). 
+
+The easiest way to extend \framework{\MEKA} is to create your classifier within within the existing \framework{\MEKA} folder hierarchy and recompile a new jar using Apache ant by simply by typing:
+\begin{verbatim}
+	ant jar
+\end{verbatim}
+
+The following is an example of a functioning (but extremely minimalistic) classifier, \texttt{TestClassifier}, that predicts $0$-relevance for all labels:
+
+{\small
+\begin{verbatim}
+package weka.classifiers.multilabel;
+import weka.core.*;
+
+public class TestClassifier extends MultilabelClassifier {
+	
+    public void buildClassifier(Instances D) throws Exception {
+        int C = D.classIndex();
+    }
+    
+    public double[] distributionForInstance(Instance x) throws Exception {
+        int C = x.classIndex();
+       	return new double[C];
+    }
+    
+    public static void main(String args[]) {
+        MultilabelClassifier.runClassifier(new TestClassifier(),args);
+    }
+}
+\end{verbatim}
+}
+
+This shows how easy it is to create a new classifier. However, for more useful examples see the source code of existing \framework{\MEKA} classifiers. Note that the \texttt{distributionForInstance} method returns a \texttt{double[]} array exactly like in \framework{\WEKA}. However, whereas in \framework{\WEKA}, there is one value in the array for each possible value of the single target attribute, in \framework{\MEKA} this function returns an array of $C$ values, where $C$ is the \emph{number} of target attributes, and the $j$th value of the array is the \emph{value} corresponding to the $j$th target attribute.
+
+\subsection{Multi-label Classifiers}
+
+In the multi-label case, for a test \texttt{Instance x}, the \texttt{double[]} array returned by the method \texttt{distributionForInstance(x)} might look like (assuming \texttt{-C 5}):
+\begin{verbatim}
+	[0.1, 0.0, 0.9, 0.9, 0.2]
+\end{verbatim} 
+where clearly the third and fourth labels are most relevant. Thus, these values may be label relevances, votes, or posterior probabilities. Under a threshold of $0.5$ the final classification for \texttt{x} would be \texttt{[0,0,1,1,0]}. \framework{\MEKA} will by default automatically calibrate a threshold to convert all values into $0/1$ relevances like these (see Section \ref{sec:evaluation}). Naturally, a multi-label classifier may return $0/1$ binary relevances directly (represented as doubles, i.e., $0.0/1.0$).
+
+\subsection{Multi-target Classifiers}
+
+In the multi-target case, the \texttt{double[]} values returned by the method \texttt{distributionForInstance} must indicate the \emph{relevant class value}; for example (assuming \texttt{-C 3}): 
+\begin{verbatim}
+	[3.0, 1.0, 0.0]
+\end{verbatim} 
+If this were the dataset exemplified in \ref{sec:format}, this classification would be \texttt{C}, \texttt{1}, and \texttt{1} for the class attributes \texttt{category}, \texttt{label}, and \texttt{rank}, respectively.
+
+Note that no threshold is calibrated. However, any associated voting or probabilistic values may be stored in the following $\texttt{C+1},\ldots,\texttt{2C}$ values; for example (again assuming \texttt{-C 6}):
+\begin{verbatim}
+	[3.0, 1.0, 0.0, 0.5, 0.9, 0.9]
+\end{verbatim} 
+where \texttt{C} is predicted as the value of the first target attribute with confidence $0.9$, and so on. However these values are currently only for use at classification time (for example the voting scheme of an ensemble method, see \texttt{weka.classifiers.multitarget.BaggingMT}); and not taken into account for evaluation. Note also that we intend to deprecate this method in the future, so avoid if possible.
+
+\subsection{Incremental Classifiers}
+
+\framework{\MEKA} comes with incremental versions of many classifiers, as well as incremental evaluation methods. Incremental classifiers implement \framework{\WEKA}'s \texttt{UpdatebleClassifier} interface and therefore must implement the \texttt{updateClassifier(Instance)} method. The following extends \texttt{TestClassifier} for incremental learning.
+
+{\small
+\begin{verbatim}
+package weka.classifiers.multilabel;
+import weka.core.*;
+
+public class TestClassifierUpdateable extends TestClassifier 
+    implements UpdateableClassifier{
+	
+    public void updateClassifier(Instance x) throws Exception {
+        int L = D.classIndex();
+    }
+    
+    public static void main(String args[]) {
+        WindowIncrementalEvaluator.evaluation(new TestClassifierUpdateable(),args);
+    }
+}
+\end{verbatim}
+}
+
+Note that the \texttt{WindowIncrementalEvaluator} class is called for evaluation in this case; see Section \ref{sec:evaluation}. The \framework{\MOA} framework \cite{MOA} for learning in data streams is currently being developed to support multi-label classification with a wrapper for \framework{\MEKA} classifiers, and will offer more types of evaluation for incremental classification in a data stream.
+
+\section{Getting Help / Reporting Bugs / Contributing}
+
+If you need help with \framework{\MEKA}, you can contact the developers directly, or post your problem on the \textsf{Forums} of \framework{\MEKA}'s \url{SourceForge.net} site: \url{http://sourceforge.net/projects/meka/?source=directory}
+
+If you have found a bug with \framework{\MEKA}, you can report in via the \textsf{Tracker}  of \framework{\MEKA}'s \url{SourceForge.net} site on \url{SourceForge.net} or contact one of the developers directly.
+
+If you would like to contribute to \framework{\MEKA}, such as adding new classifiers, please get in touch with the developers.
+
+More more information (such as contact information) can be found at the \framework{\MEKA} website:
+\url{http://meka.sourceforge.net}.
+
+
+
+\include{bibliography}
+
+\end{document}
