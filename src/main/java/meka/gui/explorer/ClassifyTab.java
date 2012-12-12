@@ -285,6 +285,7 @@ extends AbstractThreadedExplorerTab {
 		  }
 		  else {
 			  train      = new Instances(data);
+			  Explorer.prepareData(m_TestInstances);
 			  test       = new Instances(m_TestInstances);
 			  test.setClassIndex(data.classIndex());
 		  }
