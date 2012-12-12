@@ -353,7 +353,7 @@ public class Result implements Serializable {
 
 		}
 		else {
-			System.out.println("You must supply the filename with -f <filename>");
+			System.out.println("You must supply the filename with -f <filename> (and -x <num folds> if dealing with CV).");
 		}
 
 	}
