@@ -336,7 +336,7 @@ extends MekaPanel {
    * @param data the data to prepare
    * @throws Exception if preparation fails
    */
-  protected void prepareData(Instances data) throws Exception {
+  public static void prepareData(Instances data) throws Exception {
     String doptions[] = null;
     try {
       doptions = MLUtils.getDatasetOptions(data);
