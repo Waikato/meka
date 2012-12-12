@@ -381,7 +381,6 @@ public abstract class MLUtils {
 	 * Move label attributes from END to BEGINNING of attribute space. 
 	 */
 	public static final Instances switchAttributes(Instances D, int L) {
-		System.out.println("Switching attributes: ");
 		int d = D.numAttributes();
 		for(int j = 0; j < L; j++) {
 			D.insertAttributeAt(D.attribute(d-1).copy(D.attribute(d-1).name()+"-"),0);
