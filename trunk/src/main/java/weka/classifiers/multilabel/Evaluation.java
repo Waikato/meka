@@ -86,11 +86,13 @@ public class Evaluation {
 		options = Utils.splitOptions(full);
 
 		//Set Options from the command line, any leftover options will most likely be used in the code that follows
+		boolean cSwitch = false;
 		try {
 			int c = (Utils.getOptionPos('C', options) >= 0) ? Integer.parseInt(Utils.getOption('C',options)) : Integer.parseInt(Utils.getOption('c',options));
 			// if negative, then invert ...
 			if ( c < 0) {
 				c = -c;
+				cSwitch = true;
 				allInstances = MLUtils.switchAttributes(allInstances,c);
 			}
 			// end
@@ -167,6 +169,9 @@ public class Evaluation {
 					try {
 						filename = Utils.getOption('T', options);
 						testInstances = DataSource.read(filename);
+						if (cSwitch) {// we have to switch these attributes also
+							MLUtils.switchAttributes(testInstances,allInstances.classIndex());
+						}
 						for(Instance x : testInstances) {
 							x.setDataset(allInstances);
 							allInstances.add(x);
