@@ -1,0 +1,55 @@
+% packages
+\usepackage{float}						% for algorithm float
+\usepackage{graphicx}					% for figures, plots, etc
+\graphicspath{{./data/}}				% ''
+\usepackage{amssymb}					% special math fonts
+\usepackage{amsmath}
+\usepackage{epsf,amsfonts,amsmath,amssymb}		% defaults
+\usepackage{url} 
+% for footnotes in the author fields
+%\newcommand{\footnoteremember}[2]{
+%	\footnote{#2}
+%	\newcounter{#1}
+%	\setcounter{#1}{\value{footnote}}
+%}
+%\newcommand{\footnoterecall}[1]{
+%	\footnotemark[\value{#1}]
+%}
+\usepackage[usenames]{color}			% for colour
+\newcommand{\blue}{\color{blue}}		% "
+% math
+\renewcommand{\vec}{\mathbf}
+\newcommand{\mat}[1]{\boldsymbol#1}
+\newcommand{\s}{\vec{s}}
+\newcommand{\w}{\vec{w}}
+\newcommand{\x}{\vec{x}}
+\newcommand{\xtest}{\vec{\tilde{x}}}
+\newcommand{\y}{\vec{y}}
+\newcommand{\z}{\vec{z}}
+\renewcommand{\a}{\vec{a}}
+\renewcommand{\b}{\vec{b}}
+\renewcommand{\c}{\vec{c}}
+\renewcommand{\o}{\vec{o}}
+\newcommand{\p}{\vec{p}}
+\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Y}{\mathcal{Y}}
+\renewcommand{\L}{\mathcal{L}}
+\newcommand{\tup}[1]{\langle#1\rangle}
+% refs
+\newcommand{\code}[1]{Algorithm~\ref{#1}}
+\newcommand{\Fig}[1]{Figure~\ref{#1}}
+\newcommand{\tab}[1]{Table~\ref{#1}}
+\newcommand{\Sec}[1]{Section~\ref{#1}}
+% custom float
+\floatstyle{ruled}
+\newfloat{algorithm}{thp}{lop}
+\floatname{algorithm}{Algorithm}
+% special definitions
+\newcommand{\keyword}[1]{{\it #1}}
+\newcommand{\framework}[1]{{\sc #1}}
+% ref styles
+% text
+\newcommand{\ie}{i.e., }
