@@ -78,7 +78,7 @@ public abstract class MLEvalUtils {
 		int L = LC_train.length;
 		double t[] = new double[L];
 
-		ArrayList<double[]> Y_[] = new ArrayList[Y.size()];
+		ArrayList<double[]> Y_[] = new ArrayList[L];
 		for(int j = 0; j < L; j++) {
 			Y_[j] = new ArrayList<double[]>();
 		}
@@ -245,13 +245,13 @@ public abstract class MLEvalUtils {
 		double precision = (double)set_inter_total / (double)p_sum_total;
 		double recall = (double)set_inter_total / (double)r_sum_total;
 
-		// @ temp
+		/* @ temp
 		double a[] = new double[L];
 		for(int j = 0; j < L; j++) {
 			a[j] = (o_tp[j] + o_tn[j]) / (double)N;
 		}
 		System.out.println("Individual accuracies: "+Arrays.toString(a));
-		// @ temp
+		*/
 		
 		HashMap<String,Double> results = new LinkedHashMap<String,Double>();
 		results.put("N"					,N);
