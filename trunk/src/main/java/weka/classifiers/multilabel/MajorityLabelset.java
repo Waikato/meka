@@ -65,7 +65,7 @@ public class MajorityLabelset extends MultilabelClassifier {
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
-	  	getCapabilities().testWithFail(D);
+		testCapabilities(D);
 	  	
 		int L = D.classIndex();
 		this.prediction = new double[L];
