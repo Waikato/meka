@@ -55,7 +55,8 @@ public class MULAN extends MultilabelClassifier {
 	
 	protected MultiLabelLearner m_MULAN = null;
 
-	private String MethodSelection = "BR, LP, CLR, RAkEL1, RAkEL2, MLkNN, IBLR_ML, BPMLL";
+	private String MethodSelection = "{BR, LP, CLR, RAkELn, MLkNN, IBLR_ML, BPMLL, HOMER.type.pt}\n" +
+		"\twhere n=1 is with (m=10,k=L/2), n=2 is with (m=L*2,k=3); and\n\twhere type \\in {CLUS,RAND}, pt \\in {BR,LP}.";
 
 	protected String m_MethodString = "RAkEL1";
 
@@ -87,7 +88,7 @@ public class MULAN extends MultilabelClassifier {
 	public Enumeration listOptions() {
 
 		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tMethod Name\n\t {"+MethodSelection+"}", "S", 1, "-S <value>"));
+		newVector.addElement(new Option("\tMethod Name\n\t "+MethodSelection+"", "S", 1, "-S <value>"));
 
 		Enumeration enu = super.listOptions();
 
@@ -105,7 +106,7 @@ public class MULAN extends MultilabelClassifier {
 	}
 
 	public String methodTipText() {
-		return "Any of the following: "+MethodSelection+". If you wish to add more, you will have to add code to the buildClassifier(Instances) function in MULAN.java";
+		return "Any of "+MethodSelection+". If you wish to add more, you will have to add code to the buildClassifier(Instances) function in MULAN.java";
 	}
 
 	@Override

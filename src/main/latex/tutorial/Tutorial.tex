@@ -63,7 +63,7 @@ This tutorial applies to \framework{\MEKA} version {\version}.
 
 \section{Getting Started}
 
-\framework{\MEKA} can be download from: \url{http://sourceforge.net/projects/meka/files/}. This tutorial is written for version \version; and assumes that you have downloaded the \texttt{meka-release-\version} full release package, have extracted the folder \texttt{meka-\version} found within, and that this folder is your current working directory.
+\framework{\MEKA} can be download from: \url{http://sourceforge.net/projects/meka/files/}. This tutorial is written for version \version; and assumes that you have downloaded and extracted the \texttt{meka-release-\version} and that \texttt{meka-\version}, found within, is your current working directory.
 
 \subsection{Requirements}
 
@@ -85,15 +85,16 @@ These files are found in the \texttt{lib} directory. See \texttt{lib/README.txt}
 
 \framework{\MEKA} can be used very easily from the command line. For example, to run the Binary Relevance (BR) classifier on the \textit{Music} dataset; type:
 \begin{verbatim}
-	java -cp lib/*.jar weka.classifiers.multilabel.BR -t data/Music.arff
-\end{verbatim}\marginpar{true?}
-
-If you are on a Microsoft Windows system, the \texttt{jar}s in the classpath are separated by a semicolon '\texttt{;}' instead of a colon. If you add the \texttt{jar} files to the system's \texttt{CLASSPATH}, you do not need to supply the \texttt{-cp} option at runtime. For the remainder of examples in this tutorial we will assume that this is the case.%; and thus the \texttt{-cp} option is not required.
-
-Since Version 1.2 \framework{\MEKA} has a graphical user interface (GUI). Run this with either the \texttt{run.sh} script (under Linux, OSX) or \texttt{run.bat} (under Microsoft windows) scripts, e.g.:
-\begin{verbatim}
-	./run.sh
+	java -cp "./lib/*" weka.classifiers.multilabel.BR -t data/Music.arff
 \end{verbatim}
+
+If you are on a Microsoft Windows system, you need to use back slashes instead of forward slashes (\texttt{.\lib\*}). If you add the \texttt{jar} files to the system's \texttt{CLASSPATH}, you do not need to supply the \texttt{-cp} option at runtime. For the remainder of examples in this tutorial we will assume that this is the case.
+
+Since Version 1.2 \framework{\MEKA} has a graphical user interface (GUI). Run this with either the \texttt{run.sh} script (under Linux, OSX) as follows:
+\begin{verbatim}
+	bash run.sh
+\end{verbatim}
+Run \texttt{run.bat} instead of you are using Microsoft windows.
 
 
 %\begin{verbatim}
@@ -154,7 +155,6 @@ A suitable dataset is the only requirement to begin running experiments with \fr
 
 With the exception of the different use of the \texttt{-c} flag (see the previous section), many of \framework{\WEKA}'s command line options for evaluation work identically in \framework{\MEKA} too. You can obtain a list of them by running any classifier with the \texttt{-h} flag, for example: \texttt{java weka.classifiers.multilabel.BR -h} displays the following:
 	 
-\marginpar{\blue @TODO: Update}
 {\small
 \begin{verbatim}
 Evaluation Options:
@@ -435,15 +435,42 @@ public class TestClassifier extends MultilabelClassifier {
 
 This shows how easy it is to create a new classifier. However, for more useful examples see the source code of existing \framework{\MEKA} classifiers. The \texttt{testCapabilities(D)} line is optional but highly recommended. Note that the \texttt{distributionForInstance} method returns a \texttt{double[]} array exactly like in \framework{\WEKA}. However, whereas in \framework{\WEKA}, there is one value in the array for each possible value of the single target attribute, in \framework{\MEKA} this function returns an array of $C$ values, where $C$ is the \emph{number} of target attributes, and the $j$th value of the array is the \emph{value} corresponding to the $j$th target attribute.
 
-\subsection{Multi-label Classifiers}
+\subsection{Building Classifiers}
 
-In the multi-label case, for a test \texttt{Instance x}, the \texttt{double[]} array returned by the method \texttt{distributionForInstance(x)} might look like (assuming \texttt{-C 5}):
+In the \texttt{buildClassifier(Instances)} method, you build your classifier. Here is where you can take advantage of all of \WEKA's libraries. You can use any \WEKA classifier to your needs. The \texttt{m\_Classifier} variable is already available for this, which \textit{already contains} the \WEKA{} classifier you specify on the command line. You can simply do:
+\begin{verbatim}
+    public void buildClassifier(Instances D) throws Exception {
+        testCapabilities(D);
+        int C = D.classIndex();
+		D.setClassIndex(0);
+		m_Classifier.buildClassifier(D);
+    }
+\end{verbatim}
+to train a classifier to learn the first label of your data (using the other labels, and all other input-space feature attributes). So if you then run on the command line
+\begin{verbatim}
+java weka.classifiers.multilabel.TestClassifier -t data/Music.arff -W weka.classifiers.functions.SMO
+\end{verbatim}
+an instantiation of \texttt{SMO} will already be be available in \texttt{m_Classifier}. You can also do this explicitly with
+\begin{verbatim}
+	...
+    m_Classifier = new SMO();
+	m_Classifier.buildClassifier(D);
+	...
+\end{verbatim}
+
+\subsection{Classifying New Instances}
+
+In the multi-label case, for a test \texttt{Instance x}, the \texttt{double[]} array returned by the method \texttt{distributionForInstance(x)} might contain the $0/1$ label relevances, for example (assuming \texttt{-C 5}):
+\begin{verbatim}
+	[0.0, 0.0, 1.0, 1.0, 0.0]
+\end{verbatim} 
+or it might contain posterior probabilities / prediction confidences / votes for each label, for example:
 \begin{verbatim}
 	[0.1, 0.0, 0.9, 0.9, 0.2]
 \end{verbatim} 
-where clearly the third and fourth labels are most relevant. Thus, these values may be label relevances, votes, or posterior probabilities. Under a threshold of $0.5$ the final classification for \texttt{x} would be \texttt{[0,0,1,1,0]}. \framework{\MEKA} will by default automatically calibrate a threshold to convert all values into $0/1$ relevances like these (see Section \ref{sec:evaluation}). Naturally, a multi-label classifier may return $0/1$ binary relevances directly (represented as doubles, i.e., $0.0/1.0$).
+where clearly the third and fourth labels are most relevant. Under a threshold of $0.5$ the final classification for \texttt{x} would be \texttt{[0,0,1,1,0]}. \framework{\MEKA} will by default automatically calibrate a threshold to convert all values into $0/1$ relevances like these (see Section \ref{sec:evaluation}). 
 
-\subsection{Multi-target Classifiers}
+%\subsection{Multi-target Classifiers}
 
 In the multi-target case, the \texttt{double[]} values returned by the method \texttt{distributionForInstance} must indicate the \emph{relevant class value}; for example (assuming \texttt{-C 3}): 
 \begin{verbatim}
@@ -474,26 +501,29 @@ public class TestClassifierUpdateable extends TestClassifier
     }
     
     public static void main(String args[]) {
-        WindowIncrementalEvaluator.evaluation(new TestClassifierUpdateable(),args);
+        IncrementalEvaluation.runExperiment(new TestClassifierUpdateable(),args);
     }
 }
 \end{verbatim}
 }
 
-Note that the \texttt{WindowIncrementalEvaluator} class is called for evaluation in this case; see Section \ref{sec:evaluation}. The \framework{\MOA} framework \cite{MOA} for learning in data streams is currently being developed to support multi-label classification with a wrapper for \framework{\MEKA} classifiers, and will offer more types of evaluation for incremental classification in a data stream.
+Note that the \texttt{IncrementalEvaluation} class is called for evaluation in this case; see Section \ref{sec:evaluation}. The \framework{\MOA} framework \cite{MOA} for learning in data streams contains a number of incremental classifiers that \WEKA{} does not, for example Hoeffding trees. You can run them using \WEKA's \texttt{MOA} meta classifier (wrapper), e.g., 
+\begin{verbatim}
+java weka.classifiers.multilabel.BRUpdateable -D -t data/Music.arff -W weka.classifiers.meta.MOA -- -B moa.classifiers.trees.HoeffdingTree
+\end{verbatim}
+
+Note that \MOA{} now also supports \MEKA{} classifiers via a wrapper class; and is currently being developed to support a range of incremental multi-label classification and evaluation for data streams.
 
 \section{Getting Help / Reporting Bugs / Contributing}
 
-If you need help with \framework{\MEKA}, you can contact the developers directly, or post your problem on the \textsf{Forums} of \framework{\MEKA}'s \url{SourceForge.net} site: \url{http://sourceforge.net/projects/meka/?source=directory}
+If you need help with \framework{\MEKA}, you can post your problem on \MEKA's \textsf{Mailing List}: \url{http://sourceforge.net/p/meka/mailman/}.
 
-If you have found a bug with \framework{\MEKA}, you can report in via the \textsf{Tracker}  of \framework{\MEKA}'s \url{SourceForge.net} site on \url{SourceForge.net} or contact one of the developers directly.
+If you have found a bug with \framework{\MEKA}, you can report in via the \textsf{Tracker}  of \framework{\MEKA}'s \url{SourceForge.net} site: \url{http://sourceforge.net/p/meka/bugs/}.
 
 If you would like to contribute to \framework{\MEKA}, such as adding new classifiers, please get in touch with the developers.
 
 More more information (such as contact information) can be found at the \framework{\MEKA} website:
 \url{http://meka.sourceforge.net}.
-
-
 
 \include{bibliography}
 

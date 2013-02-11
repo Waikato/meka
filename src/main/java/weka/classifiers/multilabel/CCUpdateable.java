@@ -171,7 +171,7 @@ public class CCUpdateable extends CC implements UpdateableClassifier {
 	}
 
 	public static void main(String args[]) {
-		WindowIncrementalEvaluator.evaluation(new CCUpdateable(),args);
+		IncrementalEvaluation.runExperiment(new CCUpdateable(),args);
 	}
 
 }

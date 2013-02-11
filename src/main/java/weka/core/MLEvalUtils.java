@@ -43,6 +43,8 @@ public abstract class MLEvalUtils {
 	/**
 	 * CalibrateThreshold.
 	 * Calibrate a threshold using PCut.
+	 * @param	Y			labels
+	 * @param	LC_train	label cardinality of the training set
 	 */
 	public static double calibrateThreshold(ArrayList<double[]> Y, double LC_train) { 
 		int N = Y.size();
@@ -71,7 +73,8 @@ public abstract class MLEvalUtils {
 	/**
 	 * CalibrateThresholds.
 	 * Calibrate a vector of thresholds (one for each label) using PCut.
-	 * Calibrate a threshold using PCut.
+	 * @param	Y			labels
+	 * @param	LC_train[]	average frequency of each label
 	 */
 	public static double[] calibrateThresholds(ArrayList<double[]> Y, double LC_train[]) { 
 
@@ -288,7 +291,13 @@ public abstract class MLEvalUtils {
 
 	}
 
-	private static double calcLogLoss(double R, double P, double C) {
+	/**
+	 * CalcLogLoss.
+	 * @param	R	y
+	 * @param	P	p(y==1)
+	 * @param	C	limit
+	 */
+	public static double calcLogLoss(double R, double P, double C) {
 		// base 2 ?
 		double ans = Math.min(Utils.eq(R,P) ? 0.0 : -( (R * Math.log(P)) + ((1.0 - R) * Math.log(1.0 - P)) ),C);
 		return (Double.isNaN(ans) ? 0.0 : ans);

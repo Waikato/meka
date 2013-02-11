@@ -52,7 +52,7 @@ public abstract class AbstractMekaClassifierTest
    * @param file the dataset to load (e.g., "weka/classifiers/data/something.arff")
    * @throws Exception if loading fails, e.g., file does not exit
    */
-  protected Instances loadData(String file)throws Exception {
+  public static Instances loadData(String file) throws Exception {
     return new Instances(new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(file))));
   }
   

@@ -23,6 +23,9 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import weka.classifiers.AbstractMekaClassifierTest;
 import weka.classifiers.Classifier;
+import weka.core.*;
+import junit.framework.*;
+import junit.framework.Assert.*;
 
 /**
  * Tests BR. Run from the command line with:<p/>
@@ -43,6 +46,16 @@ public class BRTest
     super(name);  
   }
 
+  protected void setUp(){
+	  // Preparation of the unit tests
+	  //super.setUp(); For Generic WEKA Tests
+  }
+
+  protected void tearDown(){
+	  // Teardown for data used by the unit tests
+	  //super.tearDown(); // For Generic WEKA Tests
+  }
+
   /** 
    * Creates a default classifier.
    * 
@@ -51,6 +64,18 @@ public class BRTest
   @Override
   public Classifier getClassifier() {
     return new BR();
+  }
+
+  public void testEvaluation() {
+	  System.out.println("Testing Evaluation");
+	  Instances D = null;
+	  try {
+		  D = loadData("data/Music.arff");
+	  } catch(Exception e) {
+		  System.err.println(" Failed to Load ");
+	  }
+	  //Assert.assertEquals("Result 1", D.classIndex(), 6);
+	  //Assert.assertEquals("Result 1", D.classIndex(), 3);
   }
 
   public static Test suite() {

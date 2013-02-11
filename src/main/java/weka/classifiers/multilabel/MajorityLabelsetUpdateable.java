@@ -42,7 +42,7 @@ public class MajorityLabelsetUpdateable extends MajorityLabelset implements Upda
 	}
 
 	public static void main(String args[]) {
-		WindowIncrementalEvaluator.evaluation(new MajorityLabelsetUpdateable(),args);
+		IncrementalEvaluation.runExperiment(new MajorityLabelsetUpdateable(),args);
 	}
 
 }

@@ -32,10 +32,10 @@ public class MekaTests extends TestSuite {
     TestSuite suite = new TestSuite();
 
     // classifiers
-    //suite.addTest(weka.classifiers.MekaTests.suite());
+    suite.addTest(weka.classifiers.MekaTests.suite());
 
     // filters
-    //suite.addTest(weka.filters.MekaTests.suite());
+    suite.addTest(weka.filters.MekaTests.suite());
 
     return suite;
   }

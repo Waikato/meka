@@ -241,6 +241,26 @@ public class Evaluation {
 
 
 	/**
+	 * IsMT - see if dataset D is multi-dimensional (else only multi-label)
+	 * @param	D	data
+	 * @return	true iff D is multi-dimensional only (else false)
+	 */
+	public static boolean isMT(Instances D) {
+		int L = D.classIndex();
+		for(int j = 0; j < L; j++) {
+			if (D.attribute(j).isNominal()) {
+				if (D.attribute(j).numValues() > 2) {
+					return true;
+				}
+			}
+			else {
+				System.err.println("wtf?");
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * EvaluateModel - Build model 'h' on 'D_train', test it on 'D_test', threshold it according to 'top'
 	 * @param	h		a multi-dim. classifier
 	 * @param	D_train	training data
@@ -250,7 +270,7 @@ public class Evaluation {
 	 */
 	public static Result evaluateModel(MultilabelClassifier h, Instances D_train, Instances D_test, String top) throws Exception {
 		Result r = evaluateModel(h,D_train,D_test);
-		if (h instanceof MultiTargetClassifier) {
+		if (h instanceof MultiTargetClassifier || isMT(D_test)) {
 			r.setInfo("Type","MT");
 		}
 		else if (h instanceof MultilabelClassifier) {
@@ -307,7 +327,7 @@ public class Evaluation {
 
 		// Train
 		long before = System.currentTimeMillis();
-		if (h instanceof SemisupervisedClassifier) { // *NEW* for semi-supervised
+		if (h instanceof SemisupervisedClassifier) { // *NEW* for semi-supervised 
 			((SemisupervisedClassifier)h).setUnlabelledData(MLUtils.removeLabels(new Instances(D_test)));
 		}
 		h.buildClassifier(D_train);
@@ -371,6 +391,47 @@ public class Evaluation {
 		if(h.getDebug()) System.out.println(":-");
 
 		return result;
+	}
+
+	public static Instances getDataset(String options[]) throws Exception {
+		Instances D = loadDatasetFromOptions(options);
+		setClassesFromOptions(D,options);
+		return D;
+	}
+
+	public static Instances loadDatasetFromOptions(String options[]) throws Exception {
+		Instances D = null;
+		try {
+			String filename = Utils.getOption('t', options);
+			D = DataSource.read(filename);
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new Exception("[Error] Failed to Load Instances from file.");
+		}
+		return D;
+	}
+
+	/**
+	 * SetClassesFromOptions.
+	 * @note: there is a similar function in Exlorer.prepareData(D) but that function can only take -C from the dataset options.
+	 */
+	public static void setClassesFromOptions(Instances D, String options[]) throws Exception {
+		try {
+			// get L
+			int L = (Utils.getOptionPos('C', options) >= 0) ? Integer.parseInt(Utils.getOption('C',options)) : Integer.parseInt(Utils.getOption('c',options));
+			// if negative, then invert first
+			if ( L < 0) {
+				L = -L;
+				D = MLUtils.switchAttributes(D,L);
+			}
+			// set L
+			D.setClassIndex(L);
+		} catch(Exception e) {
+			e.printStackTrace();
+			//System.err.println("[Error] Failed to Set Options from Command Line -- Check\n\t the spelling of the base classifier;\n \t that options are specified in the correct order (respective to  the '--' divider); and\n\t that the class index is set properly.");
+			//System.exit(1);
+			throw new Exception ("Error] Failed to Set Classes from options.");
+		}
 	}
 
 	public static void printOptions(Enumeration e) {

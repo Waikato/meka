@@ -96,9 +96,6 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 	}
 	*/
 
-	/**
-	 *  Probabilistic Classification using Gibbs sampling.
-	 */
 	@Override
 	public double[] distributionForInstance(Instance x) throws Exception {
 
@@ -116,19 +113,13 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 				// x = [x,y[1],...,y[j-1],y[j+1],...,y[L]]
 				x.setDataset(D_templates[j]);
 				// q = h_j(x)    i.e. p(y_j | x)
-				double q = h[j].distributionForInstance(x)[1];
-				if (u.nextDouble() < q) { 
-					// accept
-					x.setValue(j,1);
-				}
-				else {
-					// reject
-					x.setValue(j,0);
-				}
+
+				double dist[] = h[j].distributionForInstance(x);
+				int k = MLUtils.rndsrc(dist,u);
+				x.setValue(j,k);
+				likelihood[j] = dist[k];
 				// likelihood
-				likelihood[j] = Math.max(q,1.0-q);
 				double s = Utils.sum(likelihood);
-				//System.out.println("likelihood: "+s);
 				// collect  // and where is is good 
 				if (i > (I - I_c)) {
 					y[j] += x.value(j);

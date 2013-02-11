@@ -37,9 +37,9 @@ public class MekaTests
     TestSuite suite = new TestSuite();
     
     suite.addTest(weka.classifiers.multilabel.MekaTests.suite());
-    suite.addTest(weka.classifiers.multilabel.meta.MekaTests.suite());
-    suite.addTest(weka.classifiers.multitarget.MekaTests.suite());
-    suite.addTest(weka.classifiers.multitarget.meta.MekaTests.suite());
+    //suite.addTest(weka.classifiers.multilabel.meta.MekaTests.suite());
+    //suite.addTest(weka.classifiers.multitarget.MekaTests.suite());
+    //suite.addTest(weka.classifiers.multitarget.meta.MekaTests.suite());
 
     return suite;
   }
