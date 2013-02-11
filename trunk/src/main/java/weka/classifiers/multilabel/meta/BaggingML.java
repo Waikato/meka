@@ -47,6 +47,11 @@ public class BaggingML extends MultilabelMetaClassifier {
 				+ "Uses Instance weights instead of Instance duplications.";
 	}
 
+	public BaggingML() {
+		// default for Bagging
+		this.m_BagSizePercent = 100;
+	}
+
 	@Override
 	public void buildClassifier(Instances train) throws Exception {
 	  	testCapabilities(train);

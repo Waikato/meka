@@ -346,12 +346,12 @@ extends MekaPanel {
     }
 
     int c = (Utils.getOptionPos('C', doptions) >= 0) ? Integer.parseInt(Utils.getOption('C',doptions)) : Integer.parseInt(Utils.getOption('c',doptions));
-    // if negative, then invert ...
+    // if negative, then invert
     if ( c < 0) {
       c = -c;
       data = MLUtils.switchAttributes(data,c);
     }
-    // end
+    // set c
     data.setClassIndex(c);
   }
 

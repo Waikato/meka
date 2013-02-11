@@ -164,7 +164,7 @@ public class Result implements Serializable {
 
 	/**
 	 * AddValue.
-	 * Add an evaluation metric and a value for it.
+	 * Retrieve the value for metric 'metric'
 	 */
 	public double getValue(String metric) {
 		return vals.get(metric);

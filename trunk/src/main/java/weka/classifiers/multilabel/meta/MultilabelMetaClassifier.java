@@ -20,6 +20,7 @@ import java.util.Vector;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.multilabel.MultilabelClassifier;
+import weka.core.Randomizable;
 import weka.core.Instance;
 import weka.core.Option;
 import weka.core.Utils;
@@ -28,7 +29,7 @@ import weka.core.Utils;
  * MultilabelMetaClassifier.java - For ensembles of multi-label methods.
  * @author Jesse Read (jmr30@cs.waikato.ac.nz)
  */
-public abstract class MultilabelMetaClassifier extends MultilabelClassifier {
+public abstract class MultilabelMetaClassifier extends MultilabelClassifier implements Randomizable {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -6604797895790690612L;
@@ -48,7 +49,6 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier {
 		return 
 				"For ensembles of multi-label methods.";
 	}
-
 
 	@Override
 	public double[] distributionForInstance(Instance instance) throws Exception {
@@ -84,6 +84,16 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier {
 
 	public void setBagSizePercent(int p) {
 		m_BagSizePercent = p;
+	}
+
+	@Override
+	public void setSeed(int s) {
+		m_Seed = s;
+	}
+
+	@Override
+	public int getSeed() {
+		return m_Seed;
 	}
 
 	@Override

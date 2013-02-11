@@ -36,7 +36,7 @@ public class MekaTests
   public static Test suite() {
     TestSuite suite = new TestSuite();
     
-    suite.addTest(weka.filters.unsupervised.attribute.MekaTests.suite());
+    //suite.addTest(weka.filters.unsupervised.attribute.MekaTests.suite());
     //suite.addTest(weka.filters.unsupervised.instance.MekaTests.suite());
     //suite.addTest(weka.filters.supervised.attribute.MekaTests.suite());
     //suite.addTest(weka.filters.supervised.instance.MekaTests.suite());

@@ -51,7 +51,7 @@ public class RTUpdateable extends RT implements UpdateableClassifier {
 	}
 
 	public static void main(String args[]) {
-		WindowIncrementalEvaluator.evaluation(new RTUpdateable(),args);
+		IncrementalEvaluation.runExperiment(new RTUpdateable(),args);
 	}
 
 }

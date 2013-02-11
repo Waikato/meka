@@ -226,7 +226,7 @@ public class PSUpdateable extends PS implements UpdateableClassifier {
 	}
 
 	public static void main(String args[]) {
-		WindowIncrementalEvaluator.evaluation(new PSUpdateable(),args);
+		IncrementalEvaluation.runExperiment(new PSUpdateable(),args);
 	}
 
 }

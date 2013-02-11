@@ -30,14 +30,18 @@ import weka.test.WekaTestSuite;
  * @author FracPete (frapcete at waikato dot ac dot nz)
  * @version $Revision$
  */
-public class MekaTests 
-  extends WekaTestSuite {
+public class MekaTests extends WekaTestSuite {
 
   public static Test suite() {
     TestSuite suite = new TestSuite();
 
     // Template
-    //suite.addTest(weka.classifiers.multilabel.BlahTest.suite());
+	System.out.println("DB MekaTests");
+	suite.addTest(EvaluationTests.suite());
+	suite.addTest(BRMethodsTests.suite());
+	//suite.addTest(BRTest.suite());
+
+	/*
     suite.addTest(weka.classifiers.multilabel.BRTest.suite());
     suite.addTest(weka.classifiers.multilabel.BRqTest.suite());
     suite.addTest(weka.classifiers.multilabel.BRUpdateableTest.suite());
@@ -54,6 +58,7 @@ public class MekaTests
     suite.addTest(weka.classifiers.multilabel.PSUpdateableTest.suite());
     suite.addTest(weka.classifiers.multilabel.RTTest.suite());
     suite.addTest(weka.classifiers.multilabel.RTUpdateableTest.suite());
+	*/
 
     return suite;
   }

@@ -442,17 +442,21 @@ public abstract class MLUtils {
 		return x;
 	}
 
-	/*
-	 * @returns	a copy of x, set with x's attributes, but set to dataset D_template (of which x_template) is a template of this.
+	/**
+	 * SetTemplate - returns a copy of x_template, set with x's attributes, and set to dataset D_template (of which x_template) is a template of this.
+	 * This function is very useful when Weka throws a strange IndexOutOfBounds exception for setTemplate(x,Template)
 	 */
 	public static final Instance setTemplate(Instance x, Instance x_template, Instances D_template) {
 		Instance x_ = (Instance)x_template.copy();
 		int L_y = x.classIndex();
 		int L_z = D_template.classIndex();
+		// copy over x space
 		MLUtils.copyValues(x_,x,L_y,L_z);
+		// set class values to missing
 		for(int j = 0; j < L_z; j++) {
 			x_.setMissing(j);
 		}
+		// set dataset
 		x_.setDataset(D_template);
 		return x_;
 	}
@@ -604,9 +608,14 @@ public abstract class MLUtils {
 		return b;
 	}
 
-	public static final String toBinaryString(int j, int c) {
-		String sb = new String(Integer.toBinaryString(j));
-		while (sb.length() < c) {
+	/**
+	 * ToBinaryString - use to go through all 'L' binary combinations.
+	 * @param	l	the number to permute
+	 * @param	L	number of labels
+	 */
+	public static final String toBinaryString(int l, int L) {
+		String sb = new String(Integer.toBinaryString(l));
+		while (sb.length() < L) {
 			sb = "0"+sb;
 		}
 		return sb;
@@ -651,6 +660,18 @@ public abstract class MLUtils {
 		int L = x.classIndex();
 		for(int j = 0; j < L; j++) 
 			x.setValue(j,0.0);
+	}
+
+	// select i with probabilitiy w[i] (w must be normalised)
+	public static int rndsrc (double w[], Random r) {
+		double u = r.nextDouble();
+		double sum = w[0];
+		int i = 0;
+		while (sum < u) {
+			i++;
+			sum+=w[i];
+		}
+		return i;
 	}
 
 	public static void main(String args[]) {
