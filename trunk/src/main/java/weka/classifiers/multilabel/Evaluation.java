@@ -57,13 +57,16 @@ public class Evaluation {
 
 		//Load Instances
 		Instances allInstances = null;
-		String filename = null;
+		allInstances = loadDatasetFromOptions(options);
+		   /*
+	  String filename = null;
 		try {
 			filename = Utils.getOption('t', options);
 			allInstances = DataSource.read(filename);
 		} catch(Exception e) {
 			throw new Exception("[Error] Failed to Load Instances from file '" + filename + "'", e);
 		}
+		*/
 
 		//Get the Options in the @relation name (in format 'dataset-name: <options>')
 		String doptions[] = null;
@@ -167,7 +170,7 @@ public class Evaluation {
 					// load test set
 					Instances testInstances = null;
 					try {
-						filename = Utils.getOption('T', options);
+						String filename = Utils.getOption('T', options);
 						testInstances = DataSource.read(filename);
 						if (cSwitch) {// we have to switch these attributes also
 							MLUtils.switchAttributes(testInstances,allInstances.classIndex());
@@ -177,7 +180,7 @@ public class Evaluation {
 							allInstances.add(x);
 						}
 					} catch(Exception e) {
-						throw new Exception("[Error] Failed to Load Test Instances from file '" + filename + "'", e);
+						throw new Exception("[Error] Failed to Load Test Instances from file.", e);
 					}
 				}
 				else if(Utils.getOptionPos("split-percentage",options) >= 0) {
@@ -400,14 +403,21 @@ public class Evaluation {
 	}
 
 	public static Instances loadDatasetFromOptions(String options[]) throws Exception {
+
 		Instances D = null;
+		String filename = Utils.getOption('t', options);
+
+		if (filename == null || filename.isEmpty())
+			throw new Exception("[Error] You did not specify a dataset!");
+
 		try {
-			String filename = Utils.getOption('t', options);
-			D = DataSource.read(filename);
+			DataSource source = new DataSource(filename);
+			D = source.getDataSet();
 		} catch(Exception e) {
 			e.printStackTrace();
-			throw new Exception("[Error] Failed to Load Instances from file.");
+			throw new Exception("[Error] Failed to load Instances from file '"+filename+"'.");
 		}
+
 		return D;
 	}
 

@@ -23,7 +23,10 @@ import java.util.*;
 
 public abstract class MLUtils {
 
-	//Look for options in the @relation name: in format 'dataset-name: options'
+	/**
+	 * GetDataSetOptions - Look for options in the 'relationName' in format 'dataset-name: options'
+	 * @return	The dataset options found
+	 */
 	public static final String[] getDatasetOptions(Instances instances) {
 		String name = instances.relationName();
 		if(name.indexOf(':') > 0) {
@@ -32,7 +35,10 @@ public abstract class MLUtils {
 		else return new String[]{};
 	}
 
-	//Look for dataset name in the @relation name: in format 'dataset-name: options'
+	/**
+	 * GetDataSetName - Look for name in the 'relationName' in format 'dataset-name: options'
+	 * @return	The dataset name
+	 */
 	public static final String getDatasetName(Instances instances) {
 		String name = instances.relationName();
 		if(name.indexOf(':') > 0) {
@@ -195,12 +201,16 @@ public abstract class MLUtils {
 		return y;
 	}
 
-	// Label Cardinality.
+	/** 
+	 * LabelCardinality - return the label cardinality of dataset D.
+	 */
 	public static final double labelCardinality(Instances D) {
 		return labelCardinality(D,D.classIndex());
 	}
 
-	// LabelCardinality. 
+	/** 
+	 * LabelCardinality - return the label cardinality of dataset D of L labels.
+	 */
 	public static final double labelCardinality(Instances D, int L) {
 		double sum = 0.0;
 		for(int i = 0; i < D.numInstances(); i++) {
@@ -211,7 +221,9 @@ public abstract class MLUtils {
 		return (double)sum/(double)D.numInstances();
 	}
 
-	// Label Cardinalities.
+	/** 
+	 * LabelCardinality - return the frequency of each label of dataset D.
+	 */
 	public static final double[] labelCardinalities(Instances D) {
 		int L = D.classIndex();
 		double lc[] = new double[L];
@@ -378,7 +390,8 @@ public abstract class MLUtils {
 	}
 
 	/**
-	 * Move label attributes from END to BEGINNING of attribute space. 
+	 * SwitchAttributes - Move label attributes from End to Beginning of attribute space (MULAN format to MEKA format). 
+	 * Note: can use e.g.: java weka.filters.unsupervised.attribute.Reorder -i thyroid.arff -R 30-last,1-29"
 	 */
 	public static final Instances switchAttributes(Instances D, int L) {
 		int d = D.numAttributes();
@@ -453,9 +466,7 @@ public abstract class MLUtils {
 		// copy over x space
 		MLUtils.copyValues(x_,x,L_y,L_z);
 		// set class values to missing
-		for(int j = 0; j < L_z; j++) {
-			x_.setMissing(j);
-		}
+		MLUtils.setLabelsMissing(x_,L_z);
 		// set dataset
 		x_.setDataset(D_template);
 		return x_;
@@ -537,15 +548,9 @@ public abstract class MLUtils {
 	}
 
 	/**
-	 * Move Label Target Attributes. 
-	 * From Mulan Style (classes come last) to Meka Style (classes come first).
+	 * SetLabelsMissing - Set all labels in D to missing.
 	 */
-	public static final Instances moveAttributes(Instances D, int L) {
-		// use e.g.: java weka.filters.unsupervised.attribute.Reorder -i thyroid.arff -R 30-last,1-29"
-		return D;
-	}
-
-	public static Instances removeLabels(Instances D) {
+	public static Instances setLabelsMissing(Instances D) {
 		int L = D.classIndex();
 		for(int i = 0; i < D.numInstances(); i++) {
 			for(int j = 0; j < L ; j++) {
@@ -553,6 +558,23 @@ public abstract class MLUtils {
 			}
 		}
 		return D;
+	}
+
+	/**
+	 * SetLabelsMissing - Set all labels in x to missing.
+	 */
+	public static Instance setLabelsMissing(Instance x) {
+		return setLabelsMissing(x,x.classIndex());
+	}
+
+	/**
+	 * SetLabelsMissing - Set all (L) labels in x to missing.
+	 */
+	public static Instance setLabelsMissing(Instance x, int L) {
+		for(int j = 0; j < L ; j++) {
+			x.setMissing(j);
+		}
+		return x;
 	}
 
 	public static final Instances combineInstances(Instances D1, Instances D2) {

@@ -192,18 +192,6 @@ public class Result implements Serializable {
 	//
 
 	/**
-	 * GetValues.
-	 * For a mean +/- var value for 'metric' over a series of results (e.g., under cross validation)
-	 */
-	public static final String getValues(String metric, Result rs[]) {
-		double values[] = new double[rs.length];
-		for(int i = 0; i < rs.length; i++) {
-			values[i] = rs[i].vals.get(metric);
-		}
-		return Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3);
-	}
-
-	/**
 	 * GetStats.
 	 * Return the evaluation statistics given predictions and real values stored in r.
 	 * In the multi-label case, a Threshold category must exist, containing a string defining the type of threshold we want to use/calibrate.
@@ -213,25 +201,6 @@ public class Result implements Serializable {
 			return MLEvalUtils.getMTStats(r.predictions,r.actuals);
 		else 
 			return MLEvalUtils.getMLStats(r.predictions, r.actuals, r.getInfo("Threshold"));
-	}
-
-	/**
-	 * GetStats.
-	 * Return the evaluation statistics given a series of predictions and real values (e.g., from cross validation).
-	 * In the multi-label case, a Threshold category must exist, containing a string defining the type of threshold we want to use/calibrate.
-	 */
-	public static HashMap<String,double[]> getStats(Result r[]) {
-
-		HashMap<String,double[]> o = new HashMap<String,double[]>(); 
-		for(int i = 0; i < r.length; i++) {
-			HashMap<String,Double> o_i = getStats(r[i]);
-			for(String k : o_i.keySet()) {
-				double values[] = o.containsKey(k) ? o.get(k) : new double[r.length];
-				values[i] = o_i.get(k);
-				o.put(k,values);
-			}
-		}
-		return o;
 	}
 
 	// write out as plain text
@@ -319,20 +288,7 @@ public class Result implements Serializable {
 				System.exit(1);
 			}
 			// Create a super-Result, and get the results
-			Result r = new Result();
-			r.info = fold[0].info;
-			for(String v : fold[0].vals.keySet()) {
-				// add to super-result
-				r.info.put(v,Result.getValues(v,fold));
-			}
-
-			// Print out Results
-			HashMap<String,double[]> o = Result.getStats(fold);
-			for(String s : o.keySet()) {
-				double values[] = o.get(s);
-				r.info.put(s,Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3));
-			}
-			r.setInfo("Type","CV");
+			Result r = MLEvalUtils.averageResults(fold);
 			System.out.println(r.toString());
 		}
 
