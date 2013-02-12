@@ -33,6 +33,7 @@ public class BR extends MultilabelClassifier {
 	private static final long serialVersionUID = -5390512540469007904L;
 	
 	protected Classifier m_MultiClassifiers[] = null;
+	protected Instances m_InstancesTemplates[] = null; 
 
 	/**
 	 * Description to display in the GUI.
@@ -55,23 +56,20 @@ public class BR extends MultilabelClassifier {
 
 		if(getDebug()) System.out.print("Creating "+L+" models ("+m_Classifier.getClass().getName()+"): ");
 		m_MultiClassifiers = AbstractClassifier.makeCopies(m_Classifier,L);
-
-		Instances D_j = null;
+		m_InstancesTemplates = new Instances[L];
 
 		for(int j = 0; j < L; j++) {
 
 			//Select only class attribute 'j'
-			D_j = MLUtils.keepAttributesAt(new Instances(D),new int[]{j},L);
+			Instances D_j = MLUtils.keepAttributesAt(new Instances(D),new int[]{j},L);
 			D_j.setClassIndex(0);
 
 			//Build the classifier for that class
 			m_MultiClassifiers[j].buildClassifier(D_j);
 			if(getDebug()) System.out.print(" " + (D_j.classAttribute().name()));
 
+			m_InstancesTemplates[j] = new Instances(D_j, 0);
 		}
-
-		m_InstancesTemplate = new Instances(D_j, 0);
-
 	}
 
 	@Override
@@ -85,7 +83,7 @@ public class BR extends MultilabelClassifier {
 			Instance x_j = (Instance)x.copy();
 			x_j.setDataset(null);
 			x_j = MLUtils.keepAttributesAt(x_j,new int[]{j},L);
-			x_j.setDataset(m_InstancesTemplate);
+			x_j.setDataset(m_InstancesTemplates[j]);
 			//y[j] = m_MultiClassifiers[j].classifyInstance(x_j);
 			y[j] = m_MultiClassifiers[j].distributionForInstance(x_j)[1];
 		}
