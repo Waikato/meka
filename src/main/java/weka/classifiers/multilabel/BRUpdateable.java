@@ -43,15 +43,14 @@ public class BRUpdateable extends BR implements UpdateableClassifier {
 	public void updateClassifier(Instance x) throws Exception {
 
 		int L = x.classIndex();
-		// turn x into [x_1,...,x_L]
 
 		if(getDebug()) System.out.print("-: Updating "+L+" models");
 
-		for(int j = 0; j < m_MultiClassifiers.length; j++) {
+		for(int j = 0; j < L; j++) {
 			Instance x_j = (Instance)x.copy();
 			x_j.setDataset(null);
 			x_j = MLUtils.keepAttributesAt(x_j,new int[]{j},L);
-			x_j.setDataset(m_InstancesTemplate);
+			x_j.setDataset(m_InstancesTemplates[j]);
 			((UpdateableClassifier)m_MultiClassifiers[j]).updateClassifier(x_j);
 		}
 

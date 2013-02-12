@@ -47,6 +47,10 @@ public abstract class MLEvalUtils {
 	 * @param	LC_train	label cardinality of the training set
 	 */
 	public static double calibrateThreshold(ArrayList<double[]> Y, double LC_train) { 
+
+		if (Y.size() <= 0) 
+			return 0.5;
+
 		int N = Y.size();
 		ArrayList<Double> big = new ArrayList<Double>();
 		for(double y[] : Y) {

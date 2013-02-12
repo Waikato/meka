@@ -93,9 +93,9 @@ public class IncrementalEvaluation {
 		// Partially labelled ?
 		double rLabeled = 1.0; 
 		try {
-			if(Utils.getOptionPos("P", options) >= 0) {
+			if(Utils.getOptionPos("semisupervised", options) >= 0) {
 				System.out.println(""+Arrays.toString(options));
-				rLabeled = Double.parseDouble(Utils.getOption("P", options));
+				rLabeled = Double.parseDouble(Utils.getOption("semisupervised", options));
 			}
 		} catch(IOException e) {
 			e.printStackTrace();
@@ -128,6 +128,7 @@ public class IncrementalEvaluation {
 		if (h.getDebug())
 			System.out.println(":- Classifier -: "+h.getClass().getName()+": "+Arrays.toString(h.getOptions()));
 
+		int N = D.numInstances();
 		int L = D.classIndex();
 
 		Result results[] = new Result[numWindows-1];		// we don't record the results from the initial window
@@ -135,7 +136,15 @@ public class IncrementalEvaluation {
 		long train_time = 0;
 		long test_time = 0;
 
-		int windowSize = (int)Math.floor(D.numInstances() * rLabeled / (double)numWindows);
+		int windowSize = (int) Math.floor(D.numInstances() / (double)numWindows);
+
+		if (rLabeled * windowSize < 1.)
+			throw new Exception ("[Error] The ratio of labelled instances ("+rLabeled+") is too small given the window size!");
+
+		double nth = 1. / rLabeled; // label every nth example
+		//Random r = new Random(0);
+		//System.out.println("To label every "+nth+"th example");
+
 		Instances D_init = new Instances(D,0,windowSize); 	// initial window
 
 		if (h.getDebug()) {
@@ -147,8 +156,6 @@ public class IncrementalEvaluation {
 		System.out.println("Done (in "+(train_time/1000.0)+" s)");
 		D = new Instances(D,windowSize,D.numInstances()-windowSize); 	// the rest (after the initial window)
 		double t = 0.5;													// initial threshold
-		int seed = 0; 													// @todo make an option
-		Random r = new Random(seed); 									// for partially-labelled / semi-supervised
 
 		// @todo move into function
 		//if (h.getDebug()) {
@@ -170,7 +177,7 @@ public class IncrementalEvaluation {
 			results[w].setInfo("Supervision",String.valueOf(rLabeled));
 
 			int n = 0;
-			for(; i < (w*windowSize)+windowSize; i++) {
+			for(int c = 0; i < (w*windowSize)+windowSize; i++) {
 
 				Instance x = D.instance(i);
 				AbstractInstance x_ = (AbstractInstance)((AbstractInstance) x).copy(); 		// copy 
@@ -178,14 +185,8 @@ public class IncrementalEvaluation {
 				// -- just trust that there's no cheating!)
 				//for(int j = 0; j < L; j++)  
 				//	x_.setValue(j,0.0);
-
-				boolean unlabeled = false;
-				if (r.nextDouble() > rLabeled) {
-					// UNLABELLED
-					x = MLUtils.setLabelsMissing(x,L);
-					unlabeled = true;
-				}
-				else {
+				
+				if ( rLabeled < 0.5 && (i % (int)(1/rLabeled) == 0) || ( rLabeled >= 0.5 && (i % (int)(1./(1.-rLabeled)) != 0 )) ) {
 					// LABELLED - Test & record prediction 
 					long before_test = System.currentTimeMillis();
 					double y[] = h.distributionForInstance(x_);
@@ -193,6 +194,10 @@ public class IncrementalEvaluation {
 					test_time = (after_test-before_test); // was +=
 					results[w].addResult(y,x);
 					n++;
+				}
+				else {
+					// UNLABELLED
+					x = MLUtils.setLabelsMissing(x,L);
 				}
 
 				// UPDATE (The classifier will have to decide if it wants to deal with unlabelled instances.)
@@ -242,7 +247,7 @@ public class IncrementalEvaluation {
 		text.append("\tSpecify the dataset (required)\n");
 		text.append("-B <number of windows>\n");
 		text.append("\tSets the number of windows (batches) for evalutation; default: 20.\n");
-		text.append("-P <ratio labelled>\n");
+		text.append("-semisupervised <ratio labelled>\n");
 		text.append("\tSets the ratio of labelled instances; default: 1.0.\n");
 		// Multilabel Options
 		text.append("\n\nClassifier Options:\n\n");
