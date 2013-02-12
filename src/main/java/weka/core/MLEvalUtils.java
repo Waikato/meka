@@ -356,14 +356,25 @@ public abstract class MLEvalUtils {
 	 */
 	public static Result averageResults(Result folds[]) { 
 		Result r = new Result();
+		// for info ..
 		r.info = folds[0].info;
-		for(String v : folds[0].vals.keySet()) {
-			r.info.put(v,Result.getValues(v,folds));
+		// for output ..
+		for(String metric : folds[0].output.keySet()) {
+			double values[] = new double[folds.length];
+			for(int i = 0; i < folds.length; i++) {
+				values[i] = folds[i].output.get(metric);
+			}
+			String avg_sd = Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3);
+			r.info.put(metric,avg_sd);
 		}
-		HashMap<String,double[]> o = Result.getStats(folds);
-		for(String s : o.keySet()) {
-			double values[] = o.get(s);
-			r.info.put(s,Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3));
+		// and now for 'vals' ..
+		for(String metric : folds[0].vals.keySet()) {
+			double values[] = new double[folds.length];
+			for(int i = 0; i < folds.length; i++) {
+				values[i] = folds[i].vals.get(metric);
+			}
+			String avg_sd = Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3);
+			r.info.put(metric,avg_sd);
 		}
 		r.setInfo("Type","CV");
 		return r;
