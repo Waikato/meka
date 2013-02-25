@@ -88,7 +88,7 @@ These files are found in the \texttt{lib} directory. See \texttt{lib/README.txt}
 	java -cp "./lib/*" weka.classifiers.multilabel.BR -t data/Music.arff
 \end{verbatim}
 
-If you are on a Microsoft Windows system, you need to use back slashes instead of forward slashes (\texttt{.\lib\*}). If you add the \texttt{jar} files to the system's \texttt{CLASSPATH}, you do not need to supply the \texttt{-cp} option at runtime. For the remainder of examples in this tutorial we will assume that this is the case.
+If you are on a Microsoft Windows system, you need to use back slashes instead of forward slashes (\texttt{.\\lib\\*}). If you add the \texttt{jar} files to the system's \texttt{CLASSPATH}, you do not need to supply the \texttt{-cp} option at runtime. For the remainder of examples in this tutorial we will assume that this is the case.
 
 Since Version 1.2 \framework{\MEKA} has a graphical user interface (GUI). Run this with either the \texttt{run.sh} script (under Linux, OSX) as follows:
 \begin{verbatim}
@@ -450,7 +450,7 @@ to train a classifier to learn the first label of your data (using the other lab
 \begin{verbatim}
 java weka.classifiers.multilabel.TestClassifier -t data/Music.arff -W weka.classifiers.functions.SMO
 \end{verbatim}
-an instantiation of \texttt{SMO} will already be be available in \texttt{m_Classifier}. You can also do this explicitly with
+an instantiation of \texttt{SMO} will already be be available in \texttt{m\_Classifier}. You can also do this explicitly with
 \begin{verbatim}
 	...
     m_Classifier = new SMO();
