@@ -256,14 +256,22 @@ public class MCC extends MultilabelClassifier implements Randomizable, Technical
 	@Override
 	public TechnicalInformation getTechnicalInformation() {
 		TechnicalInformation	result;
+		TechnicalInformation	additional;
 
-		result = new TechnicalInformation(Type.ARTICLE);
+		result = new TechnicalInformation(Type.INPROCEEDINGS);
 		result.setValue(Field.AUTHOR, "Jesse Read and Luca Martino and David Luengo");
-		result.setValue(Field.TITLE, "Efficient Monte Carlo Optimization for Multi-dimensional Classifier Chains");
-		result.setValue(Field.JOURNAL, "arXiv.org");
-		result.setValue(Field.URL, "http://arxiv.org/abs/1211.2190");
-		result.setValue(Field.YEAR, "2012");
+		result.setValue(Field.TITLE, "Efficient Monte Carlo Optimization for Multi-label Classifier Chains");
+		result.setValue(Field.BOOKTITLE, "ICASSP'13: International Conference on Acoustics, Speech, and Signal Processing (To Appear)");
+		result.setValue(Field.YEAR, "2013");
 
+		additional = new TechnicalInformation(Type.ARTICLE);
+		additional.setValue(Field.AUTHOR, "Jesse Read and Luca Martino and David Luengo");
+		additional.setValue(Field.TITLE, "Efficient Monte Carlo Optimization for Multi-dimensional Classifier Chains");
+		additional.setValue(Field.JOURNAL, "arXiv.org");
+		additional.setValue(Field.URL, "http://arxiv.org/abs/1211.2190");
+		additional.setValue(Field.YEAR, "2012");
+
+		result.add(additional);
 		return result;
 	}
 
