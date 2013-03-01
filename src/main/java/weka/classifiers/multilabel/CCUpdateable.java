@@ -23,7 +23,6 @@ import weka.classifiers.UpdateableClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.MLUtils;
-import weka.core.WindowIncrementalEvaluator;
 
 /**
  * CCUpdateable.java - Updateable version of CC.

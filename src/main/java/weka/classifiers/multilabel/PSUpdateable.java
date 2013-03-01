@@ -25,7 +25,6 @@ import weka.core.Instances;
 import weka.core.MLUtils;
 import weka.core.Option;
 import weka.core.Utils;
-import weka.core.WindowIncrementalEvaluator;
 
 /**
  * PSUpdateable.java - Pruned Sets Updateable.

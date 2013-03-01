@@ -26,7 +26,6 @@ package weka.classifiers.multilabel;
 import weka.classifiers.UpdateableClassifier;
 import weka.core.Instance;
 import weka.core.MLUtils;
-import weka.core.WindowIncrementalEvaluator;
 
 public class BRUpdateable extends BR implements UpdateableClassifier {
 

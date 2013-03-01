@@ -17,7 +17,6 @@ package weka.classifiers.multilabel;
 
 import weka.classifiers.UpdateableClassifier;
 import weka.core.Instance;
-import weka.core.WindowIncrementalEvaluator;
 
 /**
  * RTUpdateable.java - Updateable RT.
