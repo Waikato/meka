@@ -82,29 +82,27 @@ public class IncrementalEvaluation {
 		// Set the number of windows (batches) @todo move below combining options?
 		int nWin = 20;
 		try {
-			if(Utils.getOptionPos('B',options) >= 0) {
-				nWin = Integer.parseInt(Utils.getOption('B', options));
-			}
-		} catch(IOException e) {
-			e.printStackTrace();
-			throw new Exception("[Error] Failed to parse option B, using default: B = "+nWin);
+			nWin = (Utils.getOptionPos('B',options) >= 0) ? Integer.parseInt(Utils.getOption('B',options)) : nWin;
+		} catch(Exception e) {
+			throw new Exception("[Error] Failed to parse option B");
 		}
 
 		// Partially labelled ?
 		double rLabeled = 1.0; 
 		try {
-			if(Utils.getOptionPos("semisupervised", options) >= 0) {
-				System.out.println(""+Arrays.toString(options));
-				rLabeled = Double.parseDouble(Utils.getOption("semisupervised", options));
-			}
+			rLabeled = (Utils.getOptionPos("semisupervised", options) >= 0) ? Double.parseDouble(Utils.getOption("semisupervised", options)) : rLabeled;
 		} catch(IOException e) {
-			e.printStackTrace();
-			throw new Exception("[Error] Failed to parse option S, using default: S = "+rLabeled+" ("+(rLabeled*100.0)+"% labelled)");
+			throw new Exception("[Error] Failed to parse option S");
 		}
+
+		// Get Threshold
+		String Top = (Utils.getOptionPos("threshold",options) >= 0) ? Utils.getOption("threshold",options) : "PCut1";
 
 		if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(D)+"\tL="+D.classIndex()+"");
 
-		Result results[] = evaluateModel(h,D,nWin,rLabeled);
+		Result results[] = evaluateModel(h,D,nWin,rLabeled,Top);
+		
+
 
 		// Return the final evaluation window.
 		return results[results.length-1];
@@ -116,14 +114,14 @@ public class IncrementalEvaluation {
 	 * EvaluateModel - over 20 windows.
 	 */
 	public static Result[] evaluateModel(MultilabelClassifier h, Instances D) throws Exception {
-		return evaluateModel(h,D,20,1.0);
+		return evaluateModel(h,D,20,1.0,"PCut1");
 	}
 
 	/**
 	 * EvaluateModel - Evaluate a multi-label data-stream model over a moving window.
 	 * The window is sampled every N/numWindows instances, for a total of numWindows windows.
 	 */
-	public static Result[] evaluateModel(MultilabelClassifier h, Instances D, int numWindows, double rLabeled) throws Exception {
+	public static Result[] evaluateModel(MultilabelClassifier h, Instances D, int numWindows, double rLabeled, String Top) throws Exception {
 
 		if (h.getDebug())
 			System.out.println(":- Classifier -: "+h.getClass().getName()+": "+Arrays.toString(h.getOptions()));
@@ -155,7 +153,9 @@ public class IncrementalEvaluation {
 		train_time = System.currentTimeMillis() - train_time;
 		System.out.println("Done (in "+(train_time/1000.0)+" s)");
 		D = new Instances(D,windowSize,D.numInstances()-windowSize); 	// the rest (after the initial window)
-		double t = 0.5;													// initial threshold
+
+		double t[] = new double[L];
+		Arrays.fill(t,0.5);
 
 		// @todo move into function
 		//if (h.getDebug()) {
@@ -173,10 +173,11 @@ public class IncrementalEvaluation {
 		for (int w = 0; w < numWindows-1; w++) {
 
 			results[w] = new Result(L);
-			results[w] = new Result(L);
 			results[w].setInfo("Supervision",String.valueOf(rLabeled));
 
 			int n = 0;
+			test_time = 0;
+			train_time = 0;
 			for(int c = 0; i < (w*windowSize)+windowSize; i++) {
 
 				Instance x = D.instance(i);
@@ -191,7 +192,7 @@ public class IncrementalEvaluation {
 					long before_test = System.currentTimeMillis();
 					double y[] = h.distributionForInstance(x_);
 					long after_test = System.currentTimeMillis();
-					test_time = (after_test-before_test); // was +=
+					test_time += (after_test-before_test); // was +=
 					results[w].addResult(y,x);
 					n++;
 				}
@@ -204,12 +205,12 @@ public class IncrementalEvaluation {
 				long before = System.currentTimeMillis();
 				((UpdateableClassifier)h).updateClassifier(x);
 				long after = System.currentTimeMillis();
-				train_time = (after-before); // was +=
+				train_time += (after-before); // was +=
 			}
 
 			// calculate results
 			results[w].setInfo("Type","ML");
-			results[w].setInfo("Threshold", String.valueOf(t));
+			results[w].setInfo("Threshold", Arrays.toString(t));
 			results[w].output = Result.getStats(results[w]);
 			results[w].output.put("Test_time",(test_time)/1000.0);
 			results[w].output.put("Build_time",(train_time)/1000.0);
@@ -224,8 +225,12 @@ public class IncrementalEvaluation {
 			} System.out.println("");
 
 			// Calibrate threshold for next window
-			t = MLEvalUtils.calibrateThreshold(results[w].predictions,results[w].output.get("LCard_real"));
-
+			if (Top.equals("PCutL")) {
+				t = MLEvalUtils.calibrateThresholds(results[w].predictions,MLUtils.labelCardinalities(results[w].actuals));
+			}
+			else {
+				Arrays.fill(t,MLEvalUtils.calibrateThreshold(results[w].predictions,results[w].output.get("LCard_real")));
+			}
 		}
 
 		if (h.getDebug()) {
@@ -233,6 +238,11 @@ public class IncrementalEvaluation {
 			//System.out.println("Average results are as follows:\n");
 		}
 		Result avg = MLEvalUtils.averageResults(results);
+		// @todo put in earlier?
+		avg.setInfo("Classifier_name",h.getClass().getName());
+		avg.setInfo("Classifier_ops",Arrays.toString(h.getOptions()));
+		avg.setInfo("Classifier_info",h.toString());
+		avg.setInfo("Dataset_name",MLUtils.getDatasetName(D));
 		System.out.println(avg);
 
 		return results;
