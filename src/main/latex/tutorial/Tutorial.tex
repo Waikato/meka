@@ -1,20 +1,3 @@
-%%%%%%%%%%
-%
-%
-%
-%
-%
-%
-%
-%   both types of threshold
-%
-%
-%
-%
-%
-%
-%%%%%%%%%%%%%%%%%%%%%%%
-
 \documentclass[11pt]{article}
 \usepackage[margin=1.1in]{geometry}
 \usepackage{my_symbols}
@@ -511,7 +494,7 @@ public class TestClassifierUpdateable extends TestClassifier
 \end{verbatim}
 }
 
-Note that the \texttt{IncrementalEvaluation} class is called for evaluation in this case; see Section \ref{sec:evaluation}. The \framework{\MOA} framework \cite{MOA} for learning in data streams contains a number of incremental classifiers that \WEKA{} does not, for example Hoeffding trees. You can run them using \WEKA's \texttt{MOA} meta classifier (wrapper)\footnote{\framework{\MOA} does not come in the \framework{\MEKA} package, you can download it from \url{http://moa.cs.waikato.ac.nz/}}, e.g., 
+Note that the \texttt{IncrementalEvaluation} class is called for evaluation in this case; see Section \ref{sec:evaluation}. The \framework{\MOA} framework \cite{MOA} for learning in data streams contains a number of incremental classifiers that \WEKA{} does not, for example Hoeffding trees. It is included in \framework{\MEKA}, and you can run these classifiers using \WEKA's \texttt{MOA} meta classifier (wrapper), e.g., 
 \begin{verbatim}
     java weka.classifiers.multilabel.BRUpdateable -D -t data/Music.arff \
         -W weka.classifiers.meta.MOA -- -B moa.classifiers.trees.HoeffdingTree
@@ -556,18 +539,20 @@ Other parameters are mostly set to the default found in the literature where the
 	Classifier Chains (CC) [$U$,$M$] & \texttt{CC} \\
 	Ensembles of CC (ECC)  [$U$,$M$] & \texttt{meta.BaggingML -P 100 -W CC} \\
 	Ensembles of CC `quick' (ECCq) [$U$,$M$] & \texttt{meta.RandomSubspaceML -W CCq} \\
-	Probabilistic Classifier Chains [$M$] & \texttt{PCC} \\
-	Monte Carlo Optimization of CC [$M$] & \texttt{MCC} \\
+	Probabilistic Classifier Chains (PCC) [$M$] & \texttt{PCC} \\
+	Monte Carlo Optimization of CC (MCC) [$M$] & \texttt{MCC} \\
 	\hline
 	Ranking + Threshold [$M$] (RT, a.k.a. PT5)  & \texttt{RT} \\
 	\hline
 	Fourclass Pairwise (FW, a.k.a. PW)  & \texttt{FW} \\
 	Calibrated Label Ranking [R] & \texttt{MULAN -S CLR} \\ 
 	\hline
+	Learning EM-style from unlabeled examples  & \texttt{meta.EM} \\ 
+	\hline
 	Conditional Dependency Networks [$M$] & \texttt{CDN} \\ 
 	%Deep Belief Network            & \texttt{DBN} \\
 	\hline
-	Label Combination (LC, aka LP) & \texttt{CDN} \\ 
+	Label Combination (LC, a.k.a. LP) & \texttt{LC} \\ 
 	Random $k$-labEL Sets (RA$k$EL) & \texttt{MULAN -S RAkEL1} \\ 
 	Pruned Problem Transformation (PPT)  & \texttt{PSt} \\
 	Pruned Sets (PS)               & \texttt{PS} \\
