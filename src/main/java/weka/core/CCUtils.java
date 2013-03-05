@@ -21,6 +21,18 @@ import java.util.*;
 public abstract class CCUtils {
 
 	/**
+	 * SetPath - set 'path[]' into the first L attributos of Instance 'xy'.
+	 * @param	xy		an Instance
+	 * @param	path	a label vector
+	 */
+	public static void setPath(Instance xy, double path[]) {
+		int L = xy.classIndex(); // = path.length
+		for(int j = 0; j < L; j++) {
+			xy.setValue(j,(int)Math.round(path[j])); 	 // x = x + path_j
+		}
+	}
+
+	/**
 	 * LinkTransform - prepare 'D' for training at node 'j' of the chain, using index 'idx'.
 	 * @return	the transformed dataset (which can be used as a template)
 	 */
