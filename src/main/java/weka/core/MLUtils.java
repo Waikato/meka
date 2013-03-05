@@ -222,7 +222,7 @@ public abstract class MLUtils {
 	}
 
 	/** 
-	 * LabelCardinality - return the frequency of each label of dataset D.
+	 * LabelCardinalities - return the frequency of each label of dataset D.
 	 */
 	public static final double[] labelCardinalities(Instances D) {
 		int L = D.classIndex();
@@ -232,6 +232,23 @@ public abstract class MLUtils {
 				lc[j] += D.instance(i).value(j);
 			}
 			lc[j] /= D.numInstances();
+		}
+		return lc;
+	}
+
+	/** 
+	 * LabelCardinalities - return the frequency of each label of dataset D.
+	 */
+	public static final double[] labelCardinalities(ArrayList<int[]> Y) {
+		int L = ((int[]) Y.get(0)).length;
+		double lc[] = new double[L];
+		for(int y[] : Y) {
+			for(int j = 0; j < L; j++) {
+				lc[j] += y[j];
+			}
+		}
+		for(int j = 0; j < L; j++) {
+			lc[j] /= Y.size();
 		}
 		return lc;
 	}

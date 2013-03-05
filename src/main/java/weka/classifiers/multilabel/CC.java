@@ -25,6 +25,7 @@ import java.util.Vector;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.CCUtils;
 import weka.core.MLUtils;
 import weka.core.Option;
 import weka.core.Randomizable;
@@ -71,24 +72,13 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 			// sort out excludes [0,1,2,3,5]
 			Arrays.sort(this.excld); 
 
-			this.classifier = (AbstractClassifier)AbstractClassifier.forName(getClassifier().getClass().getName(),((AbstractClassifier)getClassifier()).getOptions());
 
-			Instances new_train = new Instances(train);
-
-			// delete all except one (leaving a binary problem)
-			if(getDebug()) System.out.print(" "+this.index);
-			new_train.setClassIndex(-1); 
-			// delete all the attributes (and track where our index ends up)
-			int c_index = chain[j]; 
-			for(int i = excld.length-1; i >= 0; i--) {
-				new_train.deleteAttributeAt(excld[i]);
-				if (excld[i] < this.index)
-					c_index--; 
-			}
-			new_train.setClassIndex(c_index); 
+			//Instances new_train = new Instances(train);
+			Instances new_train = CCUtils.linkTransform(train,j,this.index,this.excld);
 
 			_template = new Instances(new_train,0);
 
+			this.classifier = (AbstractClassifier)AbstractClassifier.forName(getClassifier().getClass().getName(),((AbstractClassifier)getClassifier()).getOptions());
 			this.classifier.buildClassifier(new_train);
 			new_train = null;
 
@@ -146,19 +136,19 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 		result = new TechnicalInformation(Type.ARTICLE);
 		result.setValue(Field.AUTHOR, "Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank");
 		result.setValue(Field.TITLE, "Classifier Chains for Multi-label Classification");
-    result.setValue(Field.JOURNAL, "Machine Learning Journal");
-    result.setValue(Field.YEAR, "2011");
-    result.setValue(Field.VOLUME, "85");
-    result.setValue(Field.NUMBER, "3");
-    result.setValue(Field.PAGES, "333-359");
+		result.setValue(Field.JOURNAL, "Machine Learning Journal");
+		result.setValue(Field.YEAR, "2011");
+		result.setValue(Field.VOLUME, "85");
+		result.setValue(Field.NUMBER, "3");
+		result.setValue(Field.PAGES, "333-359");
 		
 		additional = new TechnicalInformation(Type.INPROCEEDINGS);
 		additional.setValue(Field.AUTHOR, "Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank");
 		additional.setValue(Field.TITLE, "Classifier Chains for Multi-label Classification");
-    additional.setValue(Field.BOOKTITLE, "20th European Conference on Machine Learning (ECML 2009). Bled, Slovenia, September 2009");
-    additional.setValue(Field.YEAR, "2009");
+		additional.setValue(Field.BOOKTITLE, "20th European Conference on Machine Learning (ECML 2009). Bled, Slovenia, September 2009");
+		additional.setValue(Field.YEAR, "2009");
 
-    result.add(additional);
+		result.add(additional);
     
 		return result;
 	}
@@ -199,6 +189,7 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 		if (indices == null) {
 			indices = MLUtils.gen_indices(L);
 			MLUtils.randomize(indices,new Random(m_S));
+			//setChain(indices);
 		}
 		if(getDebug()) System.out.print(":- Chain (");
 		root = new Link2(indices,0,D);
