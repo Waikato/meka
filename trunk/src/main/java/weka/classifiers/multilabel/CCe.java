@@ -248,7 +248,7 @@ public class CCe extends MultilabelClassifier implements Randomizable {
 	public double[] probabilityForInstance(Instance x, double path[]) throws Exception {
 		int L = x.classIndex();
 		// set path 'path' into 'x'
-		MLChains.setPath(x,path);
+		CCUtils.setPath(x,path);
 		// run through chain
 		root.probability(x);
 		// return p(path|x)

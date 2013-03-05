@@ -54,6 +54,19 @@ public class PCC extends CCe implements TechnicalInformationHandler{ // MT Capab
 		}
 	}
 
+	/**
+	 * GetKs - return [K_1,K_2,...,K_L] where each Y_j \in {1,...,K_j}.
+	 * @param	D	a dataset
+	 */
+	private static int[] getKs(Instances D) {
+		int L = D.classIndex();
+		int K[] = new int[L];
+		for(int k = 0; k < L; k++) {
+			K[k] = D.attribute(k).numValues();
+		}
+		return K;
+	}
+
 	@Override
 	public double[] distributionForInstance(Instance xy) throws Exception {
 
@@ -66,7 +79,7 @@ public class PCC extends CCe implements TechnicalInformationHandler{ // MT Capab
 		 * e.g. K = [3,3,5]
 		 * we push y_[] from [0,0,0] to [2,2,4] over all necessary iterations.
 		 */
-		int K[] = MTUtils.getKs(xy.dataset());
+		int K[] = getKs(xy.dataset());
 		if (getDebug()) 
 			System.out.println("K[] = "+Arrays.toString(K));
 		double y_[] = new double[L]; 
