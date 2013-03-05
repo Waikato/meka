@@ -136,6 +136,7 @@
            classpathref 	  = "project.class.path"
            access           = "public"
            defaultexcludes  = "yes"
+           excludepackagenames  = "moa"
            use              = "yes"
            header           = "MEKA ${version}"
            doctitle         = "MEKA - Multi-label Extension to weKA"

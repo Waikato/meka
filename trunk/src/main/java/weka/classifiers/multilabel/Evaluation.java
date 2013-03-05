@@ -331,7 +331,7 @@ public class Evaluation {
 		// Train
 		long before = System.currentTimeMillis();
 		if (h instanceof SemisupervisedClassifier) { // *NEW* for semi-supervised 
-			((SemisupervisedClassifier)h).setUnlabelledData(MLUtils.removeLabels(new Instances(D_test)));
+			((SemisupervisedClassifier)h).setUnlabelledData(MLUtils.setLabelsMissing(new Instances(D_test)));
 		}
 		h.buildClassifier(D_train);
 		long after = System.currentTimeMillis();

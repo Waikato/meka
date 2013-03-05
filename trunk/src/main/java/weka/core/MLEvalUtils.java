@@ -145,16 +145,33 @@ public abstract class MLEvalUtils {
 		int[] o_tp = new int[L], o_fp = new int[L], o_fn = new int[L], o_tn = new int[L];
 		//double average_accuracy_online = 0.0;
 
+		double Rank_loss = 0.0, Avg_prec = 0.0;
 
 		for(int i = 0; i < N; i++) {
+
 			double ranking[] = Confidences.get(i);
 			int actual[] = TrueValues.get(i);
 
 			int pred[] = new int[actual.length];
+
+			int r[] = Utils.sort(ranking);
+
+			// @todo replace using Vector library
 			for(int j = 0; j < L; j++) {
 				pred[j] = (ranking[j] >= t[j]) ? 1 : 0;
+				r[0] = (L-1) - r[0];
 			}
 
+			int numPredicted = Utils.sum(pred);
+			//System.out.println("l = "+Arrays.toString(actual));
+			//System.out.println("y = "+Arrays.toString(pred));
+			//System.out.println("p = "+Arrays.toString(ranking));
+			//System.out.println("r = "+Arrays.toString(r));
+			//System.out.println("lc= "+numPredicted);
+
+			Rank_loss += RankLoss(actual, r);
+			Avg_prec += AvgPrec(actual, r);
+		
 			//System.out.println("act"+Arrays.toString(actual));
 			//System.out.println("prd"+Arrays.toString(pred));
 
@@ -271,6 +288,8 @@ public abstract class MLEvalUtils {
 		//results.put("LCard_diff"		,Math.abs((((double)p_sum_total/N)-(double)r_sum_total/N)));
 		//results.put("Coverage"			,((double)coverage/N));
 		results.put("One_error"			,((double)one_error/N));
+		results.put("Rank_loss"			,((double)Rank_loss/N));
+		results.put("Avg_prec"			,((double)Avg_prec/N));
 		results.put("LogLossD"			,(log_loss_D/N));
 		results.put("LogLossL"			,(log_loss_L/N));
 		//results.put("EmptyAccuracy"		,(accuracy/(N-set_empty_total)));
@@ -300,12 +319,83 @@ public abstract class MLEvalUtils {
 	 * @param	R	y
 	 * @param	P	p(y==1)
 	 * @param	C	limit
+	 * @return 	Log loss
 	 */
 	public static double calcLogLoss(double R, double P, double C) {
 		// base 2 ?
 		double ans = Math.min(Utils.eq(R,P) ? 0.0 : -( (R * Math.log(P)) + ((1.0 - R) * Math.log(1.0 - P)) ),C);
 		return (Double.isNaN(ans) ? 0.0 : ans);
 	}
+
+	/**
+	 * Average Precision - computes for each relevant label the percentage of relevant labels among all labels that are ranked before it.
+	 * @param	y	0/1 labels         [0,   0,   1   ] (true labels)
+	 * @param	r	ranking position   [1,   2,   0   ]
+	 * @return	Average Precision
+	 */
+	public static double AvgPrec(int y[], int[] r) {
+
+        double avg_prec = 0;
+
+        int L = y.length;
+
+        List<Integer> ones = new ArrayList<Integer>();
+        for (int j = 0; j < L; j++) {
+            if (y[j] == 1) {
+                ones.add(j);
+            }
+        }
+
+        if (ones.size() <= 0) 
+			return 1.0;
+
+		for (int j : ones) {
+			// 's' = the percentage of relevant labels ranked before 'j'
+			double s = 0.0;
+			for (int k : ones) {
+				if (r[k] <= r[j]) {
+					s++; 
+				}
+			}
+			         // 's' divided by the position of 'j'
+			avg_prec += (s / (1. + r[j]));
+		}
+		avg_prec /= ones.size();
+		return avg_prec;
+    }
+
+	/**
+	 * Rank Loss - the average fraction of labels which are not correctly ordered.
+	 * @param	y	0/1 labels         [0,   0,   1   ]
+	 * @param	r	ranking position   [1,   2,   0   ]
+	 * @return	Ranking Loss
+     */
+   public static double RankLoss(int y[], int r[]) {
+	   int L = y.length;
+	   ArrayList<Integer> tI = new ArrayList<Integer>();
+	   ArrayList<Integer> fI = new ArrayList<Integer>();
+	   for (int j = 0; j < L; j++) {
+		   if (y[j] == 1) {
+			   tI.add(j);
+		   } else {
+			   fI.add(j);
+		   }
+	   }
+
+	   if (!tI.isEmpty() && !fI.isEmpty()) {
+		   int c = 0; 
+		   for (int k : tI) {
+			   for (int l : fI) {
+				   if (r[k] > r[l]) {
+					   c++;
+				   }
+			   }
+		   }
+		   return (double) c / (double)(tI.size() * fI.size());
+	   } else {
+		   return 0.0;
+	   }
+   }
 
 	/**
 	 * GetMTStats.

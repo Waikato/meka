@@ -67,6 +67,21 @@ public class BRMethodsTests extends TestCase {
 		assertTrue("EBR Accuracy Correct", Er.info.get("Accuracy").equals("0.557 +/- 0.04 ") );
 	}
 
+	public void testMCC() {
+
+		/*
+		System.out.println("Test MCC");
+		MCC h = new MCC();
+		SMO smo = new SMO();
+		smo.setBuildLogisticModels(true);
+		br.setClassifier(smo);
+		Result r = EvaluationTests.cvEvaluateClassifier(br);
+		// randomized or not?
+		assertTrue("BR Accuracy Correct", r.info.get("Accuracy").equals("0.574 +/- 0.044") );
+		*/
+		
+	}
+
 	//@Test(expected = IllegalArgumentException.class)
 	public void testLC() {
 		PS ps = new PS();

@@ -17,7 +17,6 @@ package weka.classifiers.multilabel;
 
 import weka.classifiers.SingleClassifierEnhancer;
 import weka.classifiers.UpdateableClassifier;
-import weka.core.WindowIncrementalEvaluator;
 import weka.core.Attribute;
 import weka.core.Capabilities;
 import weka.core.Capabilities.Capability;
@@ -139,16 +138,24 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 	 * @param	args	Command-line options.
 	 */
 	public static void runClassifier(MultilabelClassifier h, String args[]) {
-		try {
-			if (h instanceof UpdateableClassifier) 
-				WindowIncrementalEvaluator.evaluation(h,args);
-			else
-				Evaluation.runExperiment(h,args);
-		} catch(Exception e) {
-			System.err.println("\n"+e);
-			//e.printStackTrace();
-			Evaluation.printOptions(h.listOptions());
-		}
+			if (h instanceof UpdateableClassifier) {
+				try {
+					IncrementalEvaluation.runExperiment(h,args);
+				} catch(Exception e) {
+					System.err.println("\n"+e);
+					//e.printStackTrace();
+					IncrementalEvaluation.printOptions(h.listOptions());
+				}
+			}
+			else {
+				try {
+					Evaluation.runExperiment(h,args);
+				} catch(Exception e) {
+					System.err.println("\n"+e);
+					//e.printStackTrace();
+					Evaluation.printOptions(h.listOptions());
+				}
+			}
 	}
 
 }

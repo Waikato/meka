@@ -65,7 +65,7 @@ public class RT extends MultilabelClassifier {
 			classes.addElement(MLUtils.toBitString(j,L)); //(*) e.g. 00100 where j,N == 2,5
 
 		//Add the new class attribute
-		D_.insertAttributeAt(new Attribute("class",classes),0);
+		D_.insertAttributeAt(new Attribute("ClassY",classes),0);
 		D_.setClassIndex(0);
 
 		//Loop through D again

@@ -42,15 +42,15 @@ public class MCC extends MultilabelClassifier implements Randomizable, Technical
 	protected int m_Iy = 1000;
 	protected int m_Payoff = 0;
 
-	public CCpath h = new CCpath();
+	public CCe h = new CCe();
 
 	/* 
 	 * Build h_{s} : X -> Y
 	 */
-	protected CCpath buildCC(int chain[], Instances D) throws Exception {
+	protected CCe buildCC(int chain[], Instances D) throws Exception {
 
 		// a new classifier chain
-		CCpath h = new CCpath();
+		CCe h = new CCe();
 
 		// build this chain
 		h.setChain(chain);
@@ -100,7 +100,7 @@ public class MCC extends MultilabelClassifier implements Randomizable, Technical
 				int s_[] = Arrays.copyOf(A.swap(s,r),s.length);
 
 				// build h'
-				CCpath h_ = buildCC(s_,D);
+				CCe h_ = buildCC(s_,D);
 
 				// rate h'
 				double w_ = payoff(h_,new Instances(D));
@@ -124,7 +124,7 @@ public class MCC extends MultilabelClassifier implements Randomizable, Technical
 	 * RandomSearch. With Prior. 
 	 * Simulated Annealing without temperature.
 	 */
-	public static double[] RandomSearch(CCpath h, Instance x, int T, Random r, double y0[]) throws Exception {
+	public static double[] RandomSearch(CCe h, Instance x, int T, Random r, double y0[]) throws Exception {
 
 		double y[] = Arrays.copyOf(y0,y0.length); 				// prior y
 		double w  = A.product(h.probabilityForInstance(x,y));	// p(y|x)
@@ -150,7 +150,7 @@ public class MCC extends MultilabelClassifier implements Randomizable, Technical
 	 * RandomSearch. 
 	 * Simulated Annealing without temperature.
 	 */
-	public static double[] RandomSearch(CCpath h, Instance x, int T, Random r) throws Exception {
+	public static double[] RandomSearch(CCe h, Instance x, int T, Random r) throws Exception {
 
 		return RandomSearch(h,x,T,r,h.distributionForInstance(x));
 	}
@@ -160,11 +160,11 @@ public class MCC extends MultilabelClassifier implements Randomizable, Technical
 	 * Return a score of h evaluated on D.sum 
 	 * ( p(y_i | x_i, h_s) )
 	 */
-	protected double payoff(CCpath h, Instances D) throws Exception {
+	protected double payoff(CCe h, Instances D) throws Exception {
 		return payoff(h,D,m_Payoff);
 	}
 
-	protected static double payoff(CCpath h, Instances D, int payoff_fn) throws Exception {
+	protected static double payoff(CCe h, Instances D, int payoff_fn) throws Exception {
 		int L = D.classIndex();
 		int N = D.numInstances();
 		double s = 1.; // <-- @note!
