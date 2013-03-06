@@ -25,6 +25,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.AbstractListModel;
@@ -119,6 +120,17 @@ public class ResultHistoryList
 		 */
 		@Override
 		public Object getElementAt(int index) {
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");		        
+			return formatter.format(getTimestampAt(index));
+		}
+
+		/**
+		 * Returns the element at the specified location.
+		 * 
+		 * @param index the location
+		 * @return the item
+		 */
+		public Date getTimestampAt(int index) {
 			return m_History.getTimestamp(index);
 		}
 
