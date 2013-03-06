@@ -70,16 +70,25 @@
     </target>
 
     <target name="compile" depends="init" description="Compiles the source code."> 
-	    <javac srcdir="${src}" destdir="${build}" debug="true" debuglevel="lines,vars,source" classpathref="project.class.path">
-	</javac>
-	<javac srcdir="${src-tests}" destdir="${build-tests}" debug="true" debuglevel="lines,vars,source">
+      <javac srcdir="${src}" 
+             destdir="${build}" 
+             debug="true" 
+             debuglevel="lines,vars,source" 
+             classpathref="project.class.path"
+             source="1.6" target="1.6">
+      </javac>
+      <javac srcdir="${src-tests}" 
+	       destdir="${build-tests}" 
+	       debug="true" 
+	       debuglevel="lines,vars,source"
+	       source="1.6" target="1.6">
 		<classpath>
 	      <fileset dir="${lib}">
     	     <include name="*.jar"/>
 	      </fileset>
 	      <pathelement path="${build}"/>
 		</classpath>
-	</javac>
+      </javac>
     </target>
 
     <target name="jar" depends="compile">
@@ -168,6 +177,7 @@
     </target>
 
     <target name="release" depends="clean, all, tests, latex" description="Generates a release archive.">
+      <delete file="${release}/meka-release-${version}.zip"/>
       <zip destfile="${release}/meka-release-${version}.zip">
         <zipfileset dir="${basedir}" includes="README.txt" prefix="meka-${version}"/>
         <zipfileset dir="${basedir}" includes="LICENSE.txt" prefix="meka-${version}"/>

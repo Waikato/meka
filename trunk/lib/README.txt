@@ -2,8 +2,8 @@ README
 ======
 
 weka.jar, weka-tests.jar
-- version: 3.7.5
-- download: http://sourceforge.net/projects/weka/files/weka-3-7/3.7.5/
+- version: 3.7.9
+- download: http://sourceforge.net/projects/weka/files/weka-3-7/3.7.9/
 
 mulan.jar
 - version: 1.4
