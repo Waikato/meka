@@ -250,11 +250,11 @@ extends AbstractThreadedExplorerTab {
 	  Result[] results;
 	  try {
 	    classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
-		System.out.println("data.classIndex() "+data.classIndex());
+		//System.out.println("data.classIndex() "+data.classIndex());
 	    results = Evaluation.cvModel(classifier, data, m_Folds, m_TOP);
 		addResultToHistory(
-				MLEvalUtils.averageResults(results)
-				);
+			MLEvalUtils.averageResults(results)
+		);
 	  }
 	  catch (Exception e) {
 	    System.err.println("Evaluation failed:");
@@ -290,7 +290,7 @@ extends AbstractThreadedExplorerTab {
 			  test.setClassIndex(data.classIndex());
 		  }
 	    classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
-		System.out.println("data.classIndex() "+train.classIndex());
+		//System.out.println("data.classIndex() "+train.classIndex());
 	    result     = Evaluation.evaluateModel(classifier, train, test, m_TOP);
 	    addResultToHistory(result);
 	  }
@@ -316,7 +316,7 @@ extends AbstractThreadedExplorerTab {
 	    classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
 		//System.out.println("data.classIndex() "+data.classIndex());
 	    results    = IncrementalEvaluation.evaluateModel(classifier, data, 20, 1., "PCut1");
-	    for (Result result: results)
+	    for (Result result: results) 
 	      addResultToHistory(result);
 	  }
 	  catch (Exception e) {
@@ -407,7 +407,7 @@ extends AbstractThreadedExplorerTab {
     run = new Runnable() {
       @Override
       public void run() {
-	m_ResultHistoryList.addResult(result);
+		  m_ResultHistoryList.addResult(result);
       }
     };
     SwingUtilities.invokeLater(run);
