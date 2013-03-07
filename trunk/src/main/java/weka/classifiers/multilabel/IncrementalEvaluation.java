@@ -245,7 +245,9 @@ public class IncrementalEvaluation {
 		avg.setInfo("Dataset_name",MLUtils.getDatasetName(D));
 		System.out.println(avg);
 
-		return results;
+		// @todo in the future, will want to return all results ... but was having problems with this ...
+		//return results;
+		return new Result[]{avg};
 	}
 
 	public static void printOptions(Enumeration e) {
