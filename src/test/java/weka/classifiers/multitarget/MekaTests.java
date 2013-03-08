@@ -41,7 +41,7 @@ public class MekaTests
     suite.addTest(weka.classifiers.multitarget.CCTest.suite());
     suite.addTest(weka.classifiers.multitarget.CCpTest.suite());
     suite.addTest(weka.classifiers.multitarget.CRTest.suite());
-    suite.addTest(weka.classifiers.multitarget.PSTest.suite());
+    //suite.addTest(weka.classifiers.multitarget.PSTest.suite());
 
     return suite;
   }
