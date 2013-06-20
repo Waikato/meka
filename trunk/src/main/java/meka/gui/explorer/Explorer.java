@@ -19,17 +19,6 @@
  */
 package meka.gui.explorer;
 
-import weka.core.Instances;
-import weka.core.MLUtils;
-import weka.core.Utils;
-import weka.core.converters.AbstractFileLoader;
-import weka.core.converters.AbstractFileSaver;
-import weka.core.converters.ConverterUtils;
-import weka.core.converters.SerializedInstancesLoader;
-import weka.gui.BrowserHelper;
-import weka.gui.ConverterFileChooser;
-import weka.gui.ViewerDialog;
-
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -55,6 +44,16 @@ import javax.swing.event.ChangeListener;
 import meka.gui.core.GUIHelper;
 import meka.gui.core.MekaPanel;
 import meka.gui.goe.GenericObjectEditor;
+import weka.core.Instances;
+import weka.core.MLUtils;
+import weka.core.Utils;
+import weka.core.converters.AbstractFileLoader;
+import weka.core.converters.AbstractFileSaver;
+import weka.core.converters.ConverterUtils;
+import weka.core.converters.SerializedInstancesLoader;
+import weka.gui.BrowserHelper;
+import weka.gui.ConverterFileChooser;
+import weka.gui.ViewerDialog;
 
 /**
  * Explorer GUI for MEKA.
@@ -345,14 +344,27 @@ extends MekaPanel {
       throw new Exception("[Error] Failed to Get Options from @Relation Name", e);
     }
 
-    int c = (Utils.getOptionPos('C', doptions) >= 0) ? Integer.parseInt(Utils.getOption('C',doptions)) : Integer.parseInt(Utils.getOption('c',doptions));
-    // if negative, then invert
-    if ( c < 0) {
-      c = -c;
-      data = MLUtils.switchAttributes(data,c);
+    try {
+      int c = (Utils.getOptionPos('C', doptions) >= 0) ? Integer.parseInt(Utils.getOption('C',doptions)) : Integer.parseInt(Utils.getOption('c',doptions));
+      // if negative, then invert
+      if ( c < 0) {
+	c = -c;
+	data = MLUtils.switchAttributes(data,c);
+      }
+      // set c
+      data.setClassIndex(c);
     }
-    // set c
-    data.setClassIndex(c);
+    catch (Exception e) {
+      throw new Exception(
+	  "Failed to parse options stored in relation name; expected format for relation name:\n"
+	  + "  'name: options'\n"
+	  + "But found:\n"
+	  + "  '" + data.relationName() + "'\n"
+	  + "Format example:\n"
+	  + "  'Example_Dataset: -C 3 -split-percentage 50'\n"
+	  + "'-C 3' specifies the number of target attributes to be 3. See tutorial for more information.", 
+	  e);
+    }
   }
 
   /**
