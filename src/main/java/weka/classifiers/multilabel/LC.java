@@ -29,11 +29,13 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
- * LC.java - aka LP (Laber Powerset) Method.
+ * LC.java - The LC (Label Combination) aka LP (Laber Powerset) Method.
+ * Treats each label combination as a single class in a multi-class learning scheme. The set of possible values of each class is the powerset of labels.
  * <br>
  * TODO PS should really extend this class
  * <br>
  * See also <i>LP</i> from the <a href=http://mulan.sourceforge.net>MULAN</a> framework.
+ * @version January 2009
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
 public class LC extends MultilabelClassifier implements OptionHandler {
@@ -49,7 +51,7 @@ public class LC extends MultilabelClassifier implements OptionHandler {
 	@Override
 	public String globalInfo() {
 		return 
-				"LC aka LP (Laber Powerset) Method.\n"
+				"LC aka LP (Laber Powerset) Method.\nTreats each label combination as a single class in a multi-class learning scheme. The set of possible values of each class is the powerset of labels.\n"
 				+ "See also LP from MULAN:\n"
 				+ "http://mulan.sourceforge.net";
 	}

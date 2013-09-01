@@ -226,10 +226,10 @@ public class IncrementalEvaluation {
 
 			// Calibrate threshold for next window
 			if (Top.equals("PCutL")) {
-				t = MLEvalUtils.calibrateThresholds(results[w].predictions,MLUtils.labelCardinalities(results[w].actuals));
+				t = ThresholdUtils.calibrateThresholds(results[w].predictions,MLUtils.labelCardinalities(results[w].actuals));
 			}
 			else {
-				Arrays.fill(t,MLEvalUtils.calibrateThreshold(results[w].predictions,results[w].output.get("LCard_real")));
+				Arrays.fill(t,ThresholdUtils.calibrateThreshold(results[w].predictions,results[w].output.get("LCard_real")));
 			}
 		}
 

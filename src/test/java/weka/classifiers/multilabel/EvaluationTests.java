@@ -149,6 +149,10 @@ public class EvaluationTests extends TestCase {
 		// Good @TODO
 		//assertTrue("Inc. Eval OK? ?", r1.info.get("Accuracy").equals("0.486 +/- 0.045"));
 		// The same?
+		if (r1==null)
+			System.out.println("r1 is null");
+		if (r2==null)
+			System.out.println("r2 is null");
 		assertTrue("Inc. Eval the same?", r1.info.get("Accuracy").equals(r2.info.get("Accuracy")));
 		// test/train
 
@@ -163,7 +167,7 @@ public class EvaluationTests extends TestCase {
 		int L = w.length;
 		double lim = Math.log(100);
 		for(int j = 0; j < L; j++) {
-			log_loss_L += MLEvalUtils.calcLogLoss(y[j],w[j],lim);
+			log_loss_L += Metrics.L_LogLoss(y[j],w[j],lim);
 		}
 		assertTrue("Log Loss OK?", log_loss_L == 2.8134107167600364);
 	}

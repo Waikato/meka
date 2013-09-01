@@ -32,17 +32,23 @@ import weka.core.MLUtils;
 import weka.core.Option;
 import weka.core.Randomizable;
 import weka.core.RevisionUtils;
+import weka.core.TechnicalInformation;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
+import weka.core.TechnicalInformationHandler;
 import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
 /**
  * PS.java - The Pruned Sets Method.
+ * Removes examples with P-infrequent labelsets from the training data, then subsamples these labelsets N time to produce N new examples with P-frequent labelsets. Then train a standard LC classifier. The idea is to reduce the number of unique class values that would otherwise need to be learned by LC. Best used in an Ensemble (e.g., EnsembleML).
+ * @see LC.java
  * <br>
  * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes. <i>Multi-label Classification using Ensembles of Pruned Sets</i>. Proc. of IEEE International Conference on Data Mining (ICDM 2008), Pisa, Italy, 2008
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
-public class PS extends LC implements Randomizable {
+public class PS extends LC implements Randomizable, TechnicalInformationHandler {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 8943667795912487237L;
@@ -52,6 +58,33 @@ public class PS extends LC implements Randomizable {
 	protected String m_sP = String.valueOf(m_P);
 	protected String m_sN = String.valueOf(m_N);
 	protected int m_S = 1;
+
+	/**
+	 * Description to display in the GUI.
+	 * 
+	 * @return		the description
+	 */
+	@Override
+	public String globalInfo() {
+		return 
+				"The Pruned Sets method (PS).\n"
+				+ "Removes examples with P-infrequent labelsets from the training data, then subsamples these labelsets N time to produce N new examples with P-frequent labelsets. Then train a standard LC classifier. The idea is to reduce the number of unique class values that would otherwise need to be learned by LC. Best used in an Ensemble (e.g., EnsembleML).\n"
+				+ "For more information see:\n"
+				+ getTechnicalInformation().toString();
+	}
+
+	@Override
+	public TechnicalInformation getTechnicalInformation() {
+		TechnicalInformation	result;
+
+		result = new TechnicalInformation(Type.INPROCEEDINGS);
+		result.setValue(Field.AUTHOR, "Jesse Read, Bernhard Pfahringer, Geoff Holmes");
+		result.setValue(Field.TITLE, "Multi-label Classification Using Ensembles of Pruned Sets");
+		result.setValue(Field.BOOKTITLE, "ICDM'08: International Conference on Data Mining (ICDM 2008). Pisa, Italy.");
+		result.setValue(Field.YEAR, "2008");
+		
+		return result;
+	}
 
 	private int parseValue(String s) {
 		int i = s.indexOf('-');
@@ -65,23 +98,37 @@ public class PS extends LC implements Randomizable {
 			return Integer.parseInt(s);
 	}
 
+	/** 
+	 * GetP - Get the pruning value P.
+	 */
 	public int getP() {
 		return m_P;
 	}
 
+	/** 
+	 * SetP - Sets the pruning value P, defining an infrequent labelset as one which occurs less than P times in the data (P = 0 defaults to LC).
+	 */
 	public void setP(int p) {
 		m_P = p;
 	}
 
+	/** 
+	 * GetN - Get the subsampling value N.
+	 */
 	public int getN() {
 		return m_N;
 	}
 
+	/** 
+	 * SetN - Sets the subsampling value N, the (maximum) number of frequent labelsets to subsample from the infrequent labelsets.
+	 */
 	public void setN(int n) {
 		m_N = n;
 	}
 
-	// For Random P/N values
+	/** 
+	 * SetSeed - Use random P and N values (in this case P and N arguments determine a <i>range</i> of values to select from randomly, e.g., -P 1-5 selects P randomly in {1,2,3,4,5}.
+	 */
 	@Override
 	public void setSeed(int s) {
 		// set random P / N values here (used by, e.g., EnsembleML)
@@ -100,17 +147,13 @@ public class PS extends LC implements Randomizable {
 	public int getSeed() {
 		return m_S;
 	}
-
-	//public String seedTipText() {
-//	  return "The seed value for randomization.";
-//	}
 	
 	@Override
 	public Enumeration listOptions() {
 
 		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tSets the pruning value        \n\tdefault: "+m_P+"\t(off)", "P", 1, "-P <value>"));
-		newVector.addElement(new Option("\tSets the subsampling strategy \n\tdefault: "+m_N+"\t(off)\n\tn\tN = n\n\t-n\tN = n, or 0 if LCard(D) >= 2\n\tn-m\tN = random(n,m)", "N", 1, "-N <value>"));
+		newVector.addElement(new Option("\tSets the pruning value, defining an infrequent labelset as one which occurs <= P times in the data (P = 0 defaults to LC).\n\tdefault: "+m_P+"\t(LC)", "P", 1, "-P <value>"));
+		newVector.addElement(new Option("\tSets the (maximum) number of frequent labelsets to subsample from the infrequent labelsets.\n\tdefault: "+m_N+"\t(none)\n\tn\tN = n\n\t-n\tN = n, or 0 if LCard(D) >= 2\n\tn-m\tN = random(n,m)", "N", 1, "-N <value>"));
 
 		Enumeration enu = super.listOptions();
 

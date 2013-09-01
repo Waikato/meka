@@ -17,8 +17,7 @@ package weka.classifiers.multilabel;
 
 /**
  * BRUpdateable.java - Updateable BR.
- * 
- * The Binary Relevance Method Updateable (must be given an UpdateableClassifier base classifier)
+ * Updateable BR -- must be run with an UpdateableClassifier base classifier.)
  * @see BR.java
  * @author 		Jesse Read (jesse@tsc.uc3m.es)
  * @version 	September, 2011

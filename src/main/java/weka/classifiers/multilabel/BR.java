@@ -17,6 +17,7 @@ package weka.classifiers.multilabel;
 
 /**
  * BR.java - The Binary Relevance Method.
+ * The standard baseline Binary Relevance method (BR) -- create a binary problems for each label and learn a model for them individually.
  * See also <i>BR</i> from the <a href=http://mulan.sourceforge.net>MULAN</a> framework
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */

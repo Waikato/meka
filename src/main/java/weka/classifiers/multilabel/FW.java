@@ -23,11 +23,8 @@ import weka.filters.*;
 import java.util.*;
 
 /**
- * Pairwise classification, with each pair of labels having 4 possible classes: {00, 01, 10, 11}.
- * <br>
- * See: ...
- * <br>
- * @author Jesse Read (jesse@tsc.uc3m.es)
+ * FW.java Four-class pairWise classification. 
+ * Trains a multi-class base classifier for each pair of labels -- (L*(L-1))/2 in total --, each with four possible class values: {00,01,10,11} representing the possible combinations of relevant (1) /irrelevant (0) for the pair. Uses a voting + threshold scheme at testing time where e.g., 01 from pair jk gives one vote to label k; any label with votes above the threshold is considered relevant.
  * @version	October 2012
  * @author 	Jesse Read (jesse@tsc.uc3m.es)
  */
@@ -39,7 +36,7 @@ public class FW extends MultilabelClassifier {
 	@Override
 	public String globalInfo() {
 		return "The Fourclass Pairwise (FW) method.\n"
-			+ "Creates (L*(L-1))/2 classifiers, each with four possible classes: {00,01,10,11}.";
+			+ "Trains a multi-class base classifier for each pair of labels -- (L*(L-1))/2 in total --, each with four possible class values: {00,01,10,11} representing the possible combinations of relevant (1) /irrelevant (0) for the pair. Uses a voting + threshold scheme at testing time where e.g., 01 from pair jk gives one vote to label k; any label with votes above the threshold is considered relevant.";
 	}
 
 	protected Instances convert(Instances D, int j, int k) {

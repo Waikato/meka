@@ -23,7 +23,8 @@ import weka.core.MLUtils;
 import weka.core.RevisionUtils;
 
 /**
- * MajorityLabelset.
+ * MajorityLabelset.java - The most simplest multi-label classifier. 
+ * Predicts the most common labelset from the training data for <i>all</i> test instances.
  * 
  * @author 	Jesse Read (jesse@tsc.uc3m.es)
  * @version October 2011

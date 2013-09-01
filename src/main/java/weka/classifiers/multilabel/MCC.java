@@ -84,9 +84,9 @@ public class MCC extends MultilabelClassifier implements Randomizable, Technical
 
 			double w = payoff(h,new Instances(D));
 			if (getDebug()) System.out.print("h_{t="+0+"} & "+Arrays.toString(s)); //+"; w = "+w);
-			if (getDebug()) System.out.print("& "+Utils.doubleToString(payoff(h,new Instances(D),1),8,2));
-			if (getDebug()) System.out.print("& "+Utils.doubleToString(payoff(h,new Instances(D),2),8,2));
-			if (getDebug()) System.out.println("& "+Utils.doubleToString(payoff(h,new Instances(D),5),8,2));
+			//if (getDebug()) System.out.print("& "+Utils.doubleToString(payoff(h,new Instances(D),1),8,2));
+			//if (getDebug()) System.out.print("& "+Utils.doubleToString(payoff(h,new Instances(D),2),8,2));
+			//if (getDebug()) System.out.println("& "+Utils.doubleToString(payoff(h,new Instances(D),5),8,2));
 
 			/*
 			String perms[] = MLUtils.permute(MLUtils.toBitString(MLUtils.gen_indices(L)));
@@ -110,10 +110,10 @@ public class MCC extends MultilabelClassifier implements Randomizable, Technical
 					w = w_;
 					s = s_;
 					h = h_;
-					if (getDebug()) System.out.print("h_{t="+t+"} & "+Arrays.toString(s)); //+"; w = "+w);
-					if (getDebug()) System.out.print("& "+Utils.doubleToString(payoff(h_,new Instances(D),1),8,2));
-					if (getDebug()) System.out.print("& "+Utils.doubleToString(payoff(h_,new Instances(D),2),8,2));
-					if (getDebug()) System.out.println("& "+Utils.doubleToString(payoff(h_,new Instances(D),5),8,2));
+					if (getDebug()) System.out.print("h_{t="+(t+1)+"} & "+Arrays.toString(s)); //+"; w = "+w);
+					//if (getDebug()) System.out.print("& "+Utils.doubleToString(payoff(h_,new Instances(D),1),8,2));
+					//if (getDebug()) System.out.print("& "+Utils.doubleToString(payoff(h_,new Instances(D),2),8,2));
+					//if (getDebug()) System.out.println("& "+Utils.doubleToString(payoff(h_,new Instances(D),5),8,2));
 				}
 			}
 		}
@@ -261,7 +261,7 @@ public class MCC extends MultilabelClassifier implements Randomizable, Technical
 		result = new TechnicalInformation(Type.INPROCEEDINGS);
 		result.setValue(Field.AUTHOR, "Jesse Read and Luca Martino and David Luengo");
 		result.setValue(Field.TITLE, "Efficient Monte Carlo Optimization for Multi-label Classifier Chains");
-		result.setValue(Field.BOOKTITLE, "ICASSP'13: International Conference on Acoustics, Speech, and Signal Processing (To Appear)");
+		result.setValue(Field.BOOKTITLE, "ICASSP'13: International Conference on Acoustics, Speech, and Signal Processing");
 		result.setValue(Field.YEAR, "2013");
 
 		additional = new TechnicalInformation(Type.ARTICLE);

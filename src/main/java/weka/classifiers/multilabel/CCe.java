@@ -48,6 +48,8 @@ public class CCe extends MultilabelClassifier implements Randomizable {
 		public Instances _template = null;
 		private int index = -1;
 		private int exl[]; 
+		private int map[]; // new
+		private int pa[];  // new, the inverse of exl
 		private int j = 0; 
 
 		// s = [3,2,4,5,1], j = 2, D
@@ -86,6 +88,8 @@ public class CCe extends MultilabelClassifier implements Randomizable {
 
 			this.exl = Arrays.copyOfRange(s,j+1,s.length);		// remove  [5,1]
 			Arrays.sort(this.exl); 								// sort to [1,5]
+			this.pa = MLUtils.invert(this.exl,D.classIndex()); 		// list of parents (note: includes this.index!)
+			this.map = makeMap(this.index,this.pa,D.classIndex());
 
 			Instances D_j = CCUtils.linkTransform(D,j,this.index,this.exl);
 
@@ -142,6 +146,67 @@ public class CCe extends MultilabelClassifier implements Randomizable {
 
 			//carry on
 			if (next!=null) next.sample(x,r);
+		}
+
+		/**
+		 * Map - return the index of parent ('k') at the ('index')-th node
+		 * @param	k		index
+		 * @param	keep	all the indicies (we are keeping)
+		 * @param	L		number of indices in total
+		 * @return	the 	map
+		 */
+		private int[] makeMap(int k, int keep[], int L) {
+
+
+			//int keep[] = MLUtils.invert(excl,L); 	// list of parents
+			//keep = A.add(keep,this.index);		// keep all parents and self!
+			Arrays.sort(keep);
+			int map[] = new int[L];
+			for(int j = 0; j < L; j++) {
+				map[j] = Arrays.binarySearch(keep,j);
+			}
+			//System.out.println("  map: "+Arrays.toString(map));
+			return map;
+		}
+
+		public Instance sample(Instance x[], Random r, double vals[]) throws Exception {
+			int L = vals.length;
+
+			//System.out.println("exl = "+Arrays.toString(this.exl));
+
+			// WE WILL HAVE TO FILL IN ALL THE INDICES HERE FOR X[i+1]
+			for(int k : pa) {
+				// value
+				double v = vals[k];
+				// index (here) where to put 'v'
+				int k_ = map[k];
+				// set
+				x[this.index].setValue(k_,v);			// y_j = 0
+			}
+			int k_ = map[this.index];
+			x[this.index].setMissing(k_);			// y_j = 0
+
+			//System.out.println("x = "+x[this.index]);
+
+			// MAKE SURE TO SELECT THE CORRECT INDEX HERE 
+			double dist[] = this.classifier.distributionForInstance(x[this.index]);  
+			int k = A.rndsrc(dist,r);	
+			// dist[k]
+			confidences[this.index] = dist[k];		// w_j = dist[v] = p(y_j == v)
+			// cfication
+			vals[this.index] = k;
+			x[this.index].setValue(this.index,(double)k);			// y_j = 0
+
+			//carry on
+			if (next!=null) return next.sample(x,r,vals);
+			else return x[this.index];
+		}
+		protected void transform(Instance x, Instance x_copy[]) throws Exception {
+			//System.out.println("i = "+this.index);
+			//System.out.println("j = "+this.j);
+			x_copy[this.index] = CCUtils.linkTransformation(x,this.exl,this._template);
+
+			if (next!=null) next.transform(x,x_copy);
 		}
 
 		// Probability of y|x (y is set into 'x' here), set into 'confidences'.
@@ -234,8 +299,44 @@ public class CCe extends MultilabelClassifier implements Randomizable {
 	 */
 	public double[] sampleForInstance(Instance x, Random r) throws Exception {
 		int L = x.classIndex();
+		//System.out.println("CHAIN : "+Arrays.toString(this.getChain()));
+		//System.out.print("est: "+Arrays.toString(MLUtils.toDoubleArray(x))+" @ ");
+		//System.out.println(Arrays.toString(confidences));
 		root.sample(x,r);
 		return MLUtils.toDoubleArray(x);
+	}
+	// fast version, templates already prepared
+	public double[] sampleForInstance(Instance x[], Random r) throws Exception {
+		/*
+		for(int i = 0; i < x.length; i++) {
+			System.out.println("x["+i+"] = "+x[i]);
+		}
+		*/
+		//int L = x[0].classIndex();
+		int L = x.length;
+		double vals[] = new double[L];
+		// CHECK THIS FUNCTION IF NOT WORKING
+		Instance res = root.sample(x,r,vals);
+		// MAKE SURE TO SELECT THE COORECT INDEX HERE
+		/*
+		System.out.println("est: "+Arrays.toString(MLUtils.toDoubleArray(res,L)));
+		System.out.print("est: "+Arrays.toString(vals)+" @ ");
+		*/
+		//System.out.println(Arrays.toString(confidences));
+		//return confidences; //MLUtils.toDoubleArray(x[x.length-1]);
+		return MLUtils.toDoubleArray(res,L);
+	}
+
+	/*
+	 * *NEW*
+	 * transform CC
+	 */
+	public Instance[] transformInstance(Instance x) throws Exception {
+		//System.out.println("CHAIN : "+Arrays.toString(this.getChain()));
+		int L = x.classIndex();
+		Instance x_copy[] = new Instance[L];
+		root.transform(x,x_copy);
+		return x_copy;
 	}
 
 	/**

@@ -19,10 +19,10 @@ import weka.classifiers.UpdateableClassifier;
 import weka.core.Instance;
 
 /**
- * MajorityLabelsetUpdateable.java - Updateable MajorityLabelset.
- * @see MajorityLabelset
+ * MajorityLabelsetUpdateable.java - Updateable version of MajorityLabelset.
+ * @see MajorityLabelset.java
  * @author 		Jesse Read (jesse@tsc.uc3m.es)
- * @version 	September, 2011
+ * @version 	September 2011
  */
 public class MajorityLabelsetUpdateable extends MajorityLabelset implements UpdateableClassifier {
 
