@@ -94,14 +94,14 @@
     <target name="jar" depends="compile">
 	<jar destfile="${target}/meka-${version}.jar"
 	     basedir="${build}/"
-		 includes="weka/** meka/** moa/**">
+		 includes="weka/** meka/** moa/** rbms/**">
 		<manifest>
 			<attribute name="Main-Class" value="meka.gui.explorer.Explorer"/>
 		</manifest>
 	</jar>
 	<jar destfile="${target}/meka-${version}-tests.jar"
 	     basedir="${build-tests}/"
-		 includes="weka/** meka/** moa/**">
+		 includes="weka/** meka/** moa/** rbms/**">
 	</jar>
     </target>
 

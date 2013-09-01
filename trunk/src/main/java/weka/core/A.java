@@ -22,6 +22,35 @@ import java.util.*;
  */
 public abstract class A {
 
+	// join 'a' and 'b' together into 'c' [1,2],[3] -> [1,2,3]
+	public static final int[] join(int a[], int b[]) {
+		int c[] = new int[a.length+b.length];
+		int i = 0;
+		for(int j = 0; j < a.length; j++, i++) {
+			c[i] = a[j];
+		}
+		for(int j = 0; j < b.length; j++, i++) {
+			c[i] = b[j];
+		}
+		return c;
+	}
+
+	// reverse 'a' [1,2,3] -> [3,2,1]
+	public static final int[] reverse(int a[]) {
+		int c[] = new int[a.length];
+		for(int i = a.length-1, j = 0; i >=0 ; i--, j++) {
+			c[j] = a[i];
+		}
+		return c;
+	}
+
+	// sort 'a' [1,3,2] -> [1,2,3]
+	public static final int[] sort(int a[]) {
+		int c[] = Arrays.copyOf(a,a.length);
+		Utils.sort(c); // @todo: Arrays.sort ?
+		return c;
+	}
+
 	// nice string representation for printout
 	public static String toString(double v[]) {
 		StringBuilder sb = new StringBuilder("[");  
@@ -33,7 +62,7 @@ public abstract class A {
 	}
 
 	// product
-	public static double product(double v[]) {
+	public static final double product(double v[]) {
 		double p = 1.0;
 		for(double d : v) {
 			p *= d;
@@ -50,12 +79,15 @@ public abstract class A {
 		return p;
 	}
 
-	// add value 'v' to 'array[]'
+	// add value 'v' to 'array[]' @todo: rename to 'append'
 	public static int[] add(int array[], final int v) {
 		int n = array.length;
 		array = Arrays.copyOf(array,n+1);
 		array[n] = v;
 		return array;
+	}
+	public static int[] append(int array[], final int v) {
+		return add(array,v);
 	}
 
 	// delete index 'i' from 'array[]'
@@ -84,6 +116,14 @@ public abstract class A {
 		return array;
 	}
 	*/
+
+	public static final int[] make_seq(int start, int end) {
+		int array[] = new int[end-start];
+		for(int j = start, i = 0; j < end; j++, i++) {
+			array[i] = j;
+		}
+		return array;
+	}
 
 	// select the elements 'indices[]' from 'array[]'
 	public static int[] select(int array[], final int indices[]) {

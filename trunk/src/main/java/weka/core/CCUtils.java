@@ -34,6 +34,7 @@ public abstract class CCUtils {
 
 	/**
 	 * LinkTransform - prepare 'D' for training at node 'j' of the chain, using index 'idx'.
+	 * j isn't necessary in this function!
 	 * @return	the transformed dataset (which can be used as a template)
 	 */
 	public static Instances linkTransform(Instances D, int j, int idx, int exl[]) {

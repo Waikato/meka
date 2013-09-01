@@ -222,6 +222,22 @@ public abstract class MLUtils {
 	}
 
 	/** 
+	 * LabelCardinality - return the label cardinality of label data Y
+	 * @TODO move to Metrics.java ?
+	 */
+	public static final double labelCardinality(int Y[][]) {
+		int N = Y.length;
+		int L = Y[0].length;
+		double sum = 0.0;
+		for(int i = 0; i < N; i++) {
+			for(int j = 0; j < L; j++) {
+				sum += Y[i][j];
+			}
+		}
+		return (double)sum/(double)N;
+	}
+
+	/** 
 	 * LabelCardinalities - return the frequency of each label of dataset D.
 	 */
 	public static final double[] labelCardinalities(Instances D) {
@@ -251,6 +267,20 @@ public abstract class MLUtils {
 			lc[j] /= Y.size();
 		}
 		return lc;
+	}
+
+	/** 
+	 * EmptyVectors - percentage of empty vectors sum(y[i])==0 in Y.
+	 */
+	public static final double emptyVectors(int Y[][]) {
+		int N = Y.length;
+		int L = Y[0].length;
+		double sum = 0.0;
+		for(int i = 0; i < N; i++) {
+			if (Utils.sum(Y[i]) <= 0.0)
+				sum ++;
+		}
+		return (double)sum/(double)N;
 	}
 
 	// Most Common Combination. Assuming binary format.
@@ -362,7 +392,6 @@ public abstract class MLUtils {
 	// returns entries like e.g. [0,2,2,3,2],5
 	public static final HashMap<String,Integer> classCombinationCounts(Instances D) {
 		int L = D.classIndex();
-		System.out.println("L = "+L);
 		HashMap<String,Integer> map = new HashMap<String,Integer>();  
 		for (int i = 0; i < D.numInstances(); i++) {
 			String y = encodeValue(toIntArray(D.instance(i),L));
@@ -449,7 +478,7 @@ public abstract class MLUtils {
 		return deleteAttributesAt(D, invert(indicesToRemove, lim));
 	}
 
-	private static final int[] invert(int indices[], int L) {
+	public static final int[] invert(int indices[], int L) {
 		int sindices[] = Arrays.copyOf(indices,indices.length);
 		Arrays.sort(sindices);
 		int inverted[] = new int[L-sindices.length];
@@ -489,13 +518,26 @@ public abstract class MLUtils {
 		return x_;
 	}
 
-	// copy x_dest[j+offset] = x_src[i+from]
+	/**
+	 * CopyValues - Set x_dest[j+offset] = x_src[i+from].
+	 */
 	public static final Instance copyValues(Instance x_dest, Instance x_src, int from, int offset) {
 		int d = x_src.numAttributes();
 		for(int i = from, j = 0; i < d; i++, j++) {
 			x_dest.setValue(j+offset,x_src.value(i));
 		}
 		return x_dest;
+	}
+	
+	/**
+	 * SetValues - set the attribute values in Instsance x (having L labels) to z[].
+	 * @todo call above method
+	 */
+	public static final Instance setValues(Instance x, double z[], int L) {
+		for(int a = 0; a < z.length; a++) {
+			x.setValue(L+a,z[a]);
+		}
+		return x;
 	}
 
 	/* not in use
@@ -700,6 +742,90 @@ public abstract class MLUtils {
 		for(int j = 0; j < L; j++) 
 			x.setValue(j,0.0);
 	}
+
+	/**
+	 * GetXfromD - Extract attributes as a double X[][] from Instances D.
+	 * @TODO getXfromInstances would be a better name.
+	 */
+	public static double[][] getXfromD(Instances D) {
+		int N = D.numInstances();
+		int L = D.classIndex();
+		int d = D.numAttributes()-L;
+		//System.out.println("d="+d);
+		double X[][] = new double[N][d];
+		for(int i = 0; i < N; i++) {
+			for(int k = 0; k < d; k++) {
+				X[i][k] = D.instance(i).value(k+L);
+			}
+		}
+		return X;
+	}
+
+	/**
+	 * GetXfromD - Extract labels as a double Y[][] from Instances D.
+	 * @TODO getYfromInstances would be a better name.
+	 */
+	public static double[][] getYfromD(Instances D) {
+		int L = D.classIndex();
+		int N = D.numInstances();
+		double Y[][] = new double[N][L];
+		for(int i = 0; i < N; i++) {
+			for(int k = 0; k < L; k++) {
+				Y[i][k] = D.instance(i).value(k);
+			}
+		}
+		return Y;
+	}
+
+	/**
+	 * GetxfromInstances - Extract attributes as a double x[] from an Instance.
+		// @NOTE changed this to xy.toDoubleArray();
+	 */
+	public static double[] getxfromInstance(Instance xy) {
+		int L = xy.classIndex();
+		double xy_[] = xy.toDoubleArray();
+		return Arrays.copyOfRange(xy_,L,xy_.length);
+		//double x[] = new double[xy.numAttributes() - L];
+		//for(int i = 0; i < x.length; i++) {
+			//x[i] = xy.value(i+L);
+		//}
+		//return x;
+	}
+
+	/**
+	 * ReplaceZasAttributes - data Z[][] will be the new attributes in D.
+	 */
+	public static Instances replaceZasAttributes(Instances D, double Z[][], int L) {
+		D.setClassIndex(0);
+		int m = D.numAttributes()-L;
+		for(int j = 0; j < m; j++) {
+			D.deleteAttributeAt(L);
+		}
+		return addZtoD(D,Z,L);
+	}
+
+	/**
+	 * AddZtoD - Add data Z[][] to Instances D.
+	 * @TODO L could be extracted from D.numAttributes() here.
+	 */
+	public static Instances addZtoD(Instances D, double Z[][], int L) {
+
+		// add attributes
+		for(int a = 0; a < Z[0].length; a++) {
+			D.insertAttributeAt(new Attribute("A"+a),L+a);
+		}
+
+		// add values Z[0]...Z[N] to D
+		// (note that if D.numInstances() < Z.length, only some are added)
+		for(int a = 0; a < Z[0].length; a++) {
+			for(int i = 0; i < D.numInstances(); i++) {
+				D.instance(i).setValue(L+a,Z[i][a]);
+			}
+		}
+		D.setClassIndex(L);
+		return D;
+	}
+
 
 	// select i with probabilitiy w[i] (w must be normalised)
 	public static int rndsrc (double w[], Random r) {

@@ -122,8 +122,7 @@ public class Result implements Serializable {
 	}
 
 	/**
-	 * AllPredictions.
-	 * Retrive all prediction confidences in an L * N matrix.
+	 * AllPredictions - Retrive all prediction confidences in an L * N matrix.
 	 */
 	public double[][] allPredictions() {
 		double Y[][] = new double[predictions.size()][];
@@ -134,13 +133,23 @@ public class Result implements Serializable {
 	}
 
 	/**
-	 * AllPredictions.
-	 * Retrive all predictions (according to threshold t) in an L * N matrix.
+	 * AllPredictions - Retrive all predictions (according to threshold t) in an L * N matrix.
 	 */
 	public int[][] allPredictions(double t) {
 		int Y[][] = new int[predictions.size()][];
 		for(int i = 0; i < predictions.size(); i++) {
 			Y[i] = rowPrediction(i,t);
+		}
+		return Y;
+	}
+
+	/**
+	 * AllActuals - Retrive all true predictions in an L x N matrix.
+	 */
+	public int[][] allActuals() {
+		int Y[][] = new int[actuals.size()][];
+		for(int i = 0; i < actuals.size(); i++) {
+			Y[i] = rowActual(i);
 		}
 		return Y;
 	}
@@ -197,11 +206,21 @@ public class Result implements Serializable {
 	 * In the multi-label case, a Threshold category must exist, containing a string defining the type of threshold we want to use/calibrate.
 	 */
 	public static HashMap<String,Double> getStats(Result r) {
-		if (r.getInfo("Type").equalsIgnoreCase("MT"))
-			return MLEvalUtils.getMTStats(r.predictions,r.actuals);
-		else 
-			return MLEvalUtils.getMLStats(r.predictions, r.actuals, r.getInfo("Threshold"));
+		return getStats(r,5);
 	}
+	// get stats for a particular verbosity level
+	public static HashMap<String,Double> getStats(Result r, int V) {
+		if (r.getInfo("Type").equalsIgnoreCase("MT"))
+			return MLEvalUtils.getMTStats(r.allPredictions(),r.allActuals());
+		else 
+			return MLEvalUtils.getMLStats(r.allPredictions(), r.allActuals(), r.getInfo("Threshold"));
+	}
+	/*
+	// get stats for a particular measure
+	public static HashMap<String,Double> getStats(Result r, String measure) {
+		return MLUtils.getMLStat(r.allPredictions(), r.allActuals(), r.getInfo("Threshold"), measure);
+	}
+	*/
 
 	// write out as plain text
 	public static void writeResultToFile(Result s, String fname) throws Exception {
@@ -276,6 +295,7 @@ public class Result implements Serializable {
 				basename = Utils.getOption('f',args);
 				for(int i = 0; i < numFolds; i++) {
 					fold[i] = Result.readResultFromFile(basename+"."+i);
+					fold[i].output = Result.getStats(fold[i]);
 					// check for threshold
 					if (fold[i].getInfo("Threshold")==null) {
 						System.out.println("Having to calculate a threshold ...");
@@ -297,7 +317,21 @@ public class Result implements Serializable {
 
 			Result r = null;
 			try {
+				// load Result
 				r = Result.readResultFromFile(Utils.getOption('f',args));
+
+				// set threshold ?
+				if (Utils.getOptionPos("threshold",args) >= 0) {
+					System.out.println("setting threshold ...");
+					r.setInfo("Threshold",Utils.getOption("threshold",args));
+				}
+				else {
+					String t = Arrays.toString(ThresholdUtils.calibrateThresholds(r.predictions,MLUtils.labelCardinalities(r.actuals)));
+					System.out.println("using threshold "+t);
+					r.setInfo("Threshold",t);
+					
+				}
+
 			} catch(Exception e) {
 				e.printStackTrace();
 				System.exit(1);

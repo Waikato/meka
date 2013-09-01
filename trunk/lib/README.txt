@@ -17,5 +17,8 @@ junit.jar
 - version: 3.8.2
 - download: http://sourceforge.net/projects/junit/files/junit/3.8.2/junit3.8.2.zip/download
 
+mst.jar
+- version: (compiled from) version 4 of stdlib.jar and algs4.jar 
+- download: http://algs4.cs.princeton.edu/code/algs4.jar
 
 $Revision$
