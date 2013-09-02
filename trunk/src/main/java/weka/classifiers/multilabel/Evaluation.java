@@ -57,7 +57,11 @@ public class Evaluation {
 
 		//Load Instances
 		Instances allInstances = null;
-		allInstances = loadDatasetFromOptions(options);
+		try {
+			allInstances = loadDatasetFromOptions(options);
+		} catch(Exception e) {
+			throw new Exception("[Error] Failed to Load Instances from file", e);
+		}
 		   /*
 	  String filename = null;
 		try {
