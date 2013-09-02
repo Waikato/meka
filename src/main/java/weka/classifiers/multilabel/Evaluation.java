@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Random;
+import java.io.File;
 
 import weka.classifiers.multitarget.MultiTargetClassifier;
 import weka.core.AbstractInstance;
@@ -57,11 +58,11 @@ public class Evaluation {
 
 		//Load Instances
 		Instances allInstances = null;
-		try {
+		//try {
 			allInstances = loadDatasetFromOptions(options);
-		} catch(Exception e) {
-			throw new Exception("[Error] Failed to Load Instances from file", e);
-		}
+		//} catch(Exception e) {
+	//		throw new Exception("[Error] Failed to Load Instances from file", e);
+	//	}
 		   /*
 	  String filename = null;
 		try {
@@ -427,8 +428,16 @@ public class Evaluation {
 		Instances D = null;
 		String filename = Utils.getOption('t', options);
 
+		// Check for filename
 		if (filename == null || filename.isEmpty())
 			throw new Exception("[Error] You did not specify a dataset!");
+
+		// Check for existence of file
+		File file = new File(filename);
+		if (!file.exists())
+			throw new Exception("[Error] File does not exist: " + filename);
+		if (file.isDirectory())
+			throw new Exception("[Error] "+filename+ " points to a directory!");
 
 		try {
 			DataSource source = new DataSource(filename);
