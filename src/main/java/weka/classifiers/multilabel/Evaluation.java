@@ -110,6 +110,8 @@ public class Evaluation {
 			throw new Exception("You must supply the number of labels either in the @Relation Name of the dataset or on the command line using the option: -C <num. labels>");
 
 		//Set Range
+		/*
+		 * DEPRECATED
 		if(Utils.getOptionPos('p',options) >= 0) {
 
 			// Randomize 
@@ -131,11 +133,13 @@ public class Evaluation {
 				throw new Exception("Failed to Remove Range", e);
 			}
 		}
+		*/
 
 		int seed = (Utils.getOptionPos('s',options) >= 0) ? Integer.parseInt(Utils.getOption('s',options)) : 0;
 
-		// Randomize (Instances)
+		// Randomize (Instances) 
 		if(Utils.getOptionPos('R',options) >= 0) {
+			boolean R = Utils.getFlag('R',options);
 			allInstances.randomize(new Random(seed));
 		}
 
@@ -148,11 +152,18 @@ public class Evaluation {
 
 			Result r = null;
 
+			// Threshold OPtion
+			String top = "PCut1"; // default
+			if (Utils.getOptionPos("threshold",options) >= 0)
+				top = Utils.getOption("threshold",options);
+
 			// Get Split
 			if(Utils.getOptionPos('x',options) >= 0) {
 				// CROSS-FOLD-VALIDATION
 				int numFolds = MLUtils.getIntegerOption(Utils.getOption('x',options),10); // default 10
-				Result fold[] = Evaluation.cvModel(h,allInstances,numFolds,(Utils.getOptionPos("threshold",options) >= 0) ? Utils.getOption("threshold",options) : "PCut1");
+				// Check for remaining options
+				Utils.checkForRemainingOptions(options);
+				Result fold[] = Evaluation.cvModel(h,allInstances,numFolds,top);
 				r = MLEvalUtils.averageResults(fold);
 				System.out.println(r.toString());
 				if (Utils.getOptionPos('f',options) >= 0) {
@@ -221,9 +232,12 @@ public class Evaluation {
 					test = new Instances(train,TRAIN,TEST);
 				}
 
+				// Check for remaining options
+				Utils.checkForRemainingOptions(options);
+
 				if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(allInstances)+"\tL="+allInstances.classIndex()+"\tD(t:T)=("+train.numInstances()+":"+test.numInstances()+")\tLC(t:T)="+Utils.roundDouble(MLUtils.labelCardinality(train,allInstances.classIndex()),2)+":"+Utils.roundDouble(MLUtils.labelCardinality(test,allInstances.classIndex()),2)+")");
 
-				r = evaluateModel(h,train,test,(Utils.getOptionPos("threshold",options) >= 0) ? Utils.getOption("threshold",options) : "PCut1");
+				r = evaluateModel(h,train,test,top);
 				System.out.println(r.toString());
 
 			}
@@ -235,7 +249,9 @@ public class Evaluation {
 			}
 
 		} catch(Exception e) {
-			e.printStackTrace();
+			System.out.println(e);
+			//e.printStackTrace();
+			Evaluation.printOptions(h.listOptions());
 			System.exit(1);
 		}
 
@@ -457,8 +473,9 @@ public class Evaluation {
 		text.append("\tSets test file.\n");
 		text.append("-x <number of folds>\n");
 		text.append("\tDo cross-validation with this many folds.\n");
-		text.append("-p\n");
-		text.append("\tSpecify a range in the dataset (@see weka.core.Range)\n");
+		// DEPRECATED (use filter instead)
+		//text.append("-p\n");
+		//text.append("\tSpecify a range in the dataset (@see weka.core.Range)\n");
 		text.append("-R\n");
 		text.append("\tRandomise the dataset (done after a range is removed, but before the train/test split)\n");
 		text.append("-split-percentage <percentage>\n");
