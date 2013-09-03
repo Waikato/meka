@@ -27,7 +27,7 @@ import meka.core.MLUtils;
 /**
  * CCUpdateable.java - Updateable version of CC.
  *
- * The Classifier Chains Method Updateable (must be given an UpdateableClassifier base classifier)
+ * A CC method which can be updated incrementally (assuming an incremental base classifier).
  * @see CC
  * @author 		Jesse Read (jesse@tsc.uc3m.es)
  * @version 	September, 2011
