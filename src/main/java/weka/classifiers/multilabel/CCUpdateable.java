@@ -22,7 +22,7 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.UpdateableClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.MLUtils;
+import meka.core.MLUtils;
 
 /**
  * CCUpdateable.java - Updateable version of CC.

@@ -19,6 +19,7 @@ import weka.classifiers.*;
 import weka.classifiers.meta.*;
 import weka.classifiers.multilabel.*;
 import weka.core.*;
+import meka.core.*;
 import weka.filters.unsupervised.attribute.*;
 import weka.filters.*;
 import java.util.*;

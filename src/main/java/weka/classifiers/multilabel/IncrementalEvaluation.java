@@ -16,6 +16,7 @@
 package weka.classifiers.multilabel;
 
 import weka.core.*;
+import meka.core.*;
 import weka.classifiers.*;
 import meka.gui.explorer.*;
 import weka.classifiers.multilabel.*;

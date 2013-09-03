@@ -44,10 +44,10 @@ import meka.gui.core.ResultHistoryList;
 import meka.gui.goe.GenericObjectEditor;
 import weka.classifiers.multilabel.Evaluation;
 import weka.classifiers.multilabel.IncrementalEvaluation;
-import weka.core.MLEvalUtils;
+import meka.core.MLEvalUtils;
 import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instances;
-import weka.core.Result;
+import meka.core.Result;
 
 /**
  * Simple panel for performing classification.

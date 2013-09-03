@@ -24,6 +24,7 @@ import weka.core.TechnicalInformation.*;
 import weka.attributeSelection.*;
 import weka.filters.*;
 import weka.core.*;
+import meka.core.*;
 import java.util.*;
 
 /**

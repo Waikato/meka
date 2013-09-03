@@ -17,6 +17,7 @@ package weka.classifiers.multilabel.meta;
 
 import moa.classifiers.core.driftdetection.ADWIN;
 import weka.core.*;
+import meka.core.*;
 import weka.classifiers.*;
 import weka.classifiers.meta.*;
 import weka.classifiers.multilabel.*;

@@ -25,7 +25,7 @@ import java.util.Vector;
 import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.MLUtils;
+import meka.core.MLUtils;
 import weka.core.RevisionUtils;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;

@@ -22,6 +22,7 @@ import weka.filters.supervised.attribute.*;
 import weka.attributeSelection.*;
 import weka.filters.*;
 import weka.core.*;
+import meka.core.A;
 import weka.core.TechnicalInformation.*;
 import java.util.*;
 

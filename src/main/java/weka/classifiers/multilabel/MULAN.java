@@ -36,7 +36,7 @@ import mulan.classifier.transformation.LabelPowerset;
 import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.MLUtils;
+import meka.core.MLUtils;
 import weka.core.Option;
 import weka.core.RevisionUtils;
 import weka.core.Utils;

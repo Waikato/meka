@@ -36,7 +36,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.ListModel;
 
-import weka.core.Result;
+import meka.core.Result;
 import weka.gui.ExtensionFileFilter;
 
 /**
