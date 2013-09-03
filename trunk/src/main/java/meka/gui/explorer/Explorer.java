@@ -45,7 +45,7 @@ import meka.gui.core.GUIHelper;
 import meka.gui.core.MekaPanel;
 import meka.gui.goe.GenericObjectEditor;
 import weka.core.Instances;
-import weka.core.MLUtils;
+import meka.core.MLUtils;
 import weka.core.Utils;
 import weka.core.converters.AbstractFileLoader;
 import weka.core.converters.AbstractFileSaver;

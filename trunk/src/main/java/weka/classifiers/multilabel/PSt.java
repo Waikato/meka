@@ -16,7 +16,7 @@
 package weka.classifiers.multilabel;
 
 import weka.core.Instance;
-import weka.core.MLUtils;
+import meka.core.MLUtils;
 import weka.core.RevisionUtils;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;

@@ -13,7 +13,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package weka.core;
+package meka.core;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import weka.core.Utils;
+import weka.core.Instance;
 
 /**
  * Result. 

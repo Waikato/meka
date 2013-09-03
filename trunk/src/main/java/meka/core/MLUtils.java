@@ -13,7 +13,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package weka.core;
+package meka.core;
 
 import weka.filters.unsupervised.attribute.Remove;
 import weka.filters.unsupervised.attribute.*;

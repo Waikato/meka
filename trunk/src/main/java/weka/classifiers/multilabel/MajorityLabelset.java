@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.MLUtils;
+import meka.core.MLUtils;
 import weka.core.RevisionUtils;
 
 /**

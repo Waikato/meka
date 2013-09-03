@@ -26,7 +26,7 @@ import weka.core.Attribute;
 import weka.core.Capabilities;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.MLUtils;
+import meka.core.MLUtils;
 import weka.core.RevisionUtils;
 import weka.core.Utils;
 

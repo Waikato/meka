@@ -21,7 +21,7 @@ import weka.classifiers.multilabel.MultilabelClassifier;
 import weka.classifiers.multilabel.meta.EnsembleML;
 import weka.classifiers.multitarget.MultiTargetClassifier;
 import weka.core.Instance;
-import weka.core.MLUtils;
+import meka.core.MLUtils;
 import weka.core.RevisionUtils;
 
 /**

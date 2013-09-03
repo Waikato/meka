@@ -13,9 +13,10 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package weka.core;
+package meka.core;
 
 import java.util.*;
+import weka.core.Utils;
 
 /**
  * A.java - Handy Array operations
