@@ -1,6 +1,10 @@
 README
 ======
 
+Jama.jar
+- version: 1.0.3 November 9, 2012
+- download: http://math.nist.gov/javanumerics/jama/#Package
+
 weka.jar, weka-tests.jar
 - version: 3.7.9
 - download: http://sourceforge.net/projects/weka/files/weka-3-7/3.7.9/
