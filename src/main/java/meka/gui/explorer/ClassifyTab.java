@@ -42,10 +42,10 @@ import javax.swing.event.ListSelectionListener;
 import meka.gui.core.GUIHelper;
 import meka.gui.core.ResultHistoryList;
 import meka.gui.goe.GenericObjectEditor;
-import weka.classifiers.multilabel.Evaluation;
-import weka.classifiers.multilabel.IncrementalEvaluation;
+import meka.classifiers.multilabel.Evaluation;
+import meka.classifiers.multilabel.IncrementalEvaluation;
 import meka.core.MLEvalUtils;
-import weka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instances;
 import meka.core.Result;
 
@@ -127,7 +127,7 @@ extends AbstractThreadedExplorerTab {
 
     m_GenericObjectEditor = new GenericObjectEditor(true);
     m_GenericObjectEditor.setClassType(MultilabelClassifier.class);
-    m_GenericObjectEditor.setValue(new weka.classifiers.multilabel.BR());
+    m_GenericObjectEditor.setValue(new meka.classifiers.multilabel.BR());
     
     m_Seed            = 1;
     m_SplitPercentage = 66.0;

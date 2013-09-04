@@ -170,8 +170,8 @@ extends weka.gui.GenericObjectEditor {
     try {
       registerAllEditors();
       GenericObjectEditor ce = new GenericObjectEditor(true);
-      ce.setClassType(weka.classifiers.multilabel.MultilabelClassifier.class);
-      Object initial = new weka.classifiers.multilabel.BR();
+      ce.setClassType(meka.classifiers.multilabel.MultilabelClassifier.class);
+      Object initial = new meka.classifiers.multilabel.BR();
       if (args.length > 0){
 	ce.setClassType(Class.forName(args[0]));
 	if(args.length > 1){

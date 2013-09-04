@@ -4,27 +4,27 @@
 # Version: $Revision$
 
 # Packages with MultiLabelClassifier implementations
-weka.classifiers.multilabel.MultilabelClassifier=\
- weka.classifiers.multilabel,\
- weka.classifiers.multilabel.meta,\
- weka.classifiers.multitarget,\
- weka.classifiers.multitarget.meta
+meka.classifiers.multilabel.MultilabelClassifier=\
+ meka.classifiers.multilabel,\
+ meka.classifiers.multilabel.meta,\
+ meka.classifiers.multitarget,\
+ meka.classifiers.multitarget.meta
 
 # Packages with MultiTargetClassifier implementations
-weka.classifiers.multitarget.MultiTargetClassifier=\
- weka.classifiers.multitarget,\
- weka.classifiers.multitarget.meta
+meka.classifiers.multitarget.MultiTargetClassifier=\
+ meka.classifiers.multitarget,\
+ meka.classifiers.multitarget.meta
 
 # Packages with SemisupervisedClassifier implementations
-weka.classifiers.multilabel.SemisupervisedClassifier=\
- weka.classifiers.multilabel,\
- weka.classifiers.multilabel.meta
+meka.classifiers.multilabel.SemisupervisedClassifier=\
+ meka.classifiers.multilabel,\
+ meka.classifiers.multilabel.meta
  
 # Lists the Classifier-Packages that should be added to WEKA's
 # GenericObjectEditor
 weka.classifiers.Classifier=\
- weka.classifiers.multilabel,\
- weka.classifiers.multilabel.meta,\
- weka.classifiers.multitarget,\
- weka.classifiers.multitarget.meta
+ meka.classifiers.multilabel,\
+ meka.classifiers.multilabel.meta,\
+ meka.classifiers.multitarget,\
+ meka.classifiers.multitarget.meta
  
