@@ -61,9 +61,6 @@ public abstract class MLEvalUtils {
 		return getMLStats(Rpred,Y,ts);
 	}
 
-	/*
-	 * TODO: MAKE THIS THE NEW ONE
-	 */
 	/**
 	 * GetMLStats.
 	 * Given predictions and corresponding true values and a threshold string, retreive statistics.
@@ -116,7 +113,7 @@ public abstract class MLEvalUtils {
 	public static HashMap<String,Double> getMTStats(double Rpred[][], int Y[][]) {
 
 		// just a question of rounding for now
-		int Ypred[][] = ThresholdUtils.threshold(Rpred,0.5);
+		int Ypred[][] = ThresholdUtils.round(Rpred);
 
 		int N = Y.length;
 		int L = Y[0].length;
@@ -135,7 +132,7 @@ public abstract class MLEvalUtils {
 	}
 
 	/**
-	 * AverageResults - Create a Result with the average of an array of Results
+	 * AverageResults - Create a Result with the average of an array of Results by taking the average +/- standand deviation.
 	 * @param	folds	array of Results (e.g., from CV-validation)
 	 * @return	A result reporting the average of these folds.
 	 */

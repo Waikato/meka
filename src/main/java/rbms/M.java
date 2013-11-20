@@ -20,6 +20,8 @@ import java.util.*;
 
 /**
  * M.java - Handy Matrix operations (that Jama does not have).
+ * @TODO 	Make a Matrix class (inheriting Jama), don't delete this
+ * 			(keep some of the static methods, integrate others).
  */
 public abstract class M {
 
@@ -618,18 +620,28 @@ public abstract class M {
 		return new Matrix(sample(M.getArray(),r));
 	}
 
+	/**
+	 * Deep Copy - Make a deep copy of M[][]
+	 */
+	public static int[][] deep_copy(int M[][]) { 
+		int[][] C = new int[M.length][];
+		for(int i = 0; i < C.length; i++) {
+			C[i] = Arrays.copyOf(M[i],M[i].length);
+		}
+		return C;
+	}
+
 	public static String toString(Matrix M) {
 		return toString(M.getArray());
 	}
 
-	// TODO Make a Matrix class, don't delete this
+	// @TODO Make a Matrix class (inheriting Jama), don't delete this
 	public static String toString(double M_[][]) {
 		StringBuilder sb = new StringBuilder();  
 		for(int j = 0; j < M_.length; j++) {
 			for(int k = 0; k < M_[j].length; k++) {
 				double d = M_[j][k];
-				String num = String.format("%.2f", d);
-				num = ("                "+num).substring(num.length()-5,num.length());
+				String num = String.format(" %.2f", d);
 				sb.append(num);
 			}
 			sb.append("\n");

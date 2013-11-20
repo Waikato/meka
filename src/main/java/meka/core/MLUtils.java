@@ -20,6 +20,8 @@ import weka.filters.unsupervised.attribute.*;
 import weka.filters.*;
 import weka.core.*;
 import java.util.*;
+import java.io.FileReader;
+import java.io.BufferedReader;
 
 public abstract class MLUtils {
 
@@ -839,18 +841,50 @@ public abstract class MLUtils {
 		return i;
 	}
 
-	public static void main(String args[]) {
-		// NEED THIS FOR SOME SCRIPTS
+
+	public static final void main (String args[]) throws Exception {
+
 		/*
-		String p[] = permute(args[0]);
-		int i = 0;
-		for(String s: p) {
-			System.out.println(""+(i++)+" "+s);
+		 * If we are given an argument, load a file and extract some info and exit.
+		 */
+		if (args.length > 0) {
+
+			Instances D = new Instances(new BufferedReader(new FileReader(args[0])));
+
+			int L = Integer.parseInt(Utils.getOption('C',MLUtils.getDatasetOptions(D)));
+
+			switch(args[1].charAt(0)) {
+
+				case 'L' :  System.out.println(L);							// return the number of labels of D
+							break;
+				case 'N' :  System.out.println(D.numInstances());			// return the number of Instances of D
+							break;
+				case 'd' :  System.out.println(D.numAttributes()-L);		// reurns the number of (non-label) attributes of D
+							break;
+				default  : 	System.out.println(MLUtils.getDatasetName(D));	// returns the name of D
+							break;
+			}
+
+			return;
 		}
-		*/
-		//System.out.println(""+Arrays.toString(invert(new int[]{1,2},6)));
-		//System.out.println(""+Arrays.toString(invert(new int[]{0,2},6)));
-		//System.out.println(""+Arrays.toString(invert(new int[]{5,2},6)));
+		/*
+		 * Else, just do some tests ...
+		 */
+		else {
+
+			// NEED THIS FOR SOME SCRIPTS
+			/*
+			   String p[] = permute(args[0]);
+			   int i = 0;
+			   for(String s: p) {
+			   System.out.println(""+(i++)+" "+s);
+			   }
+			   */
+			//System.out.println(""+Arrays.toString(invert(new int[]{1,2},6)));
+			//System.out.println(""+Arrays.toString(invert(new int[]{0,2},6)));
+			//System.out.println(""+Arrays.toString(invert(new int[]{5,2},6)));
+			return;
+		}
 	}
 
 }

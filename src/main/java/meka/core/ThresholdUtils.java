@@ -112,4 +112,21 @@ public abstract class ThresholdUtils {
 		return Ypred;
 	}
 
+	/**
+	 * Round - simply round numbers (e.g., 2.0 to 2) -- for multi-target data (where we don't *yet* use a threshold).
+	 * @param	Rpred[][]	class predictions in [0,1,...,K]
+	 * @return  integer representation of the predictions
+	 */
+	public static final int[][] round(double Rpred[][]) {
+		int Ypred[][] = new int[Rpred.length][Rpred[0].length];
+		for(int i = 0; i < Rpred.length; i++) {
+			for(int j = 0; j < Rpred[i].length; j++) {
+				Ypred[i][j] = (int)Math.round(Rpred[i][j]);
+			}
+		}
+		return Ypred;
+	}
+
+	
+
 }
