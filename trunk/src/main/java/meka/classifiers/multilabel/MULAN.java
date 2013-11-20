@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.Vector;
+import java.lang.reflect.Constructor;
 
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.lazy.IBLR_ML;
@@ -31,12 +32,14 @@ import mulan.classifier.meta.HierarchyBuilder;
 import mulan.classifier.meta.RAkEL;
 import mulan.classifier.neural.BPMLL;
 import mulan.classifier.transformation.BinaryRelevance;
+import mulan.classifier.transformation.ClassifierChain;
 import mulan.classifier.transformation.CalibratedLabelRanking;
 import mulan.classifier.transformation.LabelPowerset;
 import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
 import meka.core.MLUtils;
+import meka.core.F;
 import weka.core.Option;
 import weka.core.RevisionUtils;
 import weka.core.Utils;
@@ -55,8 +58,9 @@ public class MULAN extends MultilabelClassifier {
 	
 	protected MultiLabelLearner m_MULAN = null;
 
-	private String MethodSelection = "{BR, LP, CLR, RAkELn, MLkNN, IBLR_ML, BPMLL, HOMER.type.pt}\n" +
-		"\twhere n=1 is with (m=10,k=L/2), n=2 is with (m=L*2,k=3); and\n\twhere type \\in {CLUS,RAND}, pt \\in {BR,LP}.";
+	//HOMER.Random.3.LabelPowerset
+	private String MethodSelection = "{BR, LP, CLR, RAkELn, MLkNN, IBLR_ML, BPMLL, HOMER.type.numPartitions.pt}\n" +
+		"\twhere n=1 is with (m=10,k=L/2), n=2 is with (m=L*2,k=3); and\n\twhere type \\in {BalancedClustering,Clustering,Random}, pt \\in {BinaryRelevance,LabelPowerset,ClassifierChain, numPartitions \\in [1,2,3,4,...]}.";
 
 	protected String m_MethodString = "RAkEL1";
 
@@ -139,7 +143,7 @@ public class MULAN extends MultilabelClassifier {
 			instances.renameAttribute(i,"a_"+i);
 		}
 		BufferedWriter writer = new BufferedWriter(new FileWriter(name));
-		m_InstancesTemplate = switchAttributes(new Instances(instances),L);
+		m_InstancesTemplate = F.switchAttributes(new Instances(instances),L);
 		writer.write(m_InstancesTemplate.toString());
 		writer.flush();
 		writer.close();
@@ -182,54 +186,49 @@ public class MULAN extends MultilabelClassifier {
 			((BPMLL)m_MULAN).setHiddenLayers(new int[]{30});
 			((BPMLL)m_MULAN).setTrainingEpochs(100);
 		}
-		else if (m_MethodString.equals("HOMER.RAND.LP"))
-			m_MULAN = new HOMER(new LabelPowerset(m_Classifier), 3, HierarchyBuilder.Method.Random);
-		else if (m_MethodString.equals("HOMER.RAND.BR"))
-			m_MULAN = new HOMER(new BinaryRelevance(m_Classifier), 3, HierarchyBuilder.Method.Random);
-		else if (m_MethodString.equals("HOMER.CLUS.LP"))
-			m_MULAN = new HOMER(new LabelPowerset(m_Classifier), 3, HierarchyBuilder.Method.Clustering);
-		else if (m_MethodString.equals("HOMER.CLUS.BR"))
-			m_MULAN = new HOMER(new BinaryRelevance(m_Classifier), 3, HierarchyBuilder.Method.Clustering);
+		else if (m_MethodString.startsWith("HOMER")) {
+			//Class m = Class.forName("HierarchyBuilder.Method.Random");
+			//Class w = Class.forName("mulan.classifier.LabelPowerset");
+			//Constructor c = new h.getConstructor(new Class[]{MultiLabelLearner.class, Integer.TYPE, HierarchyBuilder.Method.class});
+			//Object obj = h.newInstance();
+
+			String ops[] = m_MethodString.split("\\.");
+
+			// number of clusters
+			int n = 3;
+			try {
+				n = Integer.parseInt(ops[2]);
+			} catch(Exception e) {
+				System.err.println("[Warning] Could not parse number of clusters, using default: "+n);
+			}
+
+			// learner
+			// @TODO use reflection here
+			MultiLabelLearner mll = new LabelPowerset(m_Classifier);
+			if (ops[3].equalsIgnoreCase("BinaryRelevance")) {
+				mll = new BinaryRelevance(m_Classifier);
+			}
+			else if (ops[3].equalsIgnoreCase("ClassifierChain")) {
+				mll = new ClassifierChain(m_Classifier);
+			}
+			else if (ops[3].equalsIgnoreCase("LabelPowerset")) {
+				// already set
+			}
+			else {
+				System.err.println("[Warning] Did not recognise classifier type String, using default: LabelPowerset");
+			}
+
+			m_MULAN = new HOMER(mll, n, HierarchyBuilder.Method.valueOf(ops[1]));
+		}
 		else throw new Exception ("Could not find MULAN Classifier by that name: "+m_MethodString);
 
 		m_MULAN.build(train);
 	}
 
-	/**
-	 * SwitchAttributes - Move L label attributes from the beginning to end of attribute space of an Instances. 
-	 * Necessary because MULAN assumes label attributes are at the end, not the beginning.
-	 * (the extra time for this process is not counted in the running-time analysis of published work).
-	 */
-	public static final Instances switchAttributes(Instances instances, int L) {
-		for(int j = 0; j < L; j++) {
-			//instances.insertAttributeAt(new Attribute(instances.attribute(0).name()+"-"),instances.numAttributes());
-			instances.insertAttributeAt(instances.attribute(0).copy(instances.attribute(0).name()+"-"),instances.numAttributes());
-			for(int i = 0; i < instances.numInstances(); i++) {
-				instances.instance(i).setValue(instances.numAttributes()-1,instances.instance(i).value(0));
-			}
-			instances.deleteAttributeAt(0);
-		}
-		return instances;
-	}
-
-	/**
-	 * SwitchAttributes - Move L label attributes from the beginning to end of attribute space of an Instance. 
-	 * Necessary because MULAN assumes label attributes are at the end, not the beginning.
-	 * (the extra time for this process is not counted in the running-time analysis of published work).
-	 */
-	public static final Instance switchAttributes(Instance instance, int L) {
-		instance.setDataset(null);
-		for(int j = 0; j < L; j++) {
-			instance.insertAttributeAt(instance.numAttributes());
-			instance.deleteAttributeAt(0);
-		}
-		return instance;
-	}
-
 	@Override
 	public double[] distributionForInstance(Instance instance) throws Exception {
 		int L = instance.classIndex();
-		Instance x = switchAttributes((Instance)instance.copy(),L); 
+		Instance x = F.switchAttributes((Instance)instance.copy(),L); 
 		x.setDataset(m_InstancesTemplate);
 		double y[] = new double[L];
 		try {

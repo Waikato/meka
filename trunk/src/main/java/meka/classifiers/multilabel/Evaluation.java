@@ -76,7 +76,15 @@ public class Evaluation {
 		//Get the Options in the @relation name (in format 'dataset-name: <options>')
 		String doptions[] = null;
 		try {
+			// get dataset options
 			doptions = MLUtils.getDatasetOptions(allInstances);
+			/*
+			 * *NEW* if -x (the CV option) is set, override dataset options (except for 'c' / 'C')
+			 */
+			if(Utils.getOptionPos('x',options) > 0) {
+				String L = (Utils.getOptionPos('C', doptions) >= 0) ? Utils.getOption('C',doptions) : Utils.getOption('c',doptions);
+				doptions = new String[]{"-C",L};
+			}
 		} catch(Exception e) {
 			throw new Exception("[Error] Failed to Get Options from @Relation Name", e);
 		}
@@ -153,6 +161,12 @@ public class Evaluation {
 			((Randomizable)h).setSeed(seed + 1); // (@NOTE because previously we were using seed '1' as the default in BaggingML, we want to maintain reproducibility of older results with the same seed).
 		}
 
+		// Save later?
+		String fname = null;
+		if (Utils.getOptionPos('f',options) >= 0) {
+			fname = Utils.getOption('f',options);
+		}
+
 		try {
 
 			Result r = null;
@@ -164,6 +178,29 @@ public class Evaluation {
 
 			// Get Split
 			if(Utils.getOptionPos('x',options) >= 0) {
+
+				/*
+				// *NEW* check for clashing options (@TODO: this is ugly!)
+				if (Utils.getOptionPos("split-percentage",options) >= 0 || Utils.getOptionPos("split-number",options) >= 0 || Utils.getOptionPos("split-percentage",options) >= 0) {
+						System.err.println("Warning: you are overriding some dataset split options with CV!");
+						try {
+							Utils.getOption("split-percentage",options);
+						} catch(Exception e) { }
+						try {
+							Utils.getOption("split-number",options);
+						} catch(Exception e) { }
+						try {
+							Utils.getOption("-T",options);
+						} catch(Exception e) { }
+						try {
+							Utils.getOption("-i",options);
+						} catch(Exception e) { }
+						try {
+							Utils.getOption("-u",options);
+						} catch(Exception e) { }
+				}
+				*/
+
 				// CROSS-FOLD-VALIDATION
 				int numFolds = MLUtils.getIntegerOption(Utils.getOption('x',options),10); // default 10
 				// Check for remaining options
@@ -171,8 +208,7 @@ public class Evaluation {
 				Result fold[] = Evaluation.cvModel(h,allInstances,numFolds,top);
 				r = MLEvalUtils.averageResults(fold);
 				System.out.println(r.toString());
-				if (Utils.getOptionPos('f',options) >= 0) {
-					String fname = Utils.getOption('f',options);
+				if (fname != null) {
 					for(int i = 0; i < fold.length; i++) {
 						Result.writeResultToFile(fold[i],fname+"."+i);
 					}
@@ -249,13 +285,13 @@ public class Evaluation {
 
 			// Save ranking data?
 
-			if (Utils.getOptionPos('f',options) >= 0) {
-				Result.writeResultToFile(r,Utils.getOption('f',options));
+			if (fname != null) {
+				Result.writeResultToFile(r,fname);
 			}
 
 		} catch(Exception e) {
-			System.out.println(e);
-			//e.printStackTrace();
+			//System.out.println(e);
+			e.printStackTrace();
 			Evaluation.printOptions(h.listOptions());
 			System.exit(1);
 		}
@@ -414,15 +450,34 @@ public class Evaluation {
 		}
 		if(h.getDebug()) System.out.println(":-");
 
+		if(h.getDebug()) {
+
+			for(int i = 0; i < result.size(); i++) {
+				System.out.println("\t"+Arrays.toString(result.rowActual(i))+" vs "+Arrays.toString(result.rowRanking(i)));
+			}
+
+
+		}
+
 		return result;
 	}
 
+	/**
+	 * GetDataset - load a dataset, given command line options specifying an arff file, and set the class index correctly to indicate the number of labels.
+	 * @param	options	command line options
+	 * @return	An Instances representing the dataset
+	 */
 	public static Instances getDataset(String options[]) throws Exception {
 		Instances D = loadDatasetFromOptions(options);
 		setClassesFromOptions(D,options);
 		return D;
 	}
 
+	/**
+	 * LoadDatasetFromOptions - load a dataset, given command line options specifying an arff file.
+	 * @param	options	command line options
+	 * @return	An Instances representing the dataset
+	 */
 	public static Instances loadDatasetFromOptions(String options[]) throws Exception {
 
 		Instances D = null;
@@ -451,8 +506,9 @@ public class Evaluation {
 	}
 
 	/**
-	 * SetClassesFromOptions.
+	 * SetClassesFromOptions - set the class index correctly in a dataset D, given command line options 'options'.
 	 * @note: there is a similar function in Exlorer.prepareData(D) but that function can only take -C from the dataset options.
+	 * @todo: replace the call to Exlorer.prepareData(D) with this method here (use the name 'prepareData' -- it souds better).
 	 */
 	public static void setClassesFromOptions(Instances D, String options[]) throws Exception {
 		try {

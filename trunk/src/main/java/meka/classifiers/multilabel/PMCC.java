@@ -17,7 +17,7 @@ package meka.classifiers.multilabel;
 
 /**
  * PMCC.java - A copy of EMCC (but renamed); selecting the top M chains at training time, and using them in inference (instead of just one).
- * Here we use MCCtemp instead of MCC -- will have to sort this out at some point!
+ * Here we use MCCtemp instead of MCC, and CCe instead of CC! -- will have to sort this out at some point!
  * @todo, use some kind of voting process as well
  *
  * @author Jesse Read (jesse@tsc.uc3m.es)
