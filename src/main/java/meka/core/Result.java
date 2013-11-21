@@ -80,14 +80,7 @@ public class Result implements Serializable {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();  
-		for (String v : output.keySet()) {
-			sb.append(Utils.padLeft(v,20));
-			sb.append(" : ");
-			sb.append(Utils.doubleToString(output.get(v),5,3));
-			sb.append('\n');
-		}
-		return MLUtils.hashmapToString(info) + "\n" + sb.toString() + "\n" + MLUtils.hashmapToString(vals);
+		return MLUtils.hashMapToString(info) + "\n" + MLUtils.hashMapToString(output,3) + "\n" + MLUtils.hashMapToString(vals,3);
 	}
 
 	/**

@@ -20,6 +20,7 @@ import weka.core.Utils;
 
 /**
  * A.java - Handy Array operations
+ * @author Jesse Read (jesse@tsc.uc3m.es)
  */
 public abstract class A {
 
