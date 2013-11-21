@@ -21,44 +21,50 @@ import rbms.M;
 
 /**
  * StatUtils - Helpful statistical functions.
+ * @author Jesse Read (jesse@tsc.uc3m.es)
  */
 public abstract class StatUtils {
 
-	// @@TODO RENAME (AND PURGE MANY OF) THESE FUNCTIONS URGENTLY!
 	//
-	
-	//
-	// THE EMPIRICAL PROBABILITY DISTRIBUTIONS
+	// EMPIRICAL DISTRIBUTIONS
 	//
 
 	/**
-	 * P.
-	 * same as below, but assuming that x[0,...,L] refers to indices j[0,...,L]
+	 * P - Empirical prior.
+	 * @param	Y[][]	label matrix
+	 * @param	x	 	label values
+	 * @return 	[P(Y_1==x[1]), P(Y_2==x[2]), ..., P(Y_L==x[L])]
 	 */
-	public static double[] priors(double Y[][], int x[]) {
+	public static double[] P(double Y[][], int x[]) {
 		int L = x.length;
-		return priors(Y,MLUtils.gen_indices(L),x);
+		return P(Y,MLUtils.gen_indices(L),x);
 	}
 
 	/**
-	 * [P(j[1]==x[1]), P(j[2]==x[2]), ..., P(j[L]==x[L])]
-	 * @param	j	indices
-	 * @param	x	values
+	 * P - Empirical prior.
+	 * @param	Y[][]	label matrix
+	 * @param	x	 	label values
+	 * @param	j		label indices
+	 * @return 	[P(Y_j[1]==x[1]), P(Y_j[2]==x[2]), ..., P(Y_j[L]==x[L])]
 	 */
-	public static double[] priors(double Y[][], int j[], int x[]) {
+	public static double[] P(double Y[][], int j[], int x[]) {
 		int L = j.length;
 		double p[] = new double[L];
 		for(int j_ = 0; j_ < L; j_++) {
-			p[j_] = prior(Y,j[j_],x[j_]);
+			p[j_] = p(Y,j[j_],x[j_]);
 		}
 		return p;
 	}
 
 	/**
-	 * P(Y_j==k) in Y.
+	 * p - Empirical prior.
 	 * In the multi-label case, k in {0,1}
+	 * @param	Y[][]	label matrix
+	 * @param	j		label index
+	 * @param	x	 	label value
+	 * @return 	P(Y_j==k) in Y.
 	 */
-	public static double prior(double Y[][], int j, int k) {
+	public static double p(double Y[][], int j, int k) {
 		int N = Y.length;
 		double p = 0.0001;
 		for(int i = 0; i < N; i++) {
@@ -70,17 +76,26 @@ public abstract class StatUtils {
 	}
 
 	/**
-	 * P(Y_j==k) in D.
+	 * p - Empirical prior.
+	 * In the multi-label case, k in {0,1}
+	 * @param	D    	Instances
+	 * @param	j		label index
+	 * @param	x	 	label value
+	 * @return 	P(Y_j==k) in D.
 	 */
-	public static double prior(Instances D, int j, int k) {
-		return prior(MLUtils.getYfromD(D),j,k);
+	public static double p(Instances D, int j, int k) {
+		return p(MLUtils.getYfromD(D),j,k);
 	}
 
 	/**
-	 * P(Y_j = v, Y_k = w) in Y.
+	 * p - Empirical joint.
 	 * Multi-target friendly.
+	 * @param	Y[][]	label matrix
+	 * @param	j		label index
+	 * @param	x	 	label value
+	 * @return 	P(Y_j = v, Y_k = w) in Y.
 	 */
-	public static double prior(double Y[][], int j, int v, int k, int w) {
+	public static double P(double Y[][], int j, int v, int k, int w) {
 		int N = Y.length;
 		double p = 0.0001;
 		for(int i = 0; i < N; i++) {
@@ -91,16 +106,21 @@ public abstract class StatUtils {
 	}
 
 	/**
-	 * P(Y_j = v, Y_k = w) in D.
+	 * p - Empirical joint.
+	 * Multi-target friendly.
+	 * @param	D       Instances
+	 * @param	j		label index
+	 * @param	x	 	label value
+	 * @return 	P(Y_j = v, Y_k = w) in D.
 	 */
-	public static double prior(Instances D, int j, int v, int k, int w) {
-		return prior(MLUtils.getYfromD(D),j,v,k,w);
+	public static double P(Instances D, int j, int v, int k, int w) {
+		return P(MLUtils.getYfromD(D),j,v,k,w);
 	}
 
 	/**
 	 * Delta(x_1,x_2,x_3 = v_1,v_2,v_3) for j = 1,2,3, k = 1,2,3.
 	 */
-	public static boolean match(Instance x, int indices[], int values[]) {
+	private static boolean match(Instance x, int indices[], int values[]) {
 		for(int j = 0; j < indices.length; j++) {
 			int v = (int)Math.round(x.value(indices[j]));
 			if (v != values[j]) {
@@ -111,27 +131,28 @@ public abstract class StatUtils {
 	}
 	
 	/**
-	 * Joint Distribution. 
+	 * P - Empirical joint.
 	 * Multi-target friendly.
-	 * @param	indices[]	e.g., 1,2,3
-	 * @param	values[]	e.g., 0,0,1
-	 * @return 	P(x_1,x_2,x_3 = v_1,v_2,v_3) for j = 1,2,3, k = 1,2,3.
+	 * @param	D       Instances
+	 * @param	j[]		label indices, e.g., 1,2,3
+	 * @param	v[]		label values, e.g., 0,0,1
+	 * @return 	P(x_1,x_2,x_3 = v_1,v_2,v_3) for j = 1,2,3 in D
 	 */
-	public static double joint(Instances D, int indices[], int values[]) {
+	public static double P(Instances D, int j[], int v[]) {
 		int N = D.numInstances();
 		int n = 0;
 		for (Instance x : D) {
-			if (match(x,indices,values))
+			if (match(x,j,v))
 				n++;
 		}
 		return Math.max(0.0001,(double)n/N);
 	}
 
 	/**
-	 * Joint Distribution.
-	 * Returns the joint distribution of the jth and kth labels in D.
+	 * jPMF - Joint PMF.
+	 * @return the joint PMF of the jth and kth labels in D.
 	 */
-	public static double[][] jointDistribution(Instances D, int j, int k) {
+	public static double[][] jPMF(Instances D, int j, int k) {
 		double JOINT[][] = new double[D.attribute(j).numValues()][D.attribute(k).numValues()];
 		int N = D.numInstances();
 		for(int i = 0; i < N; i++) {
@@ -144,9 +165,9 @@ public abstract class StatUtils {
 
 	/**
 	 * Joint Distribution.
-	 * Returns the joint distribution of the jth and kth and lth labels in D.
+	 * @return the joint PMF of the jth and kth and lthlabels in D.
 	 */
-	public static double[][][] jointDistribution(Instances D, int j, int k, int l) {
+	public static double[][][] jPMF(Instances D, int j, int k, int l) {
 		double JOINT[][][] = new double[D.attribute(j).numValues()][D.attribute(k).numValues()][D.attribute(l).numValues()];
 		int N = D.numInstances();
 		for(int i = 0; i < N; i++) {
@@ -166,31 +187,18 @@ public abstract class StatUtils {
 	public static double I(Instances D, int j, int k) {
 		double I = 0.0;
 		for(int x = 0; x < D.attribute(j).numValues(); x++) {
-			double p_x = prior(D,j,x);
+			double p_x = p(D,j,x);
 			for(int y = 0; y < D.attribute(k).numValues(); y++) {
-				double p_y = prior(D,k,y);
-				double p_xy = prior(D,j,x,k,y);
+				double p_y = p(D,k,y);
+				double p_xy = P(D,j,x,k,y);
 				I += p_xy * Math.log ( p_xy / ( p_x * p_y) );
 			}
 		}
 		return I;
 	}
 
-	/**
-	 * Chi^2 - Do the chi-squared test on all pairs of labels in D.
-	 * @return	A table X with all the pairwise Chi^2 values.
-	 */
-	public static double[][] chi2 (Instances D) {
-		int L = D.classIndex();
-		double X[][] = new double[L][L];
-		for(int j = 0; j < D.classIndex(); j++) {
-			for(int k = j+1; k < D.classIndex(); k++) {
-				X[j][k] = StatUtils.chi2(D,j,k);
-				//System.out.println("X^2 = "+StatUtils.chi2(D,j,k));
-			}
-		}
-		return X;
-	}
+	/** Critical value used for Chi^2 test. */
+	public static final double CRITICAL[] = new double[]{0.,2.706, 4.605, 6.251, 7.779};      // P == 0.10
 
 	/**
 	 * Chi^2 - Do the chi-squared test on the jth and kth labels in Y.
@@ -204,14 +212,21 @@ public abstract class StatUtils {
 		double chi2 = 0.0;
 		for(int j_ = 0; j_ < 2; j_++) {
 			for(int k_ = 0; k_ < 2; k_++) {
-				double E = prior(Y,j,j_) * prior(Y,k,k_); 		// Expected vaule P(Y_j = j_)P(Y_k = k_)
-				double O = prior(Y,j,j_,k,k_);					// Observed value P(Y_j = j_, Y_k = k_)
+				double E = p(Y,j,j_) * p(Y,k,k_); 			// Expected vaule P(Y_j = j_)P(Y_k = k_)
+				double O = P(Y,j,j_,k,k_);					// Observed value P(Y_j = j_, Y_k = k_)
 				chi2 += ( ((O - E) * (O - E)) / E );
 			}
 		}
 		return chi2;
 	}
 
+	/**
+	 * Chi^2 - Chi-squared test.
+	 * If they are correlated, this means unconditional dependence!
+	 * @param	M[][][]			measured joint  P(Y_1,Y_2)      
+	 * @param	Exp[][][]		expect joint 	P(Y_1)P(Y_2)	given null hypothesis
+	 * @return	The chi-square statistic for labels j and k in Y; normalized by critical value.
+	 */
 	public static double[][] chi2 (double M[][][], double Exp[][][]) {
 
 		int K = M.length;
@@ -241,78 +256,23 @@ public abstract class StatUtils {
 	}
 
 	/**
-	 * CHI-SQUARED.
-	 * Calculate X where X[j][k] is a positive number.
-	 * If X[j][k] > CRITICAL[DoF] then the difference is significant (reject the NULL hypothesis).
-	 * Normalise X to V.
-	 * If V[j][k] > 0 then the difference is significant (reject the NULL hypothesis).
-	 * @return	X	
+	 * MargDepMatrix - Get an Unconditional Depndency Matrix.
+	 * (Works for both ML and MT data).
+	 * @param	D	dataset
+	 * @return a L*L matrix representing Unconditional Depndence.
 	 */
-	public static double[][] chi2 (double M[][], double Exp[][], int DoF) {
-		int L = M.length;
-		double V[][] = new double[L][L];
-		for(int j = 0; j < L; j++) {
-			for(int k = j+1; k < L; k++) {
-				double J = M[j][k];		// actual (joint) 			p(e==e)
-				double E = Exp[j][k];	// expected (prior*prior)	
-				System.out.println("J = "+J);
-				System.out.println("J = "+E);
-				V[j][k] += ( ((J - E) * (J - E)) / E );
-				J = 1.0-M[j][k];		// actual (joint) 			p(e!=e)
-				E = 1.0-Exp[j][k];		// expected (prior*prior)	
-				V[j][k] += ( ((J - E) * (J - E)) / E );
-			}
-		}
-		System.out.println(rbms.M.toString((double[][])V));
-		// offset
-		double p = CRITICAL[DoF];
-		for(int j = 0; j < L; j++) {
-			for(int k = j+1; k < L; k++) {
-				V[j][k] -= p;
-			}
-		}
-		return V;
-	}
-
-	//public static final double CRITICAL[] = new double[]{0.,0.455, 1.386, 2.366, 3.357}; // P == 0.50  
-	//public static final double CRITICAL[] = new double[]{0.,1.642, 3.219, 4.642, 5.989}; // P == 0.20  
-  	public static final double CRITICAL[] = new double[]{0.,2.706, 4.605, 6.251, 7.779}; // P == 0.10
-	//	public static final double CRITICAL[] = new double[]{0.,3.841, 4.591, 7.815, 9.488}; // P == 0.05
-//	public static final double CRITICAL[] = new double[]{0.,6.635, 9.210, 11.245,13.277}; // P == 0.01
-	//public static final double CRITICAL[] = new double[]{0.,10.827, 13.815, 16.268,18.465}; // P == 0.001
-
-	public static double[][] chi2 (double M[][], double E, int DoF) {
-		int L = M.length;
-		double V[][] = new double[L][L];
-		for(int j = 0; j < L; j++) {
-			for(int k = j+1; k < L; k++) {
-				double J = M[j][k];
-				V[j][k] += ( ((J - E) * (J - E)) / E );
-			}
-		}
-		// offset
-		double p = CRITICAL[DoF];
-		for(int j = 0; j < L; j++) {
-			for(int k = j+1; k < L; k++) {
-				V[j][k] -= p;
-			}
-		}
-		return V;
-	}
-
-
-	public static double[][] getUnconditionalDependencies(Instances D) {
-		return getUnconditionalDependencies(D,D.classIndex());
+	public static double[][] margDepMatrix(Instances D) {
+		return margDepMatrix(D,D.classIndex());
 	}
 
 	/**
-	 * GetUnconditionalDependencies - Get an Unconditional Depndency Matrix.
+	 * MargDepMatrix - Get an Unconditional Depndency Matrix.
 	 * (Works for both ML and MT data).
 	 * @param	D	dataset
 	 * @param	L	number of labels
 	 * @return a L*L matrix representing Unconditional Depndence.
 	 */
-	public static double[][] getUnconditionalDependencies(Instances D, int L) {
+	public static double[][] margDepMatrix(Instances D, int L) {
 		double M[][] = new double[L][L];
 		for(int j = 0; j < L; j++) {
 			for(int k = j+1; k < L; k++) {
@@ -333,14 +293,16 @@ public abstract class StatUtils {
 	}
 
 	/**
-	 * LEAD. 
-	 * MYVERSION.
+	 * CondDepMatrix - Get a Conditional Depndency Matrix.
+	 * @version My version, based on Zhang's 'LEAD' approach:<br> 
 	 * the probability of labels j and k both getting errors on the same instance is L_loss(j)*L_loss(k)
-	 * if the actual co-occence is otherwise, 
+	 * if the actual co-occurence is otherwise. 
 	 * @version note: currently we are only looking at two kinds: are the scores correlated or not
 	 * @version H0: the correlated scores == score*score
+	 * @param	D	dataset
+	 * @return a L*L matrix of Unconditional Depndence.
 	 */
-	public static double[][] LEAD (Instances D, Result result) {
+	public static double[][] condDepMatrix(Instances D, Result result) {
 
 		int L = D.classIndex();
 		int N = D.numInstances();
@@ -403,9 +365,9 @@ public abstract class StatUtils {
 		for(int j = 0; j < L; j++) {
 			for(int k = j+1; k < L; k++) {
 				for(int v : new int[]{0,1,-1}) { 
-					double p_j = prior(E,j,v);								// prior
-					double p_k = prior(E,k,v);								// prior
-					double p_jk = prior(E,j,v,k,v);							// joint
+					double p_j = p(E,j,v);								// prior
+					double p_k = p(E,k,v);								// prior
+					double p_jk = P(E,j,v,k,v);							// joint
 					double Exp = p_j * p_k;									// expected
 					//System.out.println("v = "+v);
 					//System.out.println("p_j "+p_j);

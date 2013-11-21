@@ -722,12 +722,29 @@ public abstract class MLUtils {
 		return a.toArray(new String[0]);
 	}
 
-	public static String hashmapToString(HashMap<?,?> hm) {
+	/**
+	 * HashMapToString - print out a HashMap nicely.
+	 * @param	map	HashMap
+	 * @param	dp	decimal point precision (-1 for no limitation)
+	 * @return	String representation of map
+	 */
+	public static String hashMapToString(HashMap<?,?> map, int dp) {
 		StringBuilder sb = new StringBuilder();
-		for (Object k : hm.keySet()) {
-			sb.append(Utils.padLeft(k.toString(),20)).append(" : ").append(hm.get(k)).append('\n');
+		for (Object k : map.keySet()) {
+			sb.append(Utils.padLeft(k.toString(),20));
+			sb.append(" : ");
+			if (dp < 0) {
+				sb.append(map.get(k));
+			}
+			else {
+				sb.append(Utils.doubleToString((Double)map.get(k),5,dp));
+			}
+			sb.append('\n');
 		}
 		return sb.toString();
+	}
+	public static String hashMapToString(HashMap<?,?> map) {
+		return hashMapToString(map,-1);
 	}
 
 	public static int getIntegerOption(String op, int def) {

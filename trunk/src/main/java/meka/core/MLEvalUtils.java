@@ -96,7 +96,7 @@ public abstract class MLEvalUtils {
 		results.put("F1_macro_L"		,Metrics.P_FmacroAvgL(Y,Ypred));
 		results.put("EmptyVectors"		,MLUtils.emptyVectors(Ypred));
 		results.put("LCard_pred"		,MLUtils.labelCardinality(Ypred));
-		results.put("LCard_real"		,MLUtils.labelCardinality(Y));
+		//results.put("LCard_real"		,MLUtils.labelCardinality(Y));
 		for(int j = 0; j < L; j++) {
 			results.put("L"+j+"_acc"				,1.0-Metrics.P_Hamming(Y,Ypred,j));
 		}

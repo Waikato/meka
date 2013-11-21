@@ -24,6 +24,7 @@ import weka.core.Instance;
 /**
  * F.java - TRANSFORM/FILTER OPERATIONS.
  * Transform 'D' and 'x' in many different ways.
+ * @author Jesse Read (jesse@tsc.uc3m.es)
  */
 public abstract class F {
 
