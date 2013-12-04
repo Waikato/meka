@@ -57,97 +57,15 @@ public class Evaluation {
 		h.setOptions(options);
 
 		//Load Instances
-		Instances allInstances = null;
-		//try {
-			allInstances = loadDatasetFromOptions(options);
-		//} catch(Exception e) {
-	//		throw new Exception("[Error] Failed to Load Instances from file", e);
-	//	}
-		   /*
-	  String filename = null;
-		try {
-			filename = Utils.getOption('t', options);
-			allInstances = DataSource.read(filename);
-		} catch(Exception e) {
-			throw new Exception("[Error] Failed to Load Instances from file '" + filename + "'", e);
-		}
-		*/
-
-		//Get the Options in the @relation name (in format 'dataset-name: <options>')
-		String doptions[] = null;
-		try {
-			// get dataset options
-			doptions = MLUtils.getDatasetOptions(allInstances);
-			/*
-			 * *NEW* if -x (the CV option) is set, override dataset options (except for 'c' / 'C')
-			 */
-			if(Utils.getOptionPos('x',options) > 0) {
-				String L = (Utils.getOptionPos('C', doptions) >= 0) ? Utils.getOption('C',doptions) : Utils.getOption('c',doptions);
-				doptions = new String[]{"-C",L};
-			}
-		} catch(Exception e) {
-			throw new Exception("[Error] Failed to Get Options from @Relation Name", e);
-		}
-
-		//Concatenate the Options in the @relation name to the cmd line options
-		String full = "";
-		for(String s : options) {
-			if (s.length() > 0)
-				full += (s + " ");
-		}
-		for(String s : doptions) {
-			if (s.length() > 0)
-				full += (s + " ");
-		}
-		options = Utils.splitOptions(full);
-
-		//Set Options from the command line, any leftover options will most likely be used in the code that follows
-		boolean cSwitch = false;
-		try {
-			int c = (Utils.getOptionPos('C', options) >= 0) ? Integer.parseInt(Utils.getOption('C',options)) : Integer.parseInt(Utils.getOption('c',options));
-			// if negative, then invert ...
-			if ( c < 0) {
-				c = -c;
-				cSwitch = true;
-				allInstances = MLUtils.switchAttributes(allInstances,c);
-			}
-			// end
-			allInstances.setClassIndex(c);
-		} catch(Exception e) {
-			System.err.println("[Error] Failed to Set Options from Command Line -- Check\n\t the spelling of the base classifier;\n \t that options are specified in the correct order (respective to  the '--' divider); and\n\t that the class index is set properly.");
-			System.exit(1);
-		}
+		Instances allInstances = getDataset(options);
+		int L = allInstances.classIndex();
+		boolean cSwitch = (L < 0); // because we will need to do this for the test instances also
 
 		//Check for the essential -C option. If still nothing set, we can't continue
-		if(allInstances.classIndex() < 0) 
-			throw new Exception("You must supply the number of labels either in the @Relation Name of the dataset or on the command line using the option: -C <num. labels>");
+		//if(allInstances.classIndex() < 0) 
+		//	throw new Exception(");
 
-		//Set Range
-		/*
-		 * DEPRECATED
-		if(Utils.getOptionPos('p',options) >= 0) {
-
-			// Randomize 
-			if(Utils.getOptionPos('R',options) >= 0) {
-				allInstances.randomize(new Random());
-			}
-
-			try {
-				String range = Utils.getOption('p',options);
-				System.out.println("Selecting Range "+range+"");
-				RemoveRange remove = new RemoveRange();  
-				remove.setInstancesIndices(range);
-				remove.setInvertSelection(true);
-				remove.setInputFormat(allInstances);
-				allInstances = Filter.useFilter(allInstances, remove);
-			} catch(Exception e) {
-				System.out.println(""+e);
-				e.printStackTrace();
-				throw new Exception("Failed to Remove Range", e);
-			}
-		}
-		*/
-
+		// Seed
 		int seed = (Utils.getOptionPos('s',options) >= 0) ? Integer.parseInt(Utils.getOption('s',options)) : 0;
 
 		// Randomize (Instances) 
@@ -156,9 +74,14 @@ public class Evaluation {
 			allInstances.randomize(new Random(seed));
 		}
 
-		// Randomize (Method)
+		// Randomize (Model)
 		if (h instanceof Randomizable) {
 			((Randomizable)h).setSeed(seed + 1); // (@NOTE because previously we were using seed '1' as the default in BaggingML, we want to maintain reproducibility of older results with the same seed).
+		}
+
+		String voption = "default";
+		if (Utils.getOptionPos("verbosity",options) >= 0) {
+			voption = Utils.getOption("verbosity",options);
 		}
 
 		// Save later?
@@ -179,33 +102,11 @@ public class Evaluation {
 			// Get Split
 			if(Utils.getOptionPos('x',options) >= 0) {
 
-				/*
-				// *NEW* check for clashing options (@TODO: this is ugly!)
-				if (Utils.getOptionPos("split-percentage",options) >= 0 || Utils.getOptionPos("split-number",options) >= 0 || Utils.getOptionPos("split-percentage",options) >= 0) {
-						System.err.println("Warning: you are overriding some dataset split options with CV!");
-						try {
-							Utils.getOption("split-percentage",options);
-						} catch(Exception e) { }
-						try {
-							Utils.getOption("split-number",options);
-						} catch(Exception e) { }
-						try {
-							Utils.getOption("-T",options);
-						} catch(Exception e) { }
-						try {
-							Utils.getOption("-i",options);
-						} catch(Exception e) { }
-						try {
-							Utils.getOption("-u",options);
-						} catch(Exception e) { }
-				}
-				*/
-
 				// CROSS-FOLD-VALIDATION
 				int numFolds = MLUtils.getIntegerOption(Utils.getOption('x',options),10); // default 10
 				// Check for remaining options
 				Utils.checkForRemainingOptions(options);
-				Result fold[] = Evaluation.cvModel(h,allInstances,numFolds,top);
+				Result fold[] = Evaluation.cvModel(h,allInstances,numFolds,top,voption);
 				r = MLEvalUtils.averageResults(fold);
 				System.out.println(r.toString());
 				if (fname != null) {
@@ -257,14 +158,13 @@ public class Evaluation {
 
 				// Invert the split?
 				if(Utils.getFlag('i',options)) { //boolean INVERT 			= Utils.getFlag('i',options);
-					//Get Debug/Verbosity/Output Level
-
-					Instances holder = test;
+					Instances temp = test;
 					test = train;
-					train = holder;
+					train = temp;
 				}
 
 				// We're going to do parameter tuning
+				/*
 				if(Utils.getOptionPos('u',options) >= 0) {
 					double percentageSplit = Double.parseDouble(Utils.getOption('u',options));
 					TRAIN = (int)(train.numInstances() * percentageSplit);
@@ -272,14 +172,26 @@ public class Evaluation {
 					train = new Instances(train,0,TRAIN);
 					test = new Instances(train,TRAIN,TEST);
 				}
+				*/
 
 				// Check for remaining options
 				Utils.checkForRemainingOptions(options);
 
 				if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(allInstances)+"\tL="+allInstances.classIndex()+"\tD(t:T)=("+train.numInstances()+":"+test.numInstances()+")\tLC(t:T)="+Utils.roundDouble(MLUtils.labelCardinality(train,allInstances.classIndex()),2)+":"+Utils.roundDouble(MLUtils.labelCardinality(test,allInstances.classIndex()),2)+")");
 
-				r = evaluateModel(h,train,test,top);
+				r = evaluateModel(h,train,test,top,voption);
 				System.out.println(r.toString());
+
+				// silently check for verbosity option
+				int V = 1;
+				try {
+					V = MLUtils.getIntegerOption(voption,1);
+				} catch(Exception e) {
+				}
+
+				if (V > 4) {
+					System.out.println(Result.getResultAsString(r));
+				}
 
 			}
 
@@ -326,9 +238,10 @@ public class Evaluation {
 	 * @param	D_train	training data
 	 * @param	D_test 	test data
 	 * @param	top    	Threshold OPtion (pertains to multi-label data only)
+	 * @param	vop    	Verbosity OPtion (which measures do we want to calculate/output)
 	 * @return	Result	raw prediction data with evaluation statistics included.
 	 */
-	public static Result evaluateModel(MultilabelClassifier h, Instances D_train, Instances D_test, String top) throws Exception {
+	public static Result evaluateModel(MultilabelClassifier h, Instances D_train, Instances D_test, String top, String vop) throws Exception {
 		Result r = evaluateModel(h,D_train,D_test);
 		if (h instanceof MultiTargetClassifier || isMT(D_test)) {
 			r.setInfo("Type","MT");
@@ -337,7 +250,7 @@ public class Evaluation {
 			r.setInfo("Threshold",MLEvalUtils.getThreshold(r.predictions,D_train,top));
 			r.setInfo("Type","ML");
 		}
-		r.output = Result.getStats(r);
+		r.output = Result.getStats(r, vop);
 		return r;
 	}
 
@@ -347,15 +260,16 @@ public class Evaluation {
 	 * @param	D      	 data
 	 * @param	numFolds test data
 	 * @param	top    	 Threshold OPtion (pertains to multi-label data only)
+	 * @param	vop    	Verbosity OPtion (which measures do we want to calculate/output)
 	 * @return	an array of 'numFolds' Results
 	 */
-	public static Result[] cvModel(MultilabelClassifier h, Instances D, int numFolds, String top) throws Exception {
+	public static Result[] cvModel(MultilabelClassifier h, Instances D, int numFolds, String top, String vop) throws Exception {
 		Result r[] = new Result[numFolds];
 		for(int i = 0; i < numFolds; i++) {
 			Instances D_train = D.trainCV(numFolds,i);
 			Instances D_test = D.testCV(numFolds,i);
 			if (h.getDebug()) System.out.println(":- Fold ["+i+"/"+numFolds+"] -: "+MLUtils.getDatasetName(D)+"\tL="+D.classIndex()+"\tD(t:T)=("+D_train.numInstances()+":"+D_test.numInstances()+")\tLC(t:T)="+Utils.roundDouble(MLUtils.labelCardinality(D_train,D.classIndex()),2)+":"+Utils.roundDouble(MLUtils.labelCardinality(D_test,D.classIndex()),2)+")");
-			r[i] = evaluateModel(h, D_train, D_test, top);
+			r[i] = evaluateModel(h, D_train, D_test, top, vop);
 		}
 		return r;
 	}
@@ -469,7 +383,7 @@ public class Evaluation {
 	 */
 	public static Instances getDataset(String options[]) throws Exception {
 		Instances D = loadDatasetFromOptions(options);
-		setClassesFromOptions(D,options);
+		setClassesFromOptions(D,MLUtils.getDatasetOptions(D));
 		return D;
 	}
 
@@ -525,7 +439,7 @@ public class Evaluation {
 			e.printStackTrace();
 			//System.err.println("[Error] Failed to Set Options from Command Line -- Check\n\t the spelling of the base classifier;\n \t that options are specified in the correct order (respective to  the '--' divider); and\n\t that the class index is set properly.");
 			//System.exit(1);
-			throw new Exception ("Error] Failed to Set Classes from options.");
+			throw new Exception ("[Error] Failed to Set Classes from options. You must supply the number of labels either in the @Relation Name of the dataset or on the command line using the option: -C <num. labels>");
 		}
 	}
 

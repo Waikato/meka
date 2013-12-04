@@ -21,6 +21,19 @@ import rbms.M;
 
 public abstract class ThresholdUtils {
 
+	/*
+	public static double[] thresholdStringToArray(String top) {
+		if (top.startsWith("[")) {
+			return MLUtils.toDoubleArray(top);							// threshold vector       [t1 t2 ... tL]]
+		}
+		else {
+			double ts[] = new double[Y[0].length];
+			Arrays.fill(ts,Double.parseDouble(top));					// make a threshold vector [t t t ... t]
+			return ts;
+		}
+	}
+	*/
+
 	/**
 	 * CalibrateThreshold - Calibrate a threshold using PCut: the threshold which results in the best approximation of the label cardinality of the training set.
 	 * @param	Y			labels
