@@ -49,7 +49,7 @@ public abstract class MLEvalUtils {
 	 * @return	the evaluation statistics
 	 */
 	//public static HashMap<String,Double> getMLStats(ArrayList<double[]> Confidences, ArrayList<int[]> TrueValues, String t) {
-	public static HashMap<String,Double> getMLStats(double Rpred[][], int Y[][], String t) {
+	public static HashMap<String,Double> getMLStats(double Rpred[][], int Y[][], String t, String vop) {
 		double ts[] = null;
 		if (t.startsWith("[")) {
 			ts = MLUtils.toDoubleArray(t);							// threshold vector       [t1 t2 ... tL]]
@@ -58,7 +58,7 @@ public abstract class MLEvalUtils {
 			ts = new double[Y[0].length];
 			Arrays.fill(ts,Double.parseDouble(t));					// make a threshold vector [t t t ... t]
 		}
-		return getMLStats(Rpred,Y,ts);
+		return getMLStats(Rpred,Y,ts,vop);
 	}
 
 	/**
@@ -69,36 +69,49 @@ public abstract class MLEvalUtils {
 	 * @param	t			a vector of thresholds, e.g. [0.1,0.1,0.1] or [0.1,0.5,0.4,0.001]
 	 * @return	the evaluation statistics
 	 */
-	public static HashMap<String,Double> getMLStats(double Rpred[][], int Y[][], double t[]) {
+	public static HashMap<String,Double> getMLStats(double Rpred[][], int Y[][], double t[], String vop) {
 
 		int N = Y.length; 
 		int L = Y[0].length;
 
+		int V = MLUtils.getIntegerOption(vop,1); // default 1
+
 		int Ypred[][] = ThresholdUtils.threshold(Rpred,t);
 
 		HashMap<String,Double> results = new LinkedHashMap<String,Double>();
-		results.put("N"					,(double)N);
+
+		results.put("N_test"			,(double)N);
 		results.put("L"					,(double)L);
 		results.put("Accuracy"			,Metrics.P_Accuracy(Y,Ypred));
-		results.put("H_loss"			,Metrics.L_Hamming(Y,Ypred));
-		results.put("ZeroOne_loss"		,Metrics.L_ZeroOne(Y,Ypred));
-		results.put("H_acc"				,Metrics.P_Hamming(Y,Ypred));
-		results.put("Exact_match"		,Metrics.P_ExactMatch(Y,Ypred));
-		results.put("One_error"			,Metrics.L_OneError(Y,Rpred));
-		results.put("Rank_loss"			,Metrics.L_RankLoss(Y,Rpred));
-		results.put("Avg_prec"			,Metrics.P_AveragePrecision(Y,Rpred));
-		results.put("LogLossD"			,Metrics.L_LogLossD(Y,Rpred));
-		results.put("LogLossL"			,Metrics.L_LogLossL(Y,Rpred));
-		//results.put("Precision"			,Metrics.P_Precision(Y,Ypred));
-		//results.put("Recall"			,Metrics.P_Recall(Y,Ypred));
-		results.put("F1_micro"			,Metrics.P_FmicroAvg(Y,Ypred));
-		results.put("F1_macro_D"		,Metrics.P_FmacroAvgD(Y,Ypred));
-		results.put("F1_macro_L"		,Metrics.P_FmacroAvgL(Y,Ypred));
-		results.put("EmptyVectors"		,MLUtils.emptyVectors(Ypred));
-		results.put("LCard_pred"		,MLUtils.labelCardinality(Ypred));
-		//results.put("LCard_real"		,MLUtils.labelCardinality(Y));
-		for(int j = 0; j < L; j++) {
-			results.put("L"+j+"_acc"				,1.0-Metrics.P_Hamming(Y,Ypred,j));
+		results.put("Hamming score"		,Metrics.P_Hamming(Y,Ypred));
+		results.put("Exact match"		,Metrics.P_ExactMatch(Y,Ypred));
+
+		if (V > 1) {
+
+			results.put("Hamming loss"		,Metrics.L_Hamming(Y,Ypred));
+			results.put("ZeroOne loss"		,Metrics.L_ZeroOne(Y,Ypred));
+			results.put("One error"			,Metrics.L_OneError(Y,Rpred));
+			results.put("Rank loss"			,Metrics.L_RankLoss(Y,Rpred));
+			results.put("Avg precision"		,Metrics.P_AveragePrecision(Y,Rpred));
+			results.put("Log Loss D"		,Metrics.L_LogLossD(Y,Rpred));
+			results.put("Log Loss L"		,Metrics.L_LogLossL(Y,Rpred));
+			//results.put("Precision"		,Metrics.P_Precision(Y,Ypred));
+			//results.put("Recall"			,Metrics.P_Recall(Y,Ypred));
+			results.put("F-micro"			,Metrics.P_FmicroAvg(Y,Ypred));
+			results.put("F-macro_D"			,Metrics.P_FmacroAvgD(Y,Ypred));
+			results.put("F-macro_L"			,Metrics.P_FmacroAvgL(Y,Ypred));
+			results.put("N_empty"			,MLUtils.emptyVectors(Ypred));
+			results.put("LCard_pred"		,MLUtils.labelCardinality(Ypred));
+
+			if (V > 2) {
+				//results.put("LCard_real"		,MLUtils.labelCardinality(Y));
+				for(int j = 0; j < L; j++) {
+					results.put("Accuracy["+j+"]"	,1.0-Metrics.P_Hamming(Y,Ypred,j));
+				}
+			}
+			if (V > 3) {
+				// @todo: show by-label label cardinality
+			}
 		}
 		return results;
 	}
@@ -110,23 +123,27 @@ public abstract class MLEvalUtils {
 	 * @param	TrueValues	corresponding true values
 	 * @return	the evaluation statistics
 	 */
-	public static HashMap<String,Double> getMTStats(double Rpred[][], int Y[][]) {
+	public static HashMap<String,Double> getMTStats(double Rpred[][], int Y[][], String vop) {
 
 		// just a question of rounding for now
 		int Ypred[][] = ThresholdUtils.round(Rpred);
 
 		int N = Y.length;
 		int L = Y[0].length;
+		int V = MLUtils.getIntegerOption(vop,1); // default 1
 
 		HashMap<String,Double> output = new LinkedHashMap<String,Double>();
 		output.put("N"					,(double)N);
 		output.put("L"					,(double)L);
-		output.put("L_loss"				,Metrics.L_Hamming(Y,Ypred));
-		output.put("E_loss	"			,Metrics.L_ZeroOne(Y,Ypred));
-		output.put("L_acc"				,Metrics.P_Hamming(Y,Ypred));
-		output.put("E_acc"				,Metrics.P_ExactMatch(Y,Ypred));
-		for(int j = 0; j < L; j++) {
-			output.put("L"+j+"_acc"				,1.0 - Metrics.P_Hamming(Y,Ypred,j));
+		output.put("Hamming loss"		,Metrics.L_Hamming(Y,Ypred));
+		output.put("ZeroOne loss"		,Metrics.L_ZeroOne(Y,Ypred));
+		output.put("Hamming score"		,Metrics.P_Hamming(Y,Ypred));
+		output.put("Exact match"		,Metrics.P_ExactMatch(Y,Ypred));
+
+		if (V > 2) {
+			for(int j = 0; j < L; j++) {
+				output.put("L"+j+"_acc"				,1.0 - Metrics.P_Hamming(Y,Ypred,j));
+			}
 		}
 		return output;
 	}

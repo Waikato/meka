@@ -751,7 +751,7 @@ public abstract class MLUtils {
 		try {
 			return Integer.parseInt(op);
 		} catch(Exception e) {
-			System.err.println("Failed to parse "+op+" to double: using default of "+def);
+			System.err.println("[Warning] Failed to parse "+op+" to integer number; using default of "+def);
 			return def;
 		}
 	}

@@ -200,15 +200,11 @@ public class Result implements Serializable {
 	 * Return the evaluation statistics given predictions and real values stored in r.
 	 * In the multi-label case, a Threshold category must exist, containing a string defining the type of threshold we want to use/calibrate.
 	 */
-	public static HashMap<String,Double> getStats(Result r) {
-		return getStats(r,5);
-	}
-	// get stats for a particular verbosity level
-	public static HashMap<String,Double> getStats(Result r, int V) {
+	public static HashMap<String,Double> getStats(Result r, String vop) {
 		if (r.getInfo("Type").equalsIgnoreCase("MT"))
-			return MLEvalUtils.getMTStats(r.allPredictions(),r.allActuals());
+			return MLEvalUtils.getMTStats(r.allPredictions(),r.allActuals(), vop);
 		else 
-			return MLEvalUtils.getMLStats(r.allPredictions(), r.allActuals(), r.getInfo("Threshold"));
+			return MLEvalUtils.getMLStats(r.allPredictions(), r.allActuals(), r.getInfo("Threshold"), vop);
 	}
 	/*
 	// get stats for a particular measure
@@ -216,6 +212,15 @@ public class Result implements Serializable {
 		return MLUtils.getMLStat(r.allPredictions(), r.allActuals(), r.getInfo("Threshold"), measure);
 	}
 	*/
+
+	public static String getResultAsString(Result s) {
+		StringBuilder sb = new StringBuilder();
+		double N = (double)s.predictions.size();
+		for(int i = 0; i < N; i++) {
+			sb.append(Arrays.toString(s.actuals.get(i))+":"+Arrays.toString(s.predictions.get(i))+"\n");
+		}
+		return sb.toString();
+	}
 
 	// write out as plain text
 	public static void writeResultToFile(Result s, String fname) throws Exception {
@@ -228,10 +233,7 @@ public class Result implements Serializable {
 		for (String k : s.vals.keySet()) {				// @TODO "v:"+s.vals.toString()
 			sb.append("v:").append(k).append('=').append(s.vals.get(k)).append('\n');
 		}
-		double N = (double)s.predictions.size();
-		for(int i = 0; i < N; i++) {
-			sb.append(Arrays.toString(s.actuals.get(i))+":"+Arrays.toString(s.predictions.get(i))+"\n");
-		}
+		sb.append(getResultAsString(s));
 		outer.write(sb.toString());
 		outer.close();
 	}
@@ -290,7 +292,7 @@ public class Result implements Serializable {
 				basename = Utils.getOption('f',args);
 				for(int i = 0; i < numFolds; i++) {
 					fold[i] = Result.readResultFromFile(basename+"."+i);
-					fold[i].output = Result.getStats(fold[i]);
+					fold[i].output = Result.getStats(fold[i],"1");
 					// check for threshold
 					if (fold[i].getInfo("Threshold")==null) {
 						System.out.println("Having to calculate a threshold ...");
@@ -332,7 +334,7 @@ public class Result implements Serializable {
 				System.exit(1);
 			}
 
-			HashMap<String,Double> o = Result.getStats(r);
+			HashMap<String,Double> o = Result.getStats(r,"1");
 			r.output = o;
 			System.out.println(r.toString());
 
