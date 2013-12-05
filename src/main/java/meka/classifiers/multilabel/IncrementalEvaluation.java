@@ -109,7 +109,7 @@ public class IncrementalEvaluation {
 		return results[results.length-1];
 	}
 
-	private static String measures[] = new String[]{"Accuracy", "Exact_match", "H_acc", "Build_time", "Total_time"};
+	private static String measures[] = new String[]{"Accuracy", "Exact match", "Hamming score", "Build_time", "Total_time"};
 
 	/**
 	 * EvaluateModel - over 20 windows.
@@ -212,7 +212,7 @@ public class IncrementalEvaluation {
 			// calculate results
 			results[w].setInfo("Type","ML");
 			results[w].setInfo("Threshold", Arrays.toString(t));
-			results[w].output = Result.getStats(results[w]);
+			results[w].output = Result.getStats(results[w],"2");
 			results[w].output.put("Test_time",(test_time)/1000.0);
 			results[w].output.put("Build_time",(train_time)/1000.0);
 			results[w].output.put("Total_time",(test_time+train_time)/1000.0);

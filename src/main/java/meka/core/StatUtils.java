@@ -285,9 +285,16 @@ public abstract class StatUtils {
 
 	// A bit of a useless function -- get rid of it somehow?
 	private static double[] fillError(Result result, int L) {
+
+		double Yprob[][] = result.allPredictions(); 
+		int Ytrue[][] = result.allActuals(); 
+		double ts[] = ThresholdUtils.thresholdStringToArray(result.getInfo("Threshold"),L);
+		int Ypred[][] = ThresholdUtils.threshold(Yprob,ts);
+
 		double E[] = new double[L];
 		for(int j = 0; j < L; j++) {
-			E[j] = 1.0 - result.output.get("L"+j+"_acc");
+			//E[j] = 1.0 - result.output.get("Accuracy["+j+"]");
+			E[j] = Metrics.P_Hamming(Ytrue,Ypred,j);
 		}
 		return E;
 	}
@@ -308,7 +315,7 @@ public abstract class StatUtils {
 		int N = D.numInstances();
 		double T[][] = MLUtils.getYfromD(D);						// OUTPUT (TEACHER)
 		double Y[][] = M.threshold(result.allPredictions(),0.5);	// OUTPUT (PREDICTED)
-		result.output = Result.getStats(result);					
+		result.output = Result.getStats(result,"1");					
 		double E[] = fillError(result, L);							// ERRORS (EXPECTED)
 		double F[][][] = new double[3][L][L];						// ERRORS (ACTUAL)
 		// Find the actual co-occurence ...

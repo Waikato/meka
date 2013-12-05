@@ -50,7 +50,8 @@ public abstract class MLEvalUtils {
 	 */
 	//public static HashMap<String,Double> getMLStats(ArrayList<double[]> Confidences, ArrayList<int[]> TrueValues, String t) {
 	public static HashMap<String,Double> getMLStats(double Rpred[][], int Y[][], String t, String vop) {
-		double ts[] = null;
+		double ts[] = ThresholdUtils.thresholdStringToArray(t,Y[0].length);
+		/*
 		if (t.startsWith("[")) {
 			ts = MLUtils.toDoubleArray(t);							// threshold vector       [t1 t2 ... tL]]
 		}
@@ -58,6 +59,7 @@ public abstract class MLEvalUtils {
 			ts = new double[Y[0].length];
 			Arrays.fill(ts,Double.parseDouble(t));					// make a threshold vector [t t t ... t]
 		}
+		*/
 		return getMLStats(Rpred,Y,ts,vop);
 	}
 
@@ -80,7 +82,7 @@ public abstract class MLEvalUtils {
 
 		HashMap<String,Double> results = new LinkedHashMap<String,Double>();
 
-		results.put("N_test"			,(double)N);
+		//results.put("N_test"			,(double)N);
 		results.put("L"					,(double)L);
 		results.put("Accuracy"			,Metrics.P_Accuracy(Y,Ypred));
 		results.put("Hamming score"		,Metrics.P_Hamming(Y,Ypred));
