@@ -100,6 +100,9 @@ extends AbstractThreadedExplorerTab {
   /** the threshold option. */
   protected String m_TOP;
   
+  /** the verbosity option. */
+  protected String m_VOP;
+  
   /** the randomize option. */
   protected boolean m_Randomize;
   
@@ -125,7 +128,7 @@ extends AbstractThreadedExplorerTab {
   protected void initialize() {
     super.initialize();
 
-    m_GenericObjectEditor = new GenericObjectEditor(true);
+	m_GenericObjectEditor = new GenericObjectEditor(true);
     m_GenericObjectEditor.setClassType(MultilabelClassifier.class);
     m_GenericObjectEditor.setValue(new meka.classifiers.multilabel.BR());
     
@@ -134,6 +137,7 @@ extends AbstractThreadedExplorerTab {
     m_Folds           = 10;
 	m_Randomize       = true;
 	m_TOP             = "PCut1";
+	m_VOP             = "3";
 	m_TestInstances   = null;
   }
 
@@ -251,7 +255,7 @@ extends AbstractThreadedExplorerTab {
 	  try {
 	    classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
 		//System.out.println("data.classIndex() "+data.classIndex());
-	    results = Evaluation.cvModel(classifier, data, m_Folds, m_TOP);
+	    results = Evaluation.cvModel(classifier, data, m_Folds, m_TOP, m_VOP);
 		addResultToHistory(
 			MLEvalUtils.averageResults(results)
 		);
@@ -291,7 +295,7 @@ extends AbstractThreadedExplorerTab {
 		  }
 	    classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
 		//System.out.println("data.classIndex() "+train.classIndex());
-	    result     = Evaluation.evaluateModel(classifier, train, test, m_TOP);
+	    result     = Evaluation.evaluateModel(classifier, train, test, m_TOP, m_VOP);
 	    addResultToHistory(result);
 	  }
 	  catch (Exception e) {
@@ -364,6 +368,7 @@ extends AbstractThreadedExplorerTab {
     panel.setFolds(m_Folds);
     panel.setSplitPercentage(m_SplitPercentage);
 	panel.setTOP(m_TOP);
+	panel.setVOP(m_VOP);
 	panel.setRandomize(m_Randomize);
 	panel.setTestFile(null);
     dialog.getContentPane().add(panel, BorderLayout.CENTER);
@@ -377,6 +382,7 @@ extends AbstractThreadedExplorerTab {
 	m_SplitPercentage = panel.getSplitPercentage();
 	m_Folds           = panel.getFolds();
 	m_TOP             = panel.getTOP();
+	m_VOP             = panel.getVOP();
 	m_Randomize 	  = panel.getRandomize();
 	m_TestInstances   = panel.getTestFile();
 	dialog.setVisible(false);

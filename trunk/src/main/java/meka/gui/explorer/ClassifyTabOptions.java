@@ -57,6 +57,9 @@ public class ClassifyTabOptions
   /** the threshold option. */
   protected JTextField m_TextTOP;
   
+  /** the verbosity option. */
+  protected JTextField m_TextVOP;
+  
   /** for randomizing. */
   protected JToggleButton m_ToggleRandomize;
   
@@ -83,6 +86,9 @@ public class ClassifyTabOptions
 
 	m_TextTOP = new JTextField("PCut1", 5);
     addParameter("Threshold", m_TextTOP);
+
+	m_TextVOP = new JTextField("3", 5);
+    addParameter("Verbosity", m_TextVOP);
 
 	m_ToggleRandomize = new JToggleButton("Randomize", false);
     addParameter("Randomize?", m_ToggleRandomize);
@@ -158,6 +164,25 @@ public class ClassifyTabOptions
   public String getTOP() {
 	  // should probably do some checks here!
       return m_TextTOP.getText();
+  }
+  
+  /**
+   * Sets the verbosity option
+   * 
+   * @param value	the verbosity value to use
+   */
+  public void setVOP(String value) {
+    m_TextVOP.setText("" + value);
+  }
+  
+  /**
+   * Returns the currently set seed value.
+   * 
+   * @return		the verbosity value
+   */
+  public String getVOP() {
+	  // should probably do some checks here!
+      return m_TextVOP.getText();
   }
   
   /**
