@@ -79,7 +79,7 @@ public class Evaluation {
 			((Randomizable)h).setSeed(seed + 1); // (@NOTE because previously we were using seed '1' as the default in BaggingML, we want to maintain reproducibility of older results with the same seed).
 		}
 
-		String voption = "default";
+		String voption = "1";
 		if (Utils.getOptionPos("verbosity",options) >= 0) {
 			voption = Utils.getOption("verbosity",options);
 		}
@@ -183,12 +183,7 @@ public class Evaluation {
 				System.out.println(r.toString());
 
 				// silently check for verbosity option
-				int V = 1;
-				try {
-					V = MLUtils.getIntegerOption(voption,1);
-				} catch(Exception e) {
-				}
-
+				int V = MLUtils.getIntegerOption(voption,1);
 				if (V > 4) {
 					System.out.println(Result.getResultAsString(r));
 				}
