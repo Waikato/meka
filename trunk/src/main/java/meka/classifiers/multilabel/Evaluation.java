@@ -267,6 +267,18 @@ public class Evaluation {
 	 * @param	D      	 data
 	 * @param	numFolds test data
 	 * @param	top    	 Threshold OPtion (pertains to multi-label data only)
+	 * @return	an array of 'numFolds' Results
+	 */
+	public static Result[] cvModel(MultilabelClassifier h, Instances D, int numFolds, String top) throws Exception {
+		return cvModel(h,D,numFolds,top,"1");
+	}
+
+	/**
+	 * CVModel - Split D into train/test folds, and then train and evaluate on each one.
+	 * @param	h		 a multi-dim. classifier
+	 * @param	D      	 data
+	 * @param	numFolds test data
+	 * @param	top    	 Threshold OPtion (pertains to multi-label data only)
 	 * @param	vop    	Verbosity OPtion (which measures do we want to calculate/output)
 	 * @return	an array of 'numFolds' Results
 	 */
