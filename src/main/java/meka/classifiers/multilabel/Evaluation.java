@@ -228,7 +228,19 @@ public class Evaluation {
 	}
 
 	/**
-	 * EvaluateModel - Build model 'h' on 'D_train', test it on 'D_test', threshold it according to 'top'
+	 * EvaluateModel - Build model 'h' on 'D_train', test it on 'D_test', threshold it according to 'top', using default verbosity option.
+	 * @param	h		a multi-dim. classifier
+	 * @param	D_train	training data
+	 * @param	D_test 	test data
+	 * @param	top    	Threshold OPtion (pertains to multi-label data only)
+	 * @return	Result	raw prediction data with evaluation statistics included.
+	 */
+	public static Result evaluateModel(MultilabelClassifier h, Instances D_train, Instances D_test, String top) throws Exception {
+		return Evaluation.evaluateModel(h,D_train,D_test,top,"1");
+	}
+
+	/**
+	 * EvaluateModel - Build model 'h' on 'D_train', test it on 'D_test', threshold it according to 'top', verbosity 'vop'.
 	 * @param	h		a multi-dim. classifier
 	 * @param	D_train	training data
 	 * @param	D_test 	test data
