@@ -30,7 +30,7 @@ import java.util.*;
  * PCC.java - Probabalistic Classifier Chains.
  * Exactly like CC at build time, but explores all possible paths as inference at test time. <br>
  * This version is Multi-target capable. <br>
- * See ...
+ * See Cheng et al, "Bayes Optimal Multi-label Classification via Probabalistic Classifier Chains", ICML 2010.
  *
  * @author Jesse Read (jesse@tsc.uc3m.es)
  * @version	November 2012
@@ -113,7 +113,7 @@ public class PCC extends CCe implements TechnicalInformationHandler{ // MT Capab
 		TechnicalInformation	result;
 		
 		result = new TechnicalInformation(Type.INPROCEEDINGS);
-		result.setValue(Field.AUTHOR, "Weiwei Cheng and Krzysztof Dembczyn and Eyke Hullermeier");
+		result.setValue(Field.AUTHOR, "Weiwei Cheng and Krzysztof Dembczynsky and Eyke Hullermeier");
 		result.setValue(Field.TITLE, "Bayes Optimal Multi-label Classification via Probabalistic Classifier Chains");
 		result.setValue(Field.BOOKTITLE, "ICML '10: 27th International Conference on Machine Learning");
 		result.setValue(Field.YEAR, "2010");
