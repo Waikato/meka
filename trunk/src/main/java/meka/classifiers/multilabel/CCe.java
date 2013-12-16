@@ -162,16 +162,20 @@ public class CCe extends MultilabelClassifier implements Randomizable {
 	}
 
 	/*
-	 * *NEW*
-	 * transform CC
+	 * *DEPRECATED*
+	 * this function preloads the instances with the correct class labels ... to make the chain much faster,
+	 * but CNode does not yet have this functionality ... need to do something about this!
+	 */
 	public Instance[] transformInstance(Instance x) throws Exception {
+		return null;
+		/*
 		//System.out.println("CHAIN : "+Arrays.toString(this.getChain()));
 		int L = x.classIndex();
 		Instance x_copy[] = new Instance[L];
 		root.transform(x,x_copy);
 		return x_copy;
+		*/
 	}
-	*/
 
 	/**
 	 * ProbabilityForInstance - P(y=1|x).
