@@ -13,7 +13,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package weka;
+package meka;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -32,10 +32,10 @@ public class MekaTests extends TestSuite {
     TestSuite suite = new TestSuite();
 
     // classifiers
-    suite.addTest(weka.classifiers.MekaTests.suite());
+    suite.addTest(meka.classifiers.MekaTests.suite());
 
     // filters
-    suite.addTest(weka.filters.MekaTests.suite());
+    suite.addTest(meka.filters.MekaTests.suite());
 
     return suite;
   }

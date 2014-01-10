@@ -17,10 +17,11 @@
  * AbstractMekaFilterTest.java
  * Copyright (C) 2012 University of Waikato, Hamilton, New Zealand
  */
-package weka.filters;
+package meka.filters;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import weka.filters.AbstractFilterTest;
 
 import weka.core.Instances;
 

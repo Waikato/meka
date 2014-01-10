@@ -17,11 +17,12 @@
  * AbstractAdamsFilterTest.java
  * Copyright (C) 2012 University of Waikato, Hamilton, New Zealand
  */
-package weka.classifiers;
+package meka.classifiers;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import weka.classifiers.AbstractClassifierTest;
 import weka.core.Instances;
 
 /**

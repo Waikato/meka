@@ -17,7 +17,7 @@
  * Copyright (C) 2012 University of Waikato 
  */
 
-package weka.filters;
+package meka.filters;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
