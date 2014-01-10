@@ -21,7 +21,7 @@ package meka.classifiers.multitarget.meta;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import weka.classifiers.AbstractMekaClassifierTest;
+import meka.classifiers.AbstractMekaClassifierTest;
 import weka.classifiers.Classifier;
 
 /**

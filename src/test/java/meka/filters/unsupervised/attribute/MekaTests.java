@@ -17,7 +17,7 @@
  * Copyright (C) 2012 University of Waikato 
  */
 
-package weka.filters.unsupervised.attribute;
+package meka.filters.unsupervised.attribute;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -25,7 +25,7 @@ import weka.test.WekaTestSuite;
 
 /**
  * Test class for all filters. Run from the command line with:<p/>
- * java weka.filters.unsupervised.attribute.MekaTests
+ * java meka.filters.unsupervised.attribute.MekaTests
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision: 66 $

@@ -19,7 +19,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import junit.framework.TestCase;
 
-import weka.classifiers.AbstractMekaClassifierTest;
+import meka.classifiers.AbstractMekaClassifierTest;
 import weka.classifiers.Classifier;
 import meka.classifiers.multilabel.meta.*;
 import weka.classifiers.functions.SMO;
