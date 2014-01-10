@@ -23,6 +23,7 @@ import weka.core.OptionHandler;
 import weka.core.Utils;
 import weka.gui.PropertyDialog;
 
+import java.io.*; // TEMP
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -128,7 +129,16 @@ extends weka.gui.GenericObjectEditor {
 
     // load properties
     try {
+		// START temp
+		System.out.println("Working Directory = "+           System.getProperty("user.dir")); // temp
+		System.out.println("We now call props = Utils.readProperties("+MEKA_GUIEDITORS_PROPERTY_FILE+")");
+		File f = new File(MEKA_GUIEDITORS_PROPERTY_FILE); //
+		if(!f.exists())
+			System.out.println("File does not actually xist there!");
+		// END temp
       props = Utils.readProperties(MEKA_GUIEDITORS_PROPERTY_FILE);
+
+	  System.out.println("props.toString(): "+props);
     }
     catch (Exception e) {
       props = new Properties();

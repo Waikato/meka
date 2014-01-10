@@ -35,7 +35,7 @@ import javax.swing.event.ListSelectionListener;
 import meka.gui.goe.GenericObjectEditor;
 import weka.core.Instances;
 import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.MekaClassAttributes;
+import meka.filters.unsupervised.attribute.MekaClassAttributes;
 import weka.filters.unsupervised.attribute.Remove;
 import weka.gui.AttributeSelectionPanel;
 import weka.gui.AttributeSummaryPanel;
