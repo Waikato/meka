@@ -182,12 +182,6 @@ public class Evaluation {
 				r = evaluateModel(h,train,test,top,voption);
 				System.out.println(r.toString());
 
-				// silently check for verbosity option
-				int V = MLUtils.getIntegerOption(voption,1);
-				if (V > 4) {
-					System.out.println(Result.getResultAsString(r));
-				}
-
 			}
 
 			// Save ranking data?
@@ -257,6 +251,7 @@ public class Evaluation {
 			r.setInfo("Threshold",MLEvalUtils.getThreshold(r.predictions,D_train,top));
 			r.setInfo("Type","ML");
 		}
+		r.setInfo("Verbosity",vop);
 		r.output = Result.getStats(r, vop);
 		return r;
 	}
@@ -494,6 +489,8 @@ public class Evaluation {
 		text.append("\tSets the number of target attributes to expect (indexed from the beginning).\n");
 		text.append("-f <results_file>\n");
 		text.append("\tSpecify a file to output results and evaluation statistics into.\n");
+		text.append("-verbosity <verbosity level>\n");
+		text.append("\tSpecify more/less evaluation.\n");
 		// Multilabel Options
 		text.append("\n\nClassifier Options:\n\n");
 		while (e.hasMoreElements()) {

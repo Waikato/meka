@@ -80,7 +80,17 @@ public class Result implements Serializable {
 
 	@Override
 	public String toString() {
-		return MLUtils.hashMapToString(info) + "\n" + MLUtils.hashMapToString(output,3) + "\n" + MLUtils.hashMapToString(vals,3);
+		String resultString = "";
+		if (info.containsKey("Verbosity")) { 
+			int V = MLUtils.getIntegerOption(info.get("Verbosity"),1);
+			if ( V > 4) {
+				// output everything
+				resultString = Result.getResultAsStringNicely(this,V-5);
+			}
+
+		}
+		// output the stats in general
+		return resultString + MLUtils.hashMapToString(info) + "\n" + MLUtils.hashMapToString(output,3) + "\n" + MLUtils.hashMapToString(vals,3);
 	}
 
 	/**
@@ -218,6 +228,24 @@ public class Result implements Serializable {
 		double N = (double)s.predictions.size();
 		for(int i = 0; i < N; i++) {
 			sb.append(Arrays.toString(s.actuals.get(i))+":"+Arrays.toString(s.predictions.get(i))+"\n");
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * GetResultAsStringNicely.
+	 * print confidences to 'adp' decimal points.
+	 */
+	public static String getResultAsStringNicely(Result s, int adp) {
+		StringBuilder sb = new StringBuilder();
+		double N = (double)s.predictions.size();
+		for(int i = 0; i < N; i++) {
+			sb.append(Utils.doubleToString(i,5,0));
+			sb.append(" ");
+			sb.append(A.toString(s.actuals.get(i)));
+			sb.append(" ");
+			sb.append(A.toString(s.predictions.get(i),adp));
+			sb.append("\n");
 		}
 		return sb.toString();
 	}
