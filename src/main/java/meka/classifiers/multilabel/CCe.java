@@ -35,7 +35,8 @@ import java.io.Serializable;
  * <li> <code>w[] = getConfidences()</code>				    w[] holds the posterior probs, p(Y=y|x) after one of the above</li>
  * </ul>
  * This class will eventually replace CC.java
- * .
+ * 
+ * @see meka.classifiers.multilabel.CC
  * @author	Jesse Read
  * @version December 2013
  */

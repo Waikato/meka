@@ -43,6 +43,10 @@ import weka.core.Utils;
  * <br>
  * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. In Proc. of 20th European Conference on Machine Learning (ECML 2009). Bled, Slovenia, September 2009.
  * <br>
+ *
+ * This class will eventually be replaced by the code in CCe.java -- an extended version which makes used of the 'CNode' class and is more suitable for probabilistic classification. Nevertheless, this class will stay for now until it is absolutely certain that results from this classifier can be reproduced exactly.
+ *
+ * @see meka.classifiers.multilabel.CCe
  * @author Jesse Read (jmr30@cs.waikato.ac.nz)
  * @version January 2009
  */
@@ -51,18 +55,18 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 	/** for serialization. */
 	private static final long serialVersionUID = 9045384089402626007L;
 	
-	protected Link2 root = null;
+	protected Link root = null;
 
-	protected class Link2 implements Serializable {
+	protected class Link implements Serializable {
 
-		private Link2 next = null;
+		private Link next = null;
 		private AbstractClassifier classifier = null;
 		public Instances _template = null;
 		private int index = -1;
 		private int excld[]; // to contain the indices to delete
 		private int j = 0; //@temp
 
-		public Link2(int chain[], int j, Instances train) throws Exception {
+		public Link(int chain[], int j, Instances train) throws Exception {
 			this.j = j;
 
 			this.index = chain[j];
@@ -83,7 +87,7 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 			new_train = null;
 
 			if(j+1 < chain.length) 
-				next = new Link2(chain, ++j, train);
+				next = new Link(chain, ++j, train);
 		}
 
 		protected void classify(Instance test) throws Exception {
@@ -192,7 +196,7 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 			//setChain(indices);
 		}
 		if(getDebug()) System.out.print(":- Chain (");
-		root = new Link2(indices,0,D);
+		root = new Link(indices,0,D);
 		if (getDebug()) System.out.println(" ) -:");
 	}
 

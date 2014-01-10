@@ -48,6 +48,10 @@ public class CNode implements Serializable {
 		this.paY = Arrays.copyOf(paY,paY.length); // almost certainly not necessary
 	}
 
+	public int[] getParentsY() {
+		return paY;
+	}
+
 	public Instances transform(Instances D) throws Exception {
 		int L = D.classIndex();
 		d = D.numAttributes() - L;

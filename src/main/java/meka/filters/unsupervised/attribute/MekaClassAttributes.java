@@ -17,11 +17,12 @@
  * MekaClassAttributes.java
  * Copyright (C) 2012 University of Waikato, Hamilton, New Zealand
  */
-package weka.filters.unsupervised.attribute;
+package meka.filters.unsupervised.attribute;
 
 import java.util.Enumeration;
 import java.util.Vector;
 
+import weka.filters.unsupervised.attribute.Reorder;
 import weka.core.Capabilities;
 import weka.core.Instance;
 import weka.core.Instances;

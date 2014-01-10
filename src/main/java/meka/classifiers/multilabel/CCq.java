@@ -57,18 +57,18 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 	/** The number of classes*/
 	protected int m_NumClasses = -1;
 
-	protected Tink root = null;
+	protected QLink root = null;
 
-	protected class Tink {
+	protected class QLink {
 
-		private Tink next = null;
+		private QLink next = null;
 		private Classifier classifier = null;
 		public Instances _template = null;
 		private int index = -1;
 		private int excld[]; // to contain the indices to delete
 		private int j = 0; //@temp
 
-		public Tink(int chain[], int j, Instances train) throws Exception {
+		public QLink(int chain[], int j, Instances train) throws Exception {
 			this.j = j;
 
 			this.index = chain[j];
@@ -113,7 +113,7 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 			new_train = null;
 
 			if(j+1 < chain.length) 
-				next = new Tink(chain, ++j, train);
+				next = new QLink(chain, ++j, train);
 		}
 
 		private void classify(Instance test) throws Exception {
@@ -234,7 +234,7 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 		int indices[] = MLUtils.gen_indices(m_NumClasses);
 		MLUtils.randomize(indices,new Random(m_S));
 		if(getDebug()) System.out.print(":- Chain (");
-		root = new Tink(indices,0,Train);
+		root = new QLink(indices,0,Train);
 		if (getDebug()) System.out.println(" ) -:");
 	}
 

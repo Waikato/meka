@@ -641,7 +641,7 @@ public abstract class M {
 		for(int j = 0; j < M_.length; j++) {
 			for(int k = 0; k < M_[j].length; k++) {
 				double d = M_[j][k];
-				String num = String.format(" %.2f", d);
+				String num = String.format("%6.2f", d);
 				sb.append(num);
 			}
 			sb.append("\n");

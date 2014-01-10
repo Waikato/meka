@@ -16,10 +16,12 @@
 package meka.classifiers.multilabel;
 
 /**
- * PMCC.java - A copy of EMCC (but renamed); selecting the top M chains at training time, and using them in inference (instead of just one).
+ * PMCC.java - Previously called EMCC.java; selecting the top M chains at training time, and using them in inference (instead of just one).
  * Here we use MCCtemp instead of MCC, and CCe instead of CC! -- will have to sort this out at some point!
- * @todo, use some kind of voting process as well
+ * This may be broken now, since we change CCe, which changed MCC, which broke MCCtemp. Extending MCC will work but will be less fast.
+ * @TODO, use some kind of voting process as well
  *
+ * @see weka.classifiers.multilabel.MCC.java
  * @author Jesse Read (jesse@tsc.uc3m.es)
  * @version	June 2013
  */
@@ -301,11 +303,6 @@ public class PMCC extends MCCtemp {
 	}
 
 	public static void main(String args[]) {
-		/*
-		for(int t = 1; t < 10; t++) {
-			System.out.println(""+Arrays.toString(PMCC.pi(new int[]{1,2,3,4,5,6},new Random(),t)));
-		}
-		*/
 		MultilabelClassifier.evaluation(new PMCC(),args);
 	}
 
