@@ -28,11 +28,14 @@ import meka.core.*;
 import java.util.*;
 
 /**
- * MCC.java - CC with double Monte Carlo optimisation.
+ * MCC.java - CC with Monte Carlo optimisation. 
+ * Note that this is not the fastest possible implementation. For the paper,
  * <br>
  * See: Jesse Read, Luca Martino, David Luengo. <i>Efficient Monte Carlo Optimization for Multi-dimensional Classifier Chains</i>. http://arxiv.org/abs/1211.2190. 2012
  * <br>
- * @author Jesse Read (jesse@tsc.uc3m.es)
+ * we used a faster implementation, MCCtemp.java, full of ugly hacks, but it got broken when I updated CCe.java.
+ *
+ * @author Jesse Read
  * @version	October 2012
  */
 public class MCC extends MultilabelClassifier implements Randomizable, TechnicalInformationHandler { 
@@ -79,6 +82,7 @@ public class MCC extends MultilabelClassifier implements Randomizable, Technical
 		// Make CC
 		h = buildCC(s,D);
 
+		// If we want to optimize the chain space ...
 		if (m_Is > 0) {
 
 			if (getDebug()) System.out.println("Optimising s ... ("+m_Is+" iterations):");
@@ -90,11 +94,14 @@ public class MCC extends MultilabelClassifier implements Randomizable, Technical
 			//if (getDebug()) System.out.println("& "+Utils.doubleToString(payoff(h,new Instances(D),5),8,2));
 
 			/*
+			 * Use this code to try ALL possible combinations
+			 *
 			String perms[] = MLUtils.permute(MLUtils.toBitString(MLUtils.gen_indices(L)));
 			for (int t = 0; t < perms.length; t++) {
 				int s_[] = A.string2IntArray(perms[t]);
 				System.out.println("proposing s' = perm["+t+"] = "+Arrays.toString(s_));
-				*/
+			*/
+
 			for(int t = 0; t < m_Is; t++) {
 
 				// propose a chain s' by swapping two elements in s
@@ -122,8 +129,7 @@ public class MCC extends MultilabelClassifier implements Randomizable, Technical
 	}
 
 	/**
-	 * RandomSearch. With Prior. 
-	 * Simulated Annealing without temperature.
+	 * RandomSearch. Basically Simulated Annealing without temperature. Start searching from y0[]
 	 */
 	public static double[] RandomSearch(CCe h, Instance x, int T, Random r, double y0[]) throws Exception {
 
@@ -148,8 +154,7 @@ public class MCC extends MultilabelClassifier implements Randomizable, Technical
 	}
 
 	/**
-	 * RandomSearch. 
-	 * Simulated Annealing without temperature.
+	 * RandomSearch. Basically Simulated Annealing without temperature.
 	 */
 	public static double[] RandomSearch(CCe h, Instance x, int T, Random r) throws Exception {
 
@@ -157,14 +162,16 @@ public class MCC extends MultilabelClassifier implements Randomizable, Technical
 	}
 
 	/**
-	 * Rate - The Payoff Function.
-	 * Return a score of h evaluated on D.sum 
-	 * ( p(y_i | x_i, h_s) )
+	 * Payoff - Return a default score of h evaluated on D.
+	 * sum ( p(y_i | x_i, h_s) )
 	 */
 	protected double payoff(CCe h, Instances D) throws Exception {
 		return payoff(h,D,m_Payoff);
 	}
 
+	/**
+	 * Payoff - Return a score of choice (payoff_fn) of h evaluated on D.
+	 */
 	protected static double payoff(CCe h, Instances D, int payoff_fn) throws Exception {
 		int L = D.classIndex();
 		int N = D.numInstances();
@@ -268,9 +275,8 @@ public class MCC extends MultilabelClassifier implements Randomizable, Technical
 		additional = new TechnicalInformation(Type.ARTICLE);
 		additional.setValue(Field.AUTHOR, "Jesse Read and Luca Martino and David Luengo");
 		additional.setValue(Field.TITLE, "Efficient Monte Carlo Optimization for Multi-dimensional Classifier Chains");
-		additional.setValue(Field.JOURNAL, "arXiv.org");
-		additional.setValue(Field.URL, "http://arxiv.org/abs/1211.2190");
-		additional.setValue(Field.YEAR, "2012");
+		additional.setValue(Field.JOURNAL, "Elsevier Pattern Recognition");
+		additional.setValue(Field.YEAR, "2013");
 
 		result.add(additional);
 		return result;

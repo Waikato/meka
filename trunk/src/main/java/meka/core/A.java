@@ -53,11 +53,29 @@ public abstract class A {
 		return c;
 	}
 
-	// nice string representation for printout
+	/** ToString. Return a double[] as a nice String. */
 	public static String toString(double v[]) {
-		StringBuilder sb = new StringBuilder("[");  
+		return toString(v,2);
+	}
+
+	/** ToString. Return a double[] as a nice String. */
+	public static String toString(double v[], int adp) {
+		int w = adp > 0 ? adp + 2 : 0;
+		StringBuilder sb = new StringBuilder("[ ");  
 		for(int k = 0; k < v.length; k++) {
-			sb.append(Utils.doubleToString(v[k],4,2)+" ");
+			sb.append(Utils.doubleToString(v[k],w,adp));
+			sb.append(" ");
+		}
+		sb.append("]");
+		return sb.toString();
+	}
+
+	/** ToString. Return an int[] as a nice String. */
+	public static String toString(int v[]) {
+		StringBuilder sb = new StringBuilder("[ ");  
+		for(int k = 0; k < v.length; k++) {
+			sb.append((int)v[k]);
+			sb.append(" ");
 		}
 		sb.append("]");
 		return sb.toString();
@@ -177,6 +195,18 @@ public abstract class A {
 	// same as above
 	public static int samplePMF(double w[], Random r) {
 		return rndsrc(w,r);
+	}
+
+	// Given L, generate int[0,1,2,3,...,L]
+	public static final int[] make_sequence(int L) {
+		return MLUtils.gen_indices(L);
+	}
+
+	// Shuffle an array given 'r', @TODO use Collections.shuffle(array.asList());
+	public static final void shuffle(int array[], Random r) {
+		//Collections.shuffle(array.asList(), r);
+		//return array;
+		MLUtils.randomize(array,r);
 	}
 
 }
