@@ -9,6 +9,13 @@
 \newcommand{\MULAN}{Mulan}
 \def\version{{\tt 1.5.0}}
 
+% if you just need a simple heading
+% Usage:
+%   \heading{the text of the heading}
+\newcommand{\heading}[1]{
+    \vspace{0.3cm} \noindent \textbf{#1} \newline
+}
+
 \usepackage{datetime}
 \newdateformat{mydate}{\monthname[\THEMONTH] \THEYEAR}
 
@@ -382,16 +389,69 @@ java weka.classifiers.multitarget.meta.BaggingMT -x 10 -R \
 %java -cp meka.jar:weka.jar weka.classifiers.multitarget.meta.BaggingMT -x 5 -R -t data/solar_flare.arff -W weka.%classifiers.multitarget.C    C -- -W weka.classifiers.functions.Logistic
 %\end{verbatim}
 
-\section{\label{sec:extending}Extending \framework{\MEKA}}%: Writing New Classifiers
+\section{Development}
+\label{development}
+The following sections explain a bit more in detail of how to obtain MEKA's source code, how to compile it and how to develop new algorithms.
 
-The source code is available in the release (\texttt{meka-src-\version-jar}). You can also check out the latest SVN repository from \url{SourceForge.net} \textsf{Code}; see \url{https://sourceforge.net/p/meka/code/} for details. 
+\subsection{Source code}
+\label{sourcecode}
+For obtaining the source code of MEKA, you have two options:
+\begin{itemize}
+  \item Using subversion\footnote{\url{http://subversion.apache.org/}}
+  \item Release archive
+\end{itemize}
+
+\noindent In the case of \textit{subversion}, you can obtain the source code using the following command in the console (or \textit{command prompt} for Windows users):
+\begin{verbatim}
+svn checkout svn://svn.code.sf.net/p/meka/code/trunk meka
+\end{verbatim}
+This will create a new directory called \texttt{meka} in the current directory, containing the source code and build scripts.
+
+Instead of using subversion, you can simply use the source code that is part of each MEKA release, contained in the \texttt{meka-src-X.Y.jar} Java archive\footnote{\url{http://en.wikipedia.org/wiki/JAR\_(file\_format)}}. A Java archive can be opened with any archive manager that can handle ZIP files.
+
+\subsection{Compiling}
+\label{compiling}
+\heading{ant}
+MEKA uses \textit{Apache ant}\footnote{\url{http://ant.apache.org/}} as build tool. You can compile MEKA as follows:
+\begin{verbatim}
+ant clean compile jar
+\end{verbatim}
+If you want to generate an archive containing all source code, pdfs and binary jars, then you can use the following command:
+\begin{verbatim}
+ant clean compile release
+\end{verbatim}
+Please note, if you develop new algorithms, you should also create a unit test for it, to ensure that it is working properly. See section \ref{unittests} for more details.
+
+\heading{Eclipse}
+After obtaining the source code, you can use the Eclipse\footnote{\url{http://eclipse.org/}} template files that comme with MEKA. You only need to rename two files, found in the same directory as the \texttt{build.xml} ant build script, as follows:
+\begin{itemize}
+  \item \texttt{.classpath.default} $\rightarrow$ \texttt{.classpath}
+  \item \texttt{.project.default} $\rightarrow$ \texttt{.project}
+\end{itemize}
+Then you can simply import MEKA as \textit{Existing Java Project}, pointing the import wizard to the directory containing the above mentioned files.
+
+\subsection{Unit tests}
+\label{unittests}
+MEKA uses the JUnit 3.8.x unit testing framework.
+
+\noindent A classifier test case is derived from the following abstract super class:
+\begin{verbatim}
+meka.classifiers.AbstractMekaClassifierTest
+\end{verbatim}
+
+\noindent A filter test case is derived from the following abstract super class:
+\begin{verbatim}
+meka.filters.AbstractMekaFilterTest
+\end{verbatim}
+
+\noindent You can execute all the unit tests by calling the following class from the command-line:
+\begin{verbatim}
+meka.MekaTests
+\end{verbatim}
+
+\subsection{\label{sec:extending}Extending \framework{\MEKA}}%: Writing New Classifiers
 
 Writing \framework{\MEKA} classifiers involves writing regular \framework{\WEKA} classifiers that extend either the \texttt{MultilabelClassifier} or \texttt{MultiTargetClassifier} class, and expect the \texttt{classIndex()} of \texttt{Instance}s and \texttt{Instances}s to indicate the number of target attributes (indexed at the beginning) rather than the class index (as explained in Section \ref{sec:format}). 
-
-The easiest way to extend \framework{\MEKA} is to create your classifier within within the existing \framework{\MEKA} folder hierarchy and recompile a new jar using Apache ant by simply by typing:
-\begin{verbatim}
-	ant jar
-\end{verbatim}
 
 The following is an example of a functioning (but extremely minimalistic) classifier, \texttt{TestClassifier}, that predicts $0$-relevance for all labels:
 
@@ -421,7 +481,7 @@ public class TestClassifier extends MultilabelClassifier {
 
 This shows how easy it is to create a new classifier. However, for more useful examples see the source code of existing \framework{\MEKA} classifiers. The \texttt{testCapabilities(D)} line is optional but highly recommended. Note that the \texttt{distributionForInstance} method returns a \texttt{double[]} array exactly like in \framework{\WEKA}. However, whereas in \framework{\WEKA}, there is one value in the array for each possible value of the single target attribute, in \framework{\MEKA} this function returns an array of $C$ values, where $C$ is the \emph{number} of target attributes, and the $j$th value of the array is the \emph{value} corresponding to the $j$th target attribute.
 
-\subsection{Building Classifiers}
+\subsubsection{Building Classifiers}
 
 In the \texttt{buildClassifier(Instances)} method, you build your classifier. Here is where you can take advantage of all of \WEKA's libraries. You can use any \WEKA classifier to your needs. The \texttt{m\_Classifier} variable is already available for this, which \textit{already contains} the \WEKA{} classifier you specify on the command line. You can simply do:
 \begin{verbatim}
@@ -445,7 +505,7 @@ an instantiation of \texttt{SMO} will already be be available in \texttt{m\_Clas
 ...
 \end{verbatim}
 
-\subsection{Classifying New Instances}
+\subsubsection{Classifying New Instances}
 
 In the multi-label case, for a test \texttt{Instance x}, the \texttt{double[]} array returned by the method \texttt{distributionForInstance(x)} might contain the $0/1$ label relevances, for example (assuming \texttt{-C 5}):
 \begin{verbatim}
@@ -457,7 +517,7 @@ or it might contain posterior probabilities / prediction confidences / votes for
 \end{verbatim} 
 where clearly the third and fourth labels are most relevant. Under a threshold of $0.5$ the final classification for \texttt{x} would be \texttt{[0,0,1,1,0]}. \framework{\MEKA} will by default automatically calibrate a threshold to convert all values into $0/1$ relevances like these (see Section \ref{sec:evaluation}). 
 
-%\subsection{Multi-target Classifiers}
+%\subsubsection{Multi-target Classifiers}
 
 In the multi-target case, the \texttt{double[]} values returned by the method \texttt{distributionForInstance} must indicate the \emph{relevant class value}; for example (assuming \texttt{-C 3}): 
 \begin{verbatim}
@@ -471,7 +531,7 @@ Note that no threshold is calibrated. However, any associated voting or probabil
 \end{verbatim} 
 where \texttt{C} is predicted as the value of the first target attribute with confidence $0.9$, and so on. However these values are currently only for use at classification time (for example the voting scheme of an ensemble method, see \texttt{weka.classifiers.multitarget.BaggingMT}); and not taken into account for evaluation. Note also that we intend to deprecate this method in the future, so avoid if possible.
 
-\subsection{Incremental Classifiers}
+\subsubsection{Incremental Classifiers}
 
 \framework{\MEKA} comes with incremental versions of many classifiers, as well as incremental evaluation methods. Incremental classifiers implement \framework{\WEKA}'s \texttt{UpdatebleClassifier} interface and therefore must implement the \texttt{updateClassifier(Instance)} method. The following extends \texttt{TestClassifier} for incremental learning.
 
