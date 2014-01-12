@@ -19,11 +19,6 @@
  */
 package meka.gui.goe;
 
-import weka.core.OptionHandler;
-import weka.core.Utils;
-import weka.gui.PropertyDialog;
-
-import java.io.*; // TEMP
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -32,6 +27,12 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import javax.swing.JOptionPane;
+
+import meka.core.PropsUtils;
+import weka.core.OptionHandler;
+import weka.core.Utils;
+import weka.gui.PropertyDialog;
+// TEMP
 
 /**
  * An extended GOE to cater for the multi-label classifiers.
@@ -48,6 +49,9 @@ extends weka.gui.GenericObjectEditor {
   /** the properties files containing the class/editor mappings. */
   public static final String MEKA_GUIEDITORS_PROPERTY_FILE = "meka/gui/goe/GUIEditors.props";
 
+  /** whether to output some debugging information. */
+  public static boolean DEBUG = "true".equals(System.getenv("MEKA_DEBUG"));
+  
   /** whether the MEAK Editors were already registered. */
   protected static boolean m_MekaEditorsRegistered;
 
@@ -101,12 +105,16 @@ extends weka.gui.GenericObjectEditor {
 	      "MEKA GenericObjectEditor",
 	      JOptionPane.ERROR_MESSAGE);
     }
+    if (DEBUG)
+      System.out.println("start<GenericObjectEditor.determineAllClasses()>\n" + PropsUtils.toString(EDITOR_PROPERTIES, null) + "end<GenericObjectEditor.determineAllClasses()>\n");
   }
 
   /** 
    * Determines all the classes, WEKA and MEKA (latter always dynamic).
    */
   static {
+    if (DEBUG)
+      PropsUtils.DEBUG = true;
     determineAllClasses();
   }
 
@@ -129,16 +137,9 @@ extends weka.gui.GenericObjectEditor {
 
     // load properties
     try {
-		// START temp
-		System.out.println("Working Directory = "+           System.getProperty("user.dir")); // temp
-		System.out.println("We now call props = Utils.readProperties("+MEKA_GUIEDITORS_PROPERTY_FILE+")");
-		File f = new File(MEKA_GUIEDITORS_PROPERTY_FILE); //
-		if(!f.exists())
-			System.out.println("File does not actually xist there!");
-		// END temp
-      props = Utils.readProperties(MEKA_GUIEDITORS_PROPERTY_FILE);
-
-	  System.out.println("props.toString(): "+props);
+      props = PropsUtils.read(MEKA_GUIEDITORS_PROPERTY_FILE);
+      if (DEBUG)
+	System.out.println("start<GenericObjectEditor.registerAllEditors()>\n" + PropsUtils.toString(props, null) + "end<GenericObjectEditor.registerAllEditors()>\n");
     }
     catch (Exception e) {
       props = new Properties();
