@@ -22,6 +22,9 @@ package meka.gui.goe;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import meka.core.PropsUtils;
+import weka.core.Utils;
+
 /**
  * Custom GOE props creator, to include the MEKA classes.
  * 
@@ -33,7 +36,15 @@ public class GenericPropertiesCreator
   
   /** The name of the properties file to use as a template. */
   protected static String MEKA_CREATOR_FILE = "meka/gui/goe/GenericPropertiesCreator.props";
+
+  /** whether to output some debugging information. */
+  public static boolean DEBUG = "true".equals(System.getenv("MEKA_DEBUG"));
   
+  static {
+    if (DEBUG)
+      PropsUtils.DEBUG = true;
+  }
+
   /**
    * initializes the creator, locates the props file with the Utils class.
    * 
@@ -43,6 +54,8 @@ public class GenericPropertiesCreator
   public GenericPropertiesCreator() throws Exception {
     super(MEKA_CREATOR_FILE);
     m_ExplicitPropsFile = false;
+    if (DEBUG)
+      System.out.println("start<GenericPropertiesCreator/find: " + MEKA_CREATOR_FILE + ">\n" + Utils.arrayToString(PropsUtils.find(MEKA_CREATOR_FILE)) + "\nend<GenericPropertiesCreator/find: + " + MEKA_CREATOR_FILE + ">\n");
   }
   
   /**
