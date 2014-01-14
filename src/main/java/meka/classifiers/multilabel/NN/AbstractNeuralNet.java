@@ -27,7 +27,7 @@ import weka.core.*;
 public abstract class AbstractNeuralNet extends MultilabelClassifier  {
 
 	/** number of hidden units */
-	protected int m_H = -1;
+	protected int m_H = 10;
 
 	/** number of epochs  */
 	protected int m_E = 1000;
