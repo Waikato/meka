@@ -29,7 +29,7 @@ import meka.core.MLUtils;
 import java.util.*;
 
 /**
- * MCCtemp.java - A Faster version of MCC.
+ * MCCtemp.java - A Faster version of MCC / CURRENTLY DOES NOT WORK BECAUSE I CHANGED CC.
  * <br>
  * See: Jesse Read, Luca Martino, David Luengo. <i>Efficient Monte Carlo Optimization for Multi-dimensional Classifier Chains</i>. http://arxiv.org/abs/1211.2190. 2012
  * <br>
