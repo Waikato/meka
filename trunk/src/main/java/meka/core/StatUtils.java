@@ -288,7 +288,7 @@ public abstract class StatUtils {
 
 		double Yprob[][] = result.allPredictions(); 
 		int Ytrue[][] = result.allActuals(); 
-		double ts[] = ThresholdUtils.thresholdStringToArray(result.getInfo("Threshold"),L);
+		double ts[] = ThresholdUtils.thresholdStringToArray(result.getInfo("Threshold"),L); // <-- @TODO should not assume this for multi-target
 		int Ypred[][] = ThresholdUtils.threshold(Yprob,ts);
 
 		double E[] = new double[L];
@@ -315,7 +315,7 @@ public abstract class StatUtils {
 		int N = D.numInstances();
 		double T[][] = MLUtils.getYfromD(D);						// OUTPUT (TEACHER)
 		double Y[][] = M.threshold(result.allPredictions(),0.5);	// OUTPUT (PREDICTED)
-		result.output = Result.getStats(result,"1");					
+		result.output = Result.getStats(result,"6");	            // <-- high verbosity, because we need individual accuracies				
 		double E[] = fillError(result, L);							// ERRORS (EXPECTED)
 		double F[][][] = new double[3][L][L];						// ERRORS (ACTUAL)
 		// Find the actual co-occurence ...
