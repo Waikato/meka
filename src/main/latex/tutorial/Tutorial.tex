@@ -8,6 +8,12 @@
 \newcommand{\WEKA}{Weka}
 \newcommand{\MULAN}{Mulan}
 \def\version{{\tt 1.5.0}}
+\usepackage{listings}
+\usepackage{courier}
+\lstset{basicstyle=\small\ttfamily,breaklines=true,frame=L,xleftmargin=\parindent}
+%\lstset{framextopmargin=50pt,frame=bottomline}
+%\lstset{breaklines=true} 
+%\lstset{breakatwhitespace=true} 
 
 % if you just need a simple heading
 % Usage:
@@ -77,22 +83,22 @@ These files are found in the \texttt{lib} directory. See \texttt{lib/README.txt}
 \label{sec:running}
 
 \framework{\MEKA} can be used very easily from the command line. For example, to run the Binary Relevance (BR) classifier on the \textit{Music} dataset; type:
-\begin{verbatim}
-	java -cp "./lib/*" meka.classifiers.multilabel.BR -t data/Music.arff
-\end{verbatim}
+\begin{lstlisting}
+java -cp "./lib/*" meka.classifiers.multilabel.BR -t data/Music.arff
+\end{lstlisting}
 
 If you are on a Microsoft Windows system, you need to use back slashes instead of forward slashes (\texttt{.\textbackslash lib\textbackslash*}). If you add the \texttt{jar} files to the system's \texttt{CLASSPATH}, you do not need to supply the \texttt{-cp} option at runtime. For the remainder of examples in this tutorial we will assume that this is the case.
 
 Since Version 1.2 \framework{\MEKA} has a graphical user interface (GUI). Run this with either the \texttt{run.sh} script (under Linux, OSX) as follows:
-\begin{verbatim}
-	bash run.sh
-\end{verbatim}
+\begin{lstlisting}
+bash run.sh
+\end{lstlisting}
 Run \texttt{run.bat} instead of you are using Microsoft windows.
 
 
-%\begin{verbatim}
+%\begin{lstlisting}
 %	export CLASSPATH=$MEKA/meka.jar:$MEKA/weka.jar:$CLASSPATH
-%\end{verbatim}
+%\end{lstlisting}
 %
 %where \texttt{\$MEKA} is the folder you extracted the software to; or by supplying the classpath directly when running java with :
 
@@ -102,10 +108,11 @@ Run \texttt{run.bat} instead of you are using Microsoft windows.
 \framework{\MEKA} uses \framework{\WEKA}'s ARFF file format. See \url{http://weka.wikispaces.com/ARFF} to learn about this format. \framework{\MEKA} uses multiple attributes -- one for each target or label -- rather than a single class attribute. The \emph{number} of target attributes is specified with either \texttt{-C} or \texttt{-c}; \emph{unlike} in \framework{\WEKA} where the \texttt{-c} flag indicates the position of the \emph{class index}. \framework{\MEKA} uses the reference to the \texttt{classIndex} internally to denote the number of target attributes. %This is important when creating new \framework{\MEKA} classifiers (see Section \ref{sec:extending}).
 
 Since the number of target attributes tends to vary with each dataset, for convenience \framework{\MEKA} allows this option (as well as other dataset options like the train/test split percentage) to be stored in the \texttt{@relation} name of an ARFF file, where a colon (\texttt{:}) is used to separate the dataset name and the options. The following is an example ARFF header for multi-target classification with three target variables and four attributes:
-
+ 
 {\small
-\begin{verbatim}
-@relation 'Example_Dataset: -C 3 -split-percentage 50'
+
+\begin{lstlisting}
+@relation 'Example_Dataset: -C 3'
 
 @attribute category {A,B,C,NEG}
 @attribute label {0,1}
@@ -116,7 +123,7 @@ Since the number of target attributes tends to vary with each dataset, for conve
 @attribute X4 numeric
 
 @data
-\end{verbatim}
+\end{lstlisting}
 }
 
 Note that the format of the \texttt{label} attribute (binary) is the \emph{only} kind of target attribute in multi-\emph{label} datasets. For more examples of \framework{\MEKA} ARFF files; see the \texttt{data/} directory for several multi-label and multi-target datasets (some of these are in a compressed format).
@@ -149,7 +156,7 @@ A suitable dataset is the only requirement to begin running experiments with \fr
 With the exception of the different use of the \texttt{-c} flag (see the previous section), many of \framework{\WEKA}'s command line options for evaluation work identically in \framework{\MEKA} too. You can obtain a list of them by running any classifier with the \texttt{-h} flag, for example: \texttt{java meka.classifiers.multilabel.BR -h} displays the following:
 	 
 {\small
-\begin{verbatim}
+\begin{lstlisting}
 Evaluation Options:
 
 -h
@@ -160,8 +167,6 @@ Evaluation Options:
         Sets test file.
 -x <number of folds>
         Do cross-validation with this many folds.
--p
-        Specify a range in the dataset (@see weka.core.Range)
 -R
         Randomise the dataset (done after a range is removed, but before the 
         train/test split)
@@ -182,7 +187,7 @@ Evaluation Options:
         Sets the number of target attributes to expect (indexed from the beginning).
 -f <results_file>
         Specify a file to output results and evaluation statistics into.
-\end{verbatim}
+\end{lstlisting}
 }
 
 The only required options are \texttt{-t} to specify the dataset, and \texttt{-C} to specify the number of target attributes; the latter is typically included within the dataset, as explained in the previous section. 
@@ -190,7 +195,7 @@ The only required options are \texttt{-t} to specify the dataset, and \texttt{-C
 Below this output, we also see the output for \texttt{Classifier Options}:
 
 {\small
-\begin{verbatim}
+\begin{lstlisting}
 Classifier Options:
 
 -D
@@ -199,15 +204,15 @@ Classifier Options:
 -W
         Full name of base classifier.
         (default: weka.classifiers.rules.ZeroR)
-\end{verbatim}
+\end{lstlisting}
 }
 
 which in this case (for \texttt{java meka.classifiers.multilabel.BR}) are not very extensive. However, to get decent results with this classifier, we will have to specify a more competitive \emph{base classifier} with the \texttt{-W} option, for example Naive Bayes. To run this on the \textit{Music} data, we would type\footnote{If typed on one line, the bar `\texttt{\textbackslash}' should be omitted} on the command line:
 
-\begin{verbatim}
+\begin{lstlisting}
 java meka.classifiers.multilabel.BR -t data/Music.arff \
   -W weka.classifiers.bayes.NaiveBayes
-\end{verbatim}
+\end{lstlisting}
 
 \subsection{Graphical User Interface}
 
@@ -243,46 +248,47 @@ The CLI is the most powerful way to work with \framework{\MEKA}, but the GUI is 
 
 \subsection{\label{sec:evaluation}Evaluation}
 
-Running a BR classifier with Naive Bayes on the \textit{Enron} data will output the following:
+Running a BR classifier with Naive Bayes on the \textit{Music} data will output the following:
 
 {\small
-\begin{verbatim}
-Classifier_name : meka.classifiers.multilabel.BR
- Classifier_ops : [-W, weka.classifiers.bayes.NaiveBayes, --, , , ]
-Classifier_info : 
-   Dataset_name : Music
-      Threshold : 0.9974578524138343
-           Type : ML
+\begin{lstlisting}
+     Classifier_name : meka.classifiers.multilabel.BR
+      Classifier_ops : [-W, weka.classifiers.bayes.NaiveBayes, --, , , ]
+     Classifier_info : 
+        Dataset_name : Music
+                Type : ML
+           Threshold : 0.9974578524138343
+           Verbosity : 1
 
-              N : 237
-              L : 6    
-       Accuracy : 0.436
-         H_loss : 0.255
-          H_acc : 0.745
-    Exact_match : 0.215
-   ZeroOne_loss : 0.785
-      One_error : 0.414
-       LogLossD : 7.302
-       LogLossL : 2.972
-      Precision : 0.629
-         Recall : 0.564
-       F1_micro : 0.594
-     F1_macro_D : 0.508
-     F1_macro_L : 0.551
-   EmptyVectors : 0.177
-     LCard_pred : 1.785
-     LCard_real : 1.992
+                   L : 6    
+            Accuracy : 0.436
+       Hamming score : 0.745
+         Exact match : 0.215
 
-        N_train : 355.0
-         N_test : 237.0
-    LCard_train : 1.7887323943661972
-     LCard_test : 1.9915611814345993
-     Build_time : 0.148
-      Test_time : 0.118
-     Total_time : 0.266
-
-\end{verbatim}
+             N_train : 355
+              N_test : 237
+         LCard_train : 1.789
+          LCard_test : 1.992
+          Build_time : 0.113
+           Test_time : 0.067
+          Total_time : 0.18 
+\end{lstlisting}
 }
+
+Note that by increasing the \texttt{verbosity} level, you can get more output: \texttt{-verbosity <n>} where \texttt{<n>} = 
+\begin{center}
+\begin{tabular}{ll}
+	\hline
+	1 (default) & basic output \\
+	2           & plus more metrics \\
+	3           & plus individual accuracies (for each label) \\
+	5           & plus individual classifications \\
+	6           & plus individual confidence outputs (rounded to 1 d.p.) \\
+	7           & \ldots (rounded to 2 d.p.) \\
+	8           & \ldots (rounded to 3 d.p.) \\
+	\hline
+\end{tabular}
+\end{center}
 
 Most of these measures are described in \cite{Thesis,ECC2,MMD}. The most common measures in the multi-label literature are \textit{Hamming Loss} (\texttt{H\_loss}), which is the accuracy for each label, averaged across all labels; \textit{Exact Match} (\texttt{Exact\_match}), which is the is the accuracy of each \emph{example} -- where all label relevances must match exactly for an example to be correct; and \textit{Accuracy} (\texttt{Accuracy}), which is neither as strict as Exact Match nor as `easy' as Hamming Loss.
 
@@ -290,35 +296,34 @@ Most of these measures are described in \cite{Thesis,ECC2,MMD}. The most common 
 
 Note that a \texttt{Threshold} has been calibrated automatically; to minimise the difference between the label cardinality of the training set and the predictions on the test set; a practice described in \cite{ECC2}. To calibrate a threshold for \emph{each} label, add the \texttt{-threshold PCutL} option\footnote{Note: this was \texttt{-T C} in previous versions of \framework{\MEKA}}. This gives a vector of thresholds which, in this case, increases \texttt{Accuracy} slightly (to \texttt{0.456}). Different thresholds are calculated for different methods and datasets.
 
-%\begin{verbatim}
+%\begin{lstlisting}
 %          Threshold : [0.29971988795518206, 0.26330532212885155, \
 %			  0.4257703081232493, 0.22128851540616246, 0.23809523809523808, \
 %			  0.3473389355742297]
-%\end{verbatim}
+%\end{lstlisting}
 
 \framework{\MEKA} also supports \emph{cross validation}; for example:
-\begin{verbatim}
-java meka.classifiers.multilabel.BR -x 10 -R -t ~/data/Music.arff \
+\begin{lstlisting}
+java meka.classifiers.multilabel.BR -x 10 -R -t data/Music.arff \
   -W weka.classifiers.bayes.NaiveBayes
-\end{verbatim}
+\end{lstlisting}
 conducts 10 fold cross validation on a randomised version of the \textit{Music.arff} data and outputs the average results across all folds with standard deviation. %Note that using the \texttt{-f} option in this case to save output to a file will output only the results of the validation; which can be useful for compiling results later.
 
 Sometimes it can be useful to analyse the actual predictions made at test time (for example if you wish to use an evaluation metric not included in \framework{\MEKA}). \framework{\MEKA} can produce plain-text files with the option \texttt{-f <file name>}; for example:
-\begin{verbatim}
+\begin{lstlisting}
 java meka.classifiers.multilabel.BR -t data/Music.arff \ 
   -f BR-NB.meka \
   -W weka.classifiers.bayes.NaiveBayes
-\end{verbatim}
-which produces the plain-text file \texttt{BR-NB.meka}. This provides a way to analyse individual classifications and evaluate other software with \framework{\MEKA}'s evaluation framework. Note that when cross validation (\texttt{-x}) is used, one file will be created for each fold, e.g., \texttt{BR-NB.meka.0}, \ldots, \texttt{BR-NB.meka.4} for a 5-fold validation. The results can be recalculated for any of these files with, e.g.:
-\begin{verbatim}
+\end{lstlisting}
+which produces the plain-text file \texttt{BR-NB.meka}. This provides a way to evaluate \framework{\MEKA}'s performance `offline'. Note that when cross validation (\texttt{-x}) is used, one file will be created for each fold, e.g., \texttt{BR-NB.meka.0}, \ldots, \texttt{BR-NB.meka.4} for a 5-fold validation. The results can be recalculated for any of these files with, e.g.:
+\begin{lstlisting}
 	java weka.core.Result -f BR-NB.meka
-\end{verbatim}
+\end{lstlisting}
 Or, if you used cross validation, with:
-\begin{verbatim}
+\begin{lstlisting}
 	java weka.core.Result -f BR-NB.meka -x 5
-\end{verbatim}
-
-More examples are given in the following subsection.
+\end{lstlisting}
+In this way, it is also possible to use \framework{\MEKA}'s evaluation procedures with output from other software (simply by using the right text output format).
 
 \subsection{Examples} 
 
@@ -327,67 +332,67 @@ More examples are given in the following subsection.
 %The methods used in the following examples are detailed in papers papers detailing these methods are available here.
 
 \paragraph{Binary Relevance} (BR) On the \textit{Music} data, loading from two separate sets, using Naive Bayes as a base classifier, calibrating a separate threshold automatically for each label: 
-\begin{verbatim}
+\begin{lstlisting}
 java meka.classifiers.multilabel.BR \
   -t data/Music_train.arff \
   -T data/Music_test.arff \
   -threshold PCutL \
   -W weka.classifiers.bayes.NaiveBayes
-\end{verbatim}
+\end{lstlisting}
 
 \paragraph{Ensembles of Pruned Sets} (EPS; see \cite{EPS}) With 10 ensemble members (the default) on the \textit{Enron} dataset with Support Vector Machines as the base classifier; each \texttt{PS} model is set with \texttt{N=1} and \texttt{P} to a random selection of \texttt{\{1,2,3,4,5\}}:
 
-\begin{verbatim}
+\begin{lstlisting}
 java meka.classifiers.multilabel.meta.EnsembleML \
   -t data/Yeast.arff \
   -W meka.classifiers.multilabel.PS -- \
     -P 1-5 -N 1 -W weka.classifiers.functions.SMO
-\end{verbatim}
+\end{lstlisting}
 
 \paragraph{Ensembles of Classifier Chains} (ECC; see \cite{ECC2}) With 50 ensemble members (\texttt{-I 50}), and some textual output (\texttt{-D}) on the \textit{Enron} dataset with Support Vector Machines as a base classifier:
-\begin{verbatim}
+\begin{lstlisting}
 java meka.classifiers.multilabel.meta.BaggingML -I 50 -P 100 -D \
   -t data/Enron.arff -W meka.classifiers.multilabel.CC -- \
     -W weka.classifiers.functions.SMO
-\end{verbatim}
+\end{lstlisting}
 
 \paragraph{Mulan Classifier} (\texttt{RAkEL} see \cite{RAKEL}) With parameters \texttt{\texttt{k=3}, \texttt{m=2C}} where \texttt{C} is the number of labels (these options are hardwired; you need to edit \texttt{MULAN.java} to specify new parameter configurations) on the \textit{Scene} dataset with Decision Trees as the base classifier (remember {\texttt{mulan.jar} must be in the classpath}):
-\begin{verbatim}
+\begin{lstlisting}
 java meka.classifiers.multilabel.MULAN -t data/Scene.arff \ 
   -S RAkEL2 -W weka.classifiers.trees.J48
-\end{verbatim}
+\end{lstlisting}
 
 %\paragraph{Cross Validation} the following carries out cross validation on ECC using Logistic Regression as a base classifier, on the \textit{Music} data.
 
-%\begin{verbatim}
+%\begin{lstlisting}
 %java meka.classifiers.multilabel.meta.BaggingML \
 %  -x 10 -R -t data/Music.arff \
 %  -I 10 -W meka.classifiers.multilabel.CC -- \
 %  -W weka.classifiers.functions.Logistic
-%\end{verbatim}
+%\end{lstlisting}
 
 \paragraph{Incremental Classification: Ensembles of Binary Relevance} (see \cite{ECC2,MEDS2}) With 10 ensemble members (default) on the \textit{Enron} dataset with \texttt{NaiveBayesUpdateable} as a base classifier; using over 20 evaluation windows:
 
-\begin{verbatim}
+\begin{lstlisting}
 java meka.classifiers.multilabel.meta.EnsembleMLUpdateable -B 20\
   -t data/Enron.arff \
   -W meka.classifiers.multilabel.BRUpdateable -- \
     -W weka.classifiers.bayes.NaiveBayesUpdateable
-\end{verbatim}
+\end{lstlisting}
 
 Evaluating incremental classifiers will carry out evaluation and display statistics for the data over $\texttt{B}-1$ evaluation windows (an initial window is used for the initial training; making \texttt{B} windows in total). %Note that the \framework{\MOA} framework \cite{MOA} for evaluating incremental classifiers is much more sophisticated; and a new release will include a wrapper to \framework{\MEKA}. 
 
 \paragraph{Multi-target: Ensembles of Class Relevance} (see \cite{UPM}) The multi-target version of the Binary Relevance classifier) on the \textit{solar flare} dataset with Logistic Regression as a base classifier under $5$-fold cross-validation:
-\begin{verbatim}
+\begin{lstlisting}
 java weka.classifiers.multitarget.meta.BaggingMT -x 10 -R \
   -t data/solar_flare.arff \
   -W weka.classifiers.multitarget.CR -- \
     -W weka.classifiers.functions.Logistic
-\end{verbatim}
+\end{lstlisting}
 
-%\begin{verbatim}
+%\begin{lstlisting}
 %java -cp meka.jar:weka.jar weka.classifiers.multitarget.meta.BaggingMT -x 5 -R -t data/solar_flare.arff -W weka.%classifiers.multitarget.C    C -- -W weka.classifiers.functions.Logistic
-%\end{verbatim}
+%\end{lstlisting}
 
 \section{Development}
 \label{development}
@@ -402,27 +407,27 @@ For obtaining the source code of MEKA, you have two options:
 \end{itemize}
 
 \noindent In the case of \textit{subversion}, you can obtain the source code using the following command in the console (or \textit{command prompt} for Windows users):
-\begin{verbatim}
+\begin{lstlisting}
 svn checkout svn://svn.code.sf.net/p/meka/code/trunk meka
-\end{verbatim}
+\end{lstlisting}
 This will create a new directory called \texttt{meka} in the current directory, containing the source code and build scripts.
 
 Instead of using subversion, you can simply use the source code that is part of each MEKA release, contained in the \texttt{meka-src-X.Y.jar} Java archive\footnote{\url{http://en.wikipedia.org/wiki/JAR\_(file\_format)}}. A Java archive can be opened with any archive manager that can handle ZIP files.
 
 \subsection{Compiling}
 \label{compiling}
-\heading{ant}
+\heading{Using \texttt{ant}}
 MEKA uses \textit{Apache ant}\footnote{\url{http://ant.apache.org/}} as build tool. You can compile MEKA as follows:
-\begin{verbatim}
+\begin{lstlisting}
 ant clean compile jar
-\end{verbatim}
+\end{lstlisting}
 If you want to generate an archive containing all source code, pdfs and binary jars, then you can use the following command:
-\begin{verbatim}
+\begin{lstlisting}
 ant clean compile release
-\end{verbatim}
+\end{lstlisting}
 Please note, if you develop new algorithms, you should also create a unit test for it, to ensure that it is working properly. See section \ref{unittests} for more details.
 
-\heading{Eclipse}
+\heading{Using Eclipse}
 After obtaining the source code, you can use the Eclipse\footnote{\url{http://eclipse.org/}} template files that comme with MEKA. You only need to rename two files, found in the same directory as the \texttt{build.xml} ant build script, as follows:
 \begin{itemize}
   \item \texttt{.classpath.default} $\rightarrow$ \texttt{.classpath}
@@ -435,19 +440,19 @@ Then you can simply import MEKA as \textit{Existing Java Project}, pointing the 
 MEKA uses the JUnit 3.8.x unit testing framework.
 
 \noindent A classifier test case is derived from the following abstract super class:
-\begin{verbatim}
+\begin{lstlisting}
 meka.classifiers.AbstractMekaClassifierTest
-\end{verbatim}
+\end{lstlisting}
 
 \noindent A filter test case is derived from the following abstract super class:
-\begin{verbatim}
+\begin{lstlisting}
 meka.filters.AbstractMekaFilterTest
-\end{verbatim}
+\end{lstlisting}
 
 \noindent You can execute all the unit tests by calling the following class from the command-line:
-\begin{verbatim}
+\begin{lstlisting}
 meka.MekaTests
-\end{verbatim}
+\end{lstlisting}
 
 \subsection{\label{sec:extending}Extending \framework{\MEKA}}%: Writing New Classifiers
 
@@ -456,7 +461,8 @@ Writing \framework{\MEKA} classifiers involves writing regular \framework{\WEKA}
 The following is an example of a functioning (but extremely minimalistic) classifier, \texttt{TestClassifier}, that predicts $0$-relevance for all labels:
 
 {\small
-\begin{verbatim}
+\lstset{basicstyle=\small\ttfamily,breaklines=true,language=java,frame=L,xleftmargin=\parindent}
+\begin{lstlisting}
 package meka.classifiers.multilabel;
 import weka.core.*;
 
@@ -476,7 +482,7 @@ public class TestClassifier extends MultilabelClassifier {
         MultilabelClassifier.runClassifier(new TestClassifier(),args);
     }
 }
-\end{verbatim}
+\end{lstlisting}
 }
 
 This shows how easy it is to create a new classifier. However, for more useful examples see the source code of existing \framework{\MEKA} classifiers. The \texttt{testCapabilities(D)} line is optional but highly recommended. Note that the \texttt{distributionForInstance} method returns a \texttt{double[]} array exactly like in \framework{\WEKA}. However, whereas in \framework{\WEKA}, there is one value in the array for each possible value of the single target attribute, in \framework{\MEKA} this function returns an array of $C$ values, where $C$ is the \emph{number} of target attributes, and the $j$th value of the array is the \emph{value} corresponding to the $j$th target attribute.
@@ -484,59 +490,70 @@ This shows how easy it is to create a new classifier. However, for more useful e
 \subsubsection{Building Classifiers}
 
 In the \texttt{buildClassifier(Instances)} method, you build your classifier. Here is where you can take advantage of all of \WEKA's libraries. You can use any \WEKA classifier to your needs. The \texttt{m\_Classifier} variable is already available for this, which \textit{already contains} the \WEKA{} classifier you specify on the command line. You can simply do:
-\begin{verbatim}
+{
+\lstset{basicstyle=\small\ttfamily,breaklines=true,language=java,frame=L,xleftmargin=\parindent}
+\begin{lstlisting}
     public void buildClassifier(Instances D) throws Exception {
         testCapabilities(D);
         int C = D.classIndex();
         D.setClassIndex(0);
         m_Classifier.buildClassifier(D);
     }
-\end{verbatim}
+\end{lstlisting}
+}
 to train a classifier to learn the first label of your data (using the other labels, and all other input-space feature attributes). So if you then run on the command line
-\begin{verbatim}
-    java meka.classifiers.multilabel.TestClassifier -t data/Music.arff \
-        -W weka.classifiers.functions.SMO
-\end{verbatim}
+{
+\lstset{basicstyle=\small\ttfamily,breaklines=true,language=java,frame=L,xleftmargin=\parindent}
+\begin{lstlisting}
+java meka.classifiers.multilabel.TestClassifier -t data/Music.arff \
+	-W weka.classifiers.functions.SMO
+\end{lstlisting}
+}
 an instantiation of \texttt{SMO} will already be be available in \texttt{m\_Classifier}. You can also do this explicitly with
-\begin{verbatim}
+{
+\lstset{basicstyle=\small\ttfamily,breaklines=true,language=java,frame=L,xleftmargin=\parindent}
+\begin{lstlisting}
 ...
     m_Classifier = new SMO();
     m_Classifier.buildClassifier(D);
 ...
-\end{verbatim}
+\end{lstlisting}
+}
 
 \subsubsection{Classifying New Instances}
 
 In the multi-label case, for a test \texttt{Instance x}, the \texttt{double[]} array returned by the method \texttt{distributionForInstance(x)} might contain the $0/1$ label relevances, for example (assuming \texttt{-C 5}):
-\begin{verbatim}
+\begin{lstlisting}
 	[0.0, 0.0, 1.0, 1.0, 0.0]
-\end{verbatim} 
+\end{lstlisting} 
 or it might contain posterior probabilities / prediction confidences / votes for each label, for example:
-\begin{verbatim}
+\begin{lstlisting}
 	[0.1, 0.0, 0.9, 0.9, 0.2]
-\end{verbatim} 
+\end{lstlisting} 
 where clearly the third and fourth labels are most relevant. Under a threshold of $0.5$ the final classification for \texttt{x} would be \texttt{[0,0,1,1,0]}. \framework{\MEKA} will by default automatically calibrate a threshold to convert all values into $0/1$ relevances like these (see Section \ref{sec:evaluation}). 
 
 %\subsubsection{Multi-target Classifiers}
 
 In the multi-target case, the \texttt{double[]} values returned by the method \texttt{distributionForInstance} must indicate the \emph{relevant class value}; for example (assuming \texttt{-C 3}): 
-\begin{verbatim}
+\begin{lstlisting}
 	[3.0, 1.0, 0.0]
-\end{verbatim} 
+\end{lstlisting} 
 If this were the dataset exemplified in \ref{sec:format}, this classification would be \texttt{C}, \texttt{1}, and \texttt{1} for the class attributes \texttt{category}, \texttt{label}, and \texttt{rank}, respectively.
 
 Note that no threshold is calibrated. However, any associated voting or probabilistic values may be stored in the following $\texttt{C+1},\ldots,\texttt{2C}$ values; for example (again assuming \texttt{-C 6}):
-\begin{verbatim}
+\begin{lstlisting}
 	[3.0, 1.0, 0.0, 0.5, 0.9, 0.9]
-\end{verbatim} 
+\end{lstlisting} 
 where \texttt{C} is predicted as the value of the first target attribute with confidence $0.9$, and so on. However these values are currently only for use at classification time (for example the voting scheme of an ensemble method, see \texttt{weka.classifiers.multitarget.BaggingMT}); and not taken into account for evaluation. Note also that we intend to deprecate this method in the future, so avoid if possible.
 
 \subsubsection{Incremental Classifiers}
 
 \framework{\MEKA} comes with incremental versions of many classifiers, as well as incremental evaluation methods. Incremental classifiers implement \framework{\WEKA}'s \texttt{UpdatebleClassifier} interface and therefore must implement the \texttt{updateClassifier(Instance)} method. The following extends \texttt{TestClassifier} for incremental learning.
 
-{\small
-\begin{verbatim}
+{
+\small
+\lstset{basicstyle=\small\ttfamily,breaklines=true,language=java,frame=L,xleftmargin=\parindent}
+\begin{lstlisting}
 package meka.classifiers.multilabel;
 import weka.core.*;
 
@@ -551,14 +568,14 @@ public class TestClassifierUpdateable extends TestClassifier
         IncrementalEvaluation.runExperiment(new TestClassifierUpdateable(),args);
     }
 }
-\end{verbatim}
+\end{lstlisting}
 }
 
 Note that the \texttt{IncrementalEvaluation} class is called for evaluation in this case; see Section \ref{sec:evaluation}. The \framework{\MOA} framework \cite{MOA} for learning in data streams contains a number of incremental classifiers that \WEKA{} does not, for example Hoeffding trees. It is included in \framework{\MEKA}, and you can run these classifiers using \WEKA's \texttt{MOA} meta classifier (wrapper), e.g., 
-\begin{verbatim}
-    java meka.classifiers.multilabel.BRUpdateable -D -t data/Music.arff \
-        -W weka.classifiers.meta.MOA -- -B moa.classifiers.trees.HoeffdingTree
-\end{verbatim}
+\begin{lstlisting}
+java meka.classifiers.multilabel.BRUpdateable -D -t data/Music.arff \
+	-W weka.classifiers.meta.MOA -- -B moa.classifiers.trees.HoeffdingTree
+\end{lstlisting}
 
 Note that \framework{\MOA} now also supports \framework{\MEKA} classifiers via a wrapper class; and is currently being developed to support a range of incremental multi-label classification and evaluation for data streams.
 
@@ -578,14 +595,14 @@ More more information (such as contact information) can be found at the \framewo
 \section{Methods Implemented in \MEKA}
  
 Below is a list of the major methods supported in \framework{\MEKA}, along with their abbreviations (in some cases methods are known by more than one name), and the class name (given from the \texttt{classifiers} directory). Problem transformation methods expect a \texttt{-W} option. For example, to run classifier chains:
-\begin{verbatim}
-	java meka.classifiers.multilabel.meta.BaggingML -P 100 \
-		-W meka.classifiers.multilabel.CC -- -W weka.classifiers.functions.SMO	
-\end{verbatim}
+\begin{lstlisting}
+java meka.classifiers.multilabel.meta.BaggingML -P 100 \
+	-W meka.classifiers.multilabel.CC -- -W weka.classifiers.functions.SMO	
+\end{lstlisting}
 and to run CLR:
-\begin{verbatim}
-	java meka.classifiers.multilabel.MULAN -S CLR -W weka.classifiers.functions.SMO	
-\end{verbatim}
+\begin{lstlisting}
+java meka.classifiers.multilabel.MULAN -S CLR -W weka.classifiers.functions.SMO	
+\end{lstlisting}
 Other parameters are mostly set to the default found in the literature where the method was introduced. The methods have been grouped approximately together. Citations are included within the \texttt{TechnicalInformation} of the source code files. $U$ indicates that an \texttt{Updateable} version is available. $M$ indicates that a multi-target version (or can be used directly) is available.\\
 {
 {\par \vspace{2mm}}
