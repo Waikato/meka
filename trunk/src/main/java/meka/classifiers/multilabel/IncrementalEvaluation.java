@@ -55,30 +55,7 @@ public class IncrementalEvaluation {
 	public static Result evaluateModel(MultilabelClassifier h, String options[]) throws Exception {
 
 		// Load Instances, ...
-		Instances D = Evaluation.loadDatasetFromOptions(options);
-
-		try {
-			// Set C option from Data 
-			Explorer.prepareData(D);
-		} catch(Exception e) {
-			System.err.println("[Warning] Oops, didn't find the -C option in the dataset, looking in command-line options...");
-			try {
-				Evaluation.setClassesFromOptions(D,options);
-			} catch(Exception e2) {
-				e2.printStackTrace();
-				throw new Exception("[Error] ]You must supply the number of labels either in the @Relation tag or on the command line: -C <num> !");
-			}
-		}
-
-		// Get the Options in the @relation name (in format 'dataset-name: <options>')
-		String doptions[] = null;
-		try {
-			doptions = MLUtils.getDatasetOptions(D);
-		} catch(Exception e) {
-			throw new Exception("[Error] Failed to Set Options from @Relation Name");
-		}
-
-		options = Utils.splitOptions(Utils.joinOptions(options) + " " + Utils.joinOptions(doptions)+", ");
+		Instances D = Evaluation.getDataset(options);
 
 		// Set the number of windows (batches) @todo move below combining options?
 		int nWin = 20;
@@ -99,12 +76,13 @@ public class IncrementalEvaluation {
 		// Get Threshold
 		String Top = (Utils.getOptionPos("threshold",options) >= 0) ? Utils.getOption("threshold",options) : "PCut1";
 
+		// Get Verbosity (do we want to see everything?)
+		String Vop = (Utils.getOptionPos("verbosity",options) >= 0) ? Utils.getOption("verbosity",options) : "3";
+
 		if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(D)+"\tL="+D.classIndex()+"");
 
-		Result results[] = evaluateModel(h,D,nWin,rLabeled,Top);
+		Result results[] = evaluateModel(h,D,nWin,rLabeled,Top,Vop);
 		
-
-
 		// Return the final evaluation window.
 		return results[results.length-1];
 	}
@@ -115,14 +93,14 @@ public class IncrementalEvaluation {
 	 * EvaluateModel - over 20 windows.
 	 */
 	public static Result[] evaluateModel(MultilabelClassifier h, Instances D) throws Exception {
-		return evaluateModel(h,D,20,1.0,"PCut1");
+		return evaluateModel(h,D,20,1.0,"PCut1","3");
 	}
 
 	/**
 	 * EvaluateModel - Evaluate a multi-label data-stream model over a moving window.
 	 * The window is sampled every N/numWindows instances, for a total of numWindows windows.
 	 */
-	public static Result[] evaluateModel(MultilabelClassifier h, Instances D, int numWindows, double rLabeled, String Top) throws Exception {
+	public static Result[] evaluateModel(MultilabelClassifier h, Instances D, int numWindows, double rLabeled, String Top, String Vop) throws Exception {
 
 		if (h.getDebug())
 			System.out.println(":- Classifier -: "+h.getClass().getName()+": "+Arrays.toString(h.getOptions()));
@@ -141,8 +119,6 @@ public class IncrementalEvaluation {
 			throw new Exception ("[Error] The ratio of labelled instances ("+rLabeled+") is too small given the window size!");
 
 		double nth = 1. / rLabeled; // label every nth example
-		//Random r = new Random(0);
-		//System.out.println("To label every "+nth+"th example");
 
 		Instances D_init = new Instances(D,0,windowSize); 	// initial window
 
@@ -159,7 +135,8 @@ public class IncrementalEvaluation {
 		Arrays.fill(t,0.5);
 
 		// @todo move into function
-		//if (h.getDebug()) {
+		int V = MLUtils.getIntegerOption(Vop,3);
+		if (V > 3) {
 			System.out.println("--------------------------------------------------------------------------------");
 			System.out.print("#"+Utils.padLeft("w",6)+" "+Utils.padLeft("n",6));
 			for (String m : measures) {
@@ -168,7 +145,7 @@ public class IncrementalEvaluation {
 			}
 			System.out.println("");
 			System.out.println("--------------------------------------------------------------------------------");
-		//}
+		}
 
 		int i = 0;
 		for (int w = 0; w < numWindows-1; w++) {
@@ -230,7 +207,7 @@ public class IncrementalEvaluation {
 				t = ThresholdUtils.calibrateThresholds(results[w].predictions,MLUtils.labelCardinalities(results[w].actuals));
 			}
 			else {
-				Arrays.fill(t,ThresholdUtils.calibrateThreshold(results[w].predictions,results[w].output.get("LCard_real")));
+				Arrays.fill(t,ThresholdUtils.calibrateThreshold(results[w].predictions,MLUtils.labelCardinality(results[w].allActuals())));
 			}
 		}
 
@@ -262,6 +239,10 @@ public class IncrementalEvaluation {
 		text.append("\tSets the number of windows (batches) for evalutation; default: 20.\n");
 		text.append("-semisupervised <ratio labelled>\n");
 		text.append("\tSets the ratio of labelled instances; default: 1.0.\n");
+		text.append("-threshold <threshold>\n");
+		text.append("\tSets the type of thresholding; where 'PCut1' automatically calibrates a threshold (the default); 'PCutL' automatically calibrates one threshold for each label; and any double number, e.g. '0.5', specifies that threshold.\n");
+		text.append("-verbosity <verbosity level>\n");
+		text.append("\tSpecify more/less evaluation.\n");
 		// Multilabel Options
 		text.append("\n\nClassifier Options:\n\n");
 		while (e.hasMoreElements()) {
