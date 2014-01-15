@@ -319,7 +319,7 @@ extends AbstractThreadedExplorerTab {
 	  try {
 	    classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
 		//System.out.println("data.classIndex() "+data.classIndex());
-	    results    = IncrementalEvaluation.evaluateModel(classifier, data, 20, 1., "PCut1");
+	    results    = IncrementalEvaluation.evaluateModel(classifier, data, 20, 1., m_TOP, m_VOP);
 	    for (Result result: results) 
 	      addResultToHistory(result);
 	  }
