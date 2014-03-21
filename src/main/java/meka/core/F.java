@@ -98,6 +98,13 @@ public abstract class F {
 		//return D;
 	}
 
+	/**
+	 * Remove Indices - Remove attribute indices 'indices' from 'D'.
+	 * @param	D		Dataset
+	 * @param	indices	attribute indices to remove/keep
+	 * @param	inv		if true, then keep 'indices'
+	 * @return	New dataset with 'indices' removed.
+	 */
 	public static Instances remove(Instances D, int indices[], boolean inv) throws Exception {
 		Remove remove = new Remove();
 		remove.setAttributeIndicesArray(indices);

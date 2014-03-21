@@ -16,7 +16,15 @@
 package meka.filters.multilabel;
 
 /**
- * SuperNodeFilter.java - Super Class Filter
+ * SuperNodeFilter.java - Super Class Filter.
+ *
+ * Input:
+ * 		Data with label attributes,       e.g., [0,1,2,3,4]
+ * 		A desired partition of indices,   e.g., [[1,3],[4],[0,2]], filter 
+ * Output:
+ * 		New data with label attributes:         [1+3,4,0+2]
+ * 		(the values each attribute can take are pruned if necessary)
+ *
  * @author 	Jesse Read (jesse@tsc.uc3m.es)
  * @version	June 2012
  */
@@ -51,36 +59,6 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 	public void setN(int n) {
 		this.m_N = n;
 	}
-
-	/*
-	@Override
-	public Enumeration listOptions() {
-
-		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tOp 1\n\tdefault: "+m_H+"\t()", "H", 1, "-H <value>"));
-		return newVector.elements();
-	}
-
-	@Override
-	public void setOptions(String[] options) throws Exception {
-
-		m_H = (Utils.getOptionPos('H',options) >= 0) ? Integer.parseInt(Utils.getOption('H', options)) : m_H;
-		m_E = (Utils.getOptionPos('E',options) >= 0) ? Integer.parseInt(Utils.getOption('E', options)) : m_E;
-	}
-
-	@Override
-	public String [] getOptions() {
-
-		String [] options = new String [4];
-		int current = 0;
-		options[current++] = "-H";
-		options[current++] = String.valueOf(m_H);
-		options[current++] = "-E";
-		options[current++] = String.valueOf(m_E);
-		return options;
-
-	}
-	*/
 
 	@Override
 	public Instances determineOutputFormat(Instances D) throws Exception {
@@ -195,6 +173,7 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 		HashMap<String,Integer> count = getCounts(D,indices,p);
 		return count.keySet();
 	}
+
 	public static HashMap<String,Integer> getCounts(Instances D, int indices[], int p) {
 		HashMap<String,Integer> count = new HashMap<String,Integer>();
 		for(int i = 0; i < D.numInstances(); i++) {
@@ -206,9 +185,9 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 	}
 
 	/**
-	 * Merge Labels.
+	 * Merge Labels - Make a new 'D', with labels made into superlabels, according to partition 'indices', and pruning values 'p' and 'n'.
 	 * @assume	j < k
-	 * @assume: attributes in D labeled by original index
+	 * @assume attributes in D labeled by original index
 	 * @returns	 Instaces with attributes at j and k moved to position L as (j,k), with classIndex = L-1
 	 */
 	public static Instances mergeLabels(Instances D, int indices[][], int p, int n) {
@@ -293,7 +272,7 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 		//System.out.println("("+j+","+k+")"+values);
 		System.out.print("pruned from "+count.size()+" to ");
 		MLUtils.pruneCountHashMap(count,p);
-		String y_max = MLUtils.maxCombination(count); // @todo won't need this in the future
+		String y_max = (String)MLUtils.argmax(count); // @todo won't need this in the future
 		System.out.println(""+count.size()+" with p = "+p);
 		System.out.println(""+count);
 		values = count.keySet();
@@ -307,13 +286,11 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 			String y_jk = encodeValue(x.stringValue(j),x.stringValue(k));
 			try {
 				x.setValue(L,y_jk); // y_jk = 
-				//System.out.println("x.1 "+x.stringValue(L));
-				//System.out.println("x.2 "+MLUtils.encodeValue(new int[]{(int)x.value(j),(int)x.value(k)}));
 			} catch(Exception e) {
 				//x.setMissing(L);
 				//D.delete(i);
 				//i--;
-				String y_close[] = getNeigbours(y_jk,count,1); // A+B+NEG, A+C+NEG
+				String y_close[] = getNeighbours(y_jk,count,1); // A+B+NEG, A+C+NEG
 				//System.out.println("OK, that value ("+y_jk+") didn't exist ... set the closests ones ...: "+Arrays.toString(y_close));
 				int max_c = 0;
 				for (String y_ : y_close) {
@@ -338,15 +315,10 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 		return D;
 	}
 
-	/*
-	@Override
-	public boolean batchFinished() {
-		System.out.println("hi?");
-		return true;
-	}
-	*/
-
-	public static String[] getNeigbours(String y, ArrayList<String> S, int n) {
+	/**
+	 * GetNeighbours - return from set S, label-vectors closest to y, having no more different than 'n' bits different.
+	 */
+	public static String[] getNeighbours(String y, ArrayList<String> S, int n) {
 		String ya[] = decodeValue(y);
 		ArrayList<String> Y = new ArrayList<String>();  
 		for(String y_ : S) {
@@ -357,8 +329,8 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 		return (String[])Y.toArray(new String[Y.size()]);
 	}
 
-	public static String[] getNeigbours(String y, HashMap <String,Integer>S, int n) {
-		return getNeigbours(y,new ArrayList<String>(S.keySet()),n);
+	public static String[] getNeighbours(String y, HashMap <String,Integer>S, int n) {
+		return getNeighbours(y,new ArrayList<String>(S.keySet()),n);
 	}
 
 	protected int m_Seed = 0;

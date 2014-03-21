@@ -18,6 +18,12 @@ package meka.core;
 import weka.core.*;
 import java.util.*;
 
+/**
+ * MLEvalUtils - Utility functions for Evaluation.
+ * @see meka.core.Metrics.java
+ * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
+ * @version	March 2012 - Multi-target Compatible
+ */
 public abstract class MLEvalUtils {
 
 	/**
@@ -90,6 +96,7 @@ public abstract class MLEvalUtils {
 
 		if (V > 1) {
 
+			results.put("Harmonic score"	,Metrics.P_Harmonic(Y,Ypred));
 			results.put("Hamming loss"		,Metrics.L_Hamming(Y,Ypred));
 			results.put("ZeroOne loss"		,Metrics.L_ZeroOne(Y,Ypred));
 			results.put("One error"			,Metrics.L_OneError(Y,Rpred));
@@ -97,8 +104,10 @@ public abstract class MLEvalUtils {
 			results.put("Avg precision"		,Metrics.P_AveragePrecision(Y,Rpred));
 			results.put("Log Loss D"		,Metrics.L_LogLossD(Y,Rpred));
 			results.put("Log Loss L"		,Metrics.L_LogLossL(Y,Rpred));
-			//results.put("Precision"		,Metrics.P_Precision(Y,Ypred));
-			//results.put("Recall"			,Metrics.P_Recall(Y,Ypred));
+			//if (V > 3) {
+			//	results.put("Precision"		    ,Metrics.P_Precision(Y,Ypred));
+			//	results.put("Recall"			,Metrics.P_Recall(Y,Ypred));
+			//}
 			results.put("F-micro"			,Metrics.P_FmicroAvg(Y,Ypred));
 			results.put("F-macro_D"			,Metrics.P_FmacroAvgD(Y,Ypred));
 			results.put("F-macro_L"			,Metrics.P_FmacroAvgL(Y,Ypred));
@@ -108,11 +117,21 @@ public abstract class MLEvalUtils {
 			if (V > 2) {
 				//results.put("LCard_real"		,MLUtils.labelCardinality(Y));
 				for(int j = 0; j < L; j++) {
-					results.put("Accuracy["+j+"]"	,1.0-Metrics.P_Hamming(Y,Ypred,j));
+					results.put("Accuracy["+j+"]"	,Metrics.P_Hamming(Y,Ypred,j));
+					results.put("Harmonic["+j+"]"	,Metrics.P_Harmonic(Y,Ypred,j));
+					if (V > 3) {
+						results.put("Precision["+j+"]"	    ,Metrics.P_Precision(Y,Ypred,j));
+						results.put("Recall["+j+"]"			,Metrics.P_Recall(Y,Ypred,j));
+					}
 				}
 			}
 			if (V > 3) {
 				// @todo: show by-label label cardinality
+				/*
+				for(int j = 0; j < L; j++) {
+					results.put("LCard["+j+"]"	,Metrics.P_Hamming(Y,Ypred,j));
+				}
+				*/
 			}
 		}
 		return results;

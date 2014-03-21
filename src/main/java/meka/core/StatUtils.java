@@ -17,11 +17,13 @@ package meka.core;
 
 import weka.core.*;
 
-import rbms.M;
+import java.util.HashMap;
+import java.util.Arrays;
 
 /**
  * StatUtils - Helpful statistical functions.
  * @author Jesse Read (jesse@tsc.uc3m.es)
+ * @version	March 2013 - Multi-target Compatible
  */
 public abstract class StatUtils {
 
@@ -80,11 +82,11 @@ public abstract class StatUtils {
 	 * In the multi-label case, k in {0,1}
 	 * @param	D    	Instances
 	 * @param	j		label index
-	 * @param	x	 	label value
-	 * @return 	P(Y_j==k) in D.
+	 * @param	j_ 		label value
+	 * @return 	P(Y_j==j_) in D.
 	 */
-	public static double p(Instances D, int j, int k) {
-		return p(MLUtils.getYfromD(D),j,k);
+	public static double p(Instances D, int j, int j_) {
+		return p(MLUtils.getYfromD(D),j,j_);
 	}
 
 	/**
@@ -150,7 +152,7 @@ public abstract class StatUtils {
 
 	/**
 	 * jPMF - Joint PMF.
-	 * @return the joint PMF of the jth and kth labels in D.
+	 * @return the joint PMF of the j-th and k-th labels in D.
 	 */
 	public static double[][] jPMF(Instances D, int j, int k) {
 		double JOINT[][] = new double[D.attribute(j).numValues()][D.attribute(k).numValues()];
@@ -165,7 +167,7 @@ public abstract class StatUtils {
 
 	/**
 	 * Joint Distribution.
-	 * @return the joint PMF of the jth and kth and lthlabels in D.
+	 * @return the joint PMF of the j-th and k-th and lthlabels in D.
 	 */
 	public static double[][][] jPMF(Instances D, int j, int k, int l) {
 		double JOINT[][][] = new double[D.attribute(j).numValues()][D.attribute(k).numValues()][D.attribute(l).numValues()];
@@ -180,8 +182,225 @@ public abstract class StatUtils {
 	}
 
 	/**
-	 * I - Information Gain. 
-	 * Multi-target friendly (does not assume binary labels).
+	 * GetP - Get a pairwise empirical joint-probability matrix P[][] from dataset D.
+	 * @note multi-label only
+	 */
+	public static double[][] getP(Instances D) {
+		double N = (double)D.numInstances();
+		int L = D.classIndex();
+		double P[][] = new double[L][L];
+		for(int j = 0; j < L; j++) {
+			P[j][j] = p(D,j,1);
+			for(int k = j+1; k < L; k++) {
+				P[j][k] = P(D,j,1,k,1);
+			}
+		}
+		return P;
+	}
+
+	/**
+	 * GetApproxP - A fast version of getC(D), based on frequent sets.
+	 * Actually, if we don't prune, this is not even approximate -- it is the real empirical P.
+	 */
+	public static int[][] getApproxC(Instances D) {
+		int N = D.numInstances();
+		int L = D.classIndex();
+		int C[][] = new int[L][L];
+		// @todo, can prune here to make even faster by pruning this.
+		HashMap<LabelSet,Integer> map = MLUtils.countCombinationsSparse(D,L);
+
+		for (LabelSet y : map.keySet()) {
+			int c = map.get(y);
+			for(int j = 0; j < y.indices.length; j++) {
+				int j_ = y.indices[j];
+				C[j_][j_] += c;
+				for(int k = j+1; k < y.indices.length; k++) {
+					int k_ = y.indices[k];
+					C[j_][k_] += c;
+				}
+			}
+		}
+
+		return C;
+	}
+
+	/**
+	 * GetApproxP - A fast version of getP(D), based on frequent sets.
+	 * Actually, if we don't prune, this is not even approximate -- it is the real empirical P.
+	 */
+	public static double[][] getApproxP(Instances D) {
+		int N = D.numInstances();
+		int L = D.classIndex();
+		double P[][] = new double[L][L];
+		// @todo, can prune here to make even faster by pruning this.
+		HashMap<LabelSet,Integer> map = MLUtils.countCombinationsSparse(D,L);
+
+		for (LabelSet y : map.keySet()) {
+			for(int j = 0; j < y.indices.length; j++) {
+				int y_j = y.contains(j) ? 1 : 0;
+				if (y_j > 0) {
+					P[j][j] += (double)y_j;                           // C[j==1] ++
+					for(int k = j+1; k < y.indices.length; k++) {
+						int y_k = y.contains(j) ? 1 : 0;
+						P[j][k] += (double)y_k;                       // C[j==1,k==1] ++
+					}
+				}
+			}
+		}
+
+		// @todo use getP(C,N) instead
+		for(int j = 0; j < L; j++) {
+			P[j][j] = Math.max(P[j][j]/(double)N,0.0001);
+			for(int k = j+1; k < L; k++) {
+				P[j][k] = Math.max(P[j][k]/(double)N,0.0001);
+			}
+		}
+
+		return P;
+	}
+
+	public static double[][] getP(int C[][], int N) {
+		int L = C.length;
+		double P[][] = new double[L][L];
+		for(int j = 0; j < L; j++) {
+			P[j][j] = Math.max(C[j][j]/(double)N,0.0001);
+			for(int k = j+1; k < L; k++) {
+				P[j][k] = Math.max(C[j][k]/(double)N,0.0001);
+			}
+		}
+		return P;
+	}
+
+	/**
+	 * GetC - Get pairwise co-ocurrence counts from the training data D.
+	 * @note multi-label only
+	 * @return 	C[][] where C[j][k] is the number of times where Y[i][j] = 1 and y[i][k] = 1 over all i = 1,...,N
+	 */
+	public static int[][] getC(Instances D) {
+
+		int L = D.classIndex();
+		int N = D.numInstances();
+
+		int C[][] = new int[L][L];
+
+		for(int i = 0; i < N; i++) {
+			for(int j = 0; j < L; j++) {
+				C[j][j] += (int)D.instance(i).value(j);                                            // C[j==1] ++
+				for(int k = j+1; k < L; k++) {
+					C[j][k] += (D.instance(i).value(j) + D.instance(i).value(k) >= 2.0) ? 1 : 0;   // C[j==1,k==1] ++
+				}
+			}
+		}
+		return C;
+	}
+
+	/**
+	 * I - Mutual Information I(y_j;y_k).
+	 * multi-label only -- count version
+	 * @param	C[][]	count matrix
+	 * @param	j		j-th label index
+	 * @param	k		k-th label index
+	 * @param	Ncount	number of instances in the training set
+	 * @return H(Y_j|Y_k)
+	 */
+	public static double I(int C[][], int j, int k, int Ncount) {
+
+		double N = (double)Ncount;
+		double N_j = Math.max(C[j][j],0.0001);
+		double N_k = Math.max(C[k][k],0.0001);
+
+		double p_5 = (N - N_j);
+		double p_6 = (N - N_k);
+		double p_7 = (N - (N_j + N_k));
+
+		return 1.0 / N * (
+			- p_5 * Math.log( p_5 )
+			- p_6 * Math.log( p_6 )
+			+ p_7 * Math.log( p_7 )
+			+ N * Math.log( N )
+			);
+
+	}
+
+	/**
+	 * H - Conditional Entropy H(y_j|y_k).
+	 * multi-label only
+	 * @param	C[][]	count matrix
+	 * @param	j		j-th label index
+	 * @param	k		k-th label index
+	 * @param	Ncount	number of instances in the training set
+	 * @return H(Y_j|Y_k)
+	 */
+	public static double H(int C[][], int j, int k, int Ncount) {
+
+		double N = (double)Ncount;
+		double N_j = Math.max(C[j][j],0.0001);
+		double N_k = Math.max(C[k][k],0.0001);
+		double N_jk = Math.max(C[j][k],0.0001);
+
+		double p_1 = (N + N_jk - (N_j + N_k));
+		double p_2 = (N_k - N_jk);
+		double p_3 = (N_j - N_jk);
+		double p_5 = (N - N_j);
+
+		return -1.0 / N * (
+		    p_1 * Math.log( p_1 ) 
+			+ p_2 * Math.log( p_2 )
+			+ p_3 * Math.log( p_3 )
+			+ N_jk * Math.log( N_jk )
+			- p_5 * Math.log( p_5 ) 
+			- N_j * Math.log( N_j )
+			);
+	}
+
+	/**
+	 * I - Mutual Information -- fast version, must calcualte P[][] = getP(D) first.
+	 * multi-label only
+	 * @todo -- check this 
+	 * @return I(Y_j;Y_k)
+	public static double I(double P[][], int j, int k) {
+		double p_j = P[j][j];
+		double p_k = P[j][k];
+		double p_jk = P[j][k];
+		return p_jk * Math.log ( p_jk / ( p_j * p_k) );
+	}
+	*/
+
+	/**
+	 * I - Mutual Information -- fast version, must calcualte P[][] = getP(D) first.
+	 * @see I(P,j,k)
+	 * @return I[][]
+	 */
+	public static double[][] I(double P[][]) {
+		int L = P.length;
+		double M[][] = new double[L][L];
+		for(int j = 0; j < L; j++) {
+			for(int k = j+1; k < L; k++) {
+				M[j][k] = I(P,j,k);
+			}
+		}
+		return M;
+	}
+
+	/**
+	 * I - Mutual Information.
+	 * @note binary only
+	 * @return I(Y_j;Y_k) in dataset D.
+	 */
+	public static double I(double P[][], int j, int k) {
+		double I = 0.0;
+		double p_x = P[j][j];
+		double p_y = P[k][k];
+		double p_xy = P[j][k];
+		I += p_xy * Math.log ( p_xy / ( p_x * p_y) );
+		I += (1.-p_xy) * Math.log ( (1.-p_xy) / ( (1.-p_x) * (1.-p_y)) );
+		return I;
+	}
+
+	/**
+	 * I - Mutual Information.
+	 * @note Multi-target friendly (does not assume binary labels).
+	 * @note a bit slow
 	 * @return I(Y_j;Y_k) in dataset D.
 	 */
 	public static double I(Instances D, int j, int k) {
@@ -197,11 +416,29 @@ public abstract class StatUtils {
 		return I;
 	}
 
+	/**
+	 * I - Get an Unconditional Depndency Matrix.
+	 * (Works for both ML and MT data).
+	 * @param	D	dataset
+	 * @param	L	number of labels
+	 * @return a L*L matrix representing Unconditional Depndence.
+	 */
+	public static double[][] I(Instances D, int L) {
+		double M[][] = new double[L][L];
+		for(int j = 0; j < L; j++) {
+			for(int k = j+1; k < L; k++) {
+				// get I(Y_j;X_k)
+				M[j][k] = I(D,j,k);
+			}
+		}
+		return M;
+	}
+
 	/** Critical value used for Chi^2 test. */
 	public static final double CRITICAL[] = new double[]{0.,2.706, 4.605, 6.251, 7.779};      // P == 0.10
 
 	/**
-	 * Chi^2 - Do the chi-squared test on the jth and kth labels in Y.
+	 * Chi^2 - Do the chi-squared test on the j-th and k-th labels in Y.
 	 * @NOTE multi-label only! @TODO Use enumerateValues() !!!
 	 * If they are correlated, this means unconditional dependence!
 	 * @return	The chi-square statistic for labels j and k in Y.
@@ -218,6 +455,23 @@ public abstract class StatUtils {
 			}
 		}
 		return chi2;
+	}
+
+	/**
+	 * Chi^2 - Do the chi-squared test on all pairs of labels.
+	 * @see chi2(D,j,k)
+	 * @param	D	dataset
+	 * @return	The chi-square statistic matrix X
+	 */
+	public static double[][] chi2 (Instances D) {
+		int L = D.classIndex();
+		double X[][] = new double[L][L];
+		for(int j = 0; j < L; j++) {
+			for(int k = j+1; k < L; k++) {
+				X[j][k] = chi2(D,j,k);
+			}
+		}
+		return X;
 	}
 
 	/**
@@ -257,27 +511,123 @@ public abstract class StatUtils {
 
 	/**
 	 * MargDepMatrix - Get an Unconditional Depndency Matrix.
-	 * (Works for both ML and MT data).
 	 * @param	D	dataset
+	 * @param	op	how we will measure the dependency
 	 * @return a L*L matrix representing Unconditional Depndence.
 	 */
-	public static double[][] margDepMatrix(Instances D) {
-		return margDepMatrix(D,D.classIndex());
+	public static double[][] margDepMatrix(Instances D, String op) {
+
+		int L = D.classIndex();
+		int N = D.numInstances();
+
+		// Simple Co-occurence counts
+		if (op.equals("C")) {
+			int C[][] = getApproxC(D);
+			double P[][] = getP(C,N);
+			return P;
+		}
+		// Mutual information -- complete / multi-target capable
+		if (op.equals("I")) {
+			return I(D,L);
+		}
+		// Mutual information -- binary (multi-label) approximation
+		if (op.equals("Ib")) {
+			int C[][] = getC(D);
+			//System.out.println(""+M.toString(C));
+			double P[][] = getP(C,N);
+			//System.out.println(""+M.toString(P));
+			return I(P);
+		}
+		// Mutual information -- fast binary (multi-label) approximation
+		if (op.equals("Ibf")) {
+			int C[][] = getApproxC(D);
+			//System.out.println(""+M.toString(C));
+			double P[][] = getP(C,N);
+			//System.out.println(""+M.toString(P));
+			return I(P);
+		}
+		// Conditional information -- binary (multi-label)
+		if (op.equals("H")) {
+			int C[][] = getC(D);
+			return H(C,N);
+		}
+		// Conditional information -- fast binary (multi-label) approximation
+		if (op.equals("H")) {
+			int C[][] = getApproxC(D);
+			return H(C,N);
+		}
+		// Chi-squared
+		if (op.equals("X")) {
+			return chi2(D);
+		}
+		// Frequencies (cheap)
+		if (op.equals("F")) {
+			double F[][] = F(D);
+			//System.out.println(""+M.toString(F));
+			return F;
+		}
+		/*
+		if (op == "C") {
+			return getC(D);
+		}
+		*/
+		System.err.println("No operation found!");
+
+		return null;
 	}
 
 	/**
-	 * MargDepMatrix - Get an Unconditional Depndency Matrix.
-	 * (Works for both ML and MT data).
-	 * @param	D	dataset
-	 * @param	L	number of labels
-	 * @return a L*L matrix representing Unconditional Depndence.
+	 * I - Get a Mutual Information Matrix.
 	 */
-	public static double[][] margDepMatrix(Instances D, int L) {
+	public static double[][] I(int C[][], int N) {
+		int L = C.length;
 		double M[][] = new double[L][L];
 		for(int j = 0; j < L; j++) {
 			for(int k = j+1; k < L; k++) {
-				// get I(Y_j;X_k)
-				M[j][k] = I(D,j,k);
+				M[j][k] = I(C,j,k,N);
+			}
+		}
+		return M;
+	}
+
+	/**
+	 * H - Get a Conditional Entropy Matrix.
+	 */
+	public static double[][] H(int C[][], int N) {
+		int L = C.length;
+		double M[][] = new double[L][L];
+		for(int j = 0; j < L; j++) {
+			for(int k = j+1; k < L; k++) {
+				M[j][k] = H(C,j,k,N);
+			}
+		}
+		return M;
+	}
+
+	/**
+	 * H - Get a Conditional Entropy Matrix.
+	 */
+	public static double[][] H(Instances D) {
+		int C[][] = getC(D);
+		return H(C, D.classIndex());
+	}
+
+	private static double f (Instances Y,int j,int k) {
+
+		double E = p(Y,j,1) * p(Y,k,1); 			// Expected vaule P(Y_j = j_)P(Y_k = k_)
+		double O = P(Y,j,1,k,1);					// Observed value P(Y_j = j_, Y_k = k_)
+		return E/O;
+	}
+
+	/**
+	 * F - Relative frequency matrix (between p(j),p(k) and p(j,k)) in dataset D.
+	 */
+	public static double[][] F(Instances D) {
+		int L = D.classIndex();
+		double M[][] = new double[L][L];
+		for(int j = 0; j < L; j++) {
+			for(int k = j+1; k < L; k++) {
+				M[j][k] = Math.abs(1. - f(D,j,k));
 			}
 		}
 		return M;
@@ -320,8 +670,8 @@ public abstract class StatUtils {
 		double F[][][] = new double[3][L][L];						// ERRORS (ACTUAL)
 		// Find the actual co-occurence ...
 		for(int i = 0; i < N; i++) {
-			int y[] = MLUtils.toIntArray(Y[i],0.5); 				// predicted
-			int t[] = MLUtils.toIntArray(T[i],0.5);					// actual (teacher)
+			int y[] = A.toIntArray(Y[i],0.5); 				// predicted
+			int t[] = A.toIntArray(T[i],0.5);					// actual (teacher)
 			for(int j = 0; j < L; j++) {
 				for(int k = j+1; k < L; k++) {
 					if (y[j] != t[j] && y[k] != t[k]) {
