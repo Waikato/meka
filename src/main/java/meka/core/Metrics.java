@@ -17,21 +17,24 @@ package meka.core;
 
 import weka.core.*;
 import java.util.*;
-import rbms.M;
 
 /**
  * Metrics.java - Evaluation Metrics. 
  * <p>L_ are loss/error measures (less is better)</p>
  * <p>P_ are payoff/accuracy measures (higher is better).</p>
+ * For more on the evaluation and threshold selection implemented here, see
+ * <br> Jesse Read, <i>Scalable Multi-label Classification</i>. PhD Thesis, University of Waikato, Hamilton, New Zealand (2010).
  * @author 		Jesse Read (jesse@tsc.uc3m.es)
  * @version 	Feb 2013
  */
 public abstract class Metrics {
 
+	/** Exact Match, i.e., 1 - [0/1 Loss]. */
 	public static double P_ExactMatch(int Y[][], int Ypred[][]) {
 		return 1. - L_ZeroOne(Y,Ypred);
 	}
 
+	/** 0/1 Loss. */
 	public static double L_ZeroOne(int y[], int ypred[]) {
 		int L = y.length;
 		for(int j = 0; j < L; j++) {
@@ -41,6 +44,7 @@ public abstract class Metrics {
 		return 0.;
 	}
 
+	/** 0/1 Loss. */
 	public static double L_ZeroOne(int Y[][], int Ypred[][]) {
 		int N = Y.length;
 		double loss = 0.0;
@@ -50,6 +54,7 @@ public abstract class Metrics {
 		return loss/(double)N;
 	}
 
+	/** Hamming loss. */
 	public static double L_Hamming(int y[], int ypred[]) {
 		int L = y.length;
 		double loss = 0.0;
@@ -60,6 +65,7 @@ public abstract class Metrics {
 		return loss/(double)L;
 	}
 
+	/** Hamming loss. */
 	public static double L_Hamming(int Y[][], int Ypred[][]) {
 		int N = Y.length;
 		double loss = 0.0;
@@ -69,31 +75,67 @@ public abstract class Metrics {
 		return loss/(double)N;
 	}
 
+	/** Hamming score aka label accuracy. */
 	public static double P_Hamming(int Y[][], int Ypred[][]) {
 		return 1. - L_Hamming(Y,Ypred);
 	}
 
+	/** Hamming score aka label accuracy. */
 	public static double P_Hamming(int Y[][], int Ypred[][], int j) {
 		int y_j[] = M.getCol(Y,j);
 		int ypred_j[] = M.getCol(Ypred,j);
 		return 1. - L_Hamming(y_j,ypred_j);
 	}
 
+	/** Harmonic Accuracy. Multi-label only. */
+	public static double P_Harmonic(int y[], int ypred[]) {
+		int L = y.length;
+		double acc[] = new double[2];
+		double N[] = new double[2];
+		for(int j = 0; j < L; j++) {
+			N[y[j]]++;
+			if (y[j] == ypred[j])
+				acc[y[j]]++;
+		}
+		for(int v = 0; v < 2; v++) {
+			acc[v] = acc[v] / N[v];
+		}
+		return 2. / ((1. / acc[0]) + (1. / acc[1]));
+	}
+
+	/** Harmonic Accuracy -- for the j-th label. Multi-label only. */
+	public static double P_Harmonic(int Y[][], int Ypred[][], int j) {
+		int y_j[] = M.getCol(Y,j);
+		int ypred_j[] = M.getCol(Ypred,j);
+		return P_Harmonic(y_j,ypred_j);
+	}
+
+	/** Harmonic Accuracy -- average over all labels. Multi-label only. */
+	public static double P_Harmonic(int Y[][], int Ypred[][]) {
+		int N = Y.length;
+		double loss = 0.0;
+		for(int i = 0; i < Y.length; i++) {
+			loss += P_Harmonic(Y[i],Ypred[i]);
+		}
+		return loss/(double)N;
+	}
+
+	/** Jaccard Index -- often simply called multi-label 'accuracy'. Multi-label only. */
 	public static double P_Accuracy(int y[], int ypred[]) {
 		int L = y.length;
 		int set_union = 0;
 		int set_inter = 0;
 		for(int j = 0; j < L; j++) {
-			//System.out.println("count " + Arrays.toString(y));
-			//System.out.println("      " + Arrays.toString(ypred));
 			if (y[j] == 1 || ypred[j] == 1)
 				set_union++; 
 			if (y[j] == 1 && ypred[j] == 1)
 				set_inter++; 
 		}
-		return (set_union > 0) ? (double)set_inter / (double)set_union : 0.0;
+		// = intersection / union; (or, if both sets are empty, then = 1.)
+		return (set_union > 0) ? (double)set_inter / (double)set_union : 1.0; 
 	}
 
+	/** Jaccard Index -- often simply called multi-label 'accuracy'. Multi-label only. */
 	public static double P_Accuracy(int Y[][], int Ypred[][]) {
 		int N = Y.length;
 		double accuracy = 0.0;
@@ -206,17 +248,8 @@ public abstract class Metrics {
 	public static double P_Precision(int y[], int ypred[]) {
 		double tp = P_TruePositives(y,ypred);
 		double fp = P_FalsePositives(y,ypred);
-		//int retrieved = A.sum(ypred);
-		//int correct = A.AND(y,ypred);
-		//return (double)correct / (double)predicted;
 		return tp / (tp + fp);
 	}
-
-	/*
-	public static double P_Precision(int Y[][], int YPred[][]) {
-		return P_Precision(flatten(Y),flatten(YPRed));
-	}
-	*/
 
 	/**
 	 * P_Recall - (retrieved AND relevant) / relevant
@@ -224,9 +257,6 @@ public abstract class Metrics {
 	public static double P_Recall(int y[], int ypred[]) {
 		double tp = P_TruePositives(y,ypred);
 		double fn = P_FalseNegatives(y,ypred);
-		//int relevant = A.sum(y);
-		//int correct = A.AND(y,ypred);
-		//return (double)correct / (double)relevant;
 		return tp / (tp + fn);
 	}
 
@@ -238,21 +268,23 @@ public abstract class Metrics {
 
 	/**
 	 * P_Precision - (retrieved AND relevant) / retrieved
-	public static double P_Precision(int Y[][], int Ypred[][]) {
-		int retrieved = M.sum(M.sum(Ypred));
-		int correct = M.sum(M.sum(M.multiply(Y,Ypred)));
-		return (double)correct / (double)predicted;
+	 */
+	public static double P_Precision(int Y[][], int Ypred[][], int j) {
+		return P_Precision(M.getCol(Y,j),M.getCol(Ypred,j));
+		//int retrieved = M.sum(M.sum(Ypred));
+		//int correct = M.sum(M.sum(M.multiply(Y,Ypred)));
+		//return (double)correct / (double)predicted;
 	}
-	*/
 
 	/**
 	 * P_Recall - (retrieved AND relevant) / relevant
-	public static double P_Recall(int Y[][], int Ypred[][]) {
-		int relevant = M.sum(M.sum(Y));
-		int correct = M.sum(M.sum(M.multiply(Y,Ypred)));
-		return (double)correct / (double)relevant;
+	 */
+	public static double P_Recall(int Y[][], int Ypred[][], int j) {
+		return P_Recall(M.getCol(Y,j),M.getCol(Ypred,j));
+		//int relevant = M.sum(M.sum(Y));
+		//int correct = M.sum(M.sum(M.multiply(Y,Ypred)));
+		//return (double)correct / (double)relevant;
 	}
-	*/
 
 	public static double P_FmicroAvg(int Y[][], int Ypred[][]) {
 		double precision = P_Precision(M.flatten(Y),M.flatten(Ypred));
@@ -260,6 +292,10 @@ public abstract class Metrics {
 		return (2.0 * precision * recall) / (precision + recall);
 	}
 
+	
+	/**
+	 * F-Measure Macro Averaged by L - The 'standard' macro average.
+	 */
 	public static double P_FmacroAvgL(int Y[][], int Ypred[][]) {
 
 		int L = Y[0].length;
@@ -284,12 +320,13 @@ public abstract class Metrics {
 			}                                                                                                                                                  
 		}
 
-		return (double) M.sum(F) / (double) L;
+		return (double) A.sum(F) / (double) L;
 
 	}
 
 	/**
-	 * P_FmacroAvgD - F-measure macro averaged by example.
+	 * F-Measure Macro Averaged by D - The F-measure macro averaged by example.
+	 * The Jaccard index is also averaed this way.
 	 */
 	public static double P_FmacroAvgD(int Y[][], int Ypred[][]) {
 

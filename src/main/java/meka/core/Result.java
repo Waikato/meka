@@ -29,15 +29,7 @@ import weka.core.Utils;
 import weka.core.Instance;
 
 /**
- * Result. 
- * For storing predictions alongside true labels, for evaluation. 
- * Stored in plaintext format where header consits of lines:
-		   L=no. of labels
-           v:param=value to store in 'vals' HashMap
-		   i:param=value to store in 'info' HashMap
-	  and where entries consist of e.g.:
-           [1,0,1]:[0.3,0.2,0.4] 
-	  where true labels : label predictions or confidences. Look at an output file for an example.
+ * Result - Stores predictions alongside true labels, for evaluation. 
  * For more on the evaluation and threshold selection implemented here; see: 
  * Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer (2011).
  * Jesse Read, <i>Scalable Multi-label Classification</i>. PhD Thesis, University of Waikato, Hamilton, New Zealand (2010).
@@ -223,6 +215,10 @@ public class Result implements Serializable {
 	}
 	*/
 
+	/**
+	 * GetResultAsString - print out each prediction with each true labelset.
+	 * @TODO combine with getResultAsStringNicely
+	 */
 	public static String getResultAsString(Result s) {
 		StringBuilder sb = new StringBuilder();
 		double N = (double)s.predictions.size();
@@ -250,7 +246,11 @@ public class Result implements Serializable {
 		return sb.toString();
 	}
 
-	// write out as plain text
+	/**
+	 * WriteResultToFile -- write a Result out to a file called 'fname'.
+	 * @param	s	    Result
+	 * @param	fname	file name
+	 */
 	public static void writeResultToFile(Result s, String fname) throws Exception {
 		PrintWriter outer = new PrintWriter(new BufferedWriter(new FileWriter(fname)));
 		StringBuilder sb = new StringBuilder();  
@@ -266,9 +266,13 @@ public class Result implements Serializable {
 		outer.close();
 	}
 
-	// read in from plain text
-	public static Result readResultFromFile(String filename) throws Exception {
-		BufferedReader in = new BufferedReader( new FileReader(filename) );
+	/**
+	 * ReadResultToFile -- read a Result in from a file called 'fname'.
+	 * @param	fname	file name
+	 * @return	a Result
+	 */
+	public static Result readResultFromFile(String fname) throws Exception {
+		BufferedReader in = new BufferedReader( new FileReader(fname) );
 		Result r = null;
 
 		try {
@@ -302,6 +306,16 @@ public class Result implements Serializable {
 
 	public static void main (String args[]) {
 
+		// Verbosity Option
+		String voption = "1";
+		try {
+			if (Utils.getOptionPos("verbosity",args) >= 0) {
+				voption = Utils.getOption("verbosity",args);
+			}
+		} catch(Exception e) {
+			// Do nothing
+		}
+
 		// CROSS-FOLD-VALIDATION
 		if (Utils.getOptionPos('f',args) >= 0 && Utils.getOptionPos('x',args) >= 0) {
 
@@ -320,7 +334,7 @@ public class Result implements Serializable {
 				basename = Utils.getOption('f',args);
 				for(int i = 0; i < numFolds; i++) {
 					fold[i] = Result.readResultFromFile(basename+"."+i);
-					fold[i].output = Result.getStats(fold[i],"1");
+					fold[i].output = Result.getStats(fold[i],voption);
 					// check for threshold
 					if (fold[i].getInfo("Threshold")==null) {
 						System.out.println("Having to calculate a threshold ...");
@@ -362,8 +376,8 @@ public class Result implements Serializable {
 				System.exit(1);
 			}
 
-			HashMap<String,Double> o = Result.getStats(r,"1");
-			r.output = o;
+			r.setInfo("Verbosity",voption);
+			r.output = Result.getStats(r,voption);
 			System.out.println(r.toString());
 
 		}

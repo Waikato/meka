@@ -20,9 +20,15 @@ import weka.filters.unsupervised.attribute.*;
 import weka.filters.*;
 import weka.core.*;
 import java.util.*;
+import java.io.*; // for serialized
 import java.io.FileReader;
 import java.io.BufferedReader;
 
+/**
+ * MLUtils - Helpful functions for dealing with multi-labelled data.
+ * @author Jesse Read 
+ * @version	March 2013
+ */
 public abstract class MLUtils {
 
 	/**
@@ -56,24 +62,14 @@ public abstract class MLUtils {
 		return _name;
 	}
 
-	// Given L, generate int[0,1,2,3,...,L]
 	public static final int[] gen_indices(int L) {
-		int ind[] = new int[L];
-		for(int i = 0; i < L; i++) {
-			ind[i] = i;
-		}
-		return ind;
+		return A.make_sequence(L);
 	}
 
 
 	// Shuffle an array given 'r', @TODO use Collections.shuffle(array.asList());
 	public static final void randomize(int array[], Random r) {
-		for (int i = array.length - 1; i > 0; i--) {
-			int index = r.nextInt(i + 1);
-			int temp = array[index];
-			array[index] = array[i];
-			array[i] = temp;
-		}
+		A.shuffle(array,r);
 	}
 
 	// raw instance to int array (i.e. from binary representation)
@@ -106,11 +102,14 @@ public abstract class MLUtils {
 		return sb.toString();
 	}
 
-	// raw instance to bit string (i.e. from binary representation)
-	public static final String toBitString(Instance ins, int c) {
-		StringBuilder sb = new StringBuilder(c);  
-		for(int i = 0; i < c; i++) {
-			sb.append((int)Math.round(ins.value(i)));
+	/**
+	 * ToBitString - returns a String representation of x = [0,0,1,0,1,0,0,0], e.g., "000101000".
+	 * @note that it may be better to use a spars representation for some applications.
+	 */
+	public static final String toBitString(Instance x, int L) {
+		StringBuilder sb = new StringBuilder(L);  
+		for(int i = 0; i < L; i++) {
+			sb.append((int)Math.round(x.value(i)));
 		}
 		return sb.toString();
 	}
@@ -147,7 +146,48 @@ public abstract class MLUtils {
 		return toIntArray((s.substring(1,s.length()-1)).split(","));
 	}
 
-	// raw instance to bit string (i.e. from binary representation)
+	/** ToIntArray. Return an int[] from a String, e.g., "000101000". */
+	public static final int[] toIntArray(String s[]) {
+		int y[] = new int[s.length];
+		for(int j = 0; j < s.length; j++) {
+			y[j] = Integer.parseInt(s[j].trim());
+		}
+		return y;
+	}
+
+	public static final List toSubIndicesSet(Instance x, int sub_indices[]) {
+		List<Integer> y_list = new ArrayList<Integer>();
+		for(int j : sub_indices) {
+			if (x.value(j) > 0.) {
+				y_list.add(j);
+			}
+		}
+		return y_list;
+	}
+
+	public static final List toIndicesSet(Instance x, int L) {
+		List<Integer> y_list = new ArrayList<Integer>();
+		for(int j = 0; j < L; j++) {
+			if (x.value(j) > 0.) {
+				y_list.add(j);
+			}
+		}
+		return y_list;
+	}
+
+	// return e.g., [1,34,73] @note: multi-label only
+	public static final int[] toSparseIntArray(Instance x, int L) {
+		return A.toPrimitive(toIndicesSet(x,L));
+	}
+
+	public static final int[] fromSparseString(String s) {
+		return toIntArray(s.split(","));
+	}
+
+
+	/** 
+	 * InstanceToLabelVector - raw instance to bit representation
+	 */
 	public static final int[] toIntArray(Instance x, int L) {
 		int y[] = new int[L];
 		for(int j = 0; j < L; j++) {
@@ -155,22 +195,11 @@ public abstract class MLUtils {
 		}
 		return y;
 	}
-	// raw instance to bit string (i.e. from binary representation)
-	public static final int[] toIntArray(double w[], double t) {
-		int y[] = new int[w.length];
-		for(int j = 0; j < w.length; j++) {
-			if (w[j] >= t) 
-				y[j] = 1;
-		}
-		return y;
-	}
 
-	public static final int[] toIntArray(String s[]) {
-		int y[] = new int[s.length];
-		for(int j = 0; j < s.length; j++) {
-			y[j] = Integer.parseInt(s[j].trim());
-		}
-		return y;
+	// @deprecated
+	// @see also M.threshold(z,t)
+	public static final int[] toIntArray(double z[], double t) {
+		return A.toIntArray(z,t);
 	}
 
 	// "[1.0,2.0]" -> [1.0,2.0]
@@ -191,14 +220,6 @@ public abstract class MLUtils {
 		double y[] = new double[s.length];
 		for(int j = 0; j < s.length; j++) {
 			y[j] = Double.parseDouble(s[j].trim());
-		}
-		return y;
-	}
-
-	public static final double[] toDoubleArray(int z[]) {
-		double y[] = new double[z.length];
-		for(int j = 0; j < z.length; j++) {
-			y[j] = (double)z[j];
 		}
 		return y;
 	}
@@ -225,7 +246,7 @@ public abstract class MLUtils {
 
 	/** 
 	 * LabelCardinality - return the label cardinality of label data Y
-	 * @TODO move to Metrics.java ?
+	 * @TODO move to Metrics.java ? / Use M.sum(Y)/N
 	 */
 	public static final double labelCardinality(int Y[][]) {
 		int N = Y.length;
@@ -285,11 +306,16 @@ public abstract class MLUtils {
 		return (double)sum/(double)N;
 	}
 
-	// Most Common Combination. Assuming binary format.
+	/**
+	 * MostCommonCombination -  Most common label combination in D.
+	 */
 	public static final String mostCommonCombination(Instances D) {
 		return mostCommonCombination(D,D.classIndex());
 	}
 
+	/**
+	 * MostCommonCombination -  Most common label combination in D (of L labels).
+	 */
 	public static final String mostCommonCombination(Instances D, int L) {
 		HashMap<String,Integer> hm = new HashMap<String,Integer>(D.numInstances());
 		double max_v  = 0.0;
@@ -355,10 +381,40 @@ public abstract class MLUtils {
 		return (int)(c - '0');
 	}
 
+	/**
+	 * CountCombinations - return a mapping of each distinct label combination and its count.
+	 * @note that a sparse representation would be much better for many applications, i.e., instead of using toBitString(...) 
+	 * i.e., use toSparseRepresentation(...) instead.
+	 * @param	D	dataset 
+	 * @param	L	number of labels
+	 * @return	a HashMap where a String representation of each label combination is associated with an Integer count, e.g., "00010010",3
+	 */
 	public static final HashMap<String,Integer> countCombinations(Instances D, int L) {
 		HashMap<String,Integer> map = new HashMap<String,Integer>();  
 		for (int i = 0; i < D.numInstances(); i++) {
+			//String y = MLUtils.toSparseRepresentation(D.instance(i),L);
 			String y = MLUtils.toBitString(D.instance(i),L);
+			Integer c = map.get(y);
+			map.put(y,c == null ? 1 : c+1);
+		}
+		return map;
+	}
+
+	public static final HashMap<LabelSet,Integer> countCombinationsSparse(Instances D, int L) {
+		return PSUtils.countCombinationsSparse(D,L);
+	}
+
+	/**
+	 * ClassCombinationCounts - multi-target version of countCombinations(...).
+	 * @note that this uses the encodeValue(...) function which does NOT consider sparse data.
+	 * @param	D	dataset 
+	 * @return	a HashMap where a String representation of each class combination is associated with an Integer count, e.g. [0,2,2,3,2],5
+	 */
+	public static final HashMap<String,Integer> classCombinationCounts(Instances D) {
+		int L = D.classIndex();
+		HashMap<String,Integer> map = new HashMap<String,Integer>();  
+		for (int i = 0; i < D.numInstances(); i++) {
+			String y = encodeValue(toIntArray(D.instance(i),L));
 			Integer c = map.get(y);
 			map.put(y,c == null ? 1 : c+1);
 		}
@@ -390,20 +446,10 @@ public abstract class MLUtils {
 		return toIntArray(a.split("\\+"));
 	}
 
-	// MULTI-TARGET VERSION of 'countCombinations'
-	// returns entries like e.g. [0,2,2,3,2],5
-	public static final HashMap<String,Integer> classCombinationCounts(Instances D) {
-		int L = D.classIndex();
-		HashMap<String,Integer> map = new HashMap<String,Integer>();  
-		for (int i = 0; i < D.numInstances(); i++) {
-			String y = encodeValue(toIntArray(D.instance(i),L));
-			Integer c = map.get(y);
-			map.put(y,c == null ? 1 : c+1);
-		}
-		return map;
-	}
-
-	// @TODO remove either this or the following function
+	/**
+	 * maxItem - argmax function for a HashMap
+	 * @return 	argmax_k map.get(k)
+	 */
 	public static final Object maxItem(HashMap<?,Double> map) {
 		Object max_k = null;
 		double max_v = 0.0;
@@ -416,14 +462,18 @@ public abstract class MLUtils {
 		return max_k;
 	}
 
-	public static final String maxCombination(HashMap<String,Integer> count) {
+	/**
+	 * argmax - argmax function for a HashMap
+	 * @note used only by SuperNodeFilter.java
+	 * @return 	argmax_k map.get(k)
+	 */
+	public static final Object argmax(HashMap<String,Integer> map) {
 
+		Object max_s = null;
 		int max_v  = 0;
-		String max_s = null;
 
-		for(String s : count.keySet()) {
-			Integer v = count.get(s);
-
+		for(Object s : map.keySet()) {
+			Integer v = map.get(s);
 			if (v > max_v) {
 					max_v = v;
 					max_s = s;
@@ -440,6 +490,7 @@ public abstract class MLUtils {
 	/**
 	 * SwitchAttributes - Move label attributes from End to Beginning of attribute space (MULAN format to MEKA format). 
 	 * Note: can use e.g.: java weka.filters.unsupervised.attribute.Reorder -i thyroid.arff -R 30-last,1-29"
+	 * @TODO use F.switchAttributes(D,L)
 	 */
 	public static final Instances switchAttributes(Instances D, int L) {
 		int d = D.numAttributes();
@@ -579,22 +630,25 @@ public abstract class MLUtils {
 		return sb.toString();
 	}
 
+	/**
+	 * PruneCountHashMap - remove entries in hm = {(label,count)} where 'count' is no more than 'p'.
+	 */
 	public static void pruneCountHashMap(HashMap<?,Integer> hm, int p) {
-		ArrayList al = new ArrayList();  
-		for (Object o : hm.keySet()) {
-			if(hm.get(o) <= p) {
-				al.add(o);
+		ArrayList removeList = new ArrayList();  
+		for (Object obj : hm.keySet()) {
+			if(hm.get(obj) <= p) {
+				removeList.add(obj);
 			}
 		}
-		for (Object o : al) {
-			hm.remove(o);
+		for (Object obj : removeList) {
+			hm.remove(obj);
 		}
-		al.clear();
-		al = null;
+		removeList.clear();
+		removeList = null;
 	}
 
 	// assume that no hm.get(.) > N
-	public static void pruneCountHashMapBasedAsAFractionOf(HashMap<?,Integer> hm, double p, int N) {
+	public static HashMap<?,Integer> pruneCountHashMapBasedAsAFractionOf(HashMap<?,Integer> hm, double p, int N) {
 		ArrayList al = new ArrayList();  
 		for (Object o : hm.keySet()) {
 			if((double)hm.get(o)/(double)N <= p) {
@@ -606,6 +660,7 @@ public abstract class MLUtils {
 		}
 		al.clear();
 		al = null;
+		return hm;
 	}
 
 	/**
@@ -747,6 +802,9 @@ public abstract class MLUtils {
 		return hashMapToString(map,-1);
 	}
 
+	/**
+	 * getIntegerOption - parse 'op' to an integer if we can, else used default 'def'.
+	 */
 	public static int getIntegerOption(String op, int def) {
 		try {
 			return Integer.parseInt(op);
@@ -796,6 +854,11 @@ public abstract class MLUtils {
 		return Y;
 	}
 
+	// @deprecated
+	public static final double[] toDoubleArray(int z[]) {
+		return A.toDoubleArray(z);
+	}
+
 	/**
 	 * GetxfromInstances - Extract attributes as a double x[] from an Instance.
 		// @NOTE changed this to xy.toDoubleArray();
@@ -804,11 +867,6 @@ public abstract class MLUtils {
 		int L = xy.classIndex();
 		double xy_[] = xy.toDoubleArray();
 		return Arrays.copyOfRange(xy_,L,xy_.length);
-		//double x[] = new double[xy.numAttributes() - L];
-		//for(int i = 0; i < x.length; i++) {
-			//x[i] = xy.value(i+L);
-		//}
-		//return x;
 	}
 
 	/**
@@ -846,7 +904,7 @@ public abstract class MLUtils {
 	}
 
 
-	// select i with probabilitiy w[i] (w must be normalised)
+	/* select i with probabilitiy w[i] (w must be normalised)
 	public static int rndsrc (double w[], Random r) {
 		double u = r.nextDouble();
 		double sum = w[0];
@@ -857,6 +915,7 @@ public abstract class MLUtils {
 		}
 		return i;
 	}
+	*/
 
 
 	public static final void main (String args[]) throws Exception {
@@ -866,9 +925,12 @@ public abstract class MLUtils {
 		 */
 		if (args.length > 0) {
 
+			//System.out.println("loading ...");
 			Instances D = new Instances(new BufferedReader(new FileReader(args[0])));
+			int N = D.numInstances();
 
 			int L = Integer.parseInt(Utils.getOption('C',MLUtils.getDatasetOptions(D)));
+			D.setClassIndex(L);
 
 			switch(args[1].charAt(0)) {
 
@@ -877,6 +939,28 @@ public abstract class MLUtils {
 				case 'N' :  System.out.println(D.numInstances());			// return the number of Instances of D
 							break;
 				case 'd' :  System.out.println(D.numAttributes()-L);		// reurns the number of (non-label) attributes of D
+							break;
+				case 'l' :  System.out.println(MLUtils.labelCardinality(D));		// reurns the label cardinalities
+							break;
+				case 'P' :  System.out.println(Arrays.toString(MLUtils.labelCardinalities(D)));		// reurns the label cardinalities
+							break;
+				case 'C' :  System.out.println(hashMapToString(MLUtils.countCombinations(D,L)));		// counts
+							break;
+				case 'p' :  System.out.println("collecting ...");
+							HashMap<LabelSet,Integer> hm = PSUtils.countCombinationsSparse(D,L);
+							System.out.println("pruning ...");
+							//MLUtils.pruneCountHashMap(hm,1);
+							//System.out.println(""+hm);
+							System.out.println("writing ...");
+							FileOutputStream fout = new FileOutputStream("hm-NEW.serialized");
+							ObjectOutputStream oos = new ObjectOutputStream(fout);
+							oos.writeObject(hm);
+							/*
+							FileInputStream streamIn = new FileInputStream("hm-test.serialized");
+							ObjectInputStream objectinputstream = new ObjectInputStream(streamIn);
+							HashMap<LabelSet,Integer> hm_in = (HashMap<LabelSet,Integer>) objectinputstream.readObject();
+							System.out.println(""+hm_in);
+							*/
 							break;
 				default  : 	System.out.println(MLUtils.getDatasetName(D));	// returns the name of D
 							break;
