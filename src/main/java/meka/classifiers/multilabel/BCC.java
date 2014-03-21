@@ -22,9 +22,9 @@ import meka.classifiers.multilabel.cc.CNode;
 import meka.classifiers.multitarget.*;
 import weka.core.*;
 import meka.core.A;
+import meka.core.M;
 import meka.core.StatUtils;
 import meka.core.Result;
-import rbms.M;
 import weka.filters.unsupervised.attribute.*;
 import weka.filters.*;
 import java.util.*;
@@ -104,7 +104,7 @@ public class BCC extends MultilabelClassifier implements Randomizable, Technical
 		else {	
 			// Old/default Option
 			if (getDebug()) System.out.println("The Frequency method for finding marginal dependence.");
-			CD = StatUtils.margDepMatrix(D);
+			CD = StatUtils.margDepMatrix(D,"I");
 		}
 
 		if (getDebug()) System.out.println(M.toString(CD));
@@ -142,7 +142,7 @@ public class BCC extends MultilabelClassifier implements Randomizable, Technical
 			paM[k][j] = 1;
 			//StdOut.println(e);
 		}
-		if (getDebug()) System.out.println(toString(paM));
+		if (getDebug()) System.out.println(M.toString(paM));
 
 		/*
 		 *  Turn the DAG into a Tree with the m_Seed-th node as root
@@ -221,7 +221,6 @@ public class BCC extends MultilabelClassifier implements Randomizable, Technical
 
 	/**
 	 * ToString - like M.toString() but for int[][]
-	 */
 	public static String toString(int M[][]) {
 		StringBuilder sb = new StringBuilder();  
 		for(int j = 0; j < M.length; j++) {
@@ -232,6 +231,7 @@ public class BCC extends MultilabelClassifier implements Randomizable, Technical
 		}
 		return sb.toString();
 	}
+	*/
 	
 	protected int m_Seed = 0;
 
