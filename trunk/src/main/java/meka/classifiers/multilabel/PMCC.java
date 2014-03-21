@@ -36,7 +36,7 @@ import weka.core.*;
 import meka.core.*;
 import java.util.*;
 
-public class PMCC extends MCCtemp { 
+public class PMCC extends MCC { 
 
 	protected int m_M = 0;
 	protected int m_O = 0;
