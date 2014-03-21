@@ -17,12 +17,17 @@ package meka.core;
 
 import weka.core.*;
 import java.util.*;
-import rbms.M;
 
+/**
+ * ThresholdUtils - Helpful functions for calibrating thresholds.
+ * @author Jesse Read (jesse@tsc.uc3m.es)
+ * @version	March 2013
+ */
 public abstract class ThresholdUtils {
 
-	/*
-	*/
+	/**
+	 * ThresholdStringToArray - parse a threshold option string to an array of L thresholds (one for each label variable).
+	 */
 	public static double[] thresholdStringToArray(String top, int L) {
 		if (top.startsWith("[")) {
 			//if (L != 
