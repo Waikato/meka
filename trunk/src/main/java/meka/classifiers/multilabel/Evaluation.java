@@ -31,14 +31,15 @@ import weka.core.Option;
 import weka.core.Randomizable;
 import meka.core.Result;
 import weka.core.Utils;
+import weka.core.SerializationHelper;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
 import weka.filters.unsupervised.instance.RemoveRange;
 
 /**
  * Evaluation.java - Evaluation functionality.
- * @author 		Jesse Read (jmr30@cs.waikato.ac.nz)
- * @version 	November 2012
+ * @author 		Jesse Read
+ * @version 	March 2014
  */
 public class Evaluation {
 
@@ -58,12 +59,12 @@ public class Evaluation {
 
 		//Load Instances
 		Instances allInstances = getDataset(options);
-		int L = allInstances.classIndex();
-		boolean cSwitch = (L < 0); // because we will need to do this for the test instances also
 
 		//Check for the essential -C option. If still nothing set, we can't continue
-		//if(allInstances.classIndex() < 0) 
-		//	throw new Exception(");
+		if(allInstances.classIndex() <= 0) {
+			// apparently the dataset didn't contain the '-C' flag, check in the command line options ...
+			setClassesFromOptions(allInstances, options);
+		}
 
 		// Seed
 		int seed = (Utils.getOptionPos('s',options) >= 0) ? Integer.parseInt(Utils.getOption('s',options)) : 0;
@@ -84,10 +85,23 @@ public class Evaluation {
 			voption = Utils.getOption("verbosity",options);
 		}
 
-		// Save later?
+		// Save for later?
 		String fname = null;
 		if (Utils.getOptionPos('f',options) >= 0) {
 			fname = Utils.getOption('f',options);
+		}
+		// Dump for later?
+		String dname = null;
+		if (Utils.getOptionPos('d',options) >= 0) {
+			dname = Utils.getOption('d',options);
+		}
+		// Load from file?
+		String lname = null;
+		if (Utils.getOptionPos('l',options) >= 0) {
+			lname = Utils.getOption('l',options);
+			h = (MultilabelClassifier)SerializationHelper.read(lname);
+			//Object o[] = SerializationHelper.readAll(lname);
+			//h = (MultilabelClassifier)o[0];
 		}
 
 		try {
@@ -121,13 +135,8 @@ public class Evaluation {
 					// split by train / test files
 					TRAIN = allInstances.numInstances();
 					// load test set
-					Instances testInstances = null;
 					try {
-						String filename = Utils.getOption('T', options);
-						testInstances = DataSource.read(filename);
-						if (cSwitch) {// we have to switch these attributes also
-							MLUtils.switchAttributes(testInstances,allInstances.classIndex());
-						}
+						Instances testInstances = getDataset(options,'T');
 						for(Instance x : testInstances) {
 							x.setDataset(allInstances);
 							allInstances.add(x);
@@ -179,7 +188,25 @@ public class Evaluation {
 
 				if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(allInstances)+"\tL="+allInstances.classIndex()+"\tD(t:T)=("+train.numInstances()+":"+test.numInstances()+")\tLC(t:T)="+Utils.roundDouble(MLUtils.labelCardinality(train,allInstances.classIndex()),2)+":"+Utils.roundDouble(MLUtils.labelCardinality(test,allInstances.classIndex()),2)+")");
 
-				r = evaluateModel(h,train,test,top,voption);
+				if (lname != null) {
+					// h is already built, and loaded from a file
+					r = testClassifier(h,test);
+					// @@@temp move elsewhere @@@
+					if (h instanceof MultiTargetClassifier || isMT(test)) {
+						r.setInfo("Type","MT");
+					}
+					else if (h instanceof MultilabelClassifier) {
+						r.setInfo("Type","ML");
+					}
+					r.setInfo("Threshold",MLEvalUtils.getThreshold(r.predictions,train,top)); // <-- only relevant to ML (for now), but we'll put it in here in any case
+					r.setInfo("Verbosity",voption);
+					r.output = Result.getStats(r, voption);
+					// @@@@@@@@@@@@@@@@@@@@@@@@@@
+				}
+				else {
+					r = evaluateModel(h,train,test,top,voption);
+				}
+				// @todo, if D_train==null, assume h is already trained
 				System.out.println(r.toString());
 
 			}
@@ -188,6 +215,9 @@ public class Evaluation {
 
 			if (fname != null) {
 				Result.writeResultToFile(r,fname);
+			}
+			if (dname != null) {
+				SerializationHelper.write(dname, (Object)h); //new PrintWriter(new BufferedWriter(new FileWriter(dname))));
 			}
 
 		} catch(Exception e) {
@@ -378,6 +408,7 @@ public class Evaluation {
 		}
 		if(h.getDebug()) System.out.println(":-");
 
+		/*
 		if(h.getDebug()) {
 
 			for(int i = 0; i < result.size(); i++) {
@@ -386,8 +417,21 @@ public class Evaluation {
 
 
 		}
+		*/
 
 		return result;
+	}
+
+	/**
+	 * GetDataset - load a dataset, given command line options specifying an arff file, and set the class index correctly to indicate the number of labels.
+	 * @param	options	command line options
+	 * @param	T		set to 'T' if we want to load a test file
+	 * @return	An Instances representing the dataset
+	 */
+	public static Instances getDataset(String options[], char T) throws Exception {
+		Instances D = loadDatasetFromOptions(options, T);
+		setClassesFromOptions(D,MLUtils.getDatasetOptions(D));
+		return D;
 	}
 
 	/**
@@ -396,20 +440,29 @@ public class Evaluation {
 	 * @return	An Instances representing the dataset
 	 */
 	public static Instances getDataset(String options[]) throws Exception {
-		Instances D = loadDatasetFromOptions(options);
-		setClassesFromOptions(D,MLUtils.getDatasetOptions(D));
-		return D;
+		return getDataset(options,'t');
 	}
 
 	/**
 	 * LoadDatasetFromOptions - load a dataset, given command line options specifying an arff file.
+	 * @deprecated
 	 * @param	options	command line options
 	 * @return	An Instances representing the dataset
-	 */
 	public static Instances loadDatasetFromOptions(String options[]) throws Exception {
+		return loadDatasetFromOptions(options,'t');
+	}
+	*/
+
+	/**
+	 * LoadDatasetFromOptions - load a dataset, given command line options specifying an arff file.
+	 * @param	options	command line options
+	 * @param	T		set to 'T' if we want to load a test file
+	 * @return	An Instances representing the dataset
+	 */
+	public static Instances loadDatasetFromOptions(String options[], char T) throws Exception {
 
 		Instances D = null;
-		String filename = Utils.getOption('t', options);
+		String filename = Utils.getOption(T, options);
 
 		// Check for filename
 		if (filename == null || filename.isEmpty())
@@ -433,6 +486,11 @@ public class Evaluation {
 		return D;
 	}
 
+	public static int getL(String options[]) throws Exception {
+		return (Utils.getOptionPos('C', options) >= 0) ? Integer.parseInt(Utils.getOption('C',options)) : 0;
+	}
+	
+
 	/**
 	 * SetClassesFromOptions - set the class index correctly in a dataset D, given command line options 'options'.
 	 * @note: there is a similar function in Exlorer.prepareData(D) but that function can only take -C from the dataset options.
@@ -441,7 +499,7 @@ public class Evaluation {
 	public static void setClassesFromOptions(Instances D, String options[]) throws Exception {
 		try {
 			// get L
-			int L = (Utils.getOptionPos('C', options) >= 0) ? Integer.parseInt(Utils.getOption('C',options)) : Integer.parseInt(Utils.getOption('c',options));
+			int L = getL(options);
 			// if negative, then invert first
 			if ( L < 0) {
 				L = -L;
@@ -489,6 +547,10 @@ public class Evaluation {
 		text.append("\tSets the number of target attributes to expect (indexed from the beginning).\n");
 		text.append("-f <results_file>\n");
 		text.append("\tSpecify a file to output results and evaluation statistics into.\n");
+		text.append("-d <classifier_file>\n");
+		text.append("\tSpecify a file to dump classifier into.\n");
+		text.append("-l <classifier_file>\n");
+		text.append("\tSpecify a file to load classifier from.\n");
 		text.append("-verbosity <verbosity level>\n");
 		text.append("\tSpecify more/less evaluation.\n");
 		// Multilabel Options
