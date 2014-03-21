@@ -86,7 +86,8 @@ public class CCe extends MultilabelClassifier implements Randomizable {
 		int pa[] = new int[]{};
 		for(int j : m_Chain) {
 			if (getDebug()) 
-				System.out.println("\t node h_"+j+" : P(y_"+j+" | x_[:], y_"+Arrays.toString(pa)+")");
+				System.out.print(" "+D.attribute(j).name());
+				//System.out.println("\t node h_"+j+" : P(y_"+j+" | x_[:], y_"+Arrays.toString(pa)+")");
 			nodes[j] = new CNode(j, null, pa);
 			nodes[j].build(D, m_Classifier);
 			pa = A.add(pa,j);

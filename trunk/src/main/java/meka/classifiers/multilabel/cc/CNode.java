@@ -36,6 +36,7 @@ public class CNode implements Serializable {
 	private int inX[] = null;
 	private int paY[] = null;
 	private Instances T = null;
+	private Instance t_ = null;
 	private Classifier h = null;
 	private int map[] = null;
 
@@ -45,17 +46,22 @@ public class CNode implements Serializable {
 	public CNode(int j, int inX[], int paY[]) {
 		this.j = j;
 		this.inX = inX;
-		this.paY = Arrays.copyOf(paY,paY.length); // almost certainly not necessary
+		this.paY = paY; //Arrays.copyOf(paY,paY.length); // almost certainly not necessary
 	}
 
 	public int[] getParentsY() {
 		return paY;
 	}
 
+	/**
+	 * Transform - transform dataset D for this node.
+	 * 0. Get, e.g.,                                        paY = [1,4]
+	 * 1. remove everything except parents and self!, e.g., keep = [1,4,3]
+	 * @todo: keep a handy template of the data for 0 parents, 1 parent, 2 parents ??
+	 */
 	public Instances transform(Instances D) throws Exception {
 		int L = D.classIndex();
 		d = D.numAttributes() - L;
-		//System.out.println("PA_Y "+Arrays.toString(paY));
 		int keep[] = A.add(this.paY,j);		// keep all parents and self!
 		Arrays.sort(keep);
 		int remv[] = complement(keep,L); 	// i.e., remove the rest < L
@@ -79,6 +85,10 @@ public class CNode implements Serializable {
 		// build SLC 'h'
 		h = AbstractClassifier.makeCopy(H);
 		h.buildClassifier(T);
+		t_ = new SparseInstance(T.numAttributes());
+		t_.setDataset(T);
+		t_.setClassMissing();								// [?,x,x,x]
+		T.clear();
 	}
 
 	/**
@@ -101,6 +111,7 @@ public class CNode implements Serializable {
 	 * Transform - turn [y1,y2,y3,x1,x2] into [y1,y2,x1,x2].
 	 */
 	public Instance transform(Instance x, double ypred[]) throws Exception {
+
 		int L = x.classIndex();
 		double array[] = x.toDoubleArray();  				// [y,c,y,x,x,x]
 		double array_[] = new double[d + paY.length + 1];	// [_,_,_,_]
@@ -109,7 +120,7 @@ public class CNode implements Serializable {
 			array_[map[pa]] = ypred[pa];
 		}
 		System.arraycopy(array,L,array_,paY.length+1,d);	// [_,x,x,x]
-		DenseInstance x_ = new DenseInstance(1.,array_);
+		Instance x_ = new SparseInstance(1.,array_);
 		x_.setDataset(T);
 		x_.setClassMissing();								// [?,x,x,x]
 

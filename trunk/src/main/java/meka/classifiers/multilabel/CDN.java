@@ -16,14 +16,18 @@
 package meka.classifiers.multilabel;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+import java.util.Vector;
+import java.util.Enumeration;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
-import meka.core.MLUtils;
+import weka.core.Option;
+import meka.core.A;
 import weka.core.Randomizable;
 import weka.core.RevisionUtils;
 import weka.core.TechnicalInformation;
@@ -104,19 +108,19 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 		//ArrayList<double[]> collection = new ArrayList<double[]>(100);
 
 		double y[] = new double[L];		// for collectiing marginal
-		int r[] = MLUtils.gen_indices(L);
+		int sequence[] = A.make_sequence(L);
 
 		double likelihood[] = new double[L];
 
 		for(int i = 0; i < I; i++) {
-			Collections.shuffle(Arrays.asList(r));
-			for(int j : r) {
+			Collections.shuffle(Arrays.asList(sequence));
+			for(int j : sequence) {
 				// x = [x,y[1],...,y[j-1],y[j+1],...,y[L]]
 				x.setDataset(D_templates[j]);
 				// q = h_j(x)    i.e. p(y_j | x)
 
 				double dist[] = h[j].distributionForInstance(x);
-				int k = MLUtils.rndsrc(dist,u);
+				int k = A.rndsrc(dist,u);
 				x.setValue(j,k);
 				likelihood[j] = dist[k];
 				// likelihood
@@ -178,6 +182,42 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 	 */
 	public void setIc(int ic) {
 		I_c = ic;
+	}
+
+	@Override
+	public Enumeration listOptions() {
+
+		Vector newVector = new Vector();
+		newVector.addElement(new Option("\tTotal Iterations.\n\tdefault: "+I, "I", 1, "-I <value>"));
+		newVector.addElement(new Option("\tCollection Iterations.\n\tdefault: "+I_c, "Ic", 1, "-Ic <value>"));
+
+		Enumeration enu = super.listOptions();
+
+		while (enu.hasMoreElements()) 
+			newVector.addElement(enu.nextElement());
+
+		return newVector.elements();
+	}
+
+	@Override
+	public void setOptions(String[] options) throws Exception {
+
+		I = (Utils.getOptionPos('I',options) >= 0) ? Integer.parseInt(Utils.getOption('I', options)) : I;
+		I_c = (Utils.getOptionPos("Ic",options) >= 0) ? Integer.parseInt(Utils.getOption("Ic", options)) : I_c;
+
+		super.setOptions(options);
+	}
+
+	@Override
+	public String [] getOptions() {
+
+		ArrayList<String> result;
+	  	result = new ArrayList<String>(Arrays.asList(super.getOptions()));
+	  	result.add("-I");
+	  	result.add("" + I);
+		result.add("-Ic");
+	  	result.add("" + I_c);
+		return result.toArray(new String[result.size()]);
 	}
 
 	public static void main(String args[]) {
