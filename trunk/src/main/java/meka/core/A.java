@@ -99,6 +99,15 @@ public abstract class A {
 		return p;
 	}
 
+	// sum
+	public static int sum(int v[]) {
+		int p = 0;
+		for(int d : v) {
+			p += d;
+		}
+		return p;
+	}
+
 	// add value 'v' to 'array[]' @todo: rename to 'append'
 	public static int[] add(int array[], final int v) {
 		int n = array.length;
@@ -106,6 +115,7 @@ public abstract class A {
 		array[n] = v;
 		return array;
 	}
+
 	public static int[] append(int array[], final int v) {
 		return add(array,v);
 	}
@@ -137,15 +147,7 @@ public abstract class A {
 	}
 	*/
 
-	public static final int[] make_seq(int start, int end) {
-		int array[] = new int[end-start];
-		for(int j = start, i = 0; j < end; j++, i++) {
-			array[i] = j;
-		}
-		return array;
-	}
-
-	// select the elements 'indices[]' from 'array[]'
+	// select/get the elements 'indices[]' from 'array[]'
 	public static int[] select(int array[], final int indices[]) {
 		int selection[] = new int[indices.length];
 		for(int i = 0; i < indices.length; i++) {
@@ -168,6 +170,9 @@ public abstract class A {
 		int b = r.nextInt(array.length-1);
 		return swap(array,a,(a==b) ? array.length-1 : b);
 	}
+
+	// "1,2" -> [1,2]
+	//@see MLUtils.toIntArray(String s) 
 
 	// "12" -> [1,2]
 	public static final int[] string2IntArray(String s) {
@@ -197,17 +202,100 @@ public abstract class A {
 		return rndsrc(w,r);
 	}
 
-	// Given L, generate int[0,1,2,3,...,L]
+	/**
+	 * Given L, return new int[]{0,1,2,3,...,L-1}
+	 */
 	public static final int[] make_sequence(int L) {
-		return MLUtils.gen_indices(L);
+		int ind[] = new int[L];
+		for(int i = 0; i < L; i++) {
+			ind[i] = i;
+		}
+		return ind;
+	}
+
+	public static final int[] make_sequence(int start, int end) {
+		int array[] = new int[end-start];
+		for(int j = start, i = 0; j < end; j++, i++) {
+			array[i] = j;
+		}
+		return array;
 	}
 
 	// Shuffle an array given 'r', @TODO use Collections.shuffle(array.asList());
 	public static final void shuffle(int array[], Random r) {
-		//Collections.shuffle(array.asList(), r);
+
+		//@TODO: use this:
+		//Collections.shuffle(Arrays.asList(array), r);
 		//return array;
-		MLUtils.randomize(array,r);
+
+
+		//MLUtils.randomize(array,r);
+		for (int i = array.length - 1; i > 0; i--) {
+			int index = r.nextInt(i + 1);
+			int temp = array[index];
+			array[index] = array[i];
+			array[i] = temp;
+		}
 	}
 
+	/**
+	 * ToPrimitive - cast Integer[] to int[].
+	 */
+	public static int[] toPrimitive(Integer a[]) {
+		int b[] = new int[a.length];
+		for(int i = 0; i < a.length; i++) {
+			b[i] = a[i];
+		}
+		return b;
+	}
+
+	/**
+	 * ToPrimitive - cast List<Integer> to int[].
+	 */
+	public static int[] toPrimitive(List<Integer> list) {
+		int[] a = new int[list.size()];       
+		Iterator<Integer> iter = list.iterator();
+		for (int i=0; iter.hasNext(); i++) {       
+			a[i] = iter.next();                
+		}
+		return a;
+	}
+
+	/**
+	 * ToDoubleArray - cast int[] to double[].
+	 */
+	public static final double[] toDoubleArray(int z[]) {
+		double y[] = new double[z.length];
+		for(int j = 0; j < z.length; j++) {
+			y[j] = (double)z[j];
+		}
+		return y;
+	}
+
+	// @see also toIntArray(z,t)
+	public static final int[] toIntArray(double z[]) {
+		int u[] = new int[z.length];
+		for(int j = 0; j < z.length; j++) {
+			u[j] = (int)z[j];
+		}
+		return u;
+	}
+
+	// @see also M.threshold(z,t)
+	public static final int[] toIntArray(double z[], double t) {
+		int u[] = new int[z.length];
+		for(int j = 0; j < z.length; j++) {
+			u[j] = (z[j] > t) ? 1 : 0;
+		}
+		return u;
+	}
+
+	public static final int[] toIntArray(String s[]) {
+		int u[] = new int[s.length];
+		for(int j = 0; j < s.length; j++) {
+			u[j] = Integer.parseInt(s[j]);
+		}
+		return u;
+	}
 }
 
