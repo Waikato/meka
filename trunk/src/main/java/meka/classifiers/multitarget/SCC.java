@@ -24,7 +24,7 @@ import meka.classifiers.multitarget.meta.*;
 import weka.classifiers.functions.*;
 import weka.filters.unsupervised.attribute.*;
 import weka.filters.supervised.attribute.*;
-import meka.filters.multilabel.*;
+import meka.filters.multilabel.SuperNodeFilter;
 import weka.attributeSelection.*;
 import weka.filters.*;
 import weka.core.*;
@@ -33,7 +33,8 @@ import meka.core.MLEvalUtils;
 import meka.core.StatUtils;
 import meka.core.Result;
 import meka.core.A;
-import rbms.M;
+import meka.core.M;
+import meka.core.MetaLabelUtils;
 import java.util.*;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
@@ -128,8 +129,8 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 
 	/**
 	 * Rating - Return a score for the super-class 'partition' using the pairwise info in 'M'
-	 * @param	partition	super-class partition
-	 * @param	M			pariwise information propto M[j][k]
+	 * @param	partition	super-class partition, e.g., [[0,3],[2],[1,4]]
+	 * @param	M			pariwise information \propto M[j][k]
 	 * @param	CRITICAL	a critical value to use
 	 *
 	 * CRITICAL = 2.706; 
@@ -170,19 +171,6 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		}
 
 		return sumTogether - sumApart;
-	}
-
-	/**
-	 * ToString - A string representation for the super-class partition 'partition'.
-	 */
-	public String toString(int partition[][]) {
-		StringBuilder sb = new StringBuilder();  
-		sb.append("{");
-		for(int i = 0; i < partition.length; i++) {
-			sb.append(" "+Arrays.toString(partition[i]));
-		}
-		sb.append(" }");
-		return sb.toString();
 	}
 
 	// return [0,...,L-1]
@@ -329,7 +317,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		double acc1 = result_1.output.get(i_ErrFn);
 		if (getDebug()) System.out.println(" "+acc1);
 
-		int partition[][] = generatePartition(MLUtils.gen_indices(L),rand); 
+		int partition[][] = MetaLabelUtils.generatePartition(MLUtils.gen_indices(L),rand); 
 
 		// 2. SELECT / MODIFY INDICES (using LEAD technique)
 		if (getDebug()) System.out.println("2. GET ERR-CHI-SQUARED MATRIX: ");
@@ -342,7 +330,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		 */
 		if (getDebug()) System.out.println("3. COMBINE NODES TO FIND THE BEST COMBINATION ACCORDING TO CHI");
 		double w = rating(partition,MER);
-		if (getDebug()) System.out.println("@0 : "+toString(partition)+ "\t("+w+")");
+		if (getDebug()) System.out.println("@0 : "+MetaLabelUtils.toString(partition)+ "\t("+w+")");
 		
 		for(int i = 0; i < m_I; i++) {
 			int partition_[][] = mutateCombinations(M.deep_copy(partition),rand);
@@ -351,15 +339,15 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 				 // ACCEPT
 				 partition = partition_;
 				 w = w_;
-				 if (getDebug()) System.out.println("@"+i+" : "+toString(partition)+ "\t("+w+")");
+				 if (getDebug()) System.out.println("@"+i+" : "+MetaLabelUtils.toString(partition)+ "\t("+w+")");
 			 }
 			 else {
 				 // MAYBE ACCEPT
 				 double diff = Math.abs(w_-w);
-				 double p = (2.*(1. - M.sigma(diff*i/1000.))); 
+				 double p = (2.*(1. - sigma(diff*i/1000.))); 
 				 if (p > rand.nextDouble()) {
 					 // OK, ACCEPT NOW
-					 if (getDebug()) System.out.println("@"+i+" : "+toString(partition_)+ "\t("+w_+")*");
+					 if (getDebug()) System.out.println("@"+i+" : "+MetaLabelUtils.toString(partition_)+ "\t("+w_+")*");
 					 partition = partition_;
 					 w = w_;
 				 }
@@ -377,7 +365,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 			// Build & evaluate the classifier with the latest partition
 			result_1 = testClassifier((MultilabelClassifier)m_Classifier,D_train,D_test,partition);
 			w = result_1.output.get(i_ErrFn);
-			if (getDebug()) System.out.println("@0 : "+toString(partition)+ "\t("+w+")");
+			if (getDebug()) System.out.println("@0 : "+MetaLabelUtils.toString(partition)+ "\t("+w+")");
 			for(int i = 0; i < m_N; i++) {
 				int partition_[][] = mutateCombinations(M.deep_copy(partition),rand);
 				// Build the classifier with the new combination
@@ -388,25 +376,19 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 				if (w_ > w) {
 					w = w_;
 					partition = partition_;
-					if (getDebug()) System.out.println("@"+(i+1)+"' : "+toString(partition)+ "\t("+w+")");
+					if (getDebug()) System.out.println("@"+(i+1)+"' : "+MetaLabelUtils.toString(partition)+ "\t("+w+")");
 				}
 			}
 		}
 
 		// 4. DECIDE HOW GOOD THEY ARE, COMPARE EACH LABEL TO BR-result?
-		if (getDebug()) System.out.println("4. TRAIN "+toString(partition));
+		if (getDebug()) System.out.println("4. TRAIN "+MetaLabelUtils.toString(partition));
 		trainClassifier(m_Classifier,D,partition);
 
 		if (getDebug()) {
 			//System.out.println("E_acc P "+m_P+" "+(mt.m_InstancesTemplate.numInstances()/(double)N) +" "+(MLUtils.numberOfUniqueCombinations(mt.m_InstancesTemplate)/(double)U));
 		}
 		// 5. MOVE ON ...
-	}
-
-	@Override
-	public String toString() {
-		return null;
-		//return mt.toString();
 	}
 
 	@Override
@@ -446,59 +428,6 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		return y;
 	}
 
-	/**
-	 * generatePartition.
-	 * @TODO can generate 'indices' inside, given L
-	 * @param	indices		e.g., [1,2,3,4,5]
-	 * @param	r			Random
-	 * @return	partition
-	 */
-	public static int[][] generatePartition(int indices[], Random r) {
-		int L = indices.length;
-		return generatePartition(indices,r.nextInt(L)+1,r);
-	}
-
-	/** 
-	 * generatePartition.
-	 * @TODO can generate 'indices' inside, given L
-	 * Get a random layout of 'num' sets of 'indices'.
-	 * @param	indices		e.g., [1,2,3,4,5]
-	 * @param	num			number of super-nodes to generate ... \in {1,...,L}
-	 * @param	r			Random
-	 * @return	partition
-	 */
-	public static int[][] generatePartition(int indices[], int num, Random r) {
-
-		int L = indices.length;
-
-		// shuffle indices
-		MLUtils.randomize(indices,r);
-
-		// we have a minimum of 'num' groups
-		ArrayList selection[] = new ArrayList[num];
-		for(int i = 0; i < num; i++) {
-			selection[i] = new ArrayList<Integer>();
-			selection[i].add(indices[i]); 
-		}
-
-		// remaining
-		for(int i = num; i < L; i++) {
-			int idx = r.nextInt(num);
-			selection[idx].add(indices[i]);
-		}
-
-		// convert <int[]>List into an int[][] array
-		int f_selection[][] = new int[num][];
-		for(int i = 0; i < selection.length; i++) {
-			f_selection[i] = new int[selection[i].size()];
-			for(int j = 0; j < f_selection[i].length; j++) {
-				f_selection[i][j] = (Integer)selection[i].get(j);
-			}
-		}
-
-		return f_selection;
-	}
-
 	protected int m_S = 0;
 
 	@Override
@@ -513,6 +442,13 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 
 	public static void main(String args[]) {
 		MultilabelClassifier.evaluation(new SCC(),args);
+	}
+
+	/**
+	 * Sigmoid / Logistic function
+	 */
+	public static final double sigma(double a) {
+		return 1.0/(1.0+Math.exp(-a));
 	}
 
 	@Override
