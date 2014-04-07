@@ -882,6 +882,45 @@ public abstract class MLUtils {
 	}
 
 	/**
+	 * ReplaceZasClasses - data Z[][] will be the new class labels in D.
+	 */
+	public static Instances replaceZasClasses(Instances D, double Z[][], int L) {
+
+		D.setClassIndex(-1);
+
+		for(int j = 0; j < L; j++) {
+			D.deleteAttributeAt(0);
+		}
+		return insertZintoD(D,Z);
+	}
+
+	/**
+	 * InsertZintoD - Insert data Z[][] to Instances D (e.g., as labels).
+	// @TODO Assume binary labels!
+	 * @TODO L could be extracted from D.numAttributes() here.
+	 */
+	public static Instances insertZintoD(Instances D, double Z[][]) {
+
+		int L = Z[0].length;
+
+		// add attributes
+		for(int j = 0; j < L; j++) {
+			D.insertAttributeAt(new Attribute("c"+j,Arrays.asList(new String[]{"0","1"})),j);
+		}
+
+		// add values Z[0]...Z[N] to D
+		// (note that if D.numInstances() < Z.length, only some are added)
+		for(int j = 0; j < L; j++) {
+			for(int i = 0; i < D.numInstances(); i++) {
+				D.instance(i).setValue(j,Z[i][j] > 0.5 ? 1.0 : 0.0);
+			}
+		}
+
+		D.setClassIndex(L);
+		return D;
+	}
+
+	/**
 	 * AddZtoD - Add data Z[][] to Instances D.
 	 * @TODO L could be extracted from D.numAttributes() here.
 	 */
@@ -899,6 +938,7 @@ public abstract class MLUtils {
 				D.instance(i).setValue(L+a,Z[i][a]);
 			}
 		}
+
 		D.setClassIndex(L);
 		return D;
 	}
@@ -916,6 +956,33 @@ public abstract class MLUtils {
 		return i;
 	}
 	*/
+
+	/**
+	 * Get K - get the number of values associated with each label L.
+	 * @param	D 	a dataset
+	 * @return	a vector of size L: K_1,...,K_L
+	 */
+	public int[] getK(Instances D) {
+		int L = D.classIndex();
+		HashSet counts[] = new HashSet[L];
+		int K[] = new int[L];
+		for(int j = 0; j < L; j++) {
+			counts[j] = new HashSet<Integer>();
+			for(Instance x : D) {
+				int k = (int)x.value(j);
+				counts[j].add(k);
+			}
+			K[j] = counts[j].size();
+			/*
+			System.out.println(""+j+" = "+counts[j]);
+			if (counts[j].size() < 2) {
+				System.out.println("OK, this is a problem ...");
+				//System.exit(1);
+			}
+			*/
+		}
+		return K;
+	}
 
 
 	public static final void main (String args[]) throws Exception {

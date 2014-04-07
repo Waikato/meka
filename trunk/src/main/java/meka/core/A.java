@@ -203,7 +203,7 @@ public abstract class A {
 	}
 
 	/**
-	 * Given L, return new int[]{0,1,2,3,...,L-1}
+	 * Make Sequence - Given L, generate and return new int[]{0,1,2,3,...,L-1}.
 	 */
 	public static final int[] make_sequence(int L) {
 		int ind[] = new int[L];

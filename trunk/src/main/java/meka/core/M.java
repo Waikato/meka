@@ -45,6 +45,19 @@ public abstract class M {
         return col_k;
     }
     
+	/*
+	public static double[][] addBias(double[][] M) {
+		final double[][] C = new double[M.length][M[0].length+1];
+		for (int i = 0; i < M.length; i++) {
+			C[i][0] = 1.0;
+			for(int j = 0; j < M[i].length; j++) {
+				C[i][j+1] = M[i][j];
+			}
+		}
+        return C;
+    }
+	*/
+
 	/**
 	 * Multiply - multiply each value in A[][] by constant K.
 	 */
@@ -141,6 +154,17 @@ public abstract class M {
         }
         return C;
     }
+
+	// absolute value
+	public static double[][] abs(double[][] A) {
+		double[][] C = new double[A.length][A[0].length];
+        for (int i = 0; i < A.length; i++) {
+            for (int j = 0; j < A[i].length; j++ ) {
+                C[i][j] = Math.abs(A[i][j]);
+            }
+        }
+        return C;
+	}
 
 	// squared sum
 	public static double SS(double M[][]) {

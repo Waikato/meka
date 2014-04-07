@@ -95,7 +95,6 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 
 	/**
 	 * Rating - Return a rating for the super-class 'partition', under dataset D.
-	 */
 	private double rating (int partition[][], Instances D) {
 		int L = D.classIndex();
 		int N = D.numInstances();
@@ -126,6 +125,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		}
 		return p/N;
 	}
+	*/
 
 	/**
 	 * Rating - Return a score for the super-class 'partition' using the pairwise info in 'M'
@@ -173,15 +173,6 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		return sumTogether - sumApart;
 	}
 
-	// return [0,...,L-1]
-	private int[][] defaultCombinations(int L) {
-		int partition[][] = new int[L][];
-		for(int j = 0; j < L; j++) {
-			partition[j] = new int[]{j};
-		}
-		return partition;
-	}
-
 	/**
 	 * MutateCombinations - mutate the 'partition'.
 	 */
@@ -217,28 +208,6 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 	}
 
 	/**
-	 * CheckData - used for debugging purposes.
-	 */
-	public void checkData(Instances D) {
-		int L = D.classIndex();
-		HashSet counts[] = new HashSet[L];
-		for(int j = 0; j < L; j++) {
-			counts[j] = new HashSet<Integer>();
-			for(Instance x : D) {
-				int k = (int)x.value(j);
-				counts[j].add(k);
-			}
-		}
-		for(int j = 0; j < L; j++) {
-			System.out.println(""+j+" = "+counts[j]);
-			if (counts[j].size() < 2) {
-				System.out.println("OK, this is a problem ...");
-				//System.exit(1);
-			}
-		}
-	}
-
-	/**
 	 * Train classifier h, on dataset D, under super-class partition 'partition'.
 	 */
 	public void trainClassifier(Classifier h, Instances D, int partition[][]) throws Exception {
@@ -247,7 +216,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		f.setP(m_P >= 0 ? m_P : rand.nextInt(Math.abs(m_P)));
 		f.setN(m_L >= 0 ? m_L : rand.nextInt(Math.abs(m_L)));
 		Instances D_ = f.process(D);
-		//checkData(D_);
+		//int K[] = MLUtils.getK(D_); <-- if some K[j] < 2, this is a problem!
 		if (getDebug()) {
 			int N = D.numInstances();
 			int U = MLUtils.numberOfUniqueCombinations(D);
@@ -497,83 +466,6 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		options[current++] = String.valueOf(m_O);
 		System.arraycopy(superOptions, 0, options, current, superOptions.length);
 		return options;
-
-	}
-
-	class SuperClass {
-
-		SuperClass index[] = null;
-
-		int idx = -1;
-		double prob = 1.0;
-
-		public SuperClass() { 			// root
-		}
-
-		public SuperClass(int n) {		// branch
-			idx = n;
-		}
-
-		/**
-		 * AddNode - add a node with index 'j' that can take 'k' values.
-		 * @param	n	node index
-		 * @param	k	number of values
-		 */
-		public void addNode(int n, int k) {
-			double p = 0.0;
-			if (index != null) {
-				for(int v = 0; v < index.length; v++) {
-					index[v].addNode(n,k);
-				}
-			}
-			else {
-				index = new SuperClass[k];
-				for(int v = 0; v < index.length; v++) {
-					index[v] = new SuperClass(n); 		// p(x==v)
-				}
-			}
-		}
-
-		public void fillNodes(Instances D) {
-			// @todo could be much faster by prebuffering arry of size of the depth of the tree
-			fillNodes(new int[]{},new int[]{},D);
-		}
-
-		public void fillNodes(int indices[], int values[], Instances D) {
-			//System.out.println("fillNodes("+Arrays.toString(indices)+","+Arrays.toString(values)+")");
-			if (index == null) {
-				// END, calculate the joint
-				prob = StatUtils.P(D,indices,values);
-				//System.out.println("we arrived with P("+Arrays.toString(indices)+" == "+Arrays.toString(values)+") = "+prob);
-			}
-			else {
-				// GO DOWN
-				// @todo could be faster by moving the add(indices,idx) outside of the v loop (but not by much!)
-				for(int v = 0; v < index.length; v++) {
-					index[v].fillNodes(A.add(indices,index[0].idx), A.add(values,v), D);
-				}
-			}
-		}
-
-		// the probability of 'path' in this factor
-		// (only a part of the path may be relevant)
-		public double p_path(int path[]) {
-			//System.out.println(""+Arrays.toString(path));
-			//System.out.println(""+idx);
-			if (index==null) {
-				return prob;
-			}
-			else {
-				int i = index[0].idx;				// 3	\in {1,...,L}
-				int v = path[i];					// 0 	\in {0,1,..,K}
-				//System.out.println("take "+v+"th path");
-				return index[v].p_path(path);
-			}
-		}
-
-		public String toString() {
-			return (index!=null) ?  idx + "/" + index.length + "\n" + index[0].toString() : " = "+prob;
-		}
 
 	}
 }
