@@ -38,28 +38,6 @@ public abstract class Mat {
 	}
 
 	/**
-	 * Sum - sum this vector.
-	 */
-	public static int sum(int v[]) {
-		int s = 0;
-		for (int i : v) {
-			s += i;
-		}
-		return s;
-	}
-
-	/**
-	 * Sum - sum this vector.
-	 */
-	public static double sum(double v[]) {
-		double s = 0.0;
-		for (double i : v) {
-			s += i;
-		}
-		return s;
-	}
-
-	/**
 	 * Sum - sum this matrix.
 	 */
 	public static int[] sum(int M[][]) {
@@ -497,18 +475,6 @@ public abstract class Mat {
         return C;
 	}
 
-	public static double[][] subtract(double[][] A, double[][] B) {
-		//if (A.length != bRows) // no can do
-		//	throw new IllegalArgumentException(" A.cols ("+aCols+") != B.rows ("+bRows+") ");
-        double[][] C = new double[A.length][A[0].length];
-        for (int i = 0; i < A.length; i++) {
-            for (int j = 0; j < A[i].length; j++ ) {
-                C[i][j] = A[i][j] - B[i][j];
-            }
-        }
-        return C;
-    }
-
 	public static double[][] add(double[][] A, double[][] B) {
         double[][] C = new double[A.length][A[0].length];
         for (int i = 0; i < A.length; i++) {
@@ -536,17 +502,6 @@ public abstract class Mat {
         }
         return squaredError;
     }
-
-	// squared sum
-	public static double SS(double M[][]) {
-		double sum = 0;
-        for (int i = 0; i < M.length; i++) {
-			for (int j = 0; j < M[i].length; j++) {
-				sum += M[i][j];
-			}
-        }
-        return sum;
-	}
 
 	/**
 	 * MSE - Mean Squared Error.
@@ -601,17 +556,6 @@ public abstract class Mat {
 	 */
 	public static Matrix sample(Matrix M, Random r) {
 		return new Matrix(sample(M.getArray(),r));
-	}
-
-	/**
-	 * Deep Copy - Make a deep copy of M[][]
-	 */
-	public static int[][] deep_copy(int M[][]) { 
-		int[][] C = new int[M.length][];
-		for(int i = 0; i < C.length; i++) {
-			C[i] = Arrays.copyOf(M[i],M[i].length);
-		}
-		return C;
 	}
 
 	public static String toString(Matrix M) {

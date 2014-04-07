@@ -16,9 +16,12 @@
 package meka.core;
 
 import weka.core.*;
+import weka.classifiers.Classifier; // for 'LEAD' method
+import meka.classifiers.multilabel.*; // for 'LEAD' method
 
 import java.util.HashMap;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * StatUtils - Helpful statistical functions.
@@ -571,9 +574,9 @@ public abstract class StatUtils {
 			return getC(D);
 		}
 		*/
-		System.err.println("No operation found!");
+		System.err.println("No operation found; Using empty!");
 
-		return null;
+		return new double[L][L];
 	}
 
 	/**
@@ -737,6 +740,45 @@ public abstract class StatUtils {
 			}
 		}
 		return X;
+	}
+
+	/**
+	 * LEAD - Performs LEAD on dataset 'D', using BR with base classifier 'h', under random seed 'r'.
+	 * @todo : get same result as LEAD2 (above) by calling margDepMatrix(D_E,"X") ???
+	 */
+	public static double[][] LEAD (Instances D, Result result) {
+
+		// get errors
+		int L = D.classIndex();
+		int N = D.numInstances();
+		double Y[][] = MLUtils.getYfromD(D);						// Real
+		double Y_[][] = M.threshold(result.allPredictions(),0.5);	// Predicted
+
+		// Error
+		double E[][] = M.abs(M.subtract(Y,Y_)); 
+		//System.out.println("ERROR");
+		//System.out.println(""+M.toString(E));
+
+		Instances D_E = MLUtils.replaceZasClasses(new Instances(D),E,L);
+
+		// feed into CD()
+		return StatUtils.margDepMatrix(D_E,"I");
+	}
+
+
+	/**
+	 * LEAD - Performs LEAD on dataset 'D', using BR with base classifier 'h', under random seed 'r'.
+	 * @warning : changing this method will affect the perfomance of e.g., BCC -- on the other hand the original BCC paper did not use LEAD, so don't worry.
+	 */
+	public static double[][] LEAD(Instances D, Classifier h, Random r)  throws Exception {
+		Instances D_r = new Instances(D);
+		D_r.randomize(r);
+		Instances D_train = new Instances(D_r,0,D_r.numInstances()*60/100);
+		Instances D_test = new Instances(D_r,D_train.numInstances(),D_r.numInstances()-D_train.numInstances());
+		BR br = new BR();
+		br.setClassifier(h);
+		Result result = Evaluation.evaluateModel((MultilabelClassifier)br,D_train,D_test,"PCut1","1"); 
+		return LEAD2(D_test,result);
 	}
 
 }

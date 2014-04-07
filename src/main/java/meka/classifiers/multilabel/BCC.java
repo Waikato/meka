@@ -84,27 +84,20 @@ public class BCC extends MultilabelClassifier implements Randomizable, Technical
 		int d = D.numAttributes()-L;
 
 		/*
-		 * Measure unconditional label dependencies (frequencies).
+		 * Measure [un]conditional label dependencies (frequencies).
 		 */
 		if (getDebug())
 			System.out.println("Get unconditional dependencies ...");
 		double CD[][] = null;
-		if (m_DependencyType > 0) {
+		if (m_DependencyType.equals("L")) {
 			// New Option
 			if (getDebug()) System.out.println("The 'LEAD' method for finding conditional dependence.");
-			Instances D_r = new Instances(D);
-			D_r.randomize(new Random(getSeed()));
-			Instances D_train = new Instances(D_r,0,D_r.numInstances()*60/100);
-			Instances D_test = new Instances(D_r,D_train.numInstances(),D_r.numInstances()-D_train.numInstances());
-			BR br = new BR();
-			br.setClassifier(getClassifier()); 
-			Result r = Evaluation.evaluateModel((MultilabelClassifier)br,D_train,D_test,"PCut1","1"); 
-			CD = StatUtils.LEAD2(D_test,r);
+			CD = StatUtils.LEAD(D,getClassifier(),new Random(getSeed()));
 		}
 		else {	
 			// Old/default Option
 			if (getDebug()) System.out.println("The Frequency method for finding marginal dependence.");
-			CD = StatUtils.margDepMatrix(D,"I");
+			CD = StatUtils.margDepMatrix(D,m_DependencyType);
 		}
 
 		if (getDebug()) System.out.println(M.toString(CD));
@@ -249,7 +242,7 @@ public class BCC extends MultilabelClassifier implements Randomizable, Technical
 	 * TODO: Make a generic abstract -dependency_user- class that has this option, and extend it here
 	 */
 	
-	int m_DependencyType = 0;
+	String m_DependencyType = "L";
 
 	@Override
 	public Enumeration listOptions() {
@@ -268,22 +261,18 @@ public class BCC extends MultilabelClassifier implements Randomizable, Technical
 	@Override
 	public void setOptions(String[] options) throws Exception {
 
-		m_DependencyType = (Utils.getOptionPos('X',options) >= 0) ? Integer.parseInt(Utils.getOption('X', options)) : m_DependencyType;
+		m_DependencyType = (Utils.getOptionPos('X',options) >= 0) ? Utils.getOption('X', options) : m_DependencyType;
 
 		super.setOptions(options);
 	}
 
 	@Override
 	public String [] getOptions() {
-
-		String [] superOptions = super.getOptions();
-		String [] options = new String [superOptions.length + 2];
-		int current = 0;
-		options[current++] = "-X";
-		options[current++] = String.valueOf(m_DependencyType);
-		System.arraycopy(superOptions, 0, options, current, superOptions.length);
-		return options;
-
+		ArrayList<String> result;
+	  	result = new ArrayList<String>(Arrays.asList(super.getOptions()));
+	  	result.add("-X");
+	  	result.add(m_DependencyType);
+		return result.toArray(new String[result.size()]);
 	}
 
 	public static void main(String args[]) {

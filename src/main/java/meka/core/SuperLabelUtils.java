@@ -17,6 +17,7 @@ package meka.core;
 
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Arrays;
 
 /**
@@ -52,9 +53,21 @@ public abstract class SuperLabelUtils {
 	}
 
 	/**
-	 * generatePartition.
-	 * @TODO can generate 'indices' inside, given L
-	 * @param	indices		e.g., [1,2,3,4,5]
+	 * generatePartition - return [[0],...,[L-1]].
+	 * @param	L	number of labels
+	 * @return	[[0],...,[L-1]]
+	 */
+	public static int[][] generatePartition(int L) {
+		int partition[][] = new int[L][];
+		for(int j = 0; j < L; j++) {
+			partition[j] = new int[]{j};
+		}
+		return partition;
+	}
+
+	/**
+	 * generatePartition - .
+	 * @param	indices		[1,2,..,L]
 	 * @param	r			Random
 	 * @return	partition
 	 */
@@ -67,8 +80,8 @@ public abstract class SuperLabelUtils {
 	 * generatePartition.
 	 * @TODO can generate 'indices' inside, given L
 	 * Get a random layout of 'num' sets of 'indices'.
-	 * @param	indices		e.g., [1,2,3,4,5]
-	 * @param	num			number of super-nodes to generate ... \in {1,...,L}
+	 * @param	indices		[1,2,...,L]
+	 * @param	num			number of super-nodes to generate (between 1 and L)
 	 * @param	r			Random
 	 * @return	partition
 	 */
@@ -94,6 +107,21 @@ public abstract class SuperLabelUtils {
 
 		// convert <int[]>List into an int[][] array
 		return convertListArrayTo2DArray(selection);
+	}
+
+	public static double scorePartition(int partition[][], double M[][]) {
+		return 0.0;
+	}
+
+	/**
+	 * Rating - Return a score for the super-class 'partition' using the pairwise info in 'M'.
+	 * +1 if two co-ocurring labels are in different partitions. 
+	 * -1 if two co-ocurring labels are in different partitions. 
+	 * @param	partition	super-class partition, e.g., [[0,3],[2],[1,4]]
+	 * @param	countMap	each LabelSet and its count
+	 */
+	public static double scorePartition(int partition[][], HashMap<LabelSet,Integer> countMap) {
+		return 0.0;
 	}
 
 	public static final int[][] convertListArrayTo2DArray(ArrayList<Integer> listArray[]) {

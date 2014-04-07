@@ -205,6 +205,11 @@ public class LabelSet implements Comparator, Serializable {
 		return Arrays.copyOf(keep,i);
 	}
 
+	// the distance between two labelsets = longest common sub-sequence?
+	public int distance(LabelSet o) {
+		return 0;
+	}
+
 	public LabelSet deep_copy() {
 		return new LabelSet(Arrays.copyOf(this.indices,this.indices.length));
 	}
