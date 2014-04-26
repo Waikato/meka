@@ -204,9 +204,9 @@ public class PropsUtils {
     System.out.println();
     System.out.println("Examples:");
     System.out.println("- read");
-    System.out.println("  " + PropsUtils.class.getName() + " read meka/gui/goe/GUIEditors.props");
+    System.out.println("  " + PropsUtils.class.getName() + " read meka/gui/goe/MekaEditors.props");
     System.out.println("- find");
-    System.out.println("  " + PropsUtils.class.getName() + " find meka/gui/goe/GUIEditors.props");
+    System.out.println("  " + PropsUtils.class.getName() + " find meka/gui/goe/MekaEditors.props");
     System.out.println();
   }
   
@@ -214,9 +214,9 @@ public class PropsUtils {
    * Allows some basic operations on properties files:
    * <ul>
    *   <li>read &lt;props&gt;- reads the specified props file and outputs it, 
-   *   e.g., "read meka/gui/goe/GUIEditors.props"
+   *   e.g., "read meka/gui/goe/MekaEditors.props"
    *   <li>find &lt;props&gt;- finds all occurrences of the specified props 
-   *   file and outputs them, e.g., "find meka/gui/goe/GUIEditors.props"
+   *   file and outputs them, e.g., "find meka/gui/goe/MekaEditors.props"
    * </ul>
    */
   public static void main(String[] args) throws Exception {

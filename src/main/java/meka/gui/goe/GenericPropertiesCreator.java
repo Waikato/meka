@@ -35,7 +35,7 @@ public class GenericPropertiesCreator
   extends weka.gui.GenericPropertiesCreator {
   
   /** The name of the properties file to use as a template. */
-  protected static String MEKA_CREATOR_FILE = "meka/gui/goe/GenericPropertiesCreator.props";
+  protected static String MEKA_CREATOR_FILE = "meka/gui/goe/MekaPropertiesCreator.props";
 
   /** whether to output some debugging information. */
   public static boolean DEBUG = "true".equals(System.getenv("MEKA_DEBUG"));

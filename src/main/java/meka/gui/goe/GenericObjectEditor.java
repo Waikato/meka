@@ -19,20 +19,21 @@
  */
 package meka.gui.goe;
 
-import java.awt.Frame;
+import meka.core.PropsUtils;
+import weka.core.OptionHandler;
+import weka.core.Utils;
+import weka.gui.PropertyDialog;
+import weka.gui.HierarchyPropertyParser;
+import weka.core.logging.Logger;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyEditor;
 import java.util.Enumeration;
 import java.util.Properties;
-
-import javax.swing.JOptionPane;
-
-import meka.core.PropsUtils;
-import weka.core.OptionHandler;
-import weka.core.Utils;
-import weka.gui.PropertyDialog;
-// TEMP
+import java.util.Hashtable;
 
 /**
  * An extended GOE to cater for the multi-label classifiers.
@@ -47,7 +48,7 @@ extends weka.gui.GenericObjectEditor {
   protected static Properties MEKA_EDITOR_PROPERTIES;
 
   /** the properties files containing the class/editor mappings. */
-  public static final String MEKA_GUIEDITORS_PROPERTY_FILE = "meka/gui/goe/GUIEditors.props";
+  public static final String MEKA_GUIEDITORS_PROPERTY_FILE = "meka/gui/goe/MekaEditors.props";
 
   /** whether to output some debugging information. */
   public static boolean DEBUG = "true".equals(System.getenv("MEKA_DEBUG"));
@@ -170,6 +171,48 @@ extends weka.gui.GenericObjectEditor {
    */
   public GenericObjectEditor(boolean canChangeClassInDialog) {
     super(canChangeClassInDialog);
+  }
+
+  /**
+   * Called when the class of object being edited changes.
+   *
+   * @return the hashtable containing the HierarchyPropertyParsers for the root
+   *         elements
+   */
+  protected Hashtable<String, HierarchyPropertyParser> getClassesFromProperties() {
+    String className = m_ClassType.getName();
+    if (className.startsWith("meka.")) {
+      Hashtable<String, HierarchyPropertyParser> hpps = new Hashtable<String, HierarchyPropertyParser>();
+      Hashtable<String,String> typeOptions = sortClassesByRoot(EDITOR_PROPERTIES.getProperty(className));
+      try {
+	Enumeration<String> enm = typeOptions.keys();
+	while (enm.hasMoreElements()) {
+	  String root = enm.nextElement();
+	  String typeOption = typeOptions.get(root);
+	  HierarchyPropertyParser hpp = new HierarchyPropertyParser();
+	  hpp.build(typeOption, ", ");
+	  hpps.put(root, hpp);
+	}
+      } catch (Exception ex) {
+	Logger.log(weka.core.logging.Logger.Level.WARNING, "Invalid property: "
+		+ typeOptions);
+      }
+      if (DEBUG)
+	System.out.println("Meka classes: " + hpps);
+      return hpps;
+    }
+    return super.getClassesFromProperties();
+  }
+
+  /**
+   * Returns a popup menu that allows the user to change the class of object.
+   *
+   * @return a JPopupMenu that when shown will let the user choose the class
+   */
+  public JPopupMenu getChooseClassPopupMenu() {
+    if (DEBUG)
+      System.out.println("Objectnames: " + m_ObjectNames);
+    return super.getChooseClassPopupMenu();
   }
 
   /**
