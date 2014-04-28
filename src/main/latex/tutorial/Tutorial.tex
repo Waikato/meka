@@ -198,7 +198,7 @@ Below this output, we also see the output for \texttt{Classifier Options}:
 \begin{lstlisting}
 Classifier Options:
 
--D
+-output-debug-info
         If set, classifier is run in debug mode and
         may output additional info to the console
 -W
@@ -349,18 +349,19 @@ java meka.classifiers.multilabel.meta.EnsembleML \
     -P 1-5 -N 1 -W weka.classifiers.functions.SMO
 \end{lstlisting}
 
-\paragraph{Ensembles of Classifier Chains} (ECC; see \cite{ECC2}) With 50 ensemble members (\texttt{-I 50}), and some textual output (\texttt{-D}) on the \textit{Enron} dataset with Support Vector Machines as a base classifier:
+\paragraph{Ensembles of Classifier Chains} (ECC; see \cite{ECC2}) With 50 ensemble members (\texttt{-I 50}), and some textual output (\texttt{-output-debug-info}) on the \textit{Enron} dataset with Support Vector Machines as a base classifier:
 \begin{lstlisting}
-java meka.classifiers.multilabel.meta.BaggingML -I 50 -P 100 -D \
+java meka.classifiers.multilabel.meta.BaggingML -I 50 -P 100 -output-debug-info \
   -t data/Enron.arff -W meka.classifiers.multilabel.CC -- \
     -W weka.classifiers.functions.SMO
 \end{lstlisting}
 
 \paragraph{Mulan Classifier} (\texttt{RAkEL} see \cite{RAKEL}) With parameters \texttt{\texttt{k=3}, \texttt{m=2C}} where \texttt{C} is the number of labels (these options are hardwired; you need to edit \texttt{MULAN.java} to specify new parameter configurations) on the \textit{Scene} dataset with Decision Trees as the base classifier (remember {\texttt{mulan.jar} must be in the classpath}):
 \begin{lstlisting}
-java meka.classifiers.multilabel.MULAN -t data/Scene.arff \ 
+java meka.classifiers.multilabel.MULAN -t data/Scene.arff -verbosity 5 \ 
   -S RAkEL2 -W weka.classifiers.trees.J48
 \end{lstlisting}
+the \texttt{-verbosity 5} options increases the amount of evaluation output.
 
 %\paragraph{Cross Validation} the following carries out cross validation on ECC using Logistic Regression as a base classifier, on the \textit{Music} data.
 
@@ -374,7 +375,7 @@ java meka.classifiers.multilabel.MULAN -t data/Scene.arff \
 \paragraph{Incremental Classification: Ensembles of Binary Relevance} (see \cite{ECC2,MEDS2}) With 10 ensemble members (default) on the \textit{Enron} dataset with \texttt{NaiveBayesUpdateable} as a base classifier; using over 20 evaluation windows:
 
 \begin{lstlisting}
-java meka.classifiers.multilabel.meta.EnsembleMLUpdateable -B 20\
+java meka.classifiers.multilabel.meta.BaggingMLUpdateable -B 20\
   -t data/Enron.arff \
   -W meka.classifiers.multilabel.BRUpdateable -- \
     -W weka.classifiers.bayes.NaiveBayesUpdateable
@@ -573,7 +574,7 @@ public class TestClassifierUpdateable extends TestClassifier
 
 Note that the \texttt{IncrementalEvaluation} class is called for evaluation in this case; see Section \ref{sec:evaluation}. The \framework{\MOA} framework \cite{MOA} for learning in data streams contains a number of incremental classifiers that \WEKA{} does not, for example Hoeffding trees. It is included in \framework{\MEKA}, and you can run these classifiers using \WEKA's \texttt{MOA} meta classifier (wrapper), e.g., 
 \begin{lstlisting}
-java meka.classifiers.multilabel.BRUpdateable -D -t data/Music.arff \
+java meka.classifiers.multilabel.BRUpdateable -output-debug-info -t data/Music.arff \
 	-W weka.classifiers.meta.MOA -- -B moa.classifiers.trees.HoeffdingTree
 \end{lstlisting}
 
