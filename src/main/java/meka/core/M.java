@@ -117,6 +117,21 @@ public abstract class M {
 	}
 
 	/**
+	 * ToString - return a String representation of 'M', in Matlab format, called 'name'.
+	 */
+	public static String toString(double M[][], String name) {
+		StringBuilder sb = new StringBuilder(name+" = [\n");  
+		for(int j = 0; j < M.length; j++) {
+			for(int k = 0; k < M[j].length; k++) {
+				sb.append(String.format("%6.2f ", M[j][k]));
+			}
+			sb.append(";\n");
+		}
+		sb.append("]");
+		return sb.toString();
+	}
+
+	/**
 	 * Threshold - apply threshold t to matrix P[][].
 	 */
 	public static final double[][] threshold(double P[][], double t) {
