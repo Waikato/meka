@@ -56,11 +56,11 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 	private int m_I = 1000;
 	private int m_O = 0;
 
+	/* @TODO make external options */
 	private static final int i_SPLIT = 67;
 	private static final String i_ErrFn = "Exact match";
 
 	private Random rand = null;
-	//private MT mt = null;
 
 	/**
 	 * Description to display in the GUI.
@@ -92,40 +92,6 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 	private double rating(int partition[][], double M[][]) {
 		return rating(partition,M,0.0);
 	}
-
-	/**
-	 * Rating - Return a rating for the super-class 'partition', under dataset D.
-	private double rating (int partition[][], Instances D) {
-		int L = D.classIndex();
-		int N = D.numInstances();
-
-		// create and fill factor nodes according to 'partition'
-		SuperClass F[] = new SuperClass[partition.length];	
-		for(int n = 0; n < partition.length; n++) {
-			F[n] = new SuperClass();								// create a factor node
-			for(int j : partition[n]) {
-				//System.out.println("add node for : "+j);
-				F[n].addNode(j,D.attribute(j).numValues());								// add indices
-			}
-			F[n].fillNodes(D);									// fill with probabilities
-			//System.out.println("F[n] = "+F[n]);
-		}
-
-		// get a probability value for the full set of data instances
-		double p = 0.0;
-		for(int i = 0; i < N; i++) {
-			int path_i[] = MLUtils.toIntArray(D.instance(i),L);
-			double p_ = 1.0;
-			for(int n = 0; n < partition.length; n++) {
-				double c = F[n].p_path(path_i);
-				//System.out.println("P("+Arrays.toString(partition[n])+")="+c);
-				p_ *= F[n].p_path(path_i);
-			}
-			p += p_;
-		}
-		return p/N;
-	}
-	*/
 
 	/**
 	 * Rating - Return a score for the super-class 'partition' using the pairwise info in 'M'
@@ -193,7 +159,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		}
 		else {
 			// make new slot, copy
-			partition[to] = A.add(partition[to],partition[from][i]);
+			partition[to] = A.append(partition[to],partition[from][i]);
 			// delete original
 			partition[from] = A.delete(partition[from],i);
 		}
@@ -231,6 +197,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 
 	/**
 	 * Test classifier h, on dataset D, under super-class partition 'partition'.
+	 * @TODO should be able to use something out of meka.classifiers.Evaluation instead of all this ...
 	 */
 	public Result testClassifier(Classifier h, Instances D_train, Instances D_test, int partition[][]) throws Exception {
 
