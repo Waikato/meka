@@ -62,7 +62,7 @@ public class CNode implements Serializable {
 	public Instances transform(Instances D) throws Exception {
 		int L = D.classIndex();
 		d = D.numAttributes() - L;
-		int keep[] = A.add(this.paY,j);		// keep all parents and self!
+		int keep[] = A.append(this.paY,j);		// keep all parents and self!
 		Arrays.sort(keep);
 		int remv[] = complement(keep,L); 	// i.e., remove the rest < L
 		Arrays.sort(remv);
@@ -169,7 +169,7 @@ public class CNode implements Serializable {
 	 */
 	public static Instances transform(Instances D, int c, int pa_c[]) throws Exception {
 		int L = D.classIndex();
-		int keep[] = A.add(pa_c,c);			// keep all parents and self!
+		int keep[] = A.append(pa_c,c);			// keep all parents and self!
 		Arrays.sort(keep);
 		int remv[] = complement(keep,L); 	// i.e., remove the rest < L
 		Arrays.sort(remv);
@@ -196,6 +196,9 @@ public class CNode implements Serializable {
 		return inverted;
 	}
 
+	/**
+	 * Main - run some tests.
+	 */
 	public static void main(String args[]) throws Exception {
 		Instances D = new Instances(new FileReader(args[0]));
 		Instance x = D.lastInstance();

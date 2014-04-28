@@ -120,7 +120,7 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 				// q = h_j(x)    i.e. p(y_j | x)
 
 				double dist[] = h[j].distributionForInstance(x);
-				int k = A.rndsrc(dist,u);
+				int k = A.samplePMF(dist,u);
 				x.setValue(j,k);
 				likelihood[j] = dist[k];
 				// likelihood
