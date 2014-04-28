@@ -109,9 +109,6 @@ public abstract class SuperLabelUtils {
 		return convertListArrayTo2DArray(selection);
 	}
 
-	public static double scorePartition(int partition[][], double M[][]) {
-		return 0.0;
-	}
 
 	/**
 	 * Rating - Return a score for the super-class 'partition' using the pairwise info in 'M'.
@@ -119,12 +116,16 @@ public abstract class SuperLabelUtils {
 	 * -1 if two co-ocurring labels are in different partitions. 
 	 * @param	partition	super-class partition, e.g., [[0,3],[2],[1,4]]
 	 * @param	countMap	each LabelSet and its count
-	 */
 	public static double scorePartition(int partition[][], HashMap<LabelSet,Integer> countMap) {
 		return 0.0;
 	}
+	public static double scorePartition(int partition[][], double M[][]) {
+		return 0.0;
+	}
+	*/
 
-	public static final int[][] convertListArrayTo2DArray(ArrayList<Integer> listArray[]) {
+	// @TODO try and do without this in the future.
+	private static final int[][] convertListArrayTo2DArray(ArrayList<Integer> listArray[]) {
 		int num_partitions = listArray.length;
 		int array[][] = new int[num_partitions][];
 		for(int i = 0; i < listArray.length; i++) {
