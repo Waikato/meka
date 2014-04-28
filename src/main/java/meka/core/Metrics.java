@@ -462,4 +462,51 @@ public abstract class Metrics {
 	   return i;
    }
 
+   // @TODO check
+   public double P_Product(int Y[][], double P[][]) {
+
+		int N = Y.length;
+
+		double s = 1.; 
+
+		for(int i = 0; i < N; i++) {
+			int y[] = Y[i];
+			double p[] = P[i];     
+			s *= A.product(p);
+		}
+
+		return s;
+	}
+
+   // @TODO check
+   public double P_LogSum(int Y[][], double P[][]) {
+
+		int N = Y.length;
+
+		double s = 0.; 
+
+		for(int i = 0; i < N; i++) {
+			int y[] = Y[i];
+			double p[] = P[i];     
+			s += Math.log(A.product(p));
+		}
+
+		return s;
+	}
+
+   // @TODO check
+   public double P_Avg_Sum(int Y[][], double P[][]) {
+
+		int N = Y.length;
+
+		double s = 0.; 
+
+		for(int i = 0; i < N; i++) {
+			int y[] = Y[i];
+			double p[] = P[i];     
+			s += A.sum(p);
+		}
+
+		return s / N;
+   }
 }

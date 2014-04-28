@@ -73,10 +73,10 @@ public abstract class MLUtils {
 	}
 
 	// raw instance to int array (i.e. from binary representation)
-	public static final double[] toDoubleArray(Instance ins, int c) {
-		double a[] = new double[c];
-		for(int i = 0; i < c; i++) {
-			a[i] = Math.round(ins.value(i));
+	public static final double[] toDoubleArray(Instance x, int L) {
+		double a[] = new double[L];
+		for(int i = 0; i < L; i++) {
+			a[i] = Math.round(x.value(i));
 		}
 		return a;
 	}
@@ -984,6 +984,24 @@ public abstract class MLUtils {
 		return K;
 	}
 
+	/**
+	 * Load Object - load the Object stored in 'filename'.
+	 */
+	public static final Object loadObject(String filename) throws Exception {
+		FileInputStream streamIn = new FileInputStream(filename);
+		ObjectInputStream objectinputstream = new ObjectInputStream(streamIn);
+		Object object = objectinputstream.readObject();
+		return object;
+	}
+
+	/**
+	 * Save Object - save 'object' into file 'filename'.
+	 */
+	public static final void saveObject(Object object, String filename) throws Exception {
+		FileOutputStream fout = new FileOutputStream(filename);
+		ObjectOutputStream oos = new ObjectOutputStream(fout);
+		oos.writeObject(object);
+	}
 
 	public static final void main (String args[]) throws Exception {
 
@@ -1019,15 +1037,7 @@ public abstract class MLUtils {
 							//MLUtils.pruneCountHashMap(hm,1);
 							//System.out.println(""+hm);
 							System.out.println("writing ...");
-							FileOutputStream fout = new FileOutputStream("hm-NEW.serialized");
-							ObjectOutputStream oos = new ObjectOutputStream(fout);
-							oos.writeObject(hm);
-							/*
-							FileInputStream streamIn = new FileInputStream("hm-test.serialized");
-							ObjectInputStream objectinputstream = new ObjectInputStream(streamIn);
-							HashMap<LabelSet,Integer> hm_in = (HashMap<LabelSet,Integer>) objectinputstream.readObject();
-							System.out.println(""+hm_in);
-							*/
+							saveObject(hm, "hm-NEW.serialized");
 							break;
 				default  : 	System.out.println(MLUtils.getDatasetName(D));	// returns the name of D
 							break;
