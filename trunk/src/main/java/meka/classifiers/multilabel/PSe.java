@@ -28,7 +28,6 @@ import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
-import meka.core.MLUtils;
 import weka.core.Option;
 import weka.core.Randomizable;
 import weka.core.RevisionUtils;
@@ -40,15 +39,20 @@ import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
+import meka.core.PSUtils;
+import meka.core.MLUtils;
+import meka.core.LabelSet;
+
 /**
- * PS.java - The Pruned Sets Method.
- * Removes examples with P-infrequent labelsets from the training data, then subsamples these labelsets N time to produce N new examples with P-frequent labelsets. Then train a standard LC classifier. The idea is to reduce the number of unique class values that would otherwise need to be learned by LC. Best used in an Ensemble (e.g., EnsembleML).
- * @see LC.java
+ * PSe.java - The Pruned Sets Method extended -- faster, uses sparse LabelSets, better OOP.
+ * I keep PS.java for now because it reproduces exactly the results of old papers. There are minor differences (probably on account of internal randomness, different set orderings, etc) in PSe -- although they should not be statistically significant.
+ * @see PS.java
  * <br>
  * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes. <i>Multi-label Classification using Ensembles of Pruned Sets</i>. Proc. of IEEE International Conference on Data Mining (ICDM 2008), Pisa, Italy, 2008
+ * @version	April 2014
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
-public class PS extends LC implements Randomizable, TechnicalInformationHandler {
+public class PSe extends LC implements Randomizable, TechnicalInformationHandler {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 8943667795912487237L;
@@ -203,119 +207,99 @@ public class PS extends LC implements Randomizable, TechnicalInformationHandler 
 	public Instances convertInstances(Instances D, int L) throws Exception {
 
 		//Gather combinations
-		HashMap<String,Integer> distinctCombinations = MLUtils.countCombinations(D,L);
+		HashMap<LabelSet,Integer> distinctCombinations = PSUtils.countCombinationsSparse(D,L);
 
 		//Prune combinations
 		MLUtils.pruneCountHashMap(distinctCombinations,m_P);
 
 		//Create class attribute
 		FastVector ClassValues = new FastVector(L);
-		for(String y : distinctCombinations.keySet()) 
-			ClassValues.addElement(y);
+		for(LabelSet y : distinctCombinations.keySet()) 
+			ClassValues.addElement(y.toString());
 		Attribute NewClass = new Attribute("Class", ClassValues);
 
 		//Filter Remove all class attributes
 		Remove FilterRemove = new Remove();
 		FilterRemove.setAttributeIndices("1-"+L);
 		FilterRemove.setInputFormat(D);
-		Instances NewTrain = Filter.useFilter(D, FilterRemove);
+		Instances D_ = Filter.useFilter(D, FilterRemove);
 
 		//Insert new special attribute (which has all possible combinations of labels) 
-		NewTrain.insertAttributeAt(NewClass,0);
-		NewTrain.setClassIndex(0);
+		D_.insertAttributeAt(NewClass,0);
+		D_.setClassIndex(0);
 
 		//Add class values
 		for (int i = 0; i < D.numInstances(); i++) {
+			Instance x = D.instance(i);
+			LabelSet y = new LabelSet(MLUtils.toSparseIntArray(x,L));
+			String y_string = y.toString();
 
-			String comb = MLUtils.toBitString(D.instance(i),L);
 			// add it
-			if(ClassValues.contains(comb)) 	//if its class value exists
-				NewTrain.instance(i).setClassValue(comb);
+			if(ClassValues.contains(y_string)) 	//if its class value exists
+				D_.instance(i).setClassValue(y_string);
 			// decomp
 			else if(m_N > 0) { 
-				String d_subsets[] = getTopNSubsets(comb,distinctCombinations,m_N);
+				//String d_subsets[] = getTopNSubsets(comb,distinctCombinations,m_N);
+				LabelSet d_subsets[] = PSUtils.getTopNSubsets(y,distinctCombinations,m_N);
+				//LabelSet d_subsets[] = PSUtils.cover(y,distinctCombinations);
 				//System.out.println("decomp: "+d_subsets.length);
-				for (String s : d_subsets) {
+				for (LabelSet s : d_subsets) {
 					//===copy===(from I=0)
-					Instance copy = (Instance)(NewTrain.instance(i)).copy();
+					Instance x_ = (Instance)(D_.instance(i)).copy();
 					//===assign===(the class)
-					copy.setClassValue(s);
+					x_.setClassValue(s.toString());
 					//===add===(to the end)
-					NewTrain.add(copy);
+					D_.add(x_);
 					//===remove so we can't choose this subset again!
 				}
 			}
 		}
 
 		// remove with missing class
-		NewTrain.deleteWithMissingClass();
+		D_.deleteWithMissingClass();
 
 		// keep the header of new dataset for classification
-		m_InstancesTemplate = new Instances(NewTrain, 0);
+		m_InstancesTemplate = new Instances(D_, 0);
 
-		return NewTrain;
+		return D_;
 	}
 
+	private static final double[] toDoubleArray(String labelSet, int L) {
 
-	public static String[] getTopNSubsets(String comb, HashMap <String,Integer>all, int n) {
-		ArrayList<String> subsets = new ArrayList<String>();  
-		// add
-		for(String s : all.keySet()) {
-			if(isSubsetOf(s,comb)) {
-				subsets.add(s);
-			}
+		int set[] = (labelSet.length() <= 2) ? new int[]{} : MLUtils.toIntArray(labelSet);
+		//StringBuffer y = new StringBuffer(L);
+		double y[] = new double[L];
+		//for(int j = 0; j < L; j++) {
+		//	y.append("0");
+		//}
+		for(int j : set) {
+			//y.setCharAt(j,'1');
+			y[j] = 1.;
 		}
-		// rank
-		Collections.sort(subsets,new LabelSet(all));
-		String s[] = subsets.toArray(new String[subsets.size()]);
-
-		return Arrays.copyOf(s,Math.min(n,s.length));
+		return y;
+		//return y.toString();
 	}
 
-	private static class LabelSet implements Comparator {
+	/**
+	 * Convert Distribution - to be deprecated.
+	 * @NOTE THAT WE WON'T NEED THIS WHEN WE UPGRADE LC.java TO HAVE LabelSets INSTEAD OF Strings.
+	 * @TODO use PSUtils.recombination(p,L,map)
+	 * @TODO use PSUtils.recombination_t(p,L,map) for PSt
+	 */
+	public double[] convertDistribution(double p[], int L) {
+		
+		double y[] = new double[L];
 
-		HashMap<String,Integer> c = null;
+		int i = Utils.maxIndex(p);
 
-		public LabelSet(HashMap<String,Integer> c) {
-			this.c = c;
-		} 
+		double d[] = toDoubleArray(m_InstancesTemplate.classAttribute().value(i),L);
 
-		public int compare(Object obj1, Object obj2) {
-
-			String s1 = (String) obj1;
-			String s2 = (String) obj2;
-
-
-			if (MLUtils.bitCount(s1) > MLUtils.bitCount(s2))  {
-				return -1;
-			}
-			if (MLUtils.bitCount(s1) < MLUtils.bitCount(s2)) {
-				return 1;
-			}
-			else {
-				if (c.get(s1) > c.get(s2)) {
-					return -1;
-				}
-				if (c.get(s1) < c.get(s2)) {
-					return 1;
-				}
-				else {
-					// @todo: could add further conditions
-					return 0;
-				}
-			} 
-		} 
-	} 
-
-	// if a is a subset of b
-	private static boolean isSubsetOf(String a, String b) {
-		int m = Math.min(a.length(),b.length());
-		for(int i = 0; i < m; i++) {
-			if(a.charAt(i) == '1')
-				if(b.charAt(i) != '1')
-					return false;
+		for(int j = 0; j < d.length; j++) {
+			if(d[j] > 0.0)
+				y[j] = 1.0;
 		}
-		return true;
+
+		return y;
 	}
 
 	@Override
@@ -336,13 +320,13 @@ public class PS extends LC implements Randomizable, TechnicalInformationHandler 
 		}
 
 		// Convert
-		Instances NewTrain = convertInstances(D,L);
+		Instances D_ = convertInstances(D,L);
 
 		// Info
-		if(getDebug()) System.out.println("("+m_InstancesTemplate.attribute(0).numValues()+" classes, "+NewTrain.numInstances()+" ins. )");
+		if(getDebug()) System.out.println("("+m_InstancesTemplate.attribute(0).numValues()+" classes, "+D_.numInstances()+" ins. )");
 
 		// Build
-		m_Classifier.buildClassifier(NewTrain);
+		m_Classifier.buildClassifier(D_);
 
 	}
 
@@ -352,7 +336,7 @@ public class PS extends LC implements Randomizable, TechnicalInformationHandler 
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new PS(),args);
+		MultilabelClassifier.evaluation(new PSe(),args);
 	}
 
 }

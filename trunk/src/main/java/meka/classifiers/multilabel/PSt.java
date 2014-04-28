@@ -56,42 +56,43 @@ public class PSt extends PS implements TechnicalInformationHandler {
 		result = new TechnicalInformation(Type.INPROCEEDINGS);
 		result.setValue(Field.AUTHOR, "Jesse Read");
 		result.setValue(Field.TITLE, "A Pruned Problem Transformation Method for Multi-label Classification");
-    result.setValue(Field.BOOKTITLE, "NZ Computer Science Research Student Conference. Christchurch, New Zealand");
-    result.setValue(Field.YEAR, "2008");
+		result.setValue(Field.BOOKTITLE, "NZ Computer Science Research Student Conference. Christchurch, New Zealand");
+		result.setValue(Field.YEAR, "2008");
 		
 		return result;
 	}
 
+	/**
+	 * Convert Distribution - Given the posterior across combinations, return the distribution across labels.
+	 * @param	p[]	the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [0.3,0.7]
+	 * @param	L 	the number of labels
+	 * @return	the distribution across labels, e.g., P(1,2,3) = [0.3,0.7,0.3]
+	 */
 	@Override
-	public double[] convertDistribution(double r[], int c) {
-		double newr[] = new double[c];
-		for(int i = 0; i < r.length; i++) {
-			double d[] = MLUtils.fromBitString(m_InstancesTemplate.classAttribute().value(i));
+	public double[] convertDistribution(double p[], int L) {
+		double y[] = new double[L];
+		for(int i = 0; i < p.length; i++) {                                                              
+			double d[] = MLUtils.fromBitString(m_InstancesTemplate.classAttribute().value(i)); // e.g. d = [1,0,0,1,0,0]    p[i] = 0.5
 			for(int j = 0; j < d.length; j++) {
-				newr[j] += (d[j] * r[i]);
+				y[j] += (d[j] * p[i]);                                                         // e.g., y[0] += d[0] * p[i] = 1 * 0.5 = 0.5
 			}
 		}
-		try {
-			Utils.normalize(newr);
-		} catch(Exception e) {
-			newr = new double[c];
-		}
-		return newr;
+		return y;
 	}
 
 	@Override
-	public double[] distributionForInstance(Instance TestInstance) throws Exception {
+	public double[] distributionForInstance(Instance x) throws Exception {
 
-		int c = TestInstance.classIndex();
+		int L = x.classIndex();
 
 		//if there is only one class (as for e.g. in some hier. mtds) predict it
-		if(c == 1) return new double[]{1.0};
+		if(L == 1) return new double[]{1.0};
 
-		Instance mlInstance = convertInstance(TestInstance,c);
-		mlInstance.setDataset(m_InstancesTemplate);
+		Instance x_ = convertInstance(x,L);
+		x_.setDataset(m_InstancesTemplate);
 
 		//Get a classification
-		return convertDistribution(m_Classifier.distributionForInstance(mlInstance),c);
+		return convertDistribution(m_Classifier.distributionForInstance(x_),L);
 	}
 
 	@Override
