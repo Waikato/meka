@@ -16,6 +16,7 @@
 package meka.core;
 
 import weka.core.Instances;
+import weka.core.Utils;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -94,14 +95,14 @@ public abstract class PSUtils {
 	
 
 	/**
-	 * Cover - cover 'y' completely with sets from 'jmap'.
-	 * @param	LabelSet	y		a labelset, e.g., [0,2,7]
-	 * @param	HashMap		jmap	a map of labelsets to counts e.g., {[0,2,7]:39,...}
+	 * Cover - cover 'y' completely (or as best as possible) with sets from 'map'.
+	 * @param	y		a LabelSet, e.g., [0,2,7]
+	 * @param	map		a map of LabelSets to counts e.g., {[0,2,7]:39,...}
 	 * @return	the sets to cover y (or just y, if it already covers itself).
 	 */
-	public static LabelSet[] cover(LabelSet y, HashMap<LabelSet,Integer> jmap) {
+	public static LabelSet[] cover(LabelSet y, HashMap<LabelSet,Integer> map) {
 
-		Integer count = jmap.get(y);
+		Integer count = map.get(y);
 
 		if (count != null && count >= 1) {
 
@@ -110,29 +111,35 @@ public abstract class PSUtils {
 		else {
 
 			// Find some matches (i.e., subsets)
-			Comparator cmp = new LabelSetComparator(jmap);
+			Comparator cmp = new LabelSetComparator(map);
 
-			SortedSet<LabelSet> S = getSortedSubsets(y, jmap.keySet(), cmp);
+			SortedSet<LabelSet> allS = getSortedSubsets(y, map.keySet(), cmp);
 
-			// Use those matches to 'cover' y
+			Set<LabelSet> covS = cover(y, allS, cmp);
 
-			LabelSet y_copy = y.deep_copy();
-			Set<LabelSet> K = new HashSet<LabelSet>();
-			// While we have more, and not covered, ...
-			while (S.size() > 0 && y_copy.indices.length > 0) {
-				//System.out.println("y = "+y_copy);
-				//System.out.println("S = "+S);
-				LabelSet s_ = S.last();
-				//System.out.println("s_ = "+s_);
-				K.add(s_);
-				// add s_ to new 'keep' list
-				y_copy.minus(s_);
-				S = getSortedSubsets(y_copy, S, cmp);
-				//System.out.println(""+y_copy);
-			}
-
-			return K.toArray(new LabelSet[0]);
+			return covS.toArray(new LabelSet[0]);
 		}
+
+	}
+
+	public static Set<LabelSet> cover(LabelSet y, SortedSet<LabelSet> S, Comparator cmp) {
+
+		LabelSet y_copy = y.deep_copy();
+		Set<LabelSet> K = new HashSet<LabelSet>();
+		// While we have more, and not covered, ...
+		while (S.size() > 0 && y_copy.indices.length > 0) {
+			//System.out.println("y = "+y_copy);
+			//System.out.println("S = "+S);
+			LabelSet s_ = S.last();
+			//System.out.println("s_ = "+s_);
+			K.add(s_);
+			// add s_ to new 'keep' list
+			y_copy.minus(s_);
+			S = getSortedSubsets(y_copy, S, cmp);
+			//System.out.println(""+y_copy);
+		}
+
+		return K;
 
 	}
 
@@ -173,49 +180,23 @@ public abstract class PSUtils {
 		return Arrays.copyOfRange(s,Math.max(0,s.length-n),s.length);
 	}
 
-	public static LabelSet getTopSubset(LabelSet y, HashMap<LabelSet,Integer> map) {
-		return getTopNSubsets(y,map,1)[0];
+	public static SortedSet<LabelSet> getTopNSubsetsAsSet(LabelSet y, HashMap<LabelSet,Integer> map, int n) {
+
+		SortedSet<LabelSet> allSets = getSortedSubsets(y, map);
+		SortedSet<LabelSet> topSets = new TreeSet<LabelSet>();
+
+		int n_ = 0;
+		for(LabelSet Y : allSets) {
+			topSets.add(Y);
+			if (++n_ > n)
+				break;
+		}
+
+		return topSets;
 	}
 
-	private static class LabelSetComparator extends LabelSet {
-
-		HashMap<LabelSet,Integer> c = null;
-
-		public LabelSetComparator(HashMap<LabelSet,Integer> c) {
-			this.c = c;
-		} 
-
-		@Override
-		//                  a negative integer, zero,     or a positive integer as the 
-		//first argument is less than,          equal to, or greater than the second.
-		public int compare(Object obj1, Object obj2) {
-
-			LabelSet l1 = (LabelSet) obj1;
-			LabelSet l2 = (LabelSet) obj2;
-
-			if (l1.indices.length < l2.indices.length) {
-				return -1;
-			}
-			else if (l1.indices.length > l2.indices.length) {
-				return 1;
-			}
-			else {
-
-				int c1 = this.c.get(l1);
-				int c2 = this.c.get(l2);
-
-				if (c2 > c1) {
-					return -1;
-				}
-				else if (c1 > c2) {
-					return 1;
-				}
-				else {
-					return 0;
-				}
-			} 
-		} 
-
+	public static LabelSet getTopSubset(LabelSet y, HashMap<LabelSet,Integer> map) {
+		return getTopNSubsets(y,map,1)[0];
 	}
 
 	/**
@@ -251,6 +232,62 @@ public abstract class PSUtils {
 	}
 
 	/**
+	 * Convert Distribution - Given the posterior across combinations, return the distribution across labels.
+	 * @param	p[]			the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [0.3,0.7]
+	 * @param	L 			the number of labels, e.g., L = 3
+	 * @param	meta_labels	typical mapping, e.g., [13] to [1,3]
+	 * @return	the distribution across labels, e.g., P(1,2,3) = [0.3,0.7,0.3]
+	 */
+	public static double[] convertDistribution(double p[], int L, LabelSet meta_labels[]) {
+		double y[] = new double[L];
+		for(int i = 0; i < p.length; i++) {
+			LabelSet Y_i = meta_labels[i];			// e.g., [1,4]
+			for(int j : Y_i.indices) {              //  j = 1, 4
+				y[j] += p[i];                       // y[1] += p[i] = 0.5
+			}
+		}
+		return y;
+	}
+
+
+	public static final LabelSet[] makeLabelSetMap(Instances T) {
+		int L_ = 4;
+		return new LabelSet[L_];
+	}
+
+	// @todo name convertDistribution ?
+	public static final double[] recombination(double p[], int L, LabelSet map[]) {
+
+		double y[] = new double[L];
+
+		int i = Utils.maxIndex(p);
+
+		LabelSet y_meta = map[i]; 
+
+		for(int j : y_meta.indices) {
+			y[j] = 1.0;
+		}
+
+		return y;
+	}
+
+	// @todo name convertDistribution ?
+	public static final double[] recombination_t(double p[], int L, LabelSet map[]) {
+
+		double y[] = new double[L];
+
+		for(int i = 0; i < p.length; i++) {                                                              
+
+			LabelSet y_meta = map[i];
+
+			for(int j : y_meta.indices) {
+				y[j] += p[i];
+			}
+		}
+		return y;
+	}
+
+	/**
 	 * Given N labelsets 'sparseY', use a count 'map' to 
 	 */
 	public static final LabelSet[] convert(LabelSet[] sparseY, HashMap<LabelSet,Integer> map) {
@@ -261,32 +298,14 @@ public abstract class PSUtils {
 	 * SaveMap - Save the HashMap 'map' to the file 'filename'.
 	 */
 	public static final void saveMap(String filename, HashMap<LabelSet,Integer> map) throws Exception {
-		try {
-			FileOutputStream fout = new FileOutputStream(filename);
-			ObjectOutputStream oos = new ObjectOutputStream(fout);
-			oos.writeObject(map);
-		} catch(IOException e) {
-			System.err.println("[Error] "+e+": failed to save to file '"+filename+"'.");
-			e.printStackTrace();
-		}
+		MLUtils.saveObject(map,filename);
 	}
 
 	/**
 	 * LoadMap - Load the HashMap stored in 'filename'.
 	 */
-	public static HashMap<LabelSet,Integer> loadMap(String filename) {
-		try {
-			System.out.println("Loading Map ...");
-			FileInputStream streamIn = new FileInputStream(filename);
-			ObjectInputStream objectinputstream = new ObjectInputStream(streamIn);
-			HashMap<LabelSet,Integer> hm_in = (HashMap<LabelSet,Integer>) objectinputstream.readObject();
-			System.out.println("... got "+hm_in.size()+" distinct entries");
-			return hm_in;
-		} catch(Exception e) {
-			System.err.println("Error: "+e+": could not find / load from "+filename+", returning empty Hashmap");
-			e.printStackTrace();
-			return new HashMap<LabelSet,Integer>();
-		}
+	public static HashMap<LabelSet,Integer> loadMap(String filename) throws Exception {
+		return (HashMap<LabelSet,Integer>) MLUtils.loadObject(filename);
 	}
 
 }

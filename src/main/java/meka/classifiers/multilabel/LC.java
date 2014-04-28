@@ -22,6 +22,7 @@ import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.Utils;
 import meka.core.MLUtils;
 import weka.core.OptionHandler;
 import weka.core.RevisionUtils;
@@ -31,10 +32,8 @@ import weka.filters.unsupervised.attribute.Remove;
 /**
  * LC.java - The LC (Label Combination) aka LP (Laber Powerset) Method.
  * Treats each label combination as a single class in a multi-class learning scheme. The set of possible values of each class is the powerset of labels.
- * <br>
- * TODO PS should really extend this class
- * <br>
  * See also <i>LP</i> from the <a href=http://mulan.sourceforge.net>MULAN</a> framework.
+ * @see 	meka.classifiers.multilabel.LC
  * @version January 2009
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
@@ -57,36 +56,36 @@ public class LC extends MultilabelClassifier implements OptionHandler {
 	}
 
 	@Override
-	public void buildClassifier(Instances Train) throws Exception {
-	  	testCapabilities(Train);
+	public void buildClassifier(Instances D) throws Exception {
+	  	testCapabilities(D);
 	  	
-		int C = Train.classIndex();
+		int L = D.classIndex();
 
 		//Create a nominal class attribute of all (existing) possible combinations of labels as possible values
-		FastVector ClassValues = new FastVector(C);
+		FastVector ClassValues = new FastVector(L);
 		HashSet<String> UniqueValues = new HashSet<String>();
-		for (int i = 0; i < Train.numInstances(); i++) {
-			UniqueValues.add(MLUtils.toBitString(Train.instance(i),C));
+		for (int i = 0; i < D.numInstances(); i++) {
+			UniqueValues.add(MLUtils.toBitString(D.instance(i),L));
 		}
 		Iterator<String> it = UniqueValues.iterator();
 		while (it.hasNext()) {
 			ClassValues.addElement(it.next());
 		}
-		Attribute NewClass = new Attribute("Class", ClassValues);
+		Attribute Y_new = new Attribute("Class", ClassValues);
 
 		//Filter Remove all class attributes
 		Remove FilterRemove = new Remove();
-		FilterRemove.setAttributeIndices("1-"+C);
-		FilterRemove.setInputFormat(Train);
-		Instances NewTrain = Filter.useFilter(Train, FilterRemove);
+		FilterRemove.setAttributeIndices("1-"+L);
+		FilterRemove.setInputFormat(D);
+		Instances NewTrain = Filter.useFilter(D, FilterRemove);
 
 		//Insert new special attribute (which has all possible combinations of labels) 
-		NewTrain.insertAttributeAt(NewClass, 0);
+		NewTrain.insertAttributeAt(Y_new, 0);
 		NewTrain.setClassIndex(0);
 
 		//Add class values
 		for (int i = 0; i < NewTrain.numInstances(); i++) {
-			String comb = MLUtils.toBitString(Train.instance(i),C);
+			String comb = MLUtils.toBitString(D.instance(i),L);
 			NewTrain.instance(i).setClassValue(comb);
 		}
 
@@ -102,59 +101,70 @@ public class LC extends MultilabelClassifier implements OptionHandler {
 
 	}
 
-  public Instance convertInstance(Instance TestInstance, int C) {
-	  Instance FilteredInstance = (Instance) TestInstance.copy(); 
-	  FilteredInstance.setDataset(null);
-	  for (int i = 0; i < C; i++)
-		  FilteredInstance.deleteAttributeAt(0);
-	  FilteredInstance.insertAttributeAt(0);
-	  FilteredInstance.setDataset(m_InstancesTemplate);
-	  return FilteredInstance;
-  }
+	/**
+	 * Convert Instance - Convert e.g., [1,2,3] to [13,2]
+	 * @param	x	original Instance (e.g., [1,2,3],x)
+	 * @param	L 	the number of labels
+	 * @return	converted Instance (e.g., [13,2],x)
+	 */
+	public Instance convertInstance(Instance x, int L) {
+		Instance x_ = (Instance) x.copy(); 
+		x_.setDataset(null);
+		for (int i = 0; i < L; i++)
+			x_.deleteAttributeAt(0);
+		x_.insertAttributeAt(0);
+		x_.setDataset(m_InstancesTemplate);
+		return x_;
+	}
 
-  //convert e.g. r[0,0,0,0,1,0,1] to r[0,1,1,1,0]
-  // @todo clean this up a bit, there should only be one r which needs to be converted (the max)
-  // (this will also need to apply to PS if necessary)
-  public double[] convertDistribution(double r[], int c) {
-	  double newr[] = new double[c];
-	  for(int i = 0; i < r.length; i++) {
-		  if(r[i] > 0.0) {
-			  double d[] = MLUtils.fromBitString(m_InstancesTemplate.classAttribute().value(i));
-			  for(int j = 0; j < d.length; j++) {
-				  if(d[j] > 0.0)
-					  newr[j] = 1.0;
-			  }
-		  }
-	  }
-	  return newr;
-  }
+	/**
+	 * Convert Distribution - Given the posterior across combinations, return the distribution across labels.
+	 * @param	p[]	the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [1,0]
+	 * @param	L 	the number of labels
+	 * @return	the distribution across labels, e.g., P(1,2,3) = [1,0,1]
+	 */
+	public double[] convertDistribution(double p[], int L) {
+		
+		double y[] = new double[L];
 
-  @Override
-	public double[] distributionForInstance(Instance mlInstance) throws Exception {
+		int i = Utils.maxIndex(p);
 
-	  int c = mlInstance.classIndex();
+		double d[] = MLUtils.fromBitString(m_InstancesTemplate.classAttribute().value(i));
+		for(int j = 0; j < d.length; j++) {
+			if(d[j] > 0.0)
+				y[j] = 1.0;
+		}
 
-	  //if there is only one class (as for e.g. in some hier. mtds) predict it
-	  if(c == 1) return new double[]{1.0};
+		return y;
+	}
 
-	  Instance slInstance = convertInstance(mlInstance,c);
-	  slInstance.setDataset(m_InstancesTemplate);
 
-	  //Get a classification
-	  double result[] = new double[slInstance.numClasses()];
+	@Override
+	public double[] distributionForInstance(Instance x) throws Exception {
 
-	  result[(int)m_Classifier.classifyInstance(slInstance)] = 1.0;
+		int L = x.classIndex();
 
-	  return convertDistribution(result,c);
-  }
+		//if there is only one class (as for e.g. in some hier. mtds) predict it
+		if(L == 1) return new double[]{1.0};
 
-  @Override
-  public String getRevision() {
-    return RevisionUtils.extract("$Revision: 9117 $");
-  }
+		Instance slInstance = convertInstance(x,L);
+		slInstance.setDataset(m_InstancesTemplate);
 
-  public static void main(String args[]) {
-	  MultilabelClassifier.evaluation(new LC(),args);
-  }
+		//Get a classification
+		double y[] = new double[slInstance.numClasses()];
+
+		y[(int)m_Classifier.classifyInstance(slInstance)] = 1.0;
+
+		return convertDistribution(y,L);
+	}
+
+	@Override
+	public String getRevision() {
+		return RevisionUtils.extract("$Revision: 9117 $");
+	}
+
+	public static void main(String args[]) {
+		MultilabelClassifier.evaluation(new LC(),args);
+	}
 
 }
