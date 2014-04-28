@@ -19,8 +19,9 @@ import java.util.*;
 import weka.core.Utils;
 
 /**
- * A.java - Handy Array operations
- * @author Jesse Read (jesse@tsc.uc3m.es)
+ * A.java - Handy array operations
+ * @version 	April 2014
+ * @author 		Jesse Read 
  */
 public abstract class A {
 
@@ -108,16 +109,12 @@ public abstract class A {
 		return p;
 	}
 
-	// add value 'v' to 'array[]' @todo: rename to 'append'
-	public static int[] add(int array[], final int v) {
+	// append value 'v' to 'array[]' 
+	public static int[] append(int array[], final int v) {
 		int n = array.length;
 		array = Arrays.copyOf(array,n+1);
 		array[n] = v;
 		return array;
-	}
-
-	public static int[] append(int array[], final int v) {
-		return add(array,v);
 	}
 
 	// delete index 'i' from 'array[]'
@@ -128,9 +125,8 @@ public abstract class A {
 		return array;
 	}
 
-	// delete indices i[] from 'array[]'
+	// delete indices 'i[]' from 'array[]' @note: slow!
 	public static int[] delete(int array[], final int i[]) {
-		// @note: slow!
 		for (int i_ : i) {
 			array = delete(array,i_);
 		}
@@ -171,22 +167,8 @@ public abstract class A {
 		return swap(array,a,(a==b) ? array.length-1 : b);
 	}
 
-	// "1,2" -> [1,2]
-	//@see MLUtils.toIntArray(String s) 
-
-	// "12" -> [1,2]
-	public static final int[] string2IntArray(String s) {
-		int[] array = new int[s.length()];
-		 
-		for (int i = 0; i < s.length(); i++) {
-			array[i] = Character.digit(s.charAt(i), 10);
-		}
-
-		return array;
-	}
-
-	// select i with probabilitiy w[i] (w must be normalised)
-	public static int rndsrc (double w[], Random r) {
+	// select i with probabilitiy w[i] (w must be normalised) aka rndsrc
+	public static int samplePMF(double w[], Random r) {
 		double u = r.nextDouble();
 		double sum = w[0];
 		int i = 0;
@@ -197,14 +179,7 @@ public abstract class A {
 		return i;
 	}
 
-	// same as above
-	public static int samplePMF(double w[], Random r) {
-		return rndsrc(w,r);
-	}
-
-	/**
-	 * Make Sequence - Given L, generate and return new int[]{0,1,2,3,...,L-1}.
-	 */
+	/** Make Sequence - Given L, generate and return new int[]{0,1,2,3,...,L-1}. */
 	public static final int[] make_sequence(int L) {
 		int ind[] = new int[L];
 		for(int i = 0; i < L; i++) {
@@ -213,6 +188,7 @@ public abstract class A {
 		return ind;
 	}
 
+	/** Make Sequence - Generate and return new int[]{start,start+1,...,end-2,end-1}. */
 	public static final int[] make_sequence(int start, int end) {
 		int array[] = new int[end-start];
 		for(int j = start, i = 0; j < end; j++, i++) {
@@ -221,13 +197,12 @@ public abstract class A {
 		return array;
 	}
 
-	// Shuffle an array given 'r', @TODO use Collections.shuffle(array.asList());
+	/** Shuffle 'array' given Random 'r' */
 	public static final void shuffle(int array[], Random r) {
 
-		//@TODO: use this:
+		//@TODO: use this (but beware some results may change):
 		//Collections.shuffle(Arrays.asList(array), r);
 		//return array;
-
 
 		//MLUtils.randomize(array,r);
 		for (int i = array.length - 1; i > 0; i--) {
@@ -272,6 +247,29 @@ public abstract class A {
 		return y;
 	}
 
+	// "1,2" -> [1,2]
+	//@see MLUtils.toIntArray(String s) 
+
+	/** Convert eg "12" to [1,2] */
+	public static final int[] toIntArray(String s) {
+		int[] array = new int[s.length()];
+		 
+		for (int i = 0; i < s.length(); i++) {
+			array[i] = Character.digit(s.charAt(i), 10);
+		}
+
+		return array;
+	}
+
+	/** Convert eg ["1","2"] to [1,2] */
+	public static final int[] toIntArray(String s[]) {
+		int u[] = new int[s.length];
+		for(int j = 0; j < s.length; j++) {
+			u[j] = Integer.parseInt(s[j]);
+		}
+		return u;
+	}
+
 	// @see also toIntArray(z,t)
 	public static final int[] toIntArray(double z[]) {
 		int u[] = new int[z.length];
@@ -290,12 +288,5 @@ public abstract class A {
 		return u;
 	}
 
-	public static final int[] toIntArray(String s[]) {
-		int u[] = new int[s.length];
-		for(int j = 0; j < s.length; j++) {
-			u[j] = Integer.parseInt(s[j]);
-		}
-		return u;
-	}
 }
 
