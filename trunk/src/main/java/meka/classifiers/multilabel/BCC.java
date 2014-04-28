@@ -36,18 +36,16 @@ import weka.core.TechnicalInformation.Type;
 import weka.core.TechnicalInformationHandler;
 
 /**
- * BCC.java - Bayesian Classifier Chains.
- * Creates a maximum spanning tree based on marginal label dependence; then employs a CC classifier. The original paper used Naive Bayes as a base classifier, hence the name. 
+ * BCC.java - Bayesian Classifier Chains. Probably would be more aptly called Bayesian Classifier Tree.
+ * Creates a maximum spanning tree based on marginal label dependence; then employs a CC classifier. 
+ * The original paper used Naive Bayes as a base classifier, hence the name. 
  * <br>
  * See Zaragoza et al. "Bayesian Classifier Chains for Multi-dimensional Classification. IJCAI 2011.
  * </br>
  * @author	Jesse Read
  * @version June 2013
  */
-public class BCC extends MultilabelClassifier implements Randomizable, TechnicalInformationHandler {
-
-	protected CNode nodes[] = null;
-	int sequence[] = null;
+public class BCC extends CCe {
 
 	/**
 	 * Description to display in the GUI.
@@ -80,6 +78,7 @@ public class BCC extends MultilabelClassifier implements Randomizable, Technical
 	public void buildClassifier(Instances D) throws Exception {
 		testCapabilities(D);
 
+		m_R = new Random(getSeed());
 		int L = D.classIndex();
 		int d = D.numAttributes()-L;
 
@@ -92,7 +91,7 @@ public class BCC extends MultilabelClassifier implements Randomizable, Technical
 		if (m_DependencyType.equals("L")) {
 			// New Option
 			if (getDebug()) System.out.println("The 'LEAD' method for finding conditional dependence.");
-			CD = StatUtils.LEAD(D,getClassifier(),new Random(getSeed()));
+			CD = StatUtils.LEAD(D,getClassifier(),m_R);
 		}
 		else {	
 			// Old/default Option
@@ -140,7 +139,7 @@ public class BCC extends MultilabelClassifier implements Randomizable, Technical
 		/*
 		 *  Turn the DAG into a Tree with the m_Seed-th node as root
 		 */
-		int root = m_Seed;
+		int root = getSeed();
 		if (getDebug())
 			System.out.println("Make a Tree from Root "+root);
 		int paL[][] = new int[L][0];
@@ -153,15 +152,15 @@ public class BCC extends MultilabelClassifier implements Randomizable, Technical
 				System.out.println("pa_"+i+" = "+Arrays.toString(paL[i]));
 			}
 		}
-		sequence = Utils.sort(visted);
+		m_Chain = Utils.sort(visted);
 		if (getDebug())
-			System.out.println("sequence: "+Arrays.toString(sequence));
+			System.out.println("sequence: "+Arrays.toString(m_Chain));
 	   /*
 		* Bulid a classifier 'tree' based on the Tree
 		*/
       if (getDebug()) System.out.println("Build Classifier Tree ...");
 	   nodes = new CNode[L];
-	   for(int j : sequence) {
+	   for(int j : m_Chain) {
 		   if (getDebug()) 
 				System.out.println("\t node h_"+j+" : P(y_"+j+" | x_[1:"+d+"], y_"+Arrays.toString(paL[j])+")");
 		   nodes[j] = new CNode(j, null, paL[j]);
@@ -177,19 +176,6 @@ public class BCC extends MultilabelClassifier implements Randomizable, Technical
 	   */
 	}
 
-	@Override
-	public double[] distributionForInstance(Instance x) throws Exception {
-		int L = x.classIndex();
-		double y[] = new double[L];
-
-		for(int j : sequence) {
-			// h_j : x,pa_j -> y_j
-			y[j] = nodes[j].classify((Instance)x.copy(),y); 
-		}
-
-		return y;
-	}
-
 	/**
 	 * Treeify - make a tree given the structure defined in paM[][], using the root-th node as root.
 	 */
@@ -198,8 +184,8 @@ public class BCC extends MultilabelClassifier implements Randomizable, Technical
 		for(int j = 0; j < paM[root].length; j++) {
 			if (paM[root][j] == 1) {
 				if (visited[j] < 0) {
-					children = A.add(children,j);
-					paL[j] = A.add(paL[j],root);
+					children = A.append(children,j);
+					paL[j] = A.append(paL[j],root);
 					visited[j] = visited[Utils.maxIndex(visited)] + 1;
 				}
 				// set as visited
@@ -226,23 +212,11 @@ public class BCC extends MultilabelClassifier implements Randomizable, Technical
 	}
 	*/
 	
-	protected int m_Seed = 0;
-
-	@Override
-	public int getSeed() {
-		return m_Seed;
-	}
-
-	@Override
-	public void setSeed(int s) {
-		m_Seed = s;
-	}
-
 	/* 
 	 * TODO: Make a generic abstract -dependency_user- class that has this option, and extend it here
 	 */
 	
-	String m_DependencyType = "L";
+	String m_DependencyType = "Ibf";
 
 	@Override
 	public Enumeration listOptions() {

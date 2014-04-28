@@ -23,27 +23,25 @@ import meka.core.*;
 import meka.classifiers.multilabel.cc.CNode;
 import weka.filters.unsupervised.attribute.*;
 import weka.filters.*;
+import weka.core.TechnicalInformation;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
+import weka.core.TechnicalInformationHandler;
 import java.util.*;
 import java.io.Serializable;
 
 /**
- * CCe - CC extended.
- * Allows for:<br>
- * <ul>
- * <li> <code>y[] = distributionForInstance(x,path)</code>  force CC down this 'path' (p(y|path) where y[] is the actual classification</li>
- * <li> <code>y[] = sampleForInstance(x)</code>				sample the chain / classify stochastically, given x; y ~ h(x)</li>
- * <li> <code>w[] = getConfidences()</code>				    w[] holds the posterior probs, p(Y=y|x) after one of the above</li>
- * </ul>
- * This class will eventually replace CC.java
+ * CCe - CC extended. CC has been used and compared to in several papers, so I have kept that class as it was, 
+ * and introduced this extended class, which has some additional functionality needed for e.g., MCC, PCC.
+ * This class will eventually replace CC.java, if results remain identical.
  * 
  * @see meka.classifiers.multilabel.CC
  * @author	Jesse Read
  * @version December 2013
  */
-public class CCe extends MultilabelClassifier implements Randomizable {
+public class CCe extends MultilabelClassifier implements Randomizable, TechnicalInformationHandler {
 
 	protected CNode nodes[] = null;
-	//protected meka.classifiers.multilabel.CCe.Link root = null;
 
 	protected int m_S = 0;
 	protected Random m_R = null;
@@ -90,7 +88,7 @@ public class CCe extends MultilabelClassifier implements Randomizable {
 				//System.out.println("\t node h_"+j+" : P(y_"+j+" | x_[:], y_"+Arrays.toString(pa)+")");
 			nodes[j] = new CNode(j, null, pa);
 			nodes[j].build(D, m_Classifier);
-			pa = A.add(pa,j);
+			pa = A.append(pa,j);
 		}
 		if (getDebug()) System.out.println(" ) -:");
 
@@ -98,12 +96,10 @@ public class CCe extends MultilabelClassifier implements Randomizable {
 		confidences = new double[L];
 	}
 
-	private double confidences[] = null;
+	protected double confidences[] = null;
 
 	/**
-	 * GetConfidences.
-	 * Get the posterior probabilities, i.e., confidences with which the previous x was predicted 
-	 * (must call distributionForInstance first!).
+	 * GetConfidences - get the posterior probabilities of the previous prediction (after calling distributionForInstance(x)).
 	 */
 	public double[] getConfidences() {
 		return confidences;
@@ -126,20 +122,25 @@ public class CCe extends MultilabelClassifier implements Randomizable {
 	 * SampleForInstance.
 	 * predict y[j] stochastically rather than deterministically (as with distributionForInstance(Instance x)).
 	 * @param	x	test Instance
-	 * @param	r	Random 
+	 * @param	r	Random 			<- @TODO probably can use this.m_R instead
 	 */
 	public double[] sampleForInstance(Instance x, Random r) throws Exception {
 		int L = x.classIndex();
 		double y[] = new double[L];
 
 		for(int j : m_Chain) {
-			y[j] = nodes[j].sample((Instance)x.copy(),y,r); 
+			double p[] = nodes[j].distribution(x, y);                // @todo copy necessary?
+			y[j] = A.samplePMF(p,r);
+			confidences[j] = p[(int)y[j]];
 		}
 
 		return y;
 	}
 
-	// fast version, templates already prepared
+	/**
+	 * SampleForInstance - NOT YET IMPLEMENTED (do it yourself for now).
+	 * fast version, templates already prepared
+	 */
 	public double[] sampleForInstance(Instance x[], Random r) throws Exception {
 		return null;
 
@@ -163,8 +164,8 @@ public class CCe extends MultilabelClassifier implements Randomizable {
 //		return MLUtils.toDoubleArray(res,L);
 	}
 
-	/*
-	 * *DEPRECATED*
+	/**
+	 * TransformInstances - this function is DEPRECATED.
 	 * this function preloads the instances with the correct class labels ... to make the chain much faster,
 	 * but CNode does not yet have this functionality ... need to do something about this!
 	 */
@@ -201,7 +202,7 @@ public class CCe extends MultilabelClassifier implements Randomizable {
 		return p;
 	}
 
-	/**
+	/*
 	 * ProbabilityForInstance.
 	 * Force our way down 'path' where 'path' = x[0],...,x[L] (set into x before calling this function).
 	 * @param	x		test Instance
@@ -214,7 +215,7 @@ public class CCe extends MultilabelClassifier implements Randomizable {
 	*/
 	
 	/**
-	 * Rebuild.
+	 * Rebuild - NOT YET IMPLEMENTED.
 	 * For efficiency reasons, we may want to rebuild part of the chain (which differs with nchain).
 	 * If chain[] = [1,2,3,4] and nchain[] = [1,2,4,3] we only need to rebuild the final two links.
 	 * @note This function does a lot more than necessary, but I was looking into improving CC at some point.
@@ -222,6 +223,44 @@ public class CCe extends MultilabelClassifier implements Randomizable {
 	 * @param	D		the original training data
 	 */
 	public void rebuildClassifier(int nchain[], Instances D) throws Exception {
+	}
+
+	/**
+	 * Description to display in the GUI.
+	 * 
+	 * @return		the description
+	 */
+	@Override
+	public String globalInfo() {
+		return 
+				"The Classifier Chains Method."
+				+ "For more information see:\n"
+				+ getTechnicalInformation().toString();
+	}
+
+	@Override
+	public TechnicalInformation getTechnicalInformation() {
+		TechnicalInformation	result;
+		TechnicalInformation	additional;
+		
+		result = new TechnicalInformation(Type.ARTICLE);
+		result.setValue(Field.AUTHOR, "Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank");
+		result.setValue(Field.TITLE, "Classifier Chains for Multi-label Classification");
+		result.setValue(Field.JOURNAL, "Machine Learning Journal");
+		result.setValue(Field.YEAR, "2011");
+		result.setValue(Field.VOLUME, "85");
+		result.setValue(Field.NUMBER, "3");
+		result.setValue(Field.PAGES, "333-359");
+		
+		additional = new TechnicalInformation(Type.INPROCEEDINGS);
+		additional.setValue(Field.AUTHOR, "Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank");
+		additional.setValue(Field.TITLE, "Classifier Chains for Multi-label Classification");
+		additional.setValue(Field.BOOKTITLE, "20th European Conference on Machine Learning (ECML 2009). Bled, Slovenia, September 2009");
+		additional.setValue(Field.YEAR, "2009");
+
+		result.add(additional);
+    
+		return result;
 	}
 
 	public static void main(String args[]) {
