@@ -17,6 +17,7 @@ package meka.core;
 
 import weka.core.*;
 import weka.classifiers.Classifier; // for 'LEAD' method
+import weka.classifiers.functions.SMO; // for 'LEAD' method
 import meka.classifiers.multilabel.*; // for 'LEAD' method
 
 import java.util.HashMap;
@@ -743,26 +744,29 @@ public abstract class StatUtils {
 	}
 
 	/**
-	 * LEAD - Performs LEAD on dataset 'D', using BR with base classifier 'h', under random seed 'r'.
-	 * @todo : get same result as LEAD2 (above) by calling margDepMatrix(D_E,"X") ???
+	 * LEAD - Performs LEAD on dataset 'D', with corresponding gresult 'R', and dependency measurement type 'MDType'.
 	 */
-	public static double[][] LEAD (Instances D, Result result) {
+	public static double[][] LEAD (Instances D, Result R, String MDType) {
 
-		// get errors
 		int L = D.classIndex();
 		int N = D.numInstances();
-		double Y[][] = MLUtils.getYfromD(D);						// Real
-		double Y_[][] = M.threshold(result.allPredictions(),0.5);	// Predicted
 
-		// Error
-		double E[][] = M.abs(M.subtract(Y,Y_)); 
-		//System.out.println("ERROR");
-		//System.out.println(""+M.toString(E));
+		// Extract true labels from D, predicted labels from R
+		double Ytrue[][] = MLUtils.getYfromD(D);						// True
+		double Ypred[][] = M.threshold(R.allPredictions(),0.5);			// Predicted
 
+		// Make Error matrix
+		double E[][] = M.abs(M.subtract(Ytrue,Ypred)); 
+
+		// Replace labels with errors
 		Instances D_E = MLUtils.replaceZasClasses(new Instances(D),E,L);
 
-		// feed into CD()
-		return StatUtils.margDepMatrix(D_E,"I");
+		// Pass through any measure of marginal dependence
+		return StatUtils.margDepMatrix(D_E,MDType);
+	}
+
+	public static double[][] LEAD (Instances D, Result result) {
+		return LEAD(D,result,"I");
 	}
 
 
@@ -779,6 +783,39 @@ public abstract class StatUtils {
 		br.setClassifier(h);
 		Result result = Evaluation.evaluateModel((MultilabelClassifier)br,D_train,D_test,"PCut1","1"); 
 		return LEAD2(D_test,result);
+	}
+
+	public static double[][] LEAD(Instances D, Classifier h, Random r, String MDType)  throws Exception {
+		Instances D_r = new Instances(D);
+		D_r.randomize(r);
+		Instances D_train = new Instances(D_r,0,D_r.numInstances()*60/100);
+		Instances D_test = new Instances(D_r,D_train.numInstances(),D_r.numInstances()-D_train.numInstances());
+		BR br = new BR();
+		br.setClassifier(h);
+		Result result = Evaluation.evaluateModel((MultilabelClassifier)br,D_train,D_test,"PCut1","1"); 
+
+		return LEAD(D_test, result, MDType);
+	}
+
+	/**
+	 * Main - do some tests.
+	 */
+	public static void main(String args[]) throws Exception {
+		Instances D = Evaluation.getDataset(args);
+		int L = D.classIndex();
+
+		double CD[][] = null;
+
+		if (args[2].equals("L")) {
+			String I = "I";
+			if (args.length >= 3) 
+				I = args[3];
+			CD = StatUtils.LEAD(D, new SMO(), new Random(), I);
+		}
+		else {
+			CD = StatUtils.margDepMatrix(D,args[2]);
+		}
+		System.out.println(M.toString(CD,"M"+args[2]));
 	}
 
 }

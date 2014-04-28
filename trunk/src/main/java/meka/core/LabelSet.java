@@ -217,5 +217,8 @@ public class LabelSet implements Comparator, Serializable {
 	public String toString() {
 		return Arrays.toString(indices);
 	}
+
+	//public String toBinaryString() {
+	//}
 }
 
