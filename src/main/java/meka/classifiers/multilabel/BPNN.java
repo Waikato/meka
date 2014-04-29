@@ -18,8 +18,8 @@ package meka.classifiers.multilabel;
 import meka.classifiers.multilabel.NN.*;
 import weka.core.*;
 import meka.core.*;
-import java.util.*;
 import rbms.Mat;
+import java.util.*;
 import Jama.Matrix;
 
 /**

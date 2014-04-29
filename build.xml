@@ -18,7 +18,7 @@
     <property name="mainclass" value="meka.gui.explorer.Explorer"/>
     <property name="memory" value="512m"/>
 
-    <property name="version" value="1.5"/>
+    <property name="version" value="1.6"/>
 
     <!-- CLASSPATH -->
     <path id="project.class.path">
@@ -145,7 +145,7 @@
            classpathref 	  = "project.class.path"
            access           = "public"
            defaultexcludes  = "yes"
-           excludepackagenames  = "moa"
+           excludepackagenames  = "weka, moa, rbms"
            use              = "yes"
            header           = "MEKA ${version}"
            doctitle         = "MEKA - Multi-label Extension to weKA"
