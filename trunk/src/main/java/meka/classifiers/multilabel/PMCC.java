@@ -18,7 +18,7 @@ package meka.classifiers.multilabel;
 /**
  * PMCC.java - Previously called EMCC.java; selecting the top M chains at training time, and using them in inference (instead of just one).
  * Here we use MCCtemp instead of MCC, and CCe instead of CC! -- will have to sort this out at some point!
- * This may be broken now, since we change CCe, which changed MCC, which broke MCCtemp. Extending MCC will work but will be less fast.
+ * @NOTE, This may be broken now, since we change CCe, which changed MCC, which broke MCCtemp. Extending MCC will work but will be less fast.
  * @TODO, use some kind of voting process as well
  *
  * @see weka.classifiers.multilabel.MCC.java
@@ -36,7 +36,7 @@ import weka.core.*;
 import meka.core.*;
 import java.util.*;
 
-public class PMCC extends MCC { 
+public class PMCC extends MCCe { 
 
 	protected int m_M = 0;
 	protected int m_O = 0;
@@ -123,13 +123,13 @@ public class PMCC extends MCC {
 			p[j] = Math.pow((1./L),beta * t / (1+j));
 		}
 		Utils.normalize(p);
-		int j = A.rndsrc(p,r); 
+		int j = A.samplePMF(p,r); 
 		System.out.println("elect j="+j+" from pmf: "+A.toString(p));
 
 		// blank out the j-th entry, and renormalize, now select k
 		p[j] = 0.0;
 		Utils.normalize(p);
-		int k = A.rndsrc(p,r); 
+		int k = A.samplePMF(p,r); 
 		System.out.println("elect k="+k+" from pmf: "+A.toString(p));
 
 		// swap j and k
@@ -139,9 +139,9 @@ public class PMCC extends MCC {
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
 
-		HashMap<String,CCe> TheMap = new HashMap<String,CCe>();
+		HashMap<String,CCe> id2cc = new HashMap<String,CCe>();
 
-		r = new Random(m_S);
+		m_R = new Random(m_S);
 
 		// Variables
 
@@ -157,10 +157,10 @@ public class PMCC extends MCC {
 
 			// Make CC
 			int s[] = MLUtils.gen_indices(L); 
-			MLUtils.randomize(s,r);
+			MLUtils.randomize(s,m_R);
 			h[0] = buildCC(Arrays.copyOf(s,s.length),D); // @todo move into setChain(..)
 			w[0] = payoff(h[0],new Instances(D));
-			TheMap.put(Arrays.toString(s),h[0]);			// save a copy
+			id2cc.put(Arrays.toString(s),h[0]);			// save a copy
 			//s[0] = s_;
 			if(getDebug()) System.out.println("s[0] = "+Arrays.toString(s));
 
@@ -168,12 +168,12 @@ public class PMCC extends MCC {
 
 				// propose a chain s' ~ pi(s'|s) 
 				int s_[] = (m_O > 0) ? 
-					  pi(Arrays.copyOf(s,s.length),r,t,m_Beta)	  :	// default cond. option - with temperature
-					  A.swap(Arrays.copyOf(s,s.length),r) ;	        // special simple option - swap two elements
+					  pi(Arrays.copyOf(s,s.length),m_R,t,m_Beta)	  :	// default cond. option - with temperature
+					  A.swap(Arrays.copyOf(s,s.length),m_R) ;	        // special simple option - swap two elements
 
 				// build h' with sequence s'
-				CCe h_ = rebuildCC(getClosest(TheMap,Arrays.toString(s_)),s_,D);
-				TheMap.put(Arrays.toString(s_), h_);
+				CCe h_ = rebuildCC(getClosest(id2cc,Arrays.toString(s_)),s_,D);
+				id2cc.put(Arrays.toString(s_), h_);
 
 				// rate h' (by its performance on the training data)
 				double w_ = payoff(h_,new Instances(D));
@@ -216,7 +216,7 @@ public class PMCC extends MCC {
 		y = Arrays.copyOf(y,y.length);
 		for(int t = 0; t < T; t++) {
 			// choose h[i] according to w[i]
-			int m = A.rndsrc(h_weights,r);
+			int m = A.samplePMF(h_weights,r);
 			// propose y' by sampling i.i.d.
 			double y_[] = h[m].sampleForInstance(x,r); 	       
 			// weight y' as w'
@@ -237,31 +237,6 @@ public class PMCC extends MCC {
 	public static double[] RandomSearch(CCe h[], double ww[], Instance x, int T, Random r) throws Exception {
 
 		return RandomSearch(h,ww,x,T,r,h[0].distributionForInstance(x));
-	}
-
-	@Override
-	public double[] distributionForInstance(Instance x) throws Exception {
-
-		if (m_Iy <= 0) {
-			// 0 iterations of inference, just return the greedy classification of CC
-			return h[0].distributionForInstance(x);
-		}
-		else { 
-			// MC inference (we could do PCC's Bayes-optimal inference here if L < 10, ... but we don't)
-			return RandomSearch(h,w,(Instance)x.copy(),m_Iy,r);
-		}
-	}
-
-	protected int m_S = 0;
-
-	@Override
-	public void setSeed(int s) {
-		m_S = s;
-	}
-
-	@Override
-	public int getSeed() {
-		return m_S;
 	}
 
 	@Override
