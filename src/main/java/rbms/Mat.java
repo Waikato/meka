@@ -13,6 +13,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+//package meka.classifiers.multilabel.NN;
 package rbms;
 
 import Jama.Matrix;
@@ -31,9 +32,6 @@ public abstract class Mat {
 	public static double[] ones(int L) {
 		double m[] = new double[L];
 		Arrays.fill(m,1.);
-		//for(int i = 0; i < L; i++) {
-		//	m[i] = 1.;
-		//}
 		return m;
 	}
 
@@ -465,16 +463,6 @@ public abstract class Mat {
         return col_k;
     }
     
-	public static double[][] abs(double[][] A) {
-		double[][] C = new double[A.length][A[0].length];
-        for (int i = 0; i < A.length; i++) {
-            for (int j = 0; j < A[i].length; j++ ) {
-                C[i][j] = Math.abs(A[i][j]);
-            }
-        }
-        return C;
-	}
-
 	public static double[][] add(double[][] A, double[][] B) {
         double[][] C = new double[A.length][A[0].length];
         for (int i = 0; i < A.length; i++) {
