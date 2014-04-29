@@ -18,7 +18,6 @@ package meka.classifiers.multilabel;
 import meka.classifiers.multilabel.NN.*;
 import weka.core.*;
 import meka.core.*;
-import rbms.Mat;
 import java.util.*;
 import Jama.Matrix;
 
@@ -206,18 +205,18 @@ public class BPNN extends AbstractNeuralNet {
 		Matrix Z[] = new Matrix[nW+1];
 
 		// input activations
-		Z[0] = new Matrix(Mat.addBias(X_));
+		Z[0] = new Matrix(M.addBias(X_));
 
 		// hidden layer(s)
 		for(int i = 1; i < Z.length; i++) {
 			Matrix A_z = Z[i-1].times(W[i-1]);									// 					A = X * W1 		= Z[n-1] * W[n-1]	 
-			Z[i] = Mat.sigma(A_z);
-			Z[i] = Mat.addBias(Z[i]);											// ACTIVATIONS      Z[n] = sigma(A)	=  
+			Z[i] = M.sigma(A_z);
+			Z[i] = M.addBias(Z[i]);											// ACTIVATIONS      Z[n] = sigma(A)	=  
 		}
 
 		// output layer
 		Matrix A_y = Z[nW-1].times(W[nW-1]);			// 					A = X * W1 		= Z[n-1] * W[n-1]	 
-		Z[nW] = Mat.sigma(A_y);					// ACTIVATIONS      Z[n] = sigma(A)	=  
+		Z[nW] = M.sigma(A_y);					// ACTIVATIONS      Z[n] = sigma(A)	=  
 
 		return Z;
 	}
@@ -253,13 +252,13 @@ public class BPNN extends AbstractNeuralNet {
 		// Error terms (output)
 		Matrix E_y = T.minus(Z[nW]);												// ERROR
 
-		dZ[nW] = Mat.dsigma(Z[nW]).arrayTimes(E_y);
+		dZ[nW] = M.dsigma(Z[nW]).arrayTimes(E_y);
 
 		// Error terms (hidden) *NEW*
 		for(int i = nW-1; i > 0; i--) {
 			Matrix E = dZ[i+1].times(W[i].transpose());
-			dZ[i] = Mat.dsigma(Z[i]).arrayTimes(E); 
-			dZ[i] = new Matrix(Mat.removeBias(dZ[i].getArray()));
+			dZ[i] = M.dsigma(Z[i]).arrayTimes(E); 
+			dZ[i] = new Matrix(M.removeBias(dZ[i].getArray()));
 		}
 
 		// Error terms (hidden)

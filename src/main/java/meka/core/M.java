@@ -45,7 +45,6 @@ public abstract class M {
         return col_k;
     }
     
-	/*
 	public static double[][] addBias(double[][] M) {
 		final double[][] C = new double[M.length][M[0].length+1];
 		for (int i = 0; i < M.length; i++) {
@@ -56,7 +55,28 @@ public abstract class M {
 		}
         return C;
     }
-	*/
+
+	public static Matrix addBias(Matrix M) {
+		double[][] M_ = M.getArray();
+		final double[][] C = new double[M_.length][M_[0].length+1];
+		for (int i = 0; i < M_.length; i++) {
+			C[i][0] = 1.0;
+			for(int j = 0; j < M_[i].length; j++) {
+				C[i][j+1] = M_[i][j];
+			}
+		}
+		return new Matrix(C);
+    }
+
+	public static double[][] removeBias(double[][] M) {
+		final double[][] C = new double[M.length][M[0].length-1];
+		for (int i = 0; i < M.length; i++) {
+			for(int j = 1; j < M[i].length; j++) {
+				C[i][j-1] = M[i][j];
+			}
+		}
+        return C;
+    }
 
 	/**
 	 * Multiply - multiply each value in A[][] by constant K.
@@ -190,6 +210,90 @@ public abstract class M {
 			}
         }
         return sum;
+	}
+
+	/**
+	 * Sigmoid / Logistic function
+	 */
+	public static final double sigma(double a) {
+		return 1.0/(1.0+Math.exp(-a));
+	}
+
+	/**
+	 * Sigmoid function applied to vector
+	 */
+	public static final double[] sigma(double v[]) {
+		double u[] = new double[v.length];
+		for(int j = 0; j < v.length; j++) {
+			u[j] = sigma(v[j]);
+		}
+		return u;
+	}
+
+	/**
+	 * Sigmoid function applied to matrix (2D array)
+	 */
+	public static final double[][] sigma(double A[][]) {
+		double X[][] = new double[A.length][A[0].length];
+		for(int i = 0; i < A.length; i++) {
+			for(int j = 0; j < A[i].length; j++) {
+				X[i][j] = sigma(A[i][j]);
+			}
+		}
+		return X;
+	}
+
+	/**
+	 * Sigmoid function applied to Matrix
+	 */
+	public static final Matrix sigma(Matrix A) {
+		return new Matrix(sigma(A.getArray()));
+	}
+
+	/**
+	 * Derivative of the sigmoid function applied to scalar
+	 */
+	public static final double dsigma(double a) {
+		double s = sigma(a);
+		return s * (1. - s);
+	}
+
+	/**
+	 * Derivative of the sigmoid function applied to vector
+	 */
+	public static final double[] dsigma(double v[]) {
+		double u[] = new double[v.length];
+		for(int j = 0; j < v.length; j++) {
+			u[j] = dsigma(v[j]);
+		}
+		return u;
+	}
+
+	/**
+	 * Derivative of the sigmoid function applied to Matrix
+	 */
+	public static final double[][] dsigma(double A[][]) {
+		double X[][] = new double[A.length][A[0].length];
+		for(int i = 0; i < A.length; i++) {
+			for(int j = 0; j < A[i].length; j++) {
+				X[i][j] = dsigma(A[i][j]);
+			}
+		}
+		return X;
+	}
+
+	/**
+	 * Derivative of the sigmoid function applied to Jama Matrix
+	 */
+	public static final Matrix dsigma(Matrix A) {
+		double A_[][] = A.getArray();
+		double X[][] = new double[A_.length][A_[0].length];
+		for(int i = 0; i < A_.length; i++) {
+			for(int j = 0; j < A_[i].length; j++) {
+				X[i][j] = dsigma(A_[i][j]);
+			}
+		}
+		return new Matrix(X);
 	}
 
 	/**
