@@ -361,12 +361,16 @@ public class Result implements Serializable {
 
 				// set threshold ?
 				if (Utils.getOptionPos("threshold",args) >= 0) {
-					System.out.println("setting threshold ...");
 					r.setInfo("Threshold",Utils.getOption("threshold",args));
+					System.out.println("Setting threshold from command line: "+r.getInfo("Threshold"));
+				}
+				else if(r.getInfo("Threshold") != null) {
+					String t = r.getInfo("Threshold");
+					System.out.println("using threshold "+t);
 				}
 				else {
 					String t = Arrays.toString(ThresholdUtils.calibrateThresholds(r.predictions,MLUtils.labelCardinalities(r.actuals)));
-					System.out.println("using threshold "+t);
+					System.out.println("Did not find threshold, calibrated a new one: "+t);
 					r.setInfo("Threshold",t);
 					
 				}
