@@ -7,7 +7,7 @@
 \newcommand{\MOA}{Moa}
 \newcommand{\WEKA}{Weka}
 \newcommand{\MULAN}{Mulan}
-\def\version{{\tt 1.5.0}}
+\def\version{{\tt 1.6.2}}
 \usepackage{listings}
 \usepackage{courier}
 \lstset{basicstyle=\small\ttfamily,breaklines=true,frame=L,xleftmargin=\parindent}
@@ -160,54 +160,57 @@ With the exception of the different use of the \texttt{-c} flag (see the previou
 Evaluation Options:
 
 -h
-        Output help information.
+	Output help information.
 -t <name of training file>
-        Sets training file.
+	Sets training file.
 -T <name of test file>
-        Sets test file.
+	Sets test file.
 -x <number of folds>
-        Do cross-validation with this many folds.
+	Do cross-validation with this many folds.
 -R
-        Randomise the dataset (done after a range is removed, but before the 
-        train/test split)
+	Randomise the dataset (done after a range is removed, but before the train/test split).
 -split-percentage <percentage>
-        Sets the percentage for the train/test set split, e.g., 66.
+	Sets the percentage for the train/test set split, e.g., 66.
 -split-number <number>
-        Sets the number of training examples, e.g., 800.
+	Sets the number of training examples, e.g., 800
 -i
-        Invert the specified train/test split
+	Invert the specified train/test split.
 -s <random number seed>
-        Sets random number seed.
+	Sets random number seed.
 -threshold <threshold>
-        Sets the type of thresholding; where 
-            'PCut1' automatically calibrates a threshold (the default); 
-            'PCutL' automatically calibrates one threshold for each label; and 
-            any double number, e.g. '0.5', specifies that threshold.
--C <number of target attributes>
-        Sets the number of target attributes to expect (indexed from the beginning).
+	Sets the type of thresholding; where
+	- 'PCut1' automatically calibrates a threshold (the default);
+	- 'PCutL' automatically calibrates one threshold for each label;
+	- any double number, e.g. '0.5', specifies that threshold.
+-C <number of classes/labels>
+	Sets the number of target attributes (classes/labels) to expect (indexed from the beginning).
 -f <results_file>
-        Specify a file to output results and evaluation statistics into.
-\end{lstlisting}
-}
+	Specify a file to output results and evaluation statistics into.
+-d <classifier_file>
+	Specify a file to dump classifier into.
+-l <classifier_file>
+	Specify a file to load classifier from.
+-verbosity <verbosity level>
+	Specify more/less evaluation output
 
-The only required options are \texttt{-t} to specify the dataset, and \texttt{-C} to specify the number of target attributes; the latter is typically included within the dataset, as explained in the previous section. 
 
-Below this output, we also see the output for \texttt{Classifier Options}:
-
-{\small
-\begin{lstlisting}
 Classifier Options:
 
--output-debug-info
-        If set, classifier is run in debug mode and
-        may output additional info to the console
 -W
-        Full name of base classifier.
-        (default: weka.classifiers.rules.ZeroR)
+	Full name of base classifier.
+	(default: weka.classifiers.rules.ZeroR)
+-output-debug-info
+	If set, classifier is run in debug mode and
+	may output additional info to the console
+--do-not-check-capabilities
+	If set, classifier capabilities are not checked before classifier is built
+	(use with caution).
 \end{lstlisting}
 }
 
-which in this case (for \texttt{java meka.classifiers.multilabel.BR}) are not very extensive. However, to get decent results with this classifier, we will have to specify a more competitive \emph{base classifier} with the \texttt{-W} option, for example Naive Bayes. To run this on the \textit{Music} data, we would type\footnote{If typed on one line, the bar `\texttt{\textbackslash}' should be omitted} on the command line:
+The only required options are \texttt{-t} to specify the dataset, and \texttt{-C} to specify the number of target attributes; the latter is typically included within the dataset, as explained in the previous section.  
+
+The \texttt{Classifier Options} are specific to each classifier, which in this case (for \texttt{java meka.classifiers.multilabel.BR}) are not very extensive. However, to get decent results with this classifier, we will have to specify a more competitive \emph{base classifier} with the \texttt{-W} option, for example Naive Bayes. To run this on the \textit{Music} data, we would type\footnote{If typed on one line, the bar `\texttt{\textbackslash}' should be omitted} on the command line:
 
 \begin{lstlisting}
 java meka.classifiers.multilabel.BR -t data/Music.arff \
@@ -279,13 +282,16 @@ Note that by increasing the \texttt{verbosity} level, you can get more output: \
 \begin{center}
 \begin{tabular}{ll}
 	\hline
-	1 (default) & basic output \\
-	2           & plus more metrics \\
-	3           & plus individual accuracies (for each label) \\
-	5           & plus individual classifications \\
-	6           & plus individual confidence outputs (rounded to 1 d.p.) \\
-	7           & \ldots (rounded to 2 d.p.) \\
-	8           & \ldots (rounded to 3 d.p.) \\
+	\texttt{verbosity}       & Output \\
+	\hline
+	\texttt{1} (default) & basic output \\
+	 \texttt{2}           & plus more metrics \\
+	  \texttt{3}           & plus individual metrics (for each label) \\
+	   \texttt{4}           & plus more individual metrics (for each label) \\
+		\texttt{5}           & plus individual classifications \\
+	  \texttt{6}           & plus individual confidence outputs (rounded to 1 d.p.) \\
+	   \texttt{7}           & \ldots (rounded to 2 d.p.) \\
+		\texttt{8}           & \ldots (rounded to 3 d.p.) \\
 	\hline
 \end{tabular}
 \end{center}
@@ -315,7 +321,7 @@ java meka.classifiers.multilabel.BR -t data/Music.arff \
   -f BR-NB.meka \
   -W weka.classifiers.bayes.NaiveBayes
 \end{lstlisting}
-which produces the plain-text file \texttt{BR-NB.meka}. This provides a way to evaluate \framework{\MEKA}'s performance `offline'. Note that when cross validation (\texttt{-x}) is used, one file will be created for each fold, e.g., \texttt{BR-NB.meka.0}, \ldots, \texttt{BR-NB.meka.4} for a 5-fold validation. The results can be recalculated for any of these files with, e.g.:
+which produces the plain-text file \texttt{BR-NB.meka}. This provides a way to do further evaluation `offline'. Note that when cross validation (\texttt{-x}) is used, one file will be created for each fold, e.g., \texttt{BR-NB.meka.0}, \ldots, \texttt{BR-NB.meka.4} for a 5-fold validation. The results can be recalculated for any of these files with, e.g.:
 \begin{lstlisting}
 	java weka.core.Result -f BR-NB.meka
 \end{lstlisting}
@@ -351,9 +357,9 @@ java meka.classifiers.multilabel.meta.EnsembleML \
 
 \paragraph{Ensembles of Classifier Chains} (ECC; see \cite{ECC2}) With 50 ensemble members (\texttt{-I 50}), and some textual output (\texttt{-output-debug-info}) on the \textit{Enron} dataset with Support Vector Machines as a base classifier:
 \begin{lstlisting}
-java meka.classifiers.multilabel.meta.BaggingML -I 50 -P 100 -output-debug-info \
-  -t data/Enron.arff -W meka.classifiers.multilabel.CC -- \
-    -W weka.classifiers.functions.SMO
+java meka.classifiers.multilabel.meta.BaggingML -I 50 -P 100 \
+  -output-debug-info -t data/Enron.arff -W meka.classifiers.multilabel.CC\ 
+  -- -W weka.classifiers.functions.SMO
 \end{lstlisting}
 
 \paragraph{Mulan Classifier} (\texttt{RAkEL} see \cite{RAKEL}) With parameters \texttt{\texttt{k=3}, \texttt{m=2C}} where \texttt{C} is the number of labels (these options are hardwired; you need to edit \texttt{MULAN.java} to specify new parameter configurations) on the \textit{Scene} dataset with Decision Trees as the base classifier (remember {\texttt{mulan.jar} must be in the classpath}):
@@ -598,11 +604,12 @@ More more information (such as contact information) can be found at the \framewo
 Below is a list of the major methods supported in \framework{\MEKA}, along with their abbreviations (in some cases methods are known by more than one name), and the class name (given from the \texttt{classifiers} directory). Problem transformation methods expect a \texttt{-W} option. For example, to run classifier chains:
 \begin{lstlisting}
 java meka.classifiers.multilabel.meta.BaggingML -P 100 \
-	-W meka.classifiers.multilabel.CC -- -W weka.classifiers.functions.SMO	
+    -W meka.classifiers.multilabel.CC -- -W weka.classifiers.functions.SMO	
 \end{lstlisting}
 and to run CLR:
 \begin{lstlisting}
-java meka.classifiers.multilabel.MULAN -S CLR -W weka.classifiers.functions.SMO	
+java meka.classifiers.multilabel.MULAN -S CLR\
+    -W weka.classifiers.functions.SMO	
 \end{lstlisting}
 Other parameters are mostly set to the default found in the literature where the method was introduced. The methods have been grouped approximately together. Citations are included within the \texttt{TechnicalInformation} of the source code files. $U$ indicates that an \texttt{Updateable} version is available. $M$ indicates that a multi-target version (or can be used directly) is available.\\
 {
@@ -635,7 +642,7 @@ Other parameters are mostly set to the default found in the literature where the
 	Pruned Problem Transformation (PPT)  & \texttt{PSt} \\
 	Pruned Sets (PS)               & \texttt{PS} \\
 	Ensembles of Pruned Sets (EPS  & \texttt{meta.EnsembleML -W PS} \\
-	Nearest Set Replacement (NSR) [$M$]  & \texttt{meta.EnsembleML -W PS} \\
+	Nearest Set Replacement (NSR) [$M$]  & \texttt{NSR} \\
 	\hline
 \end{tabular}
 }
