@@ -25,6 +25,7 @@ import weka.core.Utils;
 import weka.gui.PropertyDialog;
 import weka.gui.HierarchyPropertyParser;
 import weka.core.logging.Logger;
+import weka.gui.beans.PluginManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -82,17 +83,18 @@ extends weka.gui.GenericObjectEditor {
 	    JOptionPane.ERROR_MESSAGE);
       }
       else {
+	PluginManager.addFromProperties(MEKA_EDITOR_PROPERTIES);
 	Enumeration<String> keys = (Enumeration<String>) MEKA_EDITOR_PROPERTIES.propertyNames();
 	while (keys.hasMoreElements()) {
 	  String key = keys.nextElement();
 	  // merged property?
 	  if (EDITOR_PROPERTIES.containsKey(key))
 	    EDITOR_PROPERTIES.setProperty(
-		key, 
+		key,
 		EDITOR_PROPERTIES.getProperty(key) + "," + MEKA_EDITOR_PROPERTIES.getProperty(key));
 	  else
 	    EDITOR_PROPERTIES.setProperty(
-		key, 
+		key,
 		MEKA_EDITOR_PROPERTIES.getProperty(key));
 	}
       }
