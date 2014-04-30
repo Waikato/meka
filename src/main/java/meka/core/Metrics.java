@@ -145,6 +145,10 @@ public abstract class Metrics {
 		return accuracy/(double)N;
 	}
 
+	public static double L_JaccardDist(int Y[][], int Ypred[][]) {
+		return 1. - P_Accuracy(Y,Ypred);
+	}
+
 	/**
 	 * L_LogLoss - the log loss between real-valued confidence rpred and true prediction y.
 	 * @param	y		label

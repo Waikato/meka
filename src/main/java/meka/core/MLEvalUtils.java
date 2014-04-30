@@ -96,9 +96,10 @@ public abstract class MLEvalUtils {
 
 		if (V > 1) {
 
-			results.put("Harmonic score"	,Metrics.P_Harmonic(Y,Ypred));
+			results.put("Jaccard dist"		,Metrics.L_JaccardDist(Y,Ypred));
 			results.put("Hamming loss"		,Metrics.L_Hamming(Y,Ypred));
 			results.put("ZeroOne loss"		,Metrics.L_ZeroOne(Y,Ypred));
+			results.put("Harmonic score"	,Metrics.P_Harmonic(Y,Ypred));
 			results.put("One error"			,Metrics.L_OneError(Y,Rpred));
 			results.put("Rank loss"			,Metrics.L_RankLoss(Y,Rpred));
 			results.put("Avg precision"		,Metrics.P_AveragePrecision(Y,Rpred));
@@ -112,7 +113,6 @@ public abstract class MLEvalUtils {
 			results.put("F-macro_D"			,Metrics.P_FmacroAvgD(Y,Ypred));
 			results.put("F-macro_L"			,Metrics.P_FmacroAvgL(Y,Ypred));
 			results.put("N_empty"			,MLUtils.emptyVectors(Ypred));
-			results.put("LCard_pred"		,MLUtils.labelCardinality(Ypred));
 
 			if (V > 2) {
 				//results.put("LCard_real"		,MLUtils.labelCardinality(Y));
@@ -125,13 +125,13 @@ public abstract class MLEvalUtils {
 					}
 				}
 			}
-			if (V > 3) {
-				// @todo: show by-label label cardinality
-				/*
+
+			results.put("LCard_pred"		,MLUtils.labelCardinality(Ypred));
+			if (V > 4) {
+				// Label cardinality
 				for(int j = 0; j < L; j++) {
 					results.put("LCard["+j+"]"	,Metrics.P_Hamming(Y,Ypred,j));
 				}
-				*/
 			}
 		}
 		return results;
