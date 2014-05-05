@@ -421,6 +421,7 @@ extends MekaPanel {
       saver = ConverterUtils.getSaverForFile(file);
     try {
       saver.setFile(file);
+      saver.setInstances(m_Data);
       saver.writeBatch();
       m_CurrentFile = file;
     }
