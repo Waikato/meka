@@ -55,24 +55,27 @@ public abstract class MLUtils {
 		else return name;
 	}
 
-	public static final String takeClassifierName(String alg_spec[]) {
-		if (alg_spec.length < 1) return null;
-		String _name = alg_spec[0];
-		alg_spec[0] = "";
-		return _name;
-	}
-
+	/**
+	 * DEPRECATED - use A.make_sequence(L) instead.
+	 */
+	@Deprecated
 	public static final int[] gen_indices(int L) {
 		return A.make_sequence(L);
 	}
 
 
-	// Shuffle an array given 'r', @TODO use Collections.shuffle(array.asList());
+	/**
+	 * DEPRECATED - use A.shuffle(array,r) instead.
+	 */
+	@Deprecated
 	public static final void randomize(int array[], Random r) {
 		A.shuffle(array,r);
 	}
 
-	// raw instance to int array (i.e. from binary representation)
+	/**
+	 * Instance with L labels to double[] of length L.
+	 * @Note: assumes in [0,1]
+	 */
 	public static final double[] toDoubleArray(Instance x, int L) {
 		double a[] = new double[L];
 		for(int i = 0; i < L; i++) {
@@ -81,30 +84,18 @@ public abstract class MLUtils {
 		return a;
 	}
 
-	// same as above, no rounding
+	/**
+	 * Instance with L labels to double[] of length L, where L = x.classIndex().
+	 * @Note: assumes in [0,1]
+	 */
 	public static final double[] toDoubleArray(Instance x) {
-		double y[] = new double[x.classIndex()];
-		for(int j = 0; j < y.length; j++) {
-			y[j] = x.value(j);
-		}
-		return y;
-	}
-
-	// bit string of c bits where the jth bit is turned on
-	public static final String toBitString(int j, int c) {
-		StringBuilder sb = new StringBuilder(c);  
-		for(int i = 0; i < c; i++) {
-			if (j == i) 
-				sb.append('1');
-			else
-				sb.append('0');
-		}
-		return sb.toString();
+		int L = x.classIndex();
+		return toDoubleArray(x,L);
 	}
 
 	/**
 	 * ToBitString - returns a String representation of x = [0,0,1,0,1,0,0,0], e.g., "000101000".
-	 * @note that it may be better to use a spars representation for some applications.
+	 * @note that it may be better to use a sparse representation for some applications.
 	 */
 	public static final String toBitString(Instance x, int L) {
 		StringBuilder sb = new StringBuilder(L);  
@@ -114,7 +105,9 @@ public abstract class MLUtils {
 		return sb.toString();
 	}
 
-	// may not need this // yes we do
+	/**
+	 * ToBitString - returns a String representation of i[].
+	 */
 	public static final String toBitString(int i[]) {
 		StringBuilder sb = new StringBuilder(i.length);  
 		for (int b : i) {
@@ -123,6 +116,9 @@ public abstract class MLUtils {
 		return sb.toString();
 	}
 
+	/**
+	 * ToBitString - returns a String representation of d[].
+	 */
 	public static final String toBitString(double d[]) {
 		StringBuilder sb = new StringBuilder(d.length);  
 		for (double b : d) {
@@ -131,6 +127,9 @@ public abstract class MLUtils {
 		return sb.toString();
 	}
 
+	/**
+	 * FromBitString - returns a double[] representation of s.
+	 */
 	public static final double[] fromBitString(String s) {
 		char a[] = s.toCharArray();
 		double d[] = new double[a.length];
@@ -140,13 +139,13 @@ public abstract class MLUtils {
 		return d;
 	}
 
-	// "[1,2]" -> [1,2]
+	/** ToIntArray - Return an int[] from a String, e.g., "[0,1,2,0]". */
 	public static final int[] toIntArray(String s) {
 		s = new String(s.trim());
 		return toIntArray((s.substring(1,s.length()-1)).split(","));
 	}
 
-	/** ToIntArray. Return an int[] from a String, e.g., "000101000". */
+	/** ToIntArray - Return an int[] from a String, e.g., "000101000". */
 	public static final int[] toIntArray(String s[]) {
 		int y[] = new int[s.length];
 		for(int j = 0; j < s.length; j++) {
@@ -155,6 +154,9 @@ public abstract class MLUtils {
 		return y;
 	}
 
+	/**
+	 * To Sub Indices Set - return the indices out of 'sub_indices', in x, whose values are greater than 1.
+	 */
 	public static final List toSubIndicesSet(Instance x, int sub_indices[]) {
 		List<Integer> y_list = new ArrayList<Integer>();
 		for(int j : sub_indices) {
@@ -165,6 +167,9 @@ public abstract class MLUtils {
 		return y_list;
 	}
 
+	/**
+	 * To Sub Indices Set - return the indices in x, whose values are greater than 1.
+	 */
 	public static final List toIndicesSet(Instance x, int L) {
 		List<Integer> y_list = new ArrayList<Integer>();
 		for(int j = 0; j < L; j++) {
@@ -175,18 +180,24 @@ public abstract class MLUtils {
 		return y_list;
 	}
 
-	// return e.g., [1,34,73] @note: multi-label only
+	/**
+	 * To Sparse Int Array - A sparse String representation, e.g., [1,34,73]. 
+	 * Only returns indices greater than 0 (not necessarily multi-target generic!)
+	 */
 	public static final int[] toSparseIntArray(Instance x, int L) {
 		return A.toPrimitive(toIndicesSet(x,L));
 	}
 
+	/**
+	 * From Sparse String - From a sparse String representation, e.g., [1,34,73], to a binary int[] where those indices are set to 1. 
+	 */
 	public static final int[] fromSparseString(String s) {
 		return toIntArray(s.split(","));
 	}
 
 
 	/** 
-	 * InstanceToLabelVector - raw instance to bit representation
+	 * ToIntArray - raw instance to int[] representation
 	 */
 	public static final int[] toIntArray(Instance x, int L) {
 		int y[] = new int[L];
@@ -196,26 +207,20 @@ public abstract class MLUtils {
 		return y;
 	}
 
-	// @deprecated
 	// @see also M.threshold(z,t)
+	@Deprecated
+	/** Use A.toIntArray(z,t) instead */
 	public static final int[] toIntArray(double z[], double t) {
 		return A.toIntArray(z,t);
 	}
 
-	// "[1.0,2.0]" -> [1.0,2.0]
+	/** To Double Arary - Convert something like "[1.0,2.0]" to [1.0,2.0] */
 	public static final double[] toDoubleArray(String s) {
 		s = new String(s.trim());
-		/*
-		if (s.startsWith("[")) {
-			s = s.substring(1);
-		}
-		if (s.endsWith("]")) {
-			s = s.substring(0,s.length()-1);
-		}
-		*/
 		return toDoubleArray((s.substring(1,s.length()-1)).split(","));
 	}
 
+	/** To Double Arary - Convert something like ["1.0","2.0"] to [1.0,2.0] */
 	public static final double[] toDoubleArray(String s[]) {
 		double y[] = new double[s.length];
 		for(int j = 0; j < s.length; j++) {
@@ -748,6 +753,7 @@ public abstract class MLUtils {
 
 	/**
 	 * ToBinaryString - use to go through all 'L' binary combinations.
+	 * @see 	A.toDoubleArray
 	 * @param	l	the number to permute
 	 * @param	L	number of labels
 	 */

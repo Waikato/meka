@@ -65,7 +65,7 @@ public class RT extends MultilabelClassifier {
 		//Make the new class attribute
 		FastVector classes = new FastVector(L);
 		for (int j = 0; j < L; j++)
-			classes.addElement(MLUtils.toBitString(j,L)); //(*) e.g. 00100 where j,N == 2,5
+			classes.addElement(toBitString(j,L)); //(*) e.g. 00100 where j,N == 2,5
 
 		//Add the new class attribute
 		D_.insertAttributeAt(new Attribute("ClassY",classes),0);
@@ -93,6 +93,17 @@ public class RT extends MultilabelClassifier {
 		if(getDebug())  System.out.println("Building classifier "+m_Classifier.getClass().getName()+" with "+D_.numInstances()+" instances");
 		m_Classifier.buildClassifier(D_);
 
+	}
+
+	private static final String toBitString(int j, int c) {
+		StringBuilder sb = new StringBuilder(c);  
+		for(int i = 0; i < c; i++) {
+			if (j == i) 
+				sb.append('1');
+			else
+				sb.append('0');
+		}
+		return sb.toString();
 	}
 
 	/**

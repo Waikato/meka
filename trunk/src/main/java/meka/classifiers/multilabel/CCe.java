@@ -77,6 +77,8 @@ public class CCe extends MultilabelClassifier implements Randomizable, Technical
 			indices = MLUtils.gen_indices(L);
 			MLUtils.randomize(indices,m_R);
 			setChain(indices);
+			if(getDebug()) 
+				System.out.println("Chain s="+Arrays.toString(indices));
 		}
 
 		if(getDebug()) System.out.print(":- Chain (");

@@ -288,5 +288,19 @@ public abstract class A {
 		return u;
 	}
 
+	/**
+	 * Convert integer to binary string (double representation) of L digits.
+	 * e.g., toDoubleArray(3,4) = [0., 0., 1., 1.]
+	 */
+	public static final double[] toDoubleArray(int i, int L) {
+		double u[] = new double[L];
+		if (i == 0)
+			return u;
+		String s = Integer.toBinaryString(i);
+		for(int j = 0; j < s.length(); j++) {
+			u[j] = (double)Integer.parseInt(String.valueOf(s.charAt(j)));
+		}
+		return u;
+	}
 }
 
