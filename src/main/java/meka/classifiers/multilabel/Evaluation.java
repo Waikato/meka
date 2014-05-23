@@ -45,6 +45,8 @@ public class Evaluation {
 
 	/**
 	 * RunExperiment - Build and evaluate a model with command-line options.
+	 * @param	h		multi-label classifier
+	 * @param	options	command line options
 	 */
 	public static void runExperiment(MultilabelClassifier h, String options[]) throws Exception {
 
@@ -59,6 +61,12 @@ public class Evaluation {
 
 		//Load Instances
 		Instances allInstances = getDataset(options);
+
+		// Override the number of classes with command-line option (optional)
+		if(Utils.getOptionPos('C',options) >= 0) {
+			int L = Integer.parseInt(Utils.getOption('C',options));
+			allInstances.setClassIndex(L);
+		}
 
 		//Check for the essential -C option. If still nothing set, we can't continue
 		if(allInstances.classIndex() <= 0) {
@@ -77,9 +85,11 @@ public class Evaluation {
 
 		// Randomize (Model)
 		if (h instanceof Randomizable) {
-			((Randomizable)h).setSeed(seed + 1); // (@NOTE because previously we were using seed '1' as the default in BaggingML, we want to maintain reproducibility of older results with the same seed).
+			// @NOTE previously we were using seed '1' as the default in BaggingML, and we want to maintain reproducibility of older results.
+			((Randomizable)h).setSeed(seed + 1);
 		}
 
+		// Verbosity Option
 		String voption = "1";
 		if (Utils.getOptionPos("verbosity",options) >= 0) {
 			voption = Utils.getOption("verbosity",options);
@@ -137,6 +147,7 @@ public class Evaluation {
 					// load test set
 					try {
 						Instances testInstances = getDataset(options,'T');
+						testInstances.setClassIndex(allInstances.classIndex()); // should already be set, but make sure
 						for(Instance x : testInstances) {
 							x.setDataset(allInstances);
 							allInstances.add(x);
@@ -172,56 +183,40 @@ public class Evaluation {
 					train = temp;
 				}
 
-				// We're going to do parameter tuning
-				/*
-				if(Utils.getOptionPos('u',options) >= 0) {
-					double percentageSplit = Double.parseDouble(Utils.getOption('u',options));
-					TRAIN = (int)(train.numInstances() * percentageSplit);
-					TEST = train.numInstances() - TRAIN;
-					train = new Instances(train,0,TRAIN);
-					test = new Instances(train,TRAIN,TEST);
-				}
-				*/
-
 				// Check for remaining options
 				Utils.checkForRemainingOptions(options);
 
 				if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(allInstances)+"\tL="+allInstances.classIndex()+"\tD(t:T)=("+train.numInstances()+":"+test.numInstances()+")\tLC(t:T)="+Utils.roundDouble(MLUtils.labelCardinality(train,allInstances.classIndex()),2)+":"+Utils.roundDouble(MLUtils.labelCardinality(test,allInstances.classIndex()),2)+")");
 
 				if (lname != null) {
-					// h is already built, and loaded from a file
+					// h is already built, and loaded from a file, test it!
 					r = testClassifier(h,test);
-					// @@@temp move elsewhere @@@
-					if (h instanceof MultiTargetClassifier || isMT(test)) {
-						r.setInfo("Type","MT");
-					}
-					else if (h instanceof MultilabelClassifier) {
-						r.setInfo("Type","ML");
-					}
-					r.setInfo("Threshold",MLEvalUtils.getThreshold(r.predictions,train,top)); // <-- only relevant to ML (for now), but we'll put it in here in any case
-					r.setInfo("Verbosity",voption);
-					r.output = Result.getStats(r, voption);
-					// @@@@@@@@@@@@@@@@@@@@@@@@@@
+					// @note: unfortunately, we have to do this again -- but with a threshold
+					//        we cannnot just call 
+					// 				r = evaluateModel(h,test,top,voption);
+					// because of the threshold -- which (if we use PCut1 or PCutL)
+					// we calculate from training data + predictions! like this:
+					String t = MLEvalUtils.getThreshold(r.predictions,train,top);
+					// so then, we recalculate the statistics with that threshold:
+					r = evaluateModel(h,test,t,voption);
 				}
 				else {
 					r = evaluateModel(h,train,test,top,voption);
 				}
 				// @todo, if D_train==null, assume h is already trained
 				System.out.println(r.toString());
-
 			}
 
-			// Save ranking data?
-
+			// Save ranking data to file?
 			if (fname != null) {
 				Result.writeResultToFile(r,fname);
 			}
+			// Save model to file?
 			if (dname != null) {
-				SerializationHelper.write(dname, (Object)h); //new PrintWriter(new BufferedWriter(new FileWriter(dname))));
+				SerializationHelper.write(dname, (Object)h); 
 			}
 
 		} catch(Exception e) {
-			//System.out.println(e);
 			e.printStackTrace();
 			Evaluation.printOptions(h.listOptions());
 			System.exit(1);
@@ -232,20 +227,23 @@ public class Evaluation {
 
 
 	/**
-	 * IsMT - see if dataset D is multi-dimensional (else only multi-label)
+	 * IsMT - see if dataset D is multi-target (else only multi-label)
 	 * @param	D	data
-	 * @return	true iff D is multi-dimensional only (else false)
+	 * @return	true iff D is multi-target only (else false)
 	 */
 	public static boolean isMT(Instances D) {
 		int L = D.classIndex();
 		for(int j = 0; j < L; j++) {
 			if (D.attribute(j).isNominal()) {
+				// Classification
 				if (D.attribute(j).numValues() > 2) {
+					// Multi-class
 					return true;
 				}
 			}
 			else {
-				System.err.println("wtf?");
+				// Regression?
+				System.err.println("[Warning] Found a non-nominal class -- not sure how this happened?");
 			}
 		}
 		return false;
@@ -287,6 +285,28 @@ public class Evaluation {
 	}
 
 	/**
+	 * EvaluateModel - Assume 'h' is already built, test it on 'D_test', threshold it according to 'top', verbosity 'vop'.
+	 * @param	h		a multi-dim. classifier
+	 * @param	D_test 	test data
+	 * @param	tal    	Threshold VALUES (not option)
+	 * @param	vop    	Verbosity OPtion (which measures do we want to calculate/output)
+	 * @return	Result	raw prediction data with evaluation statistics included.
+	 */
+	public static Result evaluateModel(MultilabelClassifier h, Instances D_test, String tal, String vop) throws Exception {
+		Result r = testClassifier(h,D_test);
+		if (h instanceof MultiTargetClassifier || isMT(D_test)) {
+			r.setInfo("Type","MT");
+		}
+		else if (h instanceof MultilabelClassifier) {
+			r.setInfo("Type","ML");
+		}
+		r.setInfo("Threshold",tal);
+		r.setInfo("Verbosity",vop);
+		r.output = Result.getStats(r, vop);
+		return r;
+	}
+
+	/**
 	 * CVModel - Split D into train/test folds, and then train and evaluate on each one.
 	 * @param	h		 a multi-dim. classifier
 	 * @param	D      	 data
@@ -317,20 +337,6 @@ public class Evaluation {
 		}
 		return r;
 	}
-
-		// RUN
-	/*
-
-		Result result = null;
-		try {
-			result = evaluateModel(h,args);
-		} catch(Exception e) {
-			System.err.println("\nMeka Exception: "+e+".");
-			Evaluation.printOptions(h.listOptions());
-			return;
-		}
-		*/
-
 
 	/**
 	 * EvaluateModel - Build model 'h' on 'D_train', test it on 'D_test'.
@@ -414,8 +420,6 @@ public class Evaluation {
 			for(int i = 0; i < result.size(); i++) {
 				System.out.println("\t"+Arrays.toString(result.rowActual(i))+" vs "+Arrays.toString(result.rowRanking(i)));
 			}
-
-
 		}
 		*/
 
@@ -442,16 +446,6 @@ public class Evaluation {
 	public static Instances getDataset(String options[]) throws Exception {
 		return getDataset(options,'t');
 	}
-
-	/**
-	 * LoadDatasetFromOptions - load a dataset, given command line options specifying an arff file.
-	 * @deprecated
-	 * @param	options	command line options
-	 * @return	An Instances representing the dataset
-	public static Instances loadDatasetFromOptions(String options[]) throws Exception {
-		return loadDatasetFromOptions(options,'t');
-	}
-	*/
 
 	/**
 	 * LoadDatasetFromOptions - load a dataset, given command line options specifying an arff file.
@@ -486,13 +480,16 @@ public class Evaluation {
 		return D;
 	}
 
-	public static int getL(String options[]) throws Exception {
+	/**
+	 * GetL - get number of labels (option 'C' from options 'options').
+	 */
+	private static int getL(String options[]) throws Exception {
 		return (Utils.getOptionPos('C', options) >= 0) ? Integer.parseInt(Utils.getOption('C',options)) : 0;
 	}
 	
 
 	/**
-	 * SetClassesFromOptions - set the class index correctly in a dataset D, given command line options 'options'.
+	 * SetClassesFromOptions - set the class index correctly in a dataset 'D', given command line options 'options'.
 	 * @note: there is a similar function in Exlorer.prepareData(D) but that function can only take -C from the dataset options.
 	 * @todo: replace the call to Exlorer.prepareData(D) with this method here (use the name 'prepareData' -- it souds better).
 	 */
@@ -509,8 +506,6 @@ public class Evaluation {
 			D.setClassIndex(L);
 		} catch(Exception e) {
 			e.printStackTrace();
-			//System.err.println("[Error] Failed to Set Options from Command Line -- Check\n\t the spelling of the base classifier;\n \t that options are specified in the correct order (respective to  the '--' divider); and\n\t that the class index is set properly.");
-			//System.exit(1);
 			throw new Exception ("[Error] Failed to Set Classes from options. You must supply the number of labels either in the @Relation Name of the dataset or on the command line using the option: -C <num. labels>");
 		}
 	}
@@ -528,9 +523,6 @@ public class Evaluation {
 		text.append("\tSets test file.\n");
 		text.append("-x <number of folds>\n");
 		text.append("\tDo cross-validation with this many folds.\n");
-		// DEPRECATED (use filter instead)
-		//text.append("-p\n");
-		//text.append("\tSpecify a range in the dataset (@see weka.core.Range)\n");
 		text.append("-R\n");
 		text.append("\tRandomise the dataset (done after a range is removed, but before the train/test split).\n");
 		text.append("-split-percentage <percentage>\n");

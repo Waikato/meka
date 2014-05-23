@@ -21,14 +21,13 @@ import java.util.*;
 /**
  * MLEvalUtils - Utility functions for Evaluation.
  * @see meka.core.Metrics.java
- * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
- * @version	March 2012 - Multi-target Compatible
+ * @author 	Jesse Read
+ * @version	March 2014
  */
 public abstract class MLEvalUtils {
 
 	/**
-	 * GetThreshold.
-	 * Get a threshold from a Threshold OPtion string 'top'.
+	 * GetThreshold - Get a threshold from a Threshold OPtion string 'top'.
 	 * @param	Y	label space; for calculating a threshold with PCut
 	 * @param	D	training data; for calculating a threshold with PCut
 	 * @param	top Threshold OPtion (either "PCut1", "PCutL" or a real value e.g. "0.5" or L real values e.g. "[0.1, 0.2, 0.8]" for L = 3
@@ -47,14 +46,12 @@ public abstract class MLEvalUtils {
 	}
 
 	/**
-	 * GetMLStats.
-	 * Given predictions and corresponding true values and a threshold string, retreive statistics.
+	 * GetMLStats - Given predictions and corresponding true values and a threshold string, retreive statistics.
 	 * @param	Confidences	predictions (may be real-valued confidences)
 	 * @param	TrueValues	corresponding true values
 	 * @param	t			a threshold string, e.g. "0.387"
 	 * @return	the evaluation statistics
 	 */
-	//public static HashMap<String,Double> getMLStats(ArrayList<double[]> Confidences, ArrayList<int[]> TrueValues, String t) {
 	public static HashMap<String,Double> getMLStats(double Rpred[][], int Y[][], String t, String vop) {
 		double ts[] = ThresholdUtils.thresholdStringToArray(t,Y[0].length);
 		/*
@@ -70,8 +67,7 @@ public abstract class MLEvalUtils {
 	}
 
 	/**
-	 * GetMLStats.
-	 * Given predictions and corresponding true values and a threshold string, retreive statistics.
+	 * GetMLStats - Given predictions and corresponding true values and a threshold string, retreive statistics.
 	 * @param	Confidences	predictions (may be double-valued confidences in the multi-label case)
 	 * @param	TrueValues	corresponding true values
 	 * @param	t			a vector of thresholds, e.g. [0.1,0.1,0.1] or [0.1,0.5,0.4,0.001]
@@ -138,8 +134,7 @@ public abstract class MLEvalUtils {
 	}
 
 	/**
-	 * GetMTStats.
-	 * Given multi-target predictions and corresponding true values, retreive evaluation statistics.
+	 * GetMTStats - Given multi-target predictions and corresponding true values, retreive evaluation statistics.
 	 * @param	Predictions	predictions
 	 * @param	TrueValues	corresponding true values
 	 * @return	the evaluation statistics
@@ -200,6 +195,10 @@ public abstract class MLEvalUtils {
 		return r;
 	}
 
+	/**
+	 * Main - can use this function for writing tests during development.
+	 * @param	args	command line arguments
+	 */
 	public static void main(String args[]) {
 	}
 
