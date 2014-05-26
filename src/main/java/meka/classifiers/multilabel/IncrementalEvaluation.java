@@ -38,7 +38,8 @@ public class IncrementalEvaluation {
 	public static void runExperiment(MultilabelClassifier h, String args[]) {
 		try {
 			h.setOptions(args);
-			IncrementalEvaluation.evaluateModel(h,args);
+			Result avg = IncrementalEvaluation.evaluateModel(h,args);
+			System.out.println(avg);
 		} catch(Exception e) {
 			System.err.println("Evaluation exception ("+e+"); failed to run experiment");
 			e.printStackTrace();
@@ -81,6 +82,7 @@ public class IncrementalEvaluation {
 
 		if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(D)+"\tL="+D.classIndex()+"");
 
+		Utils.checkForRemainingOptions(options);
 		Result results[] = evaluateModel(h,D,nWin,rLabeled,Top,Vop);
 		
 		// Return the final evaluation window.
@@ -128,13 +130,14 @@ public class IncrementalEvaluation {
 		train_time = System.currentTimeMillis();
 		h.buildClassifier(D_init); 										// initial classifir
 		train_time = System.currentTimeMillis() - train_time;
-		System.out.println("Done (in "+(train_time/1000.0)+" s)");
+		if (h.getDebug()) {
+			System.out.println("Done (in "+(train_time/1000.0)+" s)");
+		}
 		D = new Instances(D,windowSize,D.numInstances()-windowSize); 	// the rest (after the initial window)
 
 		double t[] = new double[L];
 		Arrays.fill(t,0.5);
 
-		// @todo move into function
 		int V = MLUtils.getIntegerOption(Vop,3);
 		if (V > 3) {
 			System.out.println("--------------------------------------------------------------------------------");
@@ -189,18 +192,20 @@ public class IncrementalEvaluation {
 			// calculate results
 			results[w].setInfo("Type","ML");
 			results[w].setInfo("Threshold", Arrays.toString(t));
-			results[w].output = Result.getStats(results[w],"2");
+			results[w].output = Result.getStats(results[w],Vop);
 			results[w].output.put("Test_time",(test_time)/1000.0);
 			results[w].output.put("Build_time",(train_time)/1000.0);
 			results[w].output.put("Total_time",(test_time+train_time)/1000.0);
 
 			// Display results (to CLI)
-			System.out.print("#"+Utils.doubleToString((double)w+1,6,0)+" "+Utils.doubleToString((double)n,6,0));
-			n = 0;
-			for (String m : measures) {
-				System.out.print(" ");
-				System.out.print(Utils.doubleToString(results[w].output.get(m),12,4));
-			} System.out.println("");
+			if (V > 3) {
+				System.out.print("#"+Utils.doubleToString((double)w+1,6,0)+" "+Utils.doubleToString((double)n,6,0));
+				n = 0;
+				for (String m : measures) {
+					System.out.print(" ");
+					System.out.print(Utils.doubleToString(results[w].output.get(m),12,4));
+				} System.out.println("");
+			}
 
 			// Calibrate threshold for next window
 			if (Top.equals("PCutL")) {
@@ -211,9 +216,8 @@ public class IncrementalEvaluation {
 			}
 		}
 
-		if (h.getDebug()) {
+		if (V > 3) {
 			System.out.println("--------------------------------------------------------------------------------");
-			//System.out.println("Average results are as follows:\n");
 		}
 		Result avg = MLEvalUtils.averageResults(results);
 		// @todo put in earlier?
@@ -221,9 +225,8 @@ public class IncrementalEvaluation {
 		avg.setInfo("Classifier_ops",Arrays.toString(h.getOptions()));
 		avg.setInfo("Classifier_info",h.toString());
 		avg.setInfo("Dataset_name",MLUtils.getDatasetName(D));
-		System.out.println(avg);
 
-		// @todo in the future, will want to return all results ... but was having problems with this ...
+		// @todo in the future, will want to return all results
 		//return results;
 		return new Result[]{avg};
 	}
