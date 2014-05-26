@@ -35,13 +35,22 @@ public class MekaTests extends WekaTestSuite {
   public static Test suite() {
     TestSuite suite = new TestSuite();
 
-    // Template
-	System.out.println("DB MekaTests");
+	/*
+	 * Tests are split into 4 families of related methods:
+	 *	- Ensembles, Meta methods
+	 *  - BR and CC methods
+	 *  - LP (aka LC, PS) methods
+	 *  - Misc. (other) methods
+	 */
 	suite.addTest(EvaluationTests.suite());
-	suite.addTest(BRMethodsTests.suite());
-	//suite.addTest(BRTest.suite());
+	suite.addTest(MetaMethodsTests.suite());
+	suite.addTest(CCMethodsTests.suite());
+	suite.addTest(LPMethodsTests.suite());
+	suite.addTest(MiscMethodsTests.suite());
 
 	/*
+	 * Hence, we no longer test methods individually, like this
+	 *
     suite.addTest(meka.classifiers.multilabel.BRTest.suite());
     suite.addTest(meka.classifiers.multilabel.BRqTest.suite());
     suite.addTest(meka.classifiers.multilabel.BRUpdateableTest.suite());

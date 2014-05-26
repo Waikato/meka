@@ -44,7 +44,6 @@ public class EvaluationTests extends TestCase {
 
 	public EvaluationTests(String s) {
 		super(s);
-		System.out.println("Evaluation Test");
 	}
 
 	public static Test suite() {
@@ -83,13 +82,12 @@ public class EvaluationTests extends TestCase {
 		try {
 			Result r1 = Evaluation.evaluateModel(h, D_train, D_test, "PCut1");
 			Result r2 = Evaluation.evaluateModel(h, D_train, D_test, "PCut1");
-			System.out.println(""+r1.output.get("Accuracy"));
-			System.out.println(""+r2.output.get("Accuracy"));
+			//System.out.println(""+r1.output.get("Accuracy"));
+			//System.out.println(""+r2.output.get("Accuracy"));
 			assertTrue("Experiments are Repeatable (with same result)", r1.output.get("Accuracy").equals(r2.output.get("Accuracy")));
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public MultilabelClassifier makeECC() {
@@ -112,7 +110,6 @@ public class EvaluationTests extends TestCase {
 		// Eval
 		try {
 			r1 = Evaluation.evaluateModel(h, D_train, D_test, "PCut1");
-			System.out.println(""+r1.output.get("Accuracy"));
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -124,7 +121,6 @@ public class EvaluationTests extends TestCase {
 		// Eval
 		try {
 			r2 = Evaluation.evaluateModel(h, D_train, D_test, "PCut1");
-			System.out.println(""+r2.output.get("Accuracy"));
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -133,7 +129,7 @@ public class EvaluationTests extends TestCase {
 	}
 
 	public void testIncrementalEvaluation() {
-		// batch
+		// Batch
 		Result r1 = null, r2 = null;
 		// Load Data
 		Instances D = loadInstances("data/Music.arff");
@@ -192,7 +188,7 @@ public class EvaluationTests extends TestCase {
 		Instances D = null;
 		try {
 			D = EvaluationTests.loadInstances("data/Music.arff");
-			h.buildClassifier(D);
+			//h.buildClassifier(D); // <-- this line is pointless
 			Result folds[] = Evaluation.cvModel(h,D,5,top);
 			return MLEvalUtils.averageResults(folds);
 		} catch(Exception e) {
