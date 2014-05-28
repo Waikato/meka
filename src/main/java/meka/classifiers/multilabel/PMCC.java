@@ -16,9 +16,8 @@
 package meka.classifiers.multilabel;
 
 /**
- * PMCC.java - Previously called EMCC.java; selecting the top M chains at training time, and using them in inference (instead of just one).
- * Here we use MCCtemp instead of MCC, and CCe instead of CC! -- will have to sort this out at some point!
- * @NOTE, This may be broken now, since we change CCe, which changed MCC, which broke MCCtemp. Extending MCC will work but will be less fast.
+ * PMCC.java - Like MCC but selects the top M chains at training time, and using them in inference (instead of just the best).
+ * WARNING, this class may be broken now, since upgrading CC to CCe and MCC to CCe. Extending MCC will work but will be less fast.<br>
  * @TODO, use some kind of voting process as well
  *
  * @see weka.classifiers.multilabel.MCC.java
@@ -139,8 +138,6 @@ public class PMCC extends MCCe {
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
 
-		HashMap<String,CCe> id2cc = new HashMap<String,CCe>();
-
 		m_R = new Random(m_S);
 
 		// Variables
@@ -154,6 +151,8 @@ public class PMCC extends MCCe {
 		//int s[][] = new int[m_M][L]; // for interest's sake
 
 		if (m_Is > 0) {
+
+			HashMap<String,CCe> id2cc = new HashMap<String,CCe>();
 
 			// Make CC
 			int s[] = MLUtils.gen_indices(L); 
@@ -188,13 +187,15 @@ public class PMCC extends MCCe {
 				}
 			}
 			if (getDebug()) System.out.println("---");
+
+			// normalise weights
+			Utils.normalize(w);
 		}
 		else {
-			throw new Exception("This classifier must be run with a population. Use MCC if you don't want this.");
+			System.err.println("[Warning] No population supplied with -Is <population> (defaulting to standard CC-like behaviour).");
+			super.buildClassifier(D);
 		}
 
-		// normalise weights
-		Utils.normalize(w);
 	}
 
 	/**

@@ -42,10 +42,9 @@ import weka.filters.unsupervised.attribute.Remove;
 
 /**
  * PS.java - The Pruned Sets Method.
- * Removes examples with P-infrequent labelsets from the training data, then subsamples these labelsets N time to produce N new examples with P-frequent labelsets. Then train a standard LC classifier. The idea is to reduce the number of unique class values that would otherwise need to be learned by LC. Best used in an Ensemble (e.g., EnsembleML).
- * @see LC.java
- * <br>
+ * Removes examples with P-infrequent labelsets from the training data, then subsamples these labelsets N time to produce N new examples with P-frequent labelsets. Then train a standard LC classifier. The idea is to reduce the number of unique class values that would otherwise need to be learned by LC. Best used in an Ensemble (e.g., EnsembleML).<br>
  * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes. <i>Multi-label Classification using Ensembles of Pruned Sets</i>. Proc. of IEEE International Conference on Data Mining (ICDM 2008), Pisa, Italy, 2008
+ * @see LC.java
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
 public class PS extends LC implements Randomizable, TechnicalInformationHandler {

@@ -26,9 +26,8 @@ import weka.core.RevisionUtils;
  * RT.java - The 'Ranking + Threshold' classifier. 
  * Duplicate each multi-labelled example, assigning one of the labels to each copy. Train a regular multi-class base classifier.
  * Use the multi-class classifier as a multi-label classifier by <i>Ranking</i> outputs and using a <i>Threshold</i> to separate relevant from irrelevant labels.
- * <br>
- * See also from the <a href=http://mulan.sourceforge.net>MULAN</a> framework.
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
+ * @version 2010
  */
 public class RT extends MultilabelClassifier {
 

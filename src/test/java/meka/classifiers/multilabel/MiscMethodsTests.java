@@ -64,4 +64,31 @@ public class MiscMethodsTests extends TestCase {
 		assertTrue("RT Accuracy Correct", r.info.get("Accuracy").equals("0.5   +/- 0.04 ") );
 	}
 
+	public void testMULAN() {
+		// Test MULAN
+		System.out.println("Test MULAN");
+		MULAN mulan = new MULAN();
+		// ... RAkEL
+		mulan.setMethod("RAkEL2");
+		mulan.setClassifier(new SMO());
+		Result r;
+		r = EvaluationTests.cvEvaluateClassifier(mulan);
+		System.out.println("MULAN (RAkEL): "+r.info.get("Accuracy"));
+		assertTrue("MULAN (RAkEL) Accuracy Correct", r.info.get("Accuracy").equals("0.581 +/- 0.042") );
+		// ... MLkNN
+		mulan.setMethod("MLkNN");
+		r = EvaluationTests.cvEvaluateClassifier(mulan);
+		System.out.println("MULAN (MLkNN): "+r.info.get("Accuracy"));
+		assertTrue("MULAN (MLkNN) Accuracy Correct", r.info.get("Accuracy").equals("0.561 +/- 0.035") );
+		// ... BR (and , vs MEKA's BR)
+		mulan.setMethod("BR");
+		r = EvaluationTests.cvEvaluateClassifier(mulan);
+		System.out.println("MULAN (BR): "+r.info.get("Accuracy"));
+		assertTrue("MULAN (BR) Accuracy Correct", r.info.get("Accuracy").equals("0.493 +/- 0.036") );
+		BR br = new BR();
+		br.setClassifier(new SMO());
+		Result r_other = EvaluationTests.cvEvaluateClassifier(br);
+		assertTrue("MULAN BR Equal to MEKA BR", r.info.get("Accuracy").equals(r_other.info.get("Accuracy")) );
+	}
+
 }
