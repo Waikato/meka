@@ -27,10 +27,10 @@ import weka.core.TechnicalInformation.*;
 import java.util.*;
 
 /**
- * PCC.java - Probabalistic Classifier Chains.
- * Exactly like CC at build time, but explores all possible paths as inference at test time. <br>
- * This version is Multi-target capable. <br>
- * See Cheng et al, "Bayes Optimal Multi-label Classification via Probabalistic Classifier Chains", ICML 2010.
+ * PCC.java - (Bayes Optimal) Probabalistic Classifier Chains.
+ * Exactly like CC at build time, but explores all possible paths as inference at test time (hence, 'Bayes optimal'). <br>
+ * This version is multi-target capable. <br>
+ * See: Cheng et al, "Bayes Optimal Multi-label Classification via Probabalistic Classifier Chains", ICML 2010.
  *
  * @author Jesse Read (jesse@tsc.uc3m.es)
  * @version	November 2012

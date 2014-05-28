@@ -30,9 +30,7 @@ import weka.core.Utils;
  * PSUpdateable.java - Pruned Sets Updateable.
  * Can be given any base classifier, since it must rebuild when the buffer is full anyway.
  * <br>
- * While the initial training set is being buffered, it will predict the majority labelset.
- * <br>
- * Note that this version buffers training examples, not just combinations.
+ * While the initial training set is being buffered, it will predict the majority labelset. Note that this version buffers training examples, not just combinations.
  * @see PS
  * @author 		Jesse Read (jesse@tsc.uc3m.es)
  * @version 	September, 2011

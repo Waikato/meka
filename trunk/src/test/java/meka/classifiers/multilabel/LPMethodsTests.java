@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 
 import meka.classifiers.AbstractMekaClassifierTest;
 import weka.classifiers.Classifier;
+import meka.classifiers.multilabel.*;
 import meka.classifiers.multilabel.meta.*;
 import weka.classifiers.functions.SMO;
 import weka.core.converters.ConverterUtils.DataSource;
@@ -55,9 +56,48 @@ public class LPMethodsTests extends TestCase {
 	}
 
 	public void testLC() {
+
+		Result r = null;
+
+		// Test LC
+		LC lc = new LC();
+		lc.setClassifier(new SMO());
+		r = EvaluationTests.cvEvaluateClassifier(lc);
+		String s = r.info.get("Accuracy");
+		System.out.println("LC "+s);
+		assertTrue("LC Accuracy Correct", s.equals("0.569 +/- 0.03 "));
+
+		// Test PS (0,0) -- should be identical
 		PS ps = new PS();
-		assertEquals("Result 1", 50, 50);
-		assertEquals("Result 2", 50, 50);
+		ps.setClassifier(new SMO());
+		r = EvaluationTests.cvEvaluateClassifier(ps);
+		System.out.println("PS(0,0) "+r.info.get("Accuracy"));
+		assertTrue("PS(0,0) Accuracy Identical", s.equals(r.info.get("Accuracy")));
+
+		// Test PS (3,1) -- should be faster and better
+		ps.setP(3);
+		ps.setN(1);
+
+		r = EvaluationTests.cvEvaluateClassifier(ps);
+		System.out.println("PS(3,1) "+r.info.get("Accuracy"));
+		assertTrue("PS(3,1) Accuracy Correct", r.info.get("Accuracy").equals("0.567 +/- 0.035"));
+
+		// Test PS -- should be very similar (differences only from different randomization)
+		PSe pse = new PSe();
+		pse.setClassifier(new SMO());
+		pse.setP(3);
+		pse.setN(1);
+
+		r = EvaluationTests.cvEvaluateClassifier(pse);
+		System.out.println("PSe(3,1) "+r.info.get("Accuracy"));
+		assertTrue("PSe(3,1) Accuracy Correct", r.info.get("Accuracy").equals("0.567 +/- 0.044") );
+
+		// Test EPSe
+		EnsembleML eps = new EnsembleML();
+		eps.setClassifier(ps);
+		r = EvaluationTests.cvEvaluateClassifier(eps);
+		System.out.println("EPS "+r.info.get("Accuracy"));
+		assertTrue("EPS Accuracy Correct", r.info.get("Accuracy").equals("0.567 +/- 0.042") );
 	}
 
 }

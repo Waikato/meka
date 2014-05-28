@@ -29,11 +29,12 @@ import java.util.*;
 
 /**
  * MCCe.java - CC with Monte Carlo optimisation. 
+ * This is a cleaned up version of MCC ( @see MCC ) by extending CCe.
  * Note inference is now a bit slower than reported in the paper,
  * <br>
  * See: Jesse Read, Luca Martino, David Luengo. <i>Efficient Monte Carlo Optimization for Multi-dimensional Classifier Chains</i>. http://arxiv.org/abs/1211.2190. 2012
  * <br>
- * There we used a faster implementation, MCC.java, full of ugly hacks, but it got broken when I updated CCe.java.
+ * There we used a faster implementation, MCC.java, full of ugly hacks, but it got broken when I updated CCe.java.<br>
  * This version extends CCe, and thus is a bit more elegant, but for some reason inference is quite slower than expected with high m_Iy.
  *
  * @see meka.classifiers.multilabel.CCe

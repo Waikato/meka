@@ -29,15 +29,17 @@ import java.util.*;
 
 /**
  * MCC.java - CC with Monte Carlo optimisation. 
- * Note that this is not the fastest possible implementation. For the paper,
+ * Note that this is not the fastest possible implementation. 
  * <br>
  * See: Jesse Read, Luca Martino, David Luengo. <i>Efficient Monte Carlo Optimization for Multi-dimensional Classifier Chains</i>. http://arxiv.org/abs/1211.2190. 2012
  * <br>
- * we used a faster implementation, MCCtemp.java, full of ugly hacks, but it got broken when I updated CCe.java.
- *
+ * For the paper,we used a faster implementation full of ugly hacks, which got broken at some point when changing from CC to CCe.java.<br>
+ * This classifier will be superceded by MCCe (a cleaned up version) when it proves to perform exactly.
+ * @see MCCe
  * @author Jesse Read
  * @version	October 2012
  */
+@Deprecated
 public class MCC extends MultilabelClassifier implements Randomizable, TechnicalInformationHandler { 
 
 	Random r = null;

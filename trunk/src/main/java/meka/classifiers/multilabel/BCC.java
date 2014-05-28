@@ -36,7 +36,8 @@ import weka.core.TechnicalInformation.Type;
 import weka.core.TechnicalInformationHandler;
 
 /**
- * BCC.java - Bayesian Classifier Chains. Probably would be more aptly called Bayesian Classifier Tree.
+ * BCC.java - Bayesian Classifier Chains. 
+ * Probably would be more aptly called Bayesian Classifier Tree.
  * Creates a maximum spanning tree based on marginal label dependence; then employs a CC classifier. 
  * The original paper used Naive Bayes as a base classifier, hence the name. 
  * <br>
@@ -179,7 +180,7 @@ public class BCC extends CCe {
 	/**
 	 * Treeify - make a tree given the structure defined in paM[][], using the root-th node as root.
 	 */
-	public void treeify(int root, int paM[][], int paL[][], int visited[]) {
+	private void treeify(int root, int paM[][], int paL[][], int visited[]) {
 		int children[] = new int[]{};
 		for(int j = 0; j < paM[root].length; j++) {
 			if (paM[root][j] == 1) {
@@ -198,20 +199,6 @@ public class BCC extends CCe {
 		}
 	}
 
-	/**
-	 * ToString - like M.toString() but for int[][]
-	public static String toString(int M[][]) {
-		StringBuilder sb = new StringBuilder();  
-		for(int j = 0; j < M.length; j++) {
-			for(int k = 0; k < M[j].length; k++) {
-				sb.append(""+M[j][k]+" ");
-			}
-			sb.append("\n");
-		}
-		return sb.toString();
-	}
-	*/
-	
 	/* 
 	 * TODO: Make a generic abstract -dependency_user- class that has this option, and extend it here
 	 */

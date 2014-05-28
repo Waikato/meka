@@ -30,8 +30,9 @@ import Jama.Matrix;
 
 public class BPNN extends AbstractNeuralNet {
 
-	protected Random r = null;
+	/** Weight Matrix */
 	public Matrix W[] = null;
+	protected Random r = null;
 	protected Matrix dW_[] = null;
 
 	public BPNN() {
@@ -139,14 +140,7 @@ public class BPNN extends AbstractNeuralNet {
 	}
 
 	/**
-	 * Train - Train for 1 iterations.
-	public double update(double x_[], double y_[]) throws Exception {
-		return update(new double[][]{x_},new double[][]{y_});
-	}
-	 */
-
-	/**
-	 * Train - Train for 1 epoch.
+	 * Update - A single training epoch.
 	 */
 	public double update(double X_[][], double Y_[][]) throws Exception {
 		int N = X_.length;
@@ -156,23 +150,6 @@ public class BPNN extends AbstractNeuralNet {
 		}
 		return E;
 	}
-
-	/*
-	// @todo need this function ? 
-	// like popy but a stochastic selection
-	public double[] geny(double x_[]) {
-		return genY(new double[][]{x_})[0];
-	}
-
-	// @todo need this function ? 
-	// like popY but a stochastic selection
-	public double[][] genY(double X_[][]) {
-		Matrix Z[] = forwardPass(X_);
-		int n = Z.length-1;
-		double Z_[][] = Z[n].copy().getArray();
-		return M.threshold(Z_,r);
-	}
-	*/
 
 	/**
 	 * Forward Pass - Given input x_, get output y_.

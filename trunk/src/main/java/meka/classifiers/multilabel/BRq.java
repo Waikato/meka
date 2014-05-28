@@ -15,16 +15,6 @@
 
 package meka.classifiers.multilabel;
 
-/**
- * BRq.java - Random Subspace ('quick') Version.
- * Like BR, but randomly samples the attribute space for each binary model. Intended for use in an ensemble (but will work in a standalone fashion also).
- * <br>
- * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer. Vol. 85(3), pp 333-359. (May 2011).
- * <br>
- * @see BR.java
- * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
- * @version January 2009
- */
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -33,6 +23,7 @@ import java.util.Vector;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
+import weka.core.Randomizable;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Option;
@@ -45,8 +36,17 @@ import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
-public class BRq extends MultilabelClassifier 
-  implements TechnicalInformationHandler {
+/**
+ * BRq.java - Random Subspace ('quick') Version.
+ * Like BR, but randomly samples the attribute space for each binary model. Intended for use in an ensemble (but will work in a standalone fashion also).
+ * <br>
+ * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer. Vol. 85(3), pp 333-359. (May 2011).
+ * <br>
+ * @see BR.java
+ * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
+ * @version January 2009
+ */
+public class BRq extends MultilabelClassifier implements Randomizable, TechnicalInformationHandler {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 398261703726763108L;

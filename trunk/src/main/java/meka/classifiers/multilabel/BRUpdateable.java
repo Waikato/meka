@@ -15,22 +15,21 @@
 
 package meka.classifiers.multilabel;
 
-/**
- * BRUpdateable.java - Updateable BR.
- * Updateable BR -- must be run with an UpdateableClassifier base classifier.)
- * @see BR.java
- * @author 		Jesse Read (jesse@tsc.uc3m.es)
- * @version 	September, 2011
- */
 import weka.classifiers.UpdateableClassifier;
 import weka.core.Instance;
 import meka.core.MLUtils;
 
+/**
+ * BRUpdateable.java - Updateable BR.
+ * Must be run with an UpdateableClassifier base classifier.
+ * @see BR.java
+ * @author 		Jesse Read (jesse@tsc.uc3m.es)
+ * @version 	September, 2011
+ */
 public class BRUpdateable extends BR implements UpdateableClassifier {
 
 	/** for serialization. */
   	private static final long serialVersionUID = 6705611077773512052L;
-
 
 	@Override
 	public String globalInfo() {

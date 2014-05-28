@@ -44,12 +44,14 @@ import weka.core.Utils;
  * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. In Proc. of 20th European Conference on Machine Learning (ECML 2009). Bled, Slovenia, September 2009.
  * <br>
  *
- * This class will eventually be replaced by the code in CCe.java -- an extended version which makes used of the 'CNode' class and is more suitable for probabilistic classification. Nevertheless, this class will stay for now until it is absolutely certain that results from this classifier can be reproduced exactly.
+ * This class will be replaced by CCe, an extended version which makes use of the 'CNode' class and is more suitable for probabilistic classification, and more flexible so that it can be used easily in related schemes.
+ * This class will stay for now until it is certain that published results can be reproduced exactly with CCe.
  *
  * @see meka.classifiers.multilabel.CCe
  * @author Jesse Read (jmr30@cs.waikato.ac.nz)
  * @version January 2009
  */
+@Deprecated
 public class CC extends MultilabelClassifier implements Randomizable, TechnicalInformationHandler {
 
 	/** for serialization. */

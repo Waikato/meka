@@ -55,11 +55,13 @@ public class CCMethodsTests extends TestCase {
 	}
 
 	public void testsCC() {
+
 		// Test BR
 		BR br = new BR();
 		br.setClassifier(new SMO());
 		Result r = EvaluationTests.cvEvaluateClassifier(br);
 		assertTrue("BR Accuracy Correct", r.info.get("Accuracy").equals("0.493 +/- 0.036") );
+
 		// Test EBR
 		EnsembleML ebr = new EnsembleML();
 		ebr.setClassifier(br);
@@ -78,4 +80,15 @@ public class CCMethodsTests extends TestCase {
 		assertTrue("MCC Accuracy Correct", r.info.get("Accuracy").equals("0.565 +/- 0.032") );
 	}
 
+	public void testPCC() {
+		// Test PCC (with SMO -- -M)
+		System.out.println("Test PCC");
+		PCC h = new PCC();
+		SMO smo = new SMO();
+		smo.setBuildLogisticModels(true);
+		h.setClassifier(smo);
+		Result r = EvaluationTests.cvEvaluateClassifier(h);
+		System.out.println("PCC "+r.info.get("Accuracy"));
+		assertTrue("PCC Accuracy Correct", r.info.get("Accuracy").equals("0.565 +/- 0.032") );
+	}
 }
