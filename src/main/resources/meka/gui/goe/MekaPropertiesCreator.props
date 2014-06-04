@@ -27,4 +27,16 @@ weka.classifiers.Classifier=\
  meka.classifiers.multilabel.meta,\
  meka.classifiers.multitarget,\
  meka.classifiers.multitarget.meta
- 
+
+# Lists the Filters-Packages I want to choose from
+weka.filters.Filter= \
+ meka.filters.multilabel, \
+ meka.filters.supervised.attribute, \
+ meka.filters.supervised.instance, \
+ meka.filters.unsupervised.attribute, \
+ meka.filters.unsupervised.instance
+
+# Lists the UnsupervisedFilters-Packages I want to choose from
+weka.filters.UnsupervisedFilter = \
+ meka.filters.unsupervised.attribute, \
+ meka.filters.unsupervised.instance
