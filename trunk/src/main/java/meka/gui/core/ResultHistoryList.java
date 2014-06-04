@@ -20,10 +20,7 @@
 package meka.gui.core;
 
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -182,9 +179,22 @@ public class ResultHistoryList
 					JPopupMenu menu = createPopup(e);
 					if (menu != null)
 						menu.show(ResultHistoryList.this, e.getX(), e.getY());
+				} else {
+					super.mouseClicked(e);
+				}
+			}
+		});
+		addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				int[] indices = getSelectedIndices();
+				if ((indices.length > 0) && (e.getKeyCode() == KeyEvent.VK_DELETE)) {
+					for (int i = indices.length - 1; i >= 0; i--)
+						removeItem(indices[i]);
+					e.consume();
 				}
 				else {
-					super.mouseClicked(e);
+					super.keyTyped(e);
 				}
 			}
 		});
@@ -294,6 +304,10 @@ public class ResultHistoryList
 	 */
 	protected void removeItem(int index) {
 		((ResultHistoryModel) getModel()).removeElementAt(index);
+		if (index >= getModel().getSize())
+			index--;
+		if (index >= 0)
+			setSelectedIndex(index);
 	}
 	
 	/**
@@ -313,6 +327,7 @@ public class ResultHistoryList
 	 */
 	public void addResult(Result result) {
 		((ResultHistoryModel) getModel()).addElement(result);
+		setSelectedIndex(getModel().getSize() - 1);
 	}
 
 	/**
@@ -323,6 +338,7 @@ public class ResultHistoryList
 	 */
 	public Result getResultAt(int index) {
 		return ((ResultHistoryModel) getModel()).getResultAt(index);
+
 	}
 	
 	/**
