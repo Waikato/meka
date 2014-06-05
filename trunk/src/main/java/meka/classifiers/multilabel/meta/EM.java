@@ -41,8 +41,15 @@ import meka.classifiers.multilabel.*;
 
 /**
  * EM.java - Expectation Maximization method.
+ *
+ * A specified multi-label classifier is built on the training data. This model is then used to classify the test data. 
+ * The confidence with which instances are classified is used to reweight them. This data is then used to retrain the classifier. 
+ * This cycle continues ('EM'-style) for I iterations. The final model is used to officially classifier the test data.
  * <br>
- * See: ..
+ * Because of the weighting, it is advised to use a classifier which gives good confidence (probabalistic) outputs.
+ * <br>
+ *
+ * @version 2010
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
 public class EM extends MultilabelClassifier implements SemisupervisedClassifier, TechnicalInformationHandler {
@@ -67,7 +74,7 @@ public class EM extends MultilabelClassifier implements SemisupervisedClassifier
 		Instances DA = MLUtils.combineInstances(D,D_);
 
 		if (getDebug()) 
-			System.out.print("Performing "+m_I+" 'EM' Iterations ");
+			System.out.print("Performing "+m_I+" 'EM' Iterations: [");
 		for(int i = 0; i < m_I; i++) {
 			if (getDebug())
 				System.out.print(".");
@@ -76,8 +83,7 @@ public class EM extends MultilabelClassifier implements SemisupervisedClassifier
 			// train
 			m_Classifier.buildClassifier(DA);
 		}
-		if (getDebug())
-				System.out.println(" Done ");
+		System.out.println("]");
 	}
 
 	protected void updateWeights(MultilabelClassifier h, Instances D) throws Exception {
