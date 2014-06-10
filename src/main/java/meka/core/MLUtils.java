@@ -698,6 +698,9 @@ public abstract class MLUtils {
 		return x;
 	}
 
+	/**
+	 * Stack two Instances together row-wise.
+	 */
 	public static final Instances combineInstances(Instances D1, Instances D2) {
 		Instances D = new Instances(D1);
 		for(int i = 0; i < D2.numInstances(); i++) {
@@ -733,16 +736,6 @@ public abstract class MLUtils {
 		return sb.toString();
 	}
 
-	/*
-    public static int factorial(int n) {
-        int fact = 1; 
-        for (int i = 1; i <= n; i++) {
-            fact *= i;
-        }
-        return fact;
-    }
-	*/
-
 	public static int[] toPrimitive(Integer a[]) {
 		int b[] = new int[a.length];
 		for(int i = 0; i < a.length; i++) {
@@ -776,7 +769,9 @@ public abstract class MLUtils {
 			}
 	}
 
-	// AB -> AB,BA
+	/**
+	 * Permute -- e.g., permute("AB") returns ["AB","BA"]
+	 */
 	public static String[] permute(String s) {
 		ArrayList<String> a = new ArrayList<String>();  
 		permute("", s, a);
@@ -809,7 +804,7 @@ public abstract class MLUtils {
 	}
 
 	/**
-	 * getIntegerOption - parse 'op' to an integer if we can, else used default 'def'.
+	 * GetIntegerOption - parse 'op' to an integer if we can, else used default 'def'.
 	 */
 	public static int getIntegerOption(String op, int def) {
 		try {
@@ -820,6 +815,7 @@ public abstract class MLUtils {
 		}
 	}
 
+	/** Clear Labels -- set the value of all label attributes to 0.0 */
 	public static void clearLabels(Instance x) {
 		int L = x.classIndex();
 		for(int j = 0; j < L; j++) 
@@ -860,14 +856,8 @@ public abstract class MLUtils {
 		return Y;
 	}
 
-	// @deprecated
-	public static final double[] toDoubleArray(int z[]) {
-		return A.toDoubleArray(z);
-	}
-
 	/**
 	 * GetxfromInstances - Extract attributes as a double x[] from an Instance.
-		// @NOTE changed this to xy.toDoubleArray();
 	 */
 	public static double[] getxfromInstance(Instance xy) {
 		int L = xy.classIndex();
@@ -877,6 +867,9 @@ public abstract class MLUtils {
 
 	/**
 	 * ReplaceZasAttributes - data Z[][] will be the new attributes in D.
+	 * @param	D 	dataset (of N instances)
+	 * @param	Z	attribute space (of N rows, H columns)
+	 * @param	L	number of classes / labels.
 	 */
 	public static Instances replaceZasAttributes(Instances D, double Z[][], int L) {
 		D.setClassIndex(0);
@@ -889,6 +882,9 @@ public abstract class MLUtils {
 
 	/**
 	 * ReplaceZasClasses - data Z[][] will be the new class labels in D.
+	 * @param	D 	dataset (of N instances)
+	 * @param	Z	attribute space (of N rows, H columns)
+	 * @param	L	column to add Z from in D
 	 */
 	public static Instances replaceZasClasses(Instances D, double Z[][], int L) {
 
@@ -902,10 +898,10 @@ public abstract class MLUtils {
 
 	/**
 	 * InsertZintoD - Insert data Z[][] to Instances D (e.g., as labels).
-	// @TODO Assume binary labels!
-	 * @TODO L could be extracted from D.numAttributes() here.
+	 * NOTE: Assumes binary labels!
+	 * @see AddZtoD(D,Z)
 	 */
-	public static Instances insertZintoD(Instances D, double Z[][]) {
+	private static Instances insertZintoD(Instances D, double Z[][]) {
 
 		int L = Z[0].length;
 
@@ -927,20 +923,24 @@ public abstract class MLUtils {
 	}
 
 	/**
-	 * AddZtoD - Add data Z[][] to Instances D.
-	 * @TODO L could be extracted from D.numAttributes() here.
+	 * AddZtoD - Add attribute space Z[N][H] (N rows of H columns) to Instances D, which should have N rows also.
+	 * @param	D 	dataset (of N instances)
+	 * @param	Z	attribute space (of N rows, H columns)
+	 * @param	L	column to add Z from in D
 	 */
-	public static Instances addZtoD(Instances D, double Z[][], int L) {
+	private static Instances addZtoD(Instances D, double Z[][], int L) {
+
+		int H = Z[0].length;
+		int N = D.numInstances();
 
 		// add attributes
-		for(int a = 0; a < Z[0].length; a++) {
+		for(int a = 0; a < H; a++) {
 			D.insertAttributeAt(new Attribute("A"+a),L+a);
 		}
 
 		// add values Z[0]...Z[N] to D
-		// (note that if D.numInstances() < Z.length, only some are added)
-		for(int a = 0; a < Z[0].length; a++) {
-			for(int i = 0; i < D.numInstances(); i++) {
+		for(int a = 0; a < H; a++) {
+			for(int i = 0; i < N; i++) {
 				D.instance(i).setValue(L+a,Z[i][a]);
 			}
 		}
@@ -948,20 +948,6 @@ public abstract class MLUtils {
 		D.setClassIndex(L);
 		return D;
 	}
-
-
-	/* select i with probabilitiy w[i] (w must be normalised)
-	public static int rndsrc (double w[], Random r) {
-		double u = r.nextDouble();
-		double sum = w[0];
-		int i = 0;
-		while (sum < u) {
-			i++;
-			sum+=w[i];
-		}
-		return i;
-	}
-	*/
 
 	/**
 	 * Get K - get the number of values associated with each label L.

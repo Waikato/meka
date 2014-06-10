@@ -46,8 +46,7 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier impl
 	 */
 	@Override
 	public String globalInfo() {
-		return 
-				"For ensembles of multi-label methods.";
+		return "For ensembles of multi-label methods.";
 	}
 
 	@Override
@@ -99,9 +98,9 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier impl
 	@Override
 	public Enumeration listOptions() {
 		Vector newVector = new Vector();
-		newVector.addElement(new Option("\t@Sets the number of models (default "+m_NumIterations+")", "I", 1, "-I <num>"));
-		newVector.addElement(new Option("\t@Size of each bag, as a percentage of total training size (default "+m_BagSizePercent+")", "P", 1, "-P <size percentage>"));
-		newVector.addElement(new Option("\t@Random number seed for sampling (default "+m_Seed+")", "S", 1, "-S <seed>"));
+		newVector.addElement(new Option("\tSets the number of models (default "+m_NumIterations+")", "I", 1, "-I <num>"));
+		newVector.addElement(new Option("\tSize of each bag, as a percentage of total training size (default "+m_BagSizePercent+")", "P", 1, "-P <size percentage>"));
+		newVector.addElement(new Option("\tRandom number seed for sampling (default "+m_Seed+")", "S", 1, "-S <seed>"));
 
 		Enumeration enu = super.listOptions();
 		while (enu.hasMoreElements()) {

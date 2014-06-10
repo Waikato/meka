@@ -27,13 +27,13 @@ import weka.core.Capabilities;
 import weka.core.Instance;
 import weka.core.Instances;
 import meka.core.MLUtils;
+import meka.core.A;
 import weka.core.RevisionUtils;
 import weka.core.Utils;
 
 /**
- * NSR.java - The Nearest Set Relpacement (NSR) method. 
- * A multi-target classifier related to multi-label PS. 
- * The nearest sets are used to replace outliers, rather than subsets.
+ * NSR.java - The Nearest Set Relpacement (NSR) method.  
+ * A multi-target version of PS: The nearest sets are used to replace outliers, rather than subsets (as in PS).
  * Important Note: currently can only handle 10 values (or fewer) per target variable.
  * @see		meka.classifiers.multilabel.PS
  * @version	Jan 2013
@@ -52,7 +52,7 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 	@Override
 	public String globalInfo() {
 		return "The Nearest Set Relpacement (NSR) method.\n"+
-			"A multi-target classifier related to multi-label PS.\nThe nearest sets are used to replace outliers, rather than subsets.\nImportant Note: currently can only handle 10 values (or fewer) per target variable.";
+			"A multi-target version of PS: The nearest sets are used to replace outliers, rather than subsets (as in PS).";
 	}
 	
 	@Override
@@ -99,7 +99,7 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 		//int max_j = (int)m_Classifier.classifyInstance(x_sl);			// where comb_i is selected
 		String y_max = m_InstancesTemplate.classAttribute().value(max_j);									// comb_i e.g. "0+3+0+0+1+2+0+0"
 
-		double y[] = Arrays.copyOf(MLUtils.toDoubleArray(MLUtils.decodeValue(y_max)),L*2);					// "0+3+0+0+1+2+0+0" -> [0.0,3.0,0.0,...,0.0]
+		double y[] = Arrays.copyOf(A.toDoubleArray(MLUtils.decodeValue(y_max)),L*2);					// "0+3+0+0+1+2+0+0" -> [0.0,3.0,0.0,...,0.0]
 
 		HashMap<Double,Double> votes[] = new HashMap[L];
 		for(int j = 0; j < L; j++) {
@@ -107,7 +107,7 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 		}
 
 		for(int i = 0; i < w.length; i++) {
-			double y_i[] = MLUtils.toDoubleArray(MLUtils.decodeValue(m_InstancesTemplate.classAttribute().value(i)));
+			double y_i[] = A.toDoubleArray(MLUtils.decodeValue(m_InstancesTemplate.classAttribute().value(i)));
 			for(int j = 0; j < y_i.length; j++) {
 				votes[j].put(y_i[j] , votes[j].containsKey(y_i[j]) ? votes[j].get(y_i[j]) + w[i] : w[i]);
 			}
