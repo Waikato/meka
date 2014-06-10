@@ -349,11 +349,12 @@ public class Evaluation {
 	 */
 	public static Result evaluateModel(MultilabelClassifier h, Instances D_train, Instances D_test) throws Exception {
 
-		// Train
 		long before = System.currentTimeMillis();
-		if (h instanceof SemisupervisedClassifier) { // *NEW* for semi-supervised 
+		// Set test data as unlabelled data, if SemisupervisedClassifier
+		if (h instanceof SemisupervisedClassifier) { 
 			((SemisupervisedClassifier)h).setUnlabelledData(MLUtils.setLabelsMissing(new Instances(D_test)));
 		}
+		// Train
 		h.buildClassifier(D_train);
 		long after = System.currentTimeMillis();
 

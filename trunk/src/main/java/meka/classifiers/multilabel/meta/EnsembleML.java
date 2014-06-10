@@ -40,8 +40,7 @@ public class EnsembleML extends MultilabelMetaClassifier {
 	 */
 	@Override
 	public String globalInfo() {
-		return 
-				"Combining several multi-label classifiers in a simple-subset ensemble.";
+		return "Combining several multi-label classifiers in a simple-subset ensemble.";
 	}
 
 	@Override

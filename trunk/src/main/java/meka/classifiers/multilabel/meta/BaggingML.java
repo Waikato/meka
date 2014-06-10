@@ -26,7 +26,6 @@ import weka.core.RevisionUtils;
 
 /**
  * BaggingML.java - Combining several multi-label classifiers using Bootstrap AGGregatING.
- * Uses Instance weights instead of Instance duplications.
  * @author Jesse Read (jmr30@cs.waikato.ac.nz)
  */
 
@@ -42,9 +41,7 @@ public class BaggingML extends MultilabelMetaClassifier {
 	 */
 	@Override
 	public String globalInfo() {
-		return 
-				"Combining several multi-label classifiers using Bootstrap AGGregatING.\n"
-				+ "Uses Instance weights instead of Instance duplications.";
+		return "Combining several multi-label classifiers using Bootstrap AGGregatING";
 	}
 
 	public BaggingML() {
@@ -59,7 +56,6 @@ public class BaggingML extends MultilabelMetaClassifier {
 		if (getDebug()) System.out.print("-: Models: ");
 
 		train = new Instances(train);
-		//m_Classifiers = (MultilabelClassifier[]) AbstractClassifier.makeCopies(m_Classifier, m_NumIterations);
 		m_Classifiers = MultilabelClassifier.makeCopies((MultilabelClassifier)m_Classifier, m_NumIterations);
 
 		for(int i = 0; i < m_NumIterations; i++) {
