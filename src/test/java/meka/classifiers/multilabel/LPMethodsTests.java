@@ -79,7 +79,7 @@ public class LPMethodsTests extends TestCase {
 		ps.setClassifier(new SMO());
 		r = EvaluationTests.cvEvaluateClassifier(ps);
 		System.out.println("PS(0,0) "+r.info.get("Accuracy"));
-		assertTrue("PS(0,0) Accuracy Correct", r.info.get("Accuracy").startsWith("0.569 +/- 0.03"));
+		assertTrue("PS(0,0) Accuracy Correct", r.info.get("Accuracy").startsWith("0.569"));
 
 		// Test PS (3,1) -- should be faster and better
 		ps.setP(3);
