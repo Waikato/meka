@@ -81,13 +81,13 @@ public class LPMethodsTests extends TestCase {
 		System.out.println("PS(0,0) "+r.info.get("Accuracy"));
 		assertTrue("PS(0,0) Accuracy Correct", r.info.get("Accuracy").startsWith("0.569"));
 
-		// Test PS (3,1) -- should be faster and better
+		// Test PS (3,1) -- should be faster 
 		ps.setP(3);
 		ps.setN(1);
 
 		r = EvaluationTests.cvEvaluateClassifier(ps);
 		System.out.println("PS(3,1) "+r.info.get("Accuracy"));
-		assertTrue("PS(3,1) Accuracy Correct", r.info.get("Accuracy").equals("0.567 +/- 0.035"));
+		assertTrue("PS(3,1) Accuracy Correct", r.info.get("Accuracy").startsWith("0.567"));
 
 		// Test PSe -- should be very similar (differences only from different randomization)
 		pse.setP(3);
@@ -99,10 +99,10 @@ public class LPMethodsTests extends TestCase {
 
 		// Test EPSe
 		EnsembleML eps = new EnsembleML();
-		eps.setClassifier(ps);
+		eps.setClassifier(pse);
 		r = EvaluationTests.cvEvaluateClassifier(eps);
-		System.out.println("EPS "+r.info.get("Accuracy"));
-		assertTrue("EPS Accuracy Correct", r.info.get("Accuracy").equals("0.567 +/- 0.042") );
+		System.out.println("EPSe "+r.info.get("Accuracy"));
+		assertTrue("EPSe Accuracy Correct", r.info.get("Accuracy").equals("0.569 +/- 0.044") );
 	}
 
 }
