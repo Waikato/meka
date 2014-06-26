@@ -25,4 +25,9 @@ mst.jar
 - version: (compiled from) version 4 of stdlib.jar and algs4.jar 
 - download: http://algs4.cs.princeton.edu/code/algs4.jar
 
+jfilechooser-bookmarks.jar
+- version: 0.1.0
+- download: http://search.maven.org/remotecontent?filepath=com/googlecode/jfilechooser-bookmarks/jfilechooser-bookmarks/0.1.0/jfilechooser-bookmarks-0.1.0.jar
+
+
 $Revision$

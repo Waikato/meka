@@ -31,6 +31,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -41,6 +42,7 @@ import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import meka.gui.core.FileChooserBookmarksPanel;
 import meka.gui.core.GUIHelper;
 import meka.gui.core.MekaPanel;
 import meka.gui.goe.GenericObjectEditor;
@@ -105,6 +107,9 @@ extends MekaPanel {
 
   /** the file chooser for loading/saving files. */
   protected ConverterFileChooser m_FileChooser;
+  
+  /** the bookmarks. */
+  protected FileChooserBookmarksPanel m_PanelBookmarks;
 
   /** the undo list. */
   protected ArrayList<File> m_Undo;
@@ -119,6 +124,10 @@ extends MekaPanel {
     m_MenuBar     = null;
     m_Tabs        = new ArrayList<AbstractExplorerTab>();
     m_FileChooser = new ConverterFileChooser(System.getProperty("user.home"));
+    m_PanelBookmarks = new FileChooserBookmarksPanel();
+    m_PanelBookmarks.setOwner(m_FileChooser);
+    m_PanelBookmarks.setBorder(BorderFactory.createEmptyBorder(2, 5, 0, 0));
+    m_FileChooser.setAccessory(m_PanelBookmarks);
     m_Undo        = new ArrayList<File>();
   }
 
