@@ -15,7 +15,7 @@
 
 /**
  * Explorer.java
- * Copyright (C) 2012 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2012-2014 University of Waikato, Hamilton, New Zealand
  */
 package meka.gui.explorer;
 
@@ -42,12 +42,13 @@ import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import meka.core.MLUtils;
 import meka.gui.core.FileChooserBookmarksPanel;
 import meka.gui.core.GUIHelper;
 import meka.gui.core.MekaPanel;
+import meka.gui.core.StatusBar;
 import meka.gui.goe.GenericObjectEditor;
 import weka.core.Instances;
-import meka.core.MLUtils;
 import weka.core.Utils;
 import weka.core.converters.AbstractFileLoader;
 import weka.core.converters.AbstractFileSaver;
@@ -114,6 +115,9 @@ extends MekaPanel {
   /** the undo list. */
   protected ArrayList<File> m_Undo;
 
+  /** the statusbar to use. */
+  protected StatusBar m_StatusBar;
+  
   /**
    * Initializes the members.
    */
@@ -147,6 +151,10 @@ extends MekaPanel {
     m_Tabs.add(new VisualizeTab(this));
     for (AbstractExplorerTab tab: m_Tabs)
       m_TabbedPane.addTab(tab.getTitle(), tab);
+    
+    // status bar
+    m_StatusBar = new StatusBar();
+    add(m_StatusBar, BorderLayout.SOUTH);
   }
 
   /**
@@ -338,6 +346,15 @@ extends MekaPanel {
     m_MenuItemFileHomepage.setEnabled(true);
   }
 
+  /**
+   * Returns the status bar.
+   * 
+   * @return		the status bar
+   */
+  public StatusBar getStatusBar() {
+    return m_StatusBar;
+  }
+  
   /**
    * Prepares the class index of the data.
    * 

@@ -111,4 +111,52 @@ public abstract class AbstractExplorerTab
 	 */
 	protected void update() {
 	}
+
+	/**
+	 * Displays the specified status message.
+	 * 
+	 * @param msg		the message to display
+	 */
+	public void showStatus(String msg) {
+		m_Owner.getStatusBar().showStatus(msg);
+	}
+
+	/**
+	 * Clears status message.
+	 */
+	public void clearStatus() {
+		m_Owner.getStatusBar().clearStatus();
+	}
+
+	/**
+	 * Starts the animated icon, without setting status message.
+	 */
+	public void startBusy() {
+		m_Owner.getStatusBar().startBusy();
+	}
+
+	/**
+	 * Starts the animated icon, setting the specified status message.
+	 * 
+	 * @param msg		the message to display
+	 */
+	public void startBusy(String msg) {
+		m_Owner.getStatusBar().startBusy(msg);
+	}
+
+	/**
+	 * Stops the animated icon, without setting status message.
+	 */
+	public void finishBusy() {
+		m_Owner.getStatusBar().finishBusy();
+	}
+
+	/**
+	 * Stops the animated icon, setting the specified status message.
+	 * 
+	 * @param msg		the message to display
+	 */
+	public void finishBusy(String msg) {
+		m_Owner.getStatusBar().finishBusy(msg);
+	}
 }

@@ -39,15 +39,15 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import meka.classifiers.multilabel.Evaluation;
+import meka.classifiers.multilabel.IncrementalEvaluation;
+import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.core.MLEvalUtils;
+import meka.core.Result;
 import meka.gui.core.GUIHelper;
 import meka.gui.core.ResultHistoryList;
 import meka.gui.goe.GenericObjectEditor;
-import meka.classifiers.multilabel.Evaluation;
-import meka.classifiers.multilabel.IncrementalEvaluation;
-import meka.core.MLEvalUtils;
-import meka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instances;
-import meka.core.Result;
 
 /**
  * Simple panel for performing classification.
@@ -252,6 +252,7 @@ extends AbstractThreadedExplorerTab {
 	public void run() {
 	  MultilabelClassifier classifier;
 	  Result[] results;
+	  startBusy("Cross-validating...");
 	  try {
 	    classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
 		//System.out.println("data.classIndex() "+data.classIndex());
@@ -259,10 +260,12 @@ extends AbstractThreadedExplorerTab {
 		addResultToHistory(
 			MLEvalUtils.averageResults(results)
 		);
+		finishBusy("");
 	  }
 	  catch (Exception e) {
 	    System.err.println("Evaluation failed:");
 	    e.printStackTrace();
+		finishBusy("Evaluation failed: " + e);
 	    JOptionPane.showMessageDialog(
 		ClassifyTab.this, 
 		"Evaluation failed (CV):\n" + e, 
@@ -281,6 +284,7 @@ extends AbstractThreadedExplorerTab {
 	  int trainSize;
 	  Instances train;
 	  Instances test;
+	  startBusy("Train/test split...");
 	  try {
 		  if (m_TestInstances == null) {
 			  trainSize  = (int) (data.numInstances() * m_SplitPercentage / 100.0);
@@ -297,10 +301,12 @@ extends AbstractThreadedExplorerTab {
 		//System.out.println("data.classIndex() "+train.classIndex());
 	    result     = Evaluation.evaluateModel(classifier, train, test, m_TOP, m_VOP);
 	    addResultToHistory(result);
+		finishBusy("");
 	  }
 	  catch (Exception e) {
 	    System.err.println("Evaluation failed (train/test split):");
 	    e.printStackTrace();
+		finishBusy("Evaluation failed: " + e);
 	    JOptionPane.showMessageDialog(
 		ClassifyTab.this, 
 		"Evaluation failed:\n" + e, 
@@ -316,16 +322,19 @@ extends AbstractThreadedExplorerTab {
 	public void run() {
 	  MultilabelClassifier classifier;
 	  Result results[];
+	  startBusy("Incremental...");
 	  try {
 	    classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
 		//System.out.println("data.classIndex() "+data.classIndex());
 	    results    = IncrementalEvaluation.evaluateModel(classifier, data, 20, 1., m_TOP, m_VOP);
 	    for (Result result: results) 
 	      addResultToHistory(result);
+		finishBusy("");
 	  }
 	  catch (Exception e) {
 	    System.err.println("Evaluation failed (incremental splits):");
 	    e.printStackTrace();
+		finishBusy("Evaluation failed: " + e);
 	    JOptionPane.showMessageDialog(
 		ClassifyTab.this, 
 		"Evaluation failed:\n" + e, 
@@ -343,8 +352,10 @@ extends AbstractThreadedExplorerTab {
    * Stops the classification, if running.
    */
   protected void stopClassification() {
-    if (isRunning())
+    if (isRunning()) {
       stop();
+  	  startBusy("Evaluation interrupted!");
+    }
   }
 
   /**
