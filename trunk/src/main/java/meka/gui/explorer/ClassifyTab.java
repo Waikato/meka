@@ -43,6 +43,7 @@ import meka.classifiers.multilabel.Evaluation;
 import meka.classifiers.multilabel.IncrementalEvaluation;
 import meka.classifiers.multilabel.MultilabelClassifier;
 import meka.core.MLEvalUtils;
+import meka.core.MLUtils;
 import meka.core.Result;
 import meka.gui.core.GUIHelper;
 import meka.gui.core.ResultHistoryList;
@@ -293,7 +294,7 @@ extends AbstractThreadedExplorerTab {
 		  }
 		  else {
 			  train      = new Instances(data);
-			  Explorer.prepareData(m_TestInstances);
+			  MLUtils.prepareData(m_TestInstances);
 			  test       = new Instances(m_TestInstances);
 			  test.setClassIndex(data.classIndex());
 		  }
