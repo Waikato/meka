@@ -15,14 +15,25 @@
 
 package meka.core;
 
-import weka.filters.unsupervised.attribute.Remove;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.*;
-import weka.core.*;
-import java.util.*;
-import java.io.*; // for serialized
-import java.io.FileReader;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream; // for serialized
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+
+import weka.core.Attribute;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.Utils;
+import weka.core.converters.ConverterUtils.DataSource;
 
 /**
  * MLUtils - Helpful functions for dealing with multi-labelled data.
@@ -746,7 +757,7 @@ public abstract class MLUtils {
 
 	/**
 	 * ToBinaryString - use to go through all 'L' binary combinations.
-	 * @see 	A.toDoubleArray
+	 * @see 	A#toDoubleArray(int, int)
 	 * @param	l	the number to permute
 	 * @param	L	number of labels
 	 */
@@ -899,7 +910,7 @@ public abstract class MLUtils {
 	/**
 	 * InsertZintoD - Insert data Z[][] to Instances D (e.g., as labels).
 	 * NOTE: Assumes binary labels!
-	 * @see AddZtoD(D,Z)
+	 * @see #addZtoD(Instances,double[][])
 	 */
 	private static Instances insertZintoD(Instances D, double Z[][]) {
 
@@ -983,6 +994,7 @@ public abstract class MLUtils {
 		FileInputStream streamIn = new FileInputStream(filename);
 		ObjectInputStream objectinputstream = new ObjectInputStream(streamIn);
 		Object object = objectinputstream.readObject();
+		objectinputstream.close();
 		return object;
 	}
 
@@ -993,6 +1005,73 @@ public abstract class MLUtils {
 		FileOutputStream fout = new FileOutputStream(filename);
 		ObjectOutputStream oos = new ObjectOutputStream(fout);
 		oos.writeObject(object);
+		oos.flush();
+		oos.close();
+	}
+
+	/**
+	 * Prepares the class index of the data.
+	 * 
+	 * @param data the data to prepare
+	 * @throws Exception if preparation fails
+	 */
+	public static void prepareData(Instances data) throws Exception {
+		String doptions[] = null;
+		try {
+			doptions = MLUtils.getDatasetOptions(data);
+		} 
+		catch(Exception e) {
+			throw new Exception("[Error] Failed to Get Options from @Relation Name", e);
+		}
+
+		try {
+			int c = (Utils.getOptionPos('C', doptions) >= 0) ? Integer.parseInt(Utils.getOption('C',doptions)) : Integer.parseInt(Utils.getOption('c',doptions));
+			// if negative, then invert
+			if ( c < 0) {
+				c = -c;
+				data = MLUtils.switchAttributes(data,c);
+			}
+			// set c
+			data.setClassIndex(c);
+		}
+		catch (Exception e) {
+			throw new Exception(
+					"Failed to parse options stored in relation name; expected format for relation name:\n"
+							+ "  'name: options'\n"
+							+ "But found:\n"
+							+ "  '" + data.relationName() + "'\n"
+							+ "Format example:\n"
+							+ "  'Example_Dataset: -C 3 -split-percentage 50'\n"
+							+ "'-C 3' specifies the number of target attributes to be 3. See tutorial for more information.", 
+							e);
+		}
+	}
+	
+	/**
+	 * Attempts to determine the number of classes/class index from the 
+	 * specified file. In case of ARFF files, only the header will get loaded.
+	 * 
+	 * @param file		the file to inspect
+	 * @return			the class index of the file, Integer.MAX_VALUE in case of error
+	 */
+	public static int peekClassIndex(File file) {
+		int			result;
+		DataSource	source;
+		Instances	structure;
+		
+		result = Integer.MAX_VALUE;
+		
+		try {
+			source    = new DataSource(file.getAbsolutePath());
+			structure = source.getStructure();
+			prepareData(structure);
+			result    = structure.classIndex();
+		}
+		catch (Exception e) {
+			// ignored
+		}
+		
+		return result;
 	}
 
 	public static final void main (String args[]) throws Exception {
@@ -1056,5 +1135,4 @@ public abstract class MLUtils {
 			return;
 		}
 	}
-
 }
