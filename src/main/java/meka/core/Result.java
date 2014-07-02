@@ -216,27 +216,20 @@ public class Result implements Serializable {
 	*/
 
 	/**
-	 * GetResultAsString - print out each prediction with each true labelset.
-	 * @TODO combine with getResultAsStringNicely
+	 * GetResultAsString - print out each prediction in a Result along with its true labelset.
 	 */
 	public static String getResultAsString(Result s) {
-		StringBuilder sb = new StringBuilder();
-		double N = (double)s.predictions.size();
-		for(int i = 0; i < N; i++) {
-			sb.append(Arrays.toString(s.actuals.get(i))+":"+Arrays.toString(s.predictions.get(i))+"\n");
-		}
-		return sb.toString();
+		return getResultAsStringNicely(s,3);
 	}
 
 	/**
-	 * GetResultAsStringNicely.
-	 * print confidences to 'adp' decimal points.
+	 * GetResultAsStringNicely - print out each prediction in a Result (to a certain number of decimal points) along with its true labelset.
 	 */
 	public static String getResultAsStringNicely(Result s, int adp) {
 		StringBuilder sb = new StringBuilder();
 		double N = (double)s.predictions.size();
 		for(int i = 0; i < N; i++) {
-			sb.append(Utils.doubleToString(i,5,0));
+			sb.append(Utils.doubleToString((i+1),5,0));
 			sb.append(" ");
 			sb.append(A.toString(s.actuals.get(i)));
 			sb.append(" ");
@@ -247,21 +240,21 @@ public class Result implements Serializable {
 	}
 
 	/**
-	 * WriteResultToFile -- write a Result out to a file called 'fname'.
-	 * @param	s	    Result
+	 * WriteResultToFile -- write a Result 'result' out in plain text format to file 'fname'.
+	 * @param	result	Result
 	 * @param	fname	file name
 	 */
-	public static void writeResultToFile(Result s, String fname) throws Exception {
+	public static void writeResultToFile(Result result, String fname) throws Exception {
 		PrintWriter outer = new PrintWriter(new BufferedWriter(new FileWriter(fname)));
 		StringBuilder sb = new StringBuilder();  
-		sb.append("L=").append(s.L).append('\n');		// @TODO "i:"+s.info.toString()
-		for (String k : s.info.keySet()) {
-			sb.append("i:").append(k).append('=').append(s.info.get(k)).append('\n');
+		sb.append("L=").append(result.L).append('\n');		// @TODO "i:"+result.info.toString()
+		for (String k : result.info.keySet()) {
+			sb.append("i:").append(k).append('=').append(result.info.get(k)).append('\n');
 		}
-		for (String k : s.vals.keySet()) {				// @TODO "v:"+s.vals.toString()
-			sb.append("v:").append(k).append('=').append(s.vals.get(k)).append('\n');
+		for (String k : result.vals.keySet()) {				// @TODO "v:"+result.vals.toString()
+			sb.append("v:").append(k).append('=').append(result.vals.get(k)).append('\n');
 		}
-		sb.append(getResultAsString(s));
+		sb.append(getResultAsString(result));
 		outer.write(sb.toString());
 		outer.close();
 	}
@@ -278,10 +271,13 @@ public class Result implements Serializable {
 		try {
 			String line = null;
 			while (( ( line = in.readLine() ) ) != null ){
-				if (line.startsWith("[")) {
-					String arrays[] = line.split(":");
-					r.predictions.add(MLUtils.toDoubleArray(arrays[1]));
-					r.actuals.add(MLUtils.toIntArray(arrays[0]));
+				if (line.contains("[") && !line.contains(":")) {
+					int i1s = line.indexOf("[");
+					int i1e = line.indexOf("]");
+					int i2s = line.indexOf("[",i1s+1);
+					int i2e = line.indexOf("]",i1e+1);
+					r.predictions.add(MLUtils.toDoubleArray(line.substring(i2s+1,i2e).trim().split(" ")));
+					r.actuals.add(MLUtils.toIntArray(line.substring(i1s+1,i1e).trim().split(" ")));
 				}
 				else if (line.startsWith("i")) { // info
 					line = line.substring(line.indexOf(':')+1);

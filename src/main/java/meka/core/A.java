@@ -54,24 +54,23 @@ public abstract class A {
 		return c;
 	}
 
-	/** ToString. Return a double[] as a nice String. */
+	/** ToString - Return a double[] as a nice String. */
 	public static String toString(double v[]) {
 		return toString(v,2);
 	}
 
-	/** ToString. Return a double[] as a nice String. */
+	/** ToString - Return a double[] as a nice String (formated to a 'adp' digits after the decimal point). */
 	public static String toString(double v[], int adp) {
 		int w = adp > 0 ? adp + 2 : 0;
 		StringBuilder sb = new StringBuilder("[ ");  
 		for(int k = 0; k < v.length; k++) {
-			sb.append(Utils.doubleToString(v[k],w,adp));
-			sb.append(" ");
+			sb.append(String.format("%"+w+"."+adp+"f ", v[k]));
 		}
 		sb.append("]");
 		return sb.toString();
 	}
 
-	/** ToString. Return an int[] as a nice String. */
+	/** ToString - Return an int[] as a nice String. */
 	public static String toString(int v[]) {
 		StringBuilder sb = new StringBuilder("[ ");  
 		for(int k = 0; k < v.length; k++) {
@@ -195,6 +194,24 @@ public abstract class A {
 			array[i] = j;
 		}
 		return array;
+	}
+
+	/**
+	 * Invert - take the compliment of indices up to length L, e.g., if indices = [3,5,6], then invert(indices,7) = [1,2,4,7].
+	 * @param	indices indices
+	 * @param	L		supposed length of the compliment
+	 * @return	the compliment (inverted list)
+	 */
+	public static final int[] invert(int indices[], int L) {
+		int sindices[] = Arrays.copyOf(indices,indices.length);
+		Arrays.sort(sindices);
+		int inverted[] = new int[L-sindices.length];
+		for(int j = 0,i = 0; j < L; j++) {
+			if (Arrays.binarySearch(sindices,j) < 0) {
+				inverted[i++] = j;
+			}
+		}
+		return inverted;
 	}
 
 	/** Shuffle 'array' given Random 'r' */
