@@ -30,6 +30,7 @@ import weka.core.Instances;
 import meka.core.Result;
 import meka.core.Metrics;
 import meka.core.MLEvalUtils;
+import meka.core.MLUtils;
 
 import meka.gui.explorer.Explorer;
 
@@ -61,7 +62,7 @@ public class EvaluationTests extends TestCase {
 	public static Instances loadInstances(String fn) {
 		try {
 			Instances D = DataSource.read(fn);
-			Explorer.prepareData(D);
+			MLUtils.prepareData(D);
 			return D;
 		} catch(Exception e) {
 			System.err.println("");
