@@ -111,11 +111,10 @@ public abstract class MLEvalUtils {
 			results.put("N_empty"			,MLUtils.emptyVectors(Ypred));
 
 			if (V > 2) {
-				//results.put("LCard_real"		,MLUtils.labelCardinality(Y));
 				for(int j = 0; j < L; j++) {
-					results.put("Accuracy["+j+"]"	,Metrics.P_Hamming(Y,Ypred,j));
-					results.put("Harmonic["+j+"]"	,Metrics.P_Harmonic(Y,Ypred,j));
+					results.put("Accuracy["+j+"]"	        ,Metrics.P_Hamming(Y,Ypred,j));
 					if (V > 3) {
+						results.put("Harmonic["+j+"]"	    ,Metrics.P_Harmonic(Y,Ypred,j));
 						results.put("Precision["+j+"]"	    ,Metrics.P_Precision(Y,Ypred,j));
 						results.put("Recall["+j+"]"			,Metrics.P_Recall(Y,Ypred,j));
 					}
@@ -123,10 +122,11 @@ public abstract class MLEvalUtils {
 			}
 
 			results.put("LCard_pred"		,MLUtils.labelCardinality(Ypred));
-			if (V > 4) {
+			if (V > 3) {
 				// Label cardinality
+				results.put("LCard_diff"		,MLUtils.labelCardinality(Y)-MLUtils.labelCardinality(Ypred));
 				for(int j = 0; j < L; j++) {
-					results.put("LCard["+j+"]"	,Metrics.P_Hamming(Y,Ypred,j));
+					results.put("LCard_diff["+j+"]",MLUtils.labelCardinality(Y,j) - MLUtils.labelCardinality(Ypred,j));
 				}
 			}
 		}

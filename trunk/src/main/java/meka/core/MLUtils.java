@@ -150,13 +150,13 @@ public abstract class MLUtils {
 		return d;
 	}
 
-	/** ToIntArray - Return an int[] from a String, e.g., "[0,1,2,0]". */
+	/** ToIntArray - Return an int[] from a String, e.g., "[0,1,2,0]" to [0,1,2,3]. */
 	public static final int[] toIntArray(String s) {
 		s = new String(s.trim());
 		return toIntArray((s.substring(1,s.length()-1)).split(","));
 	}
 
-	/** ToIntArray - Return an int[] from a String, e.g., "000101000". */
+	/** ToIntArray - Return an int[] from a String[], e.g., ["0","1","2","3"] to [0,1,2,3]. */
 	public static final int[] toIntArray(String s[]) {
 		int y[] = new int[s.length];
 		for(int j = 0; j < s.length; j++) {
@@ -179,9 +179,35 @@ public abstract class MLUtils {
 	}
 
 	/**
-	 * To Sub Indices Set - return the indices in x, whose values are greater than 1.
+	 * To Indices Set - return the indices in x[], whose values are greater than t, e.g., [0.3,0.0,0.5,0.8],0.4 to {2,3}.
 	 */
-	public static final List toIndicesSet(Instance x, int L) {
+	public static final List toIndicesSet(double x[], double t) {
+		List<Integer> y_list = new ArrayList<Integer>();
+		for(int j = 0; j < x.length; j++) {
+			if (x[j] > t) {
+				y_list.add(j);
+			}
+		}
+		return y_list;
+	}
+
+	/** 
+	 * To Indices Set - return the indices in x[], whose values are greater than 0, e.g., [0,0,1,1] to {2,3}.
+	 */
+	public static final List toIndicesSet(int x[]) {
+		List<Integer> y_list = new ArrayList<Integer>();
+		for(int j = 0; j < x.length; j++) {
+			if (x[j] > 0) {
+				y_list.add(j);
+			}
+		}
+		return y_list;
+	}
+
+	/**
+	 * To Indices Set - return the indices in x, whose values are greater than 1.
+	 */
+	public static final List<Integer> toIndicesSet(Instance x, int L) {
 		List<Integer> y_list = new ArrayList<Integer>();
 		for(int j = 0; j < L; j++) {
 			if (x.value(j) > 0.) {
@@ -260,8 +286,21 @@ public abstract class MLUtils {
 		return (double)sum/(double)D.numInstances();
 	}
 
+	/**
+	 * LabelCardinality - return the average number of times the j-th label is relevant in label data Y.
+	 */
+	public static final double labelCardinality(int Y[][], int j) {
+		int N = Y.length;
+		int L = Y[0].length;
+		double sum = 0.0;
+		for(int i = 0; i < N; i++) {
+			sum += Y[i][j];
+		}
+		return (double)sum/(double)N;
+	}
+
 	/** 
-	 * LabelCardinality - return the label cardinality of label data Y
+	 * LabelCardinality - return the label cardinality of label data Y.
 	 * @TODO move to Metrics.java ? / Use M.sum(Y)/N
 	 */
 	public static final double labelCardinality(int Y[][]) {
@@ -440,15 +479,20 @@ public abstract class MLUtils {
 	/*
 	// ["A","B","NEG"] -> "A+B+NEG"
 	public static String encodeValue(String s[]) {
-		StringBuilder sb = new StringBuilder(String.valueOf(s[0]));  
-		for(int i = 1; i < s.length; i++) {
-			sb.append('+').append(s[i]);
-		}
-		return sb.toString();
+	StringBuilder sb = new StringBuilder(String.valueOf(s[0]));  
+	for(int i = 1; i < s.length; i++) {
+	sb.append('+').append(s[i]);
+	}
+	return sb.toString();
 	}
 	*/
 
-	// [0,3,2] -> "0+3+2"
+	/**
+	 * Encode Value.
+	 * [0,3,2] -> "0+3+2"
+	 * Deprecated - Use LabelSet
+	 */
+	@Deprecated
 	public static String encodeValue(int s[]) {
 		StringBuilder sb = new StringBuilder(String.valueOf(s[0]));  
 		for(int i = 1; i < s.length; i++) {
@@ -457,7 +501,12 @@ public abstract class MLUtils {
 		return sb.toString();
 	}
 
-	// "0+3+2" -> [0,3,2]
+	/**
+	 * Encode Value.
+	 * "0+3+2"-> [0,3,2]
+	 * Deprecated - Use LabelSet
+	 */
+	@Deprecated
 	public static int[] decodeValue(String a) {
 		return toIntArray(a.split("\\+"));
 	}
@@ -491,10 +540,10 @@ public abstract class MLUtils {
 		for(Object s : map.keySet()) {
 			Integer v = map.get(s);
 			if (v > max_v) {
-					max_v = v;
-					max_s = s;
-				}
+				max_v = v;
+				max_s = s;
 			}
+		}
 		return max_s;
 	}
 
@@ -503,25 +552,11 @@ public abstract class MLUtils {
 		return hm.size();
 	}
 
-	/**
-	 * SwitchAttributes - Move label attributes from End to Beginning of attribute space (MULAN format to MEKA format). 
-	 * Note: can use e.g.: java weka.filters.unsupervised.attribute.Reorder -i thyroid.arff -R 30-last,1-29"
-	 * @TODO use F.switchAttributes(D,L)
+	// NEW -- NOTE -- THESE FUNCTIONS (and the one above) ARE PRESENT IN F.java
+
+	/*
+	 * used in BR, CR
 	 */
-	public static final Instances switchAttributes(Instances D, int L) {
-		int d = D.numAttributes();
-		for(int j = 0; j < L; j++) {
-			D.insertAttributeAt(D.attribute(d-1).copy(D.attribute(d-1).name()+"-"),0);
-			for(int i = 0; i < D.numInstances(); i++) {
-				D.instance(i).setValue(0,D.instance(i).value(d));
-			}
-			D.deleteAttributeAt(d);
-		}
-		return D;
-	}
-
-	// NEW
-
 	public static final Instance deleteAttributesAt(Instance x, int indicesToRemove[]) {//, boolean keep) {
 		Utils.sort(indicesToRemove);
 		for(int j = indicesToRemove.length-1; j >= 0; j--) {
@@ -531,9 +566,12 @@ public abstract class MLUtils {
 	}
 
 	public static final Instance keepAttributesAt(Instance x, int indicesToRemove[], int lim){
-		return deleteAttributesAt(x, invert(indicesToRemove, lim));
+		return deleteAttributesAt(x, A.invert(indicesToRemove, lim));
 	}
 
+	/*
+	 * used in BR, CR
+	 */
 	public static final Instances deleteAttributesAt(Instances D, int indicesToRemove[]) {//, boolean keep) {
 		Utils.sort(indicesToRemove);
 		for(int j = indicesToRemove.length-1; j >= 0; j--) {
@@ -542,21 +580,8 @@ public abstract class MLUtils {
 		return D;
 	}
 
-
 	public static final Instances keepAttributesAt(Instances D, int indicesToRemove[], int lim){
-		return deleteAttributesAt(D, invert(indicesToRemove, lim));
-	}
-
-	public static final int[] invert(int indices[], int L) {
-		int sindices[] = Arrays.copyOf(indices,indices.length);
-		Arrays.sort(sindices);
-		int inverted[] = new int[L-sindices.length];
-		for(int j = 0,i = 0; j < L; j++) {
-			if (Arrays.binarySearch(sindices,j) < 0) {
-				inverted[i++] = j;
-			}
-		}
-		return inverted;
+		return deleteAttributesAt(D, A.invert(indicesToRemove, lim));
 	}
 
 	public static final Instance setTemplate(Instance x, Instances instancesTemplate) {
@@ -597,7 +622,18 @@ public abstract class MLUtils {
 		}
 		return x_dest;
 	}
-	
+
+	/**
+	 * CopyValues - Set x_dest[i++] = x_src[j] for all j in indices[].
+	 */
+	public static final Instance copyValues(Instance x_dest, Instance x_src, int indices[]) {
+		int i = 0;
+		for(int j : indices) {
+			x_dest.setValue(i++,x_src.value(j));
+		}
+		return x_dest;
+	}
+
 	/**
 	 * SetValues - set the attribute values in Instsance x (having L labels) to z[].
 	 * @todo call above method
@@ -610,15 +646,15 @@ public abstract class MLUtils {
 	}
 
 	/* not in use
-	public static int max(int array[]) {
-		int max = Integer.MIN_VALUE;
-		for(int i : array) {
-			if (max > i)
-				max = i;
-		}
-		return max;
-	}
-	*/
+	   public static int max(int array[]) {
+	   int max = Integer.MIN_VALUE;
+	   for(int i : array) {
+	   if (max > i)
+	   max = i;
+	   }
+	   return max;
+	   }
+	   */
 
 	public static int mode(int a[]) {
 		int max = 0;
@@ -731,7 +767,7 @@ public abstract class MLUtils {
 		sb.append("}");
 		return sb.toString();
 	}
-	
+
 	public static final String toDebugString(Instance x) {
 		int L = x.classIndex();
 		StringBuilder sb = new StringBuilder();  
@@ -977,12 +1013,12 @@ public abstract class MLUtils {
 			}
 			K[j] = counts[j].size();
 			/*
-			System.out.println(""+j+" = "+counts[j]);
-			if (counts[j].size() < 2) {
-				System.out.println("OK, this is a problem ...");
-				//System.exit(1);
-			}
-			*/
+			   System.out.println(""+j+" = "+counts[j]);
+			   if (counts[j].size() < 2) {
+			   System.out.println("OK, this is a problem ...");
+			//System.exit(1);
+			   }
+			   */
 		}
 		return K;
 	}
@@ -1029,7 +1065,7 @@ public abstract class MLUtils {
 			// if negative, then invert
 			if ( c < 0) {
 				c = -c;
-				data = MLUtils.switchAttributes(data,c);
+				data = F.mulan2meka(data,c);
 			}
 			// set c
 			data.setClassIndex(c);
@@ -1074,6 +1110,10 @@ public abstract class MLUtils {
 		return result;
 	}
 
+	/**
+	 * For retrieving some dataset statistics on the command line.
+	 * Note: -L, -d does not work for Mulan format (labels at the end)
+	 */
 	public static final void main (String args[]) throws Exception {
 
 		/*
@@ -1095,6 +1135,8 @@ public abstract class MLUtils {
 				case 'N' :  System.out.println(D.numInstances());			// return the number of Instances of D
 							break;
 				case 'd' :  System.out.println(D.numAttributes()-L);		// reurns the number of (non-label) attributes of D
+							break;
+				case 'A' :  System.out.println(D.numAttributes());			// returns the number of ALL attributes of D
 							break;
 				case 'l' :  System.out.println(MLUtils.labelCardinality(D));		// reurns the label cardinalities
 							break;
@@ -1135,4 +1177,5 @@ public abstract class MLUtils {
 			return;
 		}
 	}
+
 }
