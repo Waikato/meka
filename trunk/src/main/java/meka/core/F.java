@@ -29,11 +29,11 @@ import weka.core.Instance;
 public abstract class F {
 
 	/**
-	 * SwitchAttributes - Move L label attributes from the beginning to end of attribute space of an Instances. 
+	 * meka2mulan - Move L label attributes from the beginning to end of attribute space of an Instances. 
 	 * Necessary because MULAN assumes label attributes are at the end, not the beginning.
 	 * (the extra time for this process is not counted in the running-time analysis of published work).
 	 */
-	public static final Instances switchAttributes(Instances D, int L) {
+	public static final Instances meka2mulan(Instances D, int L) {
 		for(int j = 0; j < L; j++) {
 			//D.insertAttributeAt(new Attribute(D.attribute(0).name()+"-"),D.numAttributes());
 			D.insertAttributeAt(D.attribute(0).copy(D.attribute(0).name()+"-"),D.numAttributes());
@@ -46,11 +46,11 @@ public abstract class F {
 	}
 
 	/**
-	 * SwitchAttributes - Move L label attributes from the beginning to end of attribute space of an Instance. 
+	 * meka2mulan - Move L label attributes from the beginning to end of attribute space of an Instance. 
 	 * Necessary because MULAN assumes label attributes are at the end, not the beginning.
 	 * (the extra time for this process is not counted in the running-time analysis of published work).
 	 */
-	public static final Instance switchAttributes(Instance x, int L) {
+	public static final Instance meka2mulan(Instance x, int L) {
 		x.setDataset(null);
 		for(int j = 0; j < L; j++) {
 			x.insertAttributeAt(x.numAttributes());
@@ -60,26 +60,25 @@ public abstract class F {
 	}
 
 	/**
-	 * SwapIndices - swap values of y[1] to y[L] according to s[].
-	 * @TODO this function will be called from CT
-	 * @TODO call this function also from SwitchAttributes()
-	 * @param	s	new indices order
-	public static void swapIndices(Instance x, int s[]) {
-		int L = s.length;
-		int y[] = x.asArray();
-		MLUtils.replacezasattributes(x,s,L);
+	 * mulan2meka - Move label attributes from the End to the Beginning of attribute space (MULAN format to MEKA format). 
+	 * Note: can use e.g.: java weka.filters.unsupervised.attribute.Reorder -i thyroid.arff -R 30-last,1-29"
+	 * See also: F.reorderLabels(D,s)
+	 */
+	public static final Instances mulan2meka(Instances D, int L) {
+		int d = D.numAttributes();
 		for(int j = 0; j < L; j++) {
-			x.setValue(0,s[j]);
-			temp = 
+			D.insertAttributeAt(D.attribute(d-1).copy(D.attribute(d-1).name()+"-"),0);
+			for(int i = 0; i < D.numInstances(); i++) {
+				D.instance(i).setValue(0,D.instance(i).value(d));
+			}
+			D.deleteAttributeAt(d);
 		}
+		return D;
 	}
-	*/
 
 	/**
-	 * SwapIndices - swap values of y[1] to y[L] according to s[].
-	 * @TODO this function will be called from CT
-	 * @TODO call this function also from SwitchAttributes()
-	 * @param	s	new indices order
+	 * ReorderLabels - swap values of y[1] to y[L] according to s[].
+	 * @param	s	new indices order (supposing that it contains the first s.length indices)
 	 */
 	public static void reorderLabels(Instances D, int s[]) throws Exception {
 		int L = s.length;
@@ -113,4 +112,28 @@ public abstract class F {
 		return Filter.useFilter(D, remove);
 	}
 
+	/**
+	 * Remove Indices - Remove ALL labels (assume they are the first L attributes) from D.
+	 * @param	D		Dataset
+	 * @param	L 		number of labels
+	 * @return	New dataset with labels removed.
+	 */
+	public static Instances removeLabels(Instances D, int L) throws Exception {
+		Remove remove = new Remove();
+		remove.setAttributeIndices("1-"+L);
+		remove.setInputFormat(D);
+		return Filter.useFilter(D, remove);
+	}
+
+	/**
+	 * Remove Indices - Remove some labels (assume they are the first L attributes) from D.
+	 * @param	D		Dataset
+	 * @param	L 		number of labels
+	 * @param	j[]		indices of labels to keep
+	 * @return	New dataset with labels removed.
+	 */
+	public static Instances keepLabels(Instances D, int L, int j[]) throws Exception {
+		int to_remove[] = A.invert(j,L);
+		return remove(D,to_remove,false);
+	}
 }

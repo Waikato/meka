@@ -45,10 +45,11 @@ import weka.core.RevisionUtils;
 import weka.core.Utils;
 
 /**
- * MULAN.java - A wrapper for MULAN <a href=http://mulan.sourceforge.net>MULAN</a> classifiers. 
+ * MULAN.java - A wrapper for MULAN classifiers <a href=http://mulan.sourceforge.net>MULAN</a>. 
  * <br>
- * The classifiers are instantiated here with suitable parameters.
+ * The classifiers are instantiated with suitable parameters.
  *
+ * @version	June 2014
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
 public class MULAN extends MultilabelClassifier {
@@ -143,7 +144,7 @@ public class MULAN extends MultilabelClassifier {
 			instances.renameAttribute(i,"a_"+i);
 		}
 		BufferedWriter writer = new BufferedWriter(new FileWriter(name));
-		m_InstancesTemplate = F.switchAttributes(new Instances(instances),L);
+		m_InstancesTemplate = F.meka2mulan(new Instances(instances),L);
 		writer.write(m_InstancesTemplate.toString());
 		writer.flush();
 		writer.close();
@@ -161,10 +162,12 @@ public class MULAN extends MultilabelClassifier {
 
 		m_InstancesTemplate = new Instances(train.getDataSet(),0);
 
+		System.out.println("CLASSIFIER "+m_Classifier);
+
 		//m_InstancesTemplate.delete();
 		if (m_MethodString.equals("BR"))
 			m_MULAN = new BinaryRelevance(m_Classifier);
-		else if (m_MethodString.equals("LP"))
+		else if (m_MethodString.equals("LP")) 
 			m_MULAN = new LabelPowerset(m_Classifier);
 		else if (m_MethodString.equals("CLR"))
 			m_MULAN = new CalibratedLabelRanking(m_Classifier);
@@ -218,25 +221,24 @@ public class MULAN extends MultilabelClassifier {
 				System.err.println("[Warning] Did not recognise classifier type String, using default: LabelPowerset");
 			}
 
+			if (getDebug()) {
+				System.out.println("HOMER("+mll+","+n+","+ops[1]+")");
+			}
+
 			m_MULAN = new HOMER(mll, n, HierarchyBuilder.Method.valueOf(ops[1]));
 		}
 		else throw new Exception ("Could not find MULAN Classifier by that name: "+m_MethodString);
 
+		m_MULAN.setDebug(getDebug());
 		m_MULAN.build(train);
 	}
 
 	@Override
 	public double[] distributionForInstance(Instance instance) throws Exception {
 		int L = instance.classIndex();
-		Instance x = F.switchAttributes((Instance)instance.copy(),L); 
+		Instance x = F.meka2mulan((Instance)instance.copy(),L); 
 		x.setDataset(m_InstancesTemplate);
-		double y[] = new double[L];
-		try {
-			y = m_MULAN.makePrediction(x).getConfidences();
-		} catch(Exception e) {
-			System.err.println("MULAN Error");
-			System.err.println(":"+Arrays.toString(y));
-		}
+		double y[] = m_MULAN.makePrediction(x).getConfidences();
 		return y;
 	}
 
