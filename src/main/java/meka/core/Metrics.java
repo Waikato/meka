@@ -194,28 +194,26 @@ public abstract class Metrics {
 	}
 
 	/**
-	 * P_TruePositives - 1 and supposed to be 1.
+	 * P_TruePositives - 1 and supposed to be 1 (the intersection, i.e., logical AND).
 	 */
 	public static double P_TruePositives(int y[], int ypred[]) {
 		//return Utils.sum(A.AND(y,ypred));
 		int s = 0;
 		for(int j = 0; j < y.length; j++) {
-			if (ypred[j] == 1)
-				if (y[j] == 1)
+			if (ypred[j] == 1 && y[j] == 1)
 					s++;
 		}
 		return s;
 	}
 
 	/**
-	 * P_FalsePositives - 1 but supposed to be 0.
+	 * P_FalsePositives - 1 but supposed to be 0 (the length of y \ ypred).
 	 */
 	public static double P_FalsePositives(int y[], int ypred[]) {
 		int s = 0;
 		for(int j = 0; j < y.length; j++) {
-			if (ypred[j] == 1)
-				if (y[j] == 0)
-					s++;
+			if (ypred[j] == 1 && y[j] == 0)
+				s++;
 		}
 		return s;
 	}
@@ -226,22 +224,20 @@ public abstract class Metrics {
 	public static double P_TrueNegatives(int y[], int ypred[]) {
 		int s = 0;
 		for(int j = 0; j < y.length; j++) {
-			if (ypred[j] == 0)
-				if (y[j] == 0)
-					s++;
+			if (ypred[j] == 0 && y[j] == 0)
+				s++;
 		}
 		return s;
 	}
 
 	/**
-	 * P_FalseNegatives - 0 but supposed to be 1.
+	 * P_FalseNegatives - 0 but supposed to be 1 (the length of ypred \ y).
 	 */
 	public static double P_FalseNegatives(int y[], int ypred[]) {
 		int s = 0;
 		for(int j = 0; j < y.length; j++) {
-			if (ypred[j] == 0)
-				if (y[j] == 1)
-					s++;
+			if (ypred[j] == 0 && y[j] == 1)
+				s++;
 		}
 		return s;
 	}
@@ -252,6 +248,8 @@ public abstract class Metrics {
 	public static double P_Precision(int y[], int ypred[]) {
 		double tp = P_TruePositives(y,ypred);
 		double fp = P_FalsePositives(y,ypred);
+		if (tp == 0.0 && fp == 0.0)
+			return 0.0;
 		return tp / (tp + fp);
 	}
 
@@ -261,7 +259,20 @@ public abstract class Metrics {
 	public static double P_Recall(int y[], int ypred[]) {
 		double tp = P_TruePositives(y,ypred);
 		double fn = P_FalseNegatives(y,ypred);
+		if (tp == 0.0 && fn == 0.0)
+			return 0.0;
 		return tp / (tp + fn);
+	}
+
+	/**
+	 * F1 - the F1 measure for two sets.
+	 */
+	public static double F1(int s1[], int s2[]) {
+		double p = P_Precision(s1,s2);
+		double r = P_Recall(s1,s2);
+		if ( p == 0.0 && r == 0.0)
+			return 0.0;
+		return 2. * p * r / (p + r);
 	}
 
 	/*
@@ -330,20 +341,17 @@ public abstract class Metrics {
 
 	/**
 	 * F-Measure Macro Averaged by D - The F-measure macro averaged by example.
-	 * The Jaccard index is also averaed this way.
+	 * The Jaccard index is also averaged this way.
 	 */
 	public static double P_FmacroAvgD(int Y[][], int Ypred[][]) {
 
 		int N = Y.length;
-		double F1_macro_D = 0;
 
+		double F1_macro_D = 0.0;
 		for(int i = 0; i < N; i++) {
-			double prec = P_Precision(Y[i],Ypred[i]);
-			double rec = P_Recall(Y[i],Ypred[i]);
-			if (prec > 0 || rec > 0) {
-				F1_macro_D += ((2.0 * prec * rec) / (prec + rec));
-			}
+			F1_macro_D += F1(Y[i],Ypred[i]);
 		}
+
 		return F1_macro_D / (double)N;
 	}
 
@@ -512,5 +520,34 @@ public abstract class Metrics {
 		}
 
 		return s / N;
+   }
+
+   /**
+	* Do some tests.
+	*/
+   public static void main(String args[]) {
+	   int Y[][] = new int[][] {
+		   // 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 
+		   {0,1,1,0,0,0,0,0,0,0,0,0,0,0,0},
+		   {0,0,0,1,1,1,0,0,0,0,0,0,0,0,0},
+		   {0,0,0,0,0,0,1,0,0,0,0,0,0,0,0},
+		   {0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
+	//	   {1,2},
+	//	   {3,4,5},
+	//	   {6},
+	//	   {7}
+	   };
+	   int Ypred[][] = new int[][] {
+		 // 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 
+		   {0,1,1,1,0,0,0,0,0,1,0,0,0,0,0},
+		   {0,0,0,1,1,0,0,0,0,0,0,0,0,0,0},
+		   {0,0,0,0,0,0,1,0,0,0,0,0,1,0,0},
+		   {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		   //{1,2,3,9},
+		   //{3,4},
+		   //{6,12},
+		   //{1}
+	   };
+	   System.out.println("0.533333333... = "+P_FmacroAvgD(Y,Ypred));
    }
 }
