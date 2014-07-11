@@ -94,11 +94,13 @@ public abstract class StatUtils {
 	}
 
 	/**
-	 * p - Empirical joint.
+	 * P - Empirical joint.
 	 * Multi-target friendly.
-	 * @param	Y[][]	label matrix
-	 * @param	j		label index
-	 * @param	x	 	label value
+	 * @param	Y   label matrix
+	 * @param	j	1st label index
+	 * @param	v 	1st label value
+	 * @param	k	2nd label index
+	 * @param	w 	2nd label value
 	 * @return 	P(Y_j = v, Y_k = w) in Y.
 	 */
 	public static double P(double Y[][], int j, int v, int k, int w) {
@@ -115,8 +117,10 @@ public abstract class StatUtils {
 	 * p - Empirical joint.
 	 * Multi-target friendly.
 	 * @param	D       Instances
-	 * @param	j		label index
-	 * @param	x	 	label value
+	 * @param	j	1st label index
+	 * @param	v 	1st label value
+	 * @param	k	2nd label index
+	 * @param	w 	2nd label value
 	 * @return 	P(Y_j = v, Y_k = w) in D.
 	 */
 	public static double P(Instances D, int j, int v, int k, int w) {
@@ -372,7 +376,7 @@ public abstract class StatUtils {
 
 	/**
 	 * I - Mutual Information -- fast version, must calcualte P[][] = getP(D) first.
-	 * @see I(P,j,k)
+	 * @see #I(P,j,k)
 	 * @return I[][]
 	 */
 	public static double[][] I(double P[][]) {
@@ -463,7 +467,7 @@ public abstract class StatUtils {
 
 	/**
 	 * Chi^2 - Do the chi-squared test on all pairs of labels.
-	 * @see chi2(D,j,k)
+	 * @see #chi2(D,j,k)
 	 * @param	D	dataset
 	 * @return	The chi-square statistic matrix X
 	 */
@@ -801,7 +805,8 @@ public abstract class StatUtils {
 	 * Main - do some tests.
 	 */
 	public static void main(String args[]) throws Exception {
-		Instances D = Evaluation.getDataset(args);
+		Instances D = Evaluation.loadDataset(args);
+		MLUtils.prepareData(D);
 		int L = D.classIndex();
 
 		double CD[][] = null;

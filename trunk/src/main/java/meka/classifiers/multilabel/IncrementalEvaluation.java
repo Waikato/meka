@@ -56,7 +56,8 @@ public class IncrementalEvaluation {
 	public static Result evaluateModel(MultilabelClassifier h, String options[]) throws Exception {
 
 		// Load Instances, ...
-		Instances D = Evaluation.getDataset(options);
+		Instances D = Evaluation.loadDataset(options);
+		MLUtils.prepareData(D);
 
 		// Set the number of windows (batches) @todo move below combining options?
 		int nWin = 20;
