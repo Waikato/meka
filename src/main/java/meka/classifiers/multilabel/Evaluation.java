@@ -27,6 +27,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 import meka.core.MLEvalUtils;
 import meka.core.MLUtils;
+import meka.core.F;
 import weka.core.Option;
 import weka.core.Randomizable;
 import meka.core.Result;
@@ -59,19 +60,25 @@ public class Evaluation {
 
 		h.setOptions(options);
 
-		//Load Instances
-		Instances allInstances = getDataset(options);
+		if (h.getDebug()) System.out.println("Loading and preparing dataset ...");
+
+		// Load Instances from a file
+		Instances D_train = loadDataset(options);
+
+		// Try extract and set a class index from the @relation name
+		MLUtils.prepareData(D_train);
 
 		// Override the number of classes with command-line option (optional)
 		if(Utils.getOptionPos('C',options) >= 0) {
 			int L = Integer.parseInt(Utils.getOption('C',options));
-			allInstances.setClassIndex(L);
+			D_train.setClassIndex(L);
 		}
 
-		//Check for the essential -C option. If still nothing set, we can't continue
-		if(allInstances.classIndex() <= 0) {
+		// We we still haven't found -C option, we can't continue (don't know how many labels)
+		int L = D_train.classIndex();
+		if(L <= 0) {
+			throw new Exception("[Error] Number of labels not specified.\n\tYou must set the number of labels with the -C option, either inside the @relation tag of the Instances file, or on the command line.");
 			// apparently the dataset didn't contain the '-C' flag, check in the command line options ...
-			setClassesFromOptions(allInstances, options);
 		}
 
 		// Seed
@@ -80,12 +87,12 @@ public class Evaluation {
 		// Randomize (Instances) 
 		if(Utils.getOptionPos('R',options) >= 0) {
 			boolean R = Utils.getFlag('R',options);
-			allInstances.randomize(new Random(seed));
+			D_train.randomize(new Random(seed));
 		}
 
 		// Randomize (Model)
 		if (h instanceof Randomizable) {
-			// @NOTE previously we were using seed '1' as the default in BaggingML, and we want to maintain reproducibility of older results.
+			// @NOTE: previously we were using seed '1' as the default in BaggingML, and we want to maintain reproducibility of older results.
 			((Randomizable)h).setSeed(seed + 1);
 		}
 
@@ -123,14 +130,13 @@ public class Evaluation {
 			if (Utils.getOptionPos("threshold",options) >= 0)
 				top = Utils.getOption("threshold",options);
 
-			// Get Split
 			if(Utils.getOptionPos('x',options) >= 0) {
-
 				// CROSS-FOLD-VALIDATION
+
 				int numFolds = MLUtils.getIntegerOption(Utils.getOption('x',options),10); // default 10
 				// Check for remaining options
 				Utils.checkForRemainingOptions(options);
-				Result fold[] = Evaluation.cvModel(h,allInstances,numFolds,top,voption);
+				Result fold[] = Evaluation.cvModel(h,D_train,numFolds,top,voption);
 				r = MLEvalUtils.averageResults(fold);
 				System.out.println(r.toString());
 				if (fname != null) {
@@ -140,68 +146,64 @@ public class Evaluation {
 				}
 			}
 			else {
-				int TRAIN = -1;
+				// TRAIN-TEST SPLIT
+
+				Instances D_test = null;
+
 				if(Utils.getOptionPos('T',options) >= 0) {
-					// split by train / test files
-					TRAIN = allInstances.numInstances();
-					// load test set
+					// load separate test set
 					try {
-						Instances testInstances = getDataset(options,'T');
-						testInstances.setClassIndex(allInstances.classIndex()); // should already be set, but make sure
-						for(Instance x : testInstances) {
-							x.setDataset(allInstances);
-							allInstances.add(x);
-						}
+						D_test = loadDataset(options,'T');
+						MLUtils.prepareData(D_test);
 					} catch(Exception e) {
 						throw new Exception("[Error] Failed to Load Test Instances from file.", e);
 					}
 				}
-				else if(Utils.getOptionPos("split-percentage",options) >= 0) {
-					// split by percentage
-					double percentTrain = Double.parseDouble(Utils.getOption("split-percentage",options));
-					TRAIN = (int)Math.round((allInstances.numInstances() * (percentTrain/100.0)));
-				}
-				else if(Utils.getOptionPos("split-number",options) >= 0) {
-					// split by number
-					TRAIN = Integer.parseInt(Utils.getOption("split-number",options));
-				}
 				else {
+					// split training set
 					// default split
-					TRAIN = (int)(allInstances.numInstances() * 0.60);
-				}
+					int N_T = (int)(D_train.numInstances() * 0.60);
+					if(Utils.getOptionPos("split-percentage",options) >= 0) {
+						// split by percentage
+						double percentTrain = Double.parseDouble(Utils.getOption("split-percentage",options));
+						N_T = (int)Math.round((D_train.numInstances() * (percentTrain/100.0)));
+					}
+					else if(Utils.getOptionPos("split-number",options) >= 0) {
+						// split by number
+						N_T = Integer.parseInt(Utils.getOption("split-number",options));
+					}
 
-				int TEST = allInstances.numInstances() - TRAIN;
-				Instances train = new Instances(allInstances,0,TRAIN);
-				train.setClassIndex(allInstances.classIndex());
-				Instances test = new Instances(allInstances,TRAIN,TEST);
-				test.setClassIndex(allInstances.classIndex());
+					int N_t = D_train.numInstances() - N_T;
+					D_test = new Instances(D_train,N_T,N_t);
+					D_train = new Instances(D_train,0,N_T);
+				}
 
 				// Invert the split?
 				if(Utils.getFlag('i',options)) { //boolean INVERT 			= Utils.getFlag('i',options);
-					Instances temp = test;
-					test = train;
-					train = temp;
+					Instances temp = D_test;
+					D_test = D_train;
+					D_train = temp;
 				}
 
 				// Check for remaining options
 				Utils.checkForRemainingOptions(options);
 
-				if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(allInstances)+"\tL="+allInstances.classIndex()+"\tD(t:T)=("+train.numInstances()+":"+test.numInstances()+")\tLC(t:T)="+Utils.roundDouble(MLUtils.labelCardinality(train,allInstances.classIndex()),2)+":"+Utils.roundDouble(MLUtils.labelCardinality(test,allInstances.classIndex()),2)+")");
+				if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(D_train)+"\tL="+L+"\tD(t:T)=("+D_train.numInstances()+":"+D_test.numInstances()+")\tLC(t:T)="+Utils.roundDouble(MLUtils.labelCardinality(D_train,L),2)+":"+Utils.roundDouble(MLUtils.labelCardinality(D_test,L),2)+")");
 
 				if (lname != null) {
 					// h is already built, and loaded from a file, test it!
-					r = testClassifier(h,test);
+					r = testClassifier(h,D_test);
 					// @note: unfortunately, we have to do this again -- but with a threshold
 					//        we cannnot just call 
 					// 				r = evaluateModel(h,test,top,voption);
 					// because of the threshold -- which (if we use PCut1 or PCutL)
 					// we calculate from training data + predictions! like this:
-					String t = MLEvalUtils.getThreshold(r.predictions,train,top);
+					String t = MLEvalUtils.getThreshold(r.predictions,D_train,top);
 					// so then, we recalculate the statistics with that threshold:
-					r = evaluateModel(h,test,t,voption);
+					r = evaluateModel(h,D_test,t,voption);
 				}
 				else {
-					r = evaluateModel(h,train,test,top,voption);
+					r = evaluateModel(h,D_train,D_test,top,voption);
 				}
 				// @todo, if D_train==null, assume h is already trained
 				System.out.println(r.toString());
@@ -385,7 +387,7 @@ public class Evaluation {
 
 	/**
 	 * TestClassifier - test classifier h on D_test
-	 * @param	h		a multi-dim. classifier, ALREADY PREVIOUSLY TRAINED
+	 * @param	h		a multi-dim. classifier, ALREADY BUILT
 	 * @param	D_test 	test data
 	 * @return	Result	with raw prediction data ONLY
 	 */
@@ -432,29 +434,38 @@ public class Evaluation {
 	 * @param	options	command line options
 	 * @param	T		set to 'T' if we want to load a test file
 	 * @return	An Instances representing the dataset
-	 */
 	public static Instances getDataset(String options[], char T) throws Exception {
-		Instances D = loadDatasetFromOptions(options, T);
+		Instances D = loadDataset(options, T);
 		setClassesFromOptions(D,MLUtils.getDatasetOptions(D));
 		return D;
 	}
+	*/
 
 	/**
 	 * GetDataset - load a dataset, given command line options specifying an arff file, and set the class index correctly to indicate the number of labels.
 	 * @param	options	command line options
 	 * @return	An Instances representing the dataset
-	 */
 	public static Instances getDataset(String options[]) throws Exception {
 		return getDataset(options,'t');
 	}
+	*/
 
 	/**
-	 * LoadDatasetFromOptions - load a dataset, given command line options specifying an arff file.
-	 * @param	options	command line options
-	 * @param	T		set to 'T' if we want to load a test file
-	 * @return	An Instances representing the dataset
+	 * loadDataset - load a dataset, given command line option '-t' specifying an arff file.
+	 * @param	options	command line options, specifying dataset filename
+	 * @return	the dataset
 	 */
-	public static Instances loadDatasetFromOptions(String options[], char T) throws Exception {
+	public static Instances loadDataset(String options[]) throws Exception {
+		return loadDataset(options,'t');
+	}
+
+	/**
+	 * loadDataset - load a dataset, given command line options specifying an arff file.
+	 * @param	options	command line options, specifying dataset filename
+	 * @param	T		set to 'T' if we want to load a test file (default 't': load train or train-test file)
+	 * @return	the dataset
+	 */
+	public static Instances loadDataset(String options[], char T) throws Exception {
 
 		Instances D = null;
 		String filename = Utils.getOption(T, options);
@@ -483,17 +494,16 @@ public class Evaluation {
 
 	/**
 	 * GetL - get number of labels (option 'C' from options 'options').
-	 */
 	private static int getL(String options[]) throws Exception {
 		return (Utils.getOptionPos('C', options) >= 0) ? Integer.parseInt(Utils.getOption('C',options)) : 0;
 	}
+	*/
 	
 
 	/**
 	 * SetClassesFromOptions - set the class index correctly in a dataset 'D', given command line options 'options'.
 	 * @note: there is a similar function in Exlorer.prepareData(D) but that function can only take -C from the dataset options.
 	 * @todo: replace the call to Exlorer.prepareData(D) with this method here (use the name 'prepareData' -- it souds better).
-	 */
 	public static void setClassesFromOptions(Instances D, String options[]) throws Exception {
 		try {
 			// get L
@@ -501,7 +511,7 @@ public class Evaluation {
 			// if negative, then invert first
 			if ( L < 0) {
 				L = -L;
-				D = MLUtils.switchAttributes(D,L);
+				D = F.mulan2meka(D,L);
 			}
 			// set L
 			D.setClassIndex(L);
@@ -510,6 +520,7 @@ public class Evaluation {
 			throw new Exception ("[Error] Failed to Set Classes from options. You must supply the number of labels either in the @Relation Name of the dataset or on the command line using the option: -C <num. labels>");
 		}
 	}
+	*/
 
 	public static void printOptions(Enumeration e) {
 
