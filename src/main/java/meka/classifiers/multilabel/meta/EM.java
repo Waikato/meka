@@ -40,7 +40,7 @@ import weka.core.TechnicalInformationHandler;
 import meka.classifiers.multilabel.*;
 
 /**
- * EM.java - Expectation Maximization method.
+ * EM.java - Expectation Maximization using any multi-label classifier.
  *
  * A specified multi-label classifier is built on the training data. This model is then used to classify the test data. 
  * The confidence with which instances are classified is used to reweight them. This data is then used to retrain the classifier. 
@@ -63,6 +63,11 @@ public class EM extends MultilabelClassifier implements SemisupervisedClassifier
 	}
 
 	@Override
+	public String globalInfo() {
+		return "Train a classifier using labelled and unlabelled data (semi-supervised) using an EM-type algorithm. Works best if the classifier can give good probabalistic outputs. " + "A similar procedure was used with LC and Naive Bayes in:\n" + getTechnicalInformation().toString();
+	}
+
+	@Override
 	public void buildClassifier(Instances D) throws Exception {
 	  	testCapabilities(D);
 
@@ -78,9 +83,9 @@ public class EM extends MultilabelClassifier implements SemisupervisedClassifier
 		for(int i = 0; i < m_I; i++) {
 			if (getDebug())
 				System.out.print(".");
-			// classify + update weights
+			// expectation (classify + update weights)
 			updateWeights((MultilabelClassifier)m_Classifier, DA);
-			// train
+			// maximization of parameters (training)
 			m_Classifier.buildClassifier(DA);
 		}
 		System.out.println("]");
@@ -115,7 +120,7 @@ public class EM extends MultilabelClassifier implements SemisupervisedClassifier
 	public Enumeration listOptions() {
 
 		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tThe number of iterations\n\tdefault: "+m_I, "I", 1, "-I <value>"));
+		newVector.addElement(new Option("\tThe number of iterations of EM to carry out (default: "+m_I+")", "I", 1, "-I <value>"));
 
 		Enumeration enu = super.listOptions();
 
@@ -144,11 +149,6 @@ public class EM extends MultilabelClassifier implements SemisupervisedClassifier
 	@Override
 	public String getRevision() {
 	    return RevisionUtils.extract("$Revision: 9117 $");
-	}
-
-	@Override
-	public String globalInfo() {
-		return "Train a classifier using labelled and unlabelled data (semi-supervised) using an EM-type algorithm. " + "Similarly to in:\n" + getTechnicalInformation().toString();
 	}
 
 	@Override
