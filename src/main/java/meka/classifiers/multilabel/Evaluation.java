@@ -81,19 +81,22 @@ public class Evaluation {
 			// apparently the dataset didn't contain the '-C' flag, check in the command line options ...
 		}
 
-		// Seed
-		int seed = (Utils.getOptionPos('s',options) >= 0) ? Integer.parseInt(Utils.getOption('s',options)) : 0;
 
 		// Randomize (Instances) 
-		if(Utils.getOptionPos('R',options) >= 0) {
-			boolean R = Utils.getFlag('R',options);
+		int seed = (Utils.getOptionPos('s',options) >= 0) ? Integer.parseInt(Utils.getOption('s',options)) : 0;
+		if(Utils.getFlag('R',options)) {
 			D_train.randomize(new Random(seed));
 		}
 
-		// Randomize (Model)
+		// Randomize (Model) DEPRECATED
 		if (h instanceof Randomizable) {
-			// @NOTE: previously we were using seed '1' as the default in BaggingML, and we want to maintain reproducibility of older results.
-			((Randomizable)h).setSeed(seed + 1);
+			/*
+			   THIS WILL BE DEPRECATED, METHODS SHOULD IMPLEMENT THEIR OWN OPTION FOR THE SEED (Or, maybe, just override this one)
+			   As it will be commented out, results could be a bit different (but not significantly so)
+			   */
+			//int method_seed = (Utils.getOptionPos('S',options) >= 0) ? Integer.parseInt(Utils.getOption('S',options)) : 1;
+			//System.out.println("set seed = "+method_seed);
+			((Randomizable)h).setSeed(seed);
 		}
 
 		// Verbosity Option
@@ -160,8 +163,8 @@ public class Evaluation {
 					}
 				}
 				else {
-					// split training set
-					// default split
+					// split training set into train and test sets
+						// default split
 					int N_T = (int)(D_train.numInstances() * 0.60);
 					if(Utils.getOptionPos("split-percentage",options) >= 0) {
 						// split by percentage
@@ -544,7 +547,7 @@ public class Evaluation {
 		text.append("-i\n");
 		text.append("\tInvert the specified train/test split.\n");
 		text.append("-s <random number seed>\n");
-		text.append("\tSets random number seed.\n");
+		text.append("\tSets random number seed (use with -R, for different CV or train/test splits).\n");
 		text.append("-threshold <threshold>\n");
 		text.append("\tSets the type of thresholding; where\n\t\t'PCut1' automatically calibrates a threshold (the default);\n\t\t'PCutL' automatically calibrates one threshold for each label;\n\t\tany double number, e.g. '0.5', specifies that threshold.\n");
 		text.append("-C <number of classes/labels>\n");
