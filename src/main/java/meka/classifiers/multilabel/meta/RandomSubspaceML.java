@@ -19,9 +19,12 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.Vector;
+import java.util.Arrays;
 
 import weka.classifiers.AbstractClassifier;
 import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.core.A;
+import meka.core.F;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Option;
@@ -34,12 +37,17 @@ import weka.core.TechnicalInformationHandler;
 import weka.core.Utils;
 
 /**
- * RandomSupspaceML.java - Downsize the attribute space randomly for each ensemble member.
+ * RandomSubspaceML.java - Downsize the attribute space and instance space randomly for each ensemble member. 
+ * Basically a generalized version of Random Forests. It is computationally cheaper than EnsembleML for the same number of models.
  * <br>
  * As used with CC in: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer. Vol. 85(3), pp 333-359. (May 2011).
  * <br>
- * Previously this class was called <i>BaggingMLq</i>.
- * @author Jesse Read (jmr30@cs.waikato.ac.nz)
+ * In earlier versions of Meka this class was called <i>BaggingMLq</i> and used Bagging procedure. Now it uses a simple ensemble cut.
+ * <br>
+ * Note: The Random generator was initialised differently in versions prior to June 2014 (may affect exact reproduction of results from the above paper).
+ *
+ * @author 	Jesse Read 
+ * @version	June 2014
  */
 
 public class RandomSubspaceML extends MultilabelMetaClassifier implements TechnicalInformationHandler {
@@ -49,82 +57,81 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 
 	protected int m_AttSizePercent = 50;
 
-	protected ArrayList m_Indices[] = null;
-	protected Instances m_Dsets[] = null;
+	protected int m_Indices[][] = null;
+	protected Instances m_InstancesTemplates[] = null;
 
 	@Override
-	public void buildClassifier(Instances train) throws Exception {
-	  	testCapabilities(train);
+	public void buildClassifier(Instances D) throws Exception {
+	  	testCapabilities(D);
 	  	
-		m_Indices = new ArrayList[m_NumIterations];
-		m_Dsets = new Instances[m_NumIterations];
+		m_InstancesTemplates = new Instances[m_NumIterations];
 
 		if (getDebug()) System.out.print("-: Models: ");
 
-		//m_Classifiers = (MultilabelClassifier[]) AbstractClassifier.makeCopies(m_Classifier,m_NumIterations);
 		m_Classifiers = MultilabelClassifier.makeCopies((MultilabelClassifier)m_Classifier, m_NumIterations);
 
+		Random r = new Random(m_Seed);
+
+		int N_sub = (D.numInstances()*m_BagSizePercent/100);
+
+		int L = D.classIndex();
+		int d = D.numAttributes() - L;
+		int d_new = d * m_AttSizePercent / 100;
+		m_Indices = new int[m_NumIterations][];
+
 		for(int i = 0; i < m_NumIterations; i++) {
-			Random r = new Random(m_Seed+i);
-			// DOWNSIZE ATTRIBUTE SPACE
-			m_Indices[i] = new ArrayList<Integer>();
-			Instances trainCut = new Instances(train);
-			trainCut.setClassIndex(-1);
-			double d = m_AttSizePercent / 100.0;
-			for(int a = trainCut.numAttributes()-1; a >= train.classIndex(); a--) {
-				if (r.nextDouble() > d && !m_Indices[i].contains(a)) {
-					m_Indices[i].add(a);
-				}
-			}
-			for(Object a : m_Indices[i]) {
-				trainCut.deleteAttributeAt((Integer)a);
-			}
-			Instances bag = new Instances(trainCut,0);
-			m_Dsets[i] = bag;
-			// END 
+
+			// Downsize the instance space (exactly like in EnsembleML.java)
+
+			D.randomize(r);
+			Instances D_cut = new Instances(D,0,N_sub);
+
+			// Downsize attribute space
+
+			D_cut.setClassIndex(-1);
+			int indices_a[] = A.make_sequence(d);
+			A.shuffle(indices_a,r);
+			indices_a = Arrays.copyOfRange(indices_a,0,d-d_new);
+			Arrays.sort(indices_a);
+			m_Indices[i] = indices_a;
+			D_cut = F.remove(D_cut,indices_a,false);
+			D_cut.setClassIndex(L);
+
+			// Train multi-label classifier
+
 			if (m_Classifiers[i] instanceof Randomizable) ((Randomizable)m_Classifiers[i]).setSeed(m_Seed+i);
 			if(getDebug()) System.out.print(""+i+" ");
 
-			int ixs[] = new int[trainCut.numInstances()];
-			for(int j = 0; j < ixs.length; j++) {
-				ixs[r.nextInt(ixs.length)]++;
-			}
-			for(int j = 0; j < ixs.length; j++) {
-				if (ixs[j] > 0) {
-					Instance instance = trainCut.instance(j);
-					instance.setWeight(ixs[j]);
-					bag.add(instance);
-				}
-			}
-
-			//
-			bag.setClassIndex(train.classIndex());
-			m_Classifiers[i].buildClassifier(bag);
+			m_Classifiers[i].buildClassifier(D_cut);
+			m_InstancesTemplates[i] = new Instances(D_cut,0);
 		}
 		if (getDebug()) System.out.println(":-");
 	}
 
 
 	@Override
-	public double[] distributionForInstance(Instance instance) throws Exception {
+	public double[] distributionForInstance(Instance x) throws Exception {
 
-		double r[] = new double[instance.classIndex()];
+		double p[] = new double[x.classIndex()];
 
 		for(int i = 0; i < m_NumIterations; i++) {
-			// DOWNSIZE ATTRIBUTE SPACE
-			Instance copy = (Instance) instance.copy(); 
-			copy.setDataset(null);
-			for(Object a : m_Indices[i]) 
-				copy.deleteAttributeAt((Integer)a);
-			copy.setDataset(m_Dsets[i]);
-			//
-			double d[] = ((MultilabelClassifier)m_Classifiers[i]).distributionForInstance(copy);
+
+			// Downsize the attribute space (in the same way as above)
+			Instance x_ = (Instance) x.copy(); 
+			x_.setDataset(null);
+			for(int j = m_Indices[i].length-1; j >= 0; j--) {
+				x_.deleteAttributeAt(j);
+			}
+			x_.setDataset(m_InstancesTemplates[i]);
+
+			// @TODO, use generic voting scheme somewhere?
+			double d[] = ((MultilabelClassifier)m_Classifiers[i]).distributionForInstance(x_);
 			for(int j = 0; j < d.length; j++) {
-				r[j] += d[j];
+				p[j] += d[j];
 			}
 		}
 
-		return r;
+		return p;
 	}
 
 	@Override
@@ -150,7 +157,7 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 		String [] options = new String [superOptions.length + 2];
 		int current = 0;
 		options[current++] = "-A";
-		options[current++] = String.valueOf(m_BagSizePercent);
+		options[current++] = String.valueOf(m_AttSizePercent);
 		System.arraycopy(superOptions, 0, options, current, superOptions.length);
 		return options;
 	}
@@ -187,22 +194,22 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 
 	@Override
 	public String getRevision() {
-	    return RevisionUtils.extract("$Revision: 9117 $");
+		return RevisionUtils.extract("$Revision: 9117 $");
 	}
-	
+
 	public void setAttSizePercent(int value) {
-	  if ((value > 0) && (value <= 100))
-	    m_AttSizePercent = value;
-	  else {
-		  System.err.println("Bad percentage (must be between 1 and 100");
-	  }
+		if ((value > 0) && (value <= 100))
+			m_AttSizePercent = value;
+		else {
+			System.err.println("Bad percentage (must be between 1 and 100");
+		}
 	}
-	
+
 	public int getAttSizePercent() {
-	  return m_AttSizePercent;
+		return m_AttSizePercent;
 	}
 	
 	public String attSizePercentTipText() {
-	  return "Size of attribute space, as a percentage of total attribute space size";
+		return "Size of attribute space, as a percentage of total attribute space size";
 	}
 }
