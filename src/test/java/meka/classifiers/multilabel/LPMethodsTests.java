@@ -60,49 +60,49 @@ public class LPMethodsTests extends TestCase {
 		Result r = null;
 
 		// Test LC
-		LCe lc = new LCe();
+		LC lc = new LC();
 		lc.setClassifier(new SMO());
 		r = EvaluationTests.cvEvaluateClassifier(lc);
 		String s = r.info.get("Accuracy");
-		System.out.println("LCe "+s);
-		assertTrue("LCe Accuracy Correct", s.equals("0.568 +/- 0.032"));
+		System.out.println("LC "+s);
+		assertTrue("LC Accuracy Correct", s.equals("0.568 +/- 0.032"));
 
 		// Test PSe (0,0) -- should be identical
-		PSe pse = new PSe();
+		PS pse = new PS();
 		pse.setClassifier(new SMO());
 		r = EvaluationTests.cvEvaluateClassifier(pse);
-		System.out.println("PSe "+r.info.get("Accuracy"));
-		assertTrue("PSe(0,0) Accuracy Identical to LCe", s.equals(r.info.get("Accuracy")));
+		System.out.println("PS "+r.info.get("Accuracy"));
+		assertTrue("PS(0,0) Accuracy Identical to LCe", s.equals(r.info.get("Accuracy")));
 
 		// Test PS (0,0) -- should be identical to PSe (though it is not, currently ...)
-		PS ps = new PS();
-		ps.setClassifier(new SMO());
-		r = EvaluationTests.cvEvaluateClassifier(ps);
-		System.out.println("PS(0,0) "+r.info.get("Accuracy"));
-		assertTrue("PS(0,0) Accuracy Correct", r.info.get("Accuracy").startsWith("0.569"));
+		//PS ps = new PS();
+		//ps.setClassifier(new SMO());
+		//r = EvaluationTests.cvEvaluateClassifier(ps);
+		//System.out.println("PS(0,0) "+r.info.get("Accuracy"));
+		//assertTrue("PS(0,0) Accuracy Correct", r.info.get("Accuracy").startsWith("0.569"));
 
 		// Test PS (3,1) -- should be faster 
-		ps.setP(3);
-		ps.setN(1);
+		//ps.setP(3);
+		//ps.setN(1);
 
-		r = EvaluationTests.cvEvaluateClassifier(ps);
-		System.out.println("PS(3,1) "+r.info.get("Accuracy"));
-		assertTrue("PS(3,1) Accuracy Correct", r.info.get("Accuracy").startsWith("0.567"));
+		//r = EvaluationTests.cvEvaluateClassifier(ps);
+		//System.out.println("PS(3,1) "+r.info.get("Accuracy"));
+		//assertTrue("PS(3,1) Accuracy Correct", r.info.get("Accuracy").startsWith("0.567"));
 
 		// Test PSe -- should be very similar (differences only from different randomization)
 		pse.setP(3);
 		pse.setN(1);
 
 		r = EvaluationTests.cvEvaluateClassifier(pse);
-		System.out.println("PSe(3,1) "+r.info.get("Accuracy"));
-		assertTrue("PSe(3,1) Accuracy Correct", r.info.get("Accuracy").startsWith("0.565 +/- 0.04") );
+		System.out.println("PS(3,1) "+r.info.get("Accuracy"));
+		assertTrue("PS(3,1) Accuracy Correct", r.info.get("Accuracy").startsWith("0.565 +/- 0.04") );
 
-		// Test EPSe
+		// Test EPS
 		EnsembleML eps = new EnsembleML();
 		eps.setClassifier(pse);
 		r = EvaluationTests.cvEvaluateClassifier(eps);
-		System.out.println("EPSe "+r.info.get("Accuracy"));
-		assertTrue("EPSe Accuracy Correct", r.info.get("Accuracy").equals("0.569 +/- 0.044") );
+		System.out.println("EPS "+r.info.get("Accuracy"));
+		assertTrue("EPS Accuracy Correct", r.info.get("Accuracy").equals("0.569 +/- 0.044") );
 	}
 
 }

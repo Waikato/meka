@@ -77,6 +77,7 @@ public class CCMethodsTests extends TestCase {
 		smo.setBuildLogisticModels(true);
 		h.setClassifier(smo);
 		Result r = EvaluationTests.cvEvaluateClassifier(h);
+		System.out.println(""+r.info.get("Accuracy"));
 		assertTrue("MCC Accuracy Correct", r.info.get("Accuracy").equals("0.565 +/- 0.032") );
 	}
 
