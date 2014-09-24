@@ -132,6 +132,21 @@ public abstract class ThresholdUtils {
 	}
 
 	/**
+	 * Threshold - returns the labels after the prediction-confidence vector is passed through threshold(s).
+	 * @param	rpred[]	label confidence predictions in [0,1]
+	 * @param	ts		threshold String
+	 */
+	public static final int[] threshold(double rpred[], String ts) {
+		int L = rpred.length;
+		double t[] = thresholdStringToArray(ts,L);
+		int ypred[] = new int[L];
+		for(int j = 0; j < L; j++) {
+			ypred[j] = (rpred[j] >= t[j]) ? 1 : 0;
+		}
+		return ypred;
+	}
+
+	/**
 	 * Round - simply round numbers (e.g., 2.0 to 2) -- for multi-target data (where we don't *yet* use a threshold).
 	 * @param	Rpred[][]	class predictions in [0,1,...,K]
 	 * @return  integer representation of the predictions
