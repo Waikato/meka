@@ -542,6 +542,26 @@ public abstract class PSUtils {
 		return D_;
 	}
 
+	public static Instance[] PSTransformation(Instance x, int L, HashMap<LabelSet,Integer> map, int n) {
+		LabelSet y = new LabelSet(MLUtils.toSparseIntArray(x,L));
+		if (map.get(y) != null) {
+			Instance x_subsets[] = new Instance[1];
+			x_subsets[0] = convertInstance(x,L,x.dataset());
+			x_subsets[0].setClassValue(y.toString());
+			return x_subsets;
+		}
+		else {
+			LabelSet d_subsets[] = PSUtils.getTopNSubsets(y,map,n);
+			Instance x_subsets[] = new Instance[d_subsets.length];
+			Instance x_template = convertInstance(x,L,x.dataset());
+			for(int i = 1; i < d_subsets.length; i++) {
+				x_subsets[i] = (Instance)(x_template).copy();
+				x_subsets[i].setClassValue(d_subsets[i].toString());
+			}
+			return x_subsets;
+		}
+	}
+
 	/**
 	 * Given N labelsets 'sparseY', use a count 'map' to 
 	 */

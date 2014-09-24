@@ -121,7 +121,7 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 		return y;
 	}
 
-	@Override
+	// @TODO, use PSUtils
 	public double[] convertDistribution(double y_sl[], int L) {
 		double y_ml[] = new double[L];
 		for(int i = 0; i < y_sl.length; i++) {
@@ -136,7 +136,7 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 		return y_ml;
 	}
 
-	@Override
+	// @TODO, use PSUtils
 	public Instances convertInstances(Instances D, int L) throws Exception {
 
 		//Gather combinations
