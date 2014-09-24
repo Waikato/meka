@@ -84,9 +84,10 @@ public abstract class MLEvalUtils {
 
 		HashMap<String,Double> results = new LinkedHashMap<String,Double>();
 
-		//results.put("N_test"			,(double)N);
+		results.put("N(test)"			,(double)N);
 		results.put("L"					,(double)L);
 		results.put("Accuracy"			,Metrics.P_Accuracy(Y,Ypred));
+		//results.put("Jaccard index"		,Metrics.P_Accuracy(Y,Ypred));
 		results.put("Hamming score"		,Metrics.P_Hamming(Y,Ypred));
 		results.put("Exact match"		,Metrics.P_ExactMatch(Y,Ypred));
 
@@ -99,16 +100,16 @@ public abstract class MLEvalUtils {
 			results.put("One error"			,Metrics.L_OneError(Y,Rpred));
 			results.put("Rank loss"			,Metrics.L_RankLoss(Y,Rpred));
 			results.put("Avg precision"		,Metrics.P_AveragePrecision(Y,Rpred));
-			results.put("Log Loss D"		,Metrics.L_LogLossD(Y,Rpred));
-			results.put("Log Loss L"		,Metrics.L_LogLossL(Y,Rpred));
+			results.put("Log Loss (max L)"	,Metrics.L_LogLossL(Y,Rpred));
+			results.put("Log Loss (max D)"	,Metrics.L_LogLossD(Y,Rpred));
 			//if (V > 3) {
 			//	results.put("Precision"		    ,Metrics.P_Precision(Y,Ypred));
 			//	results.put("Recall"			,Metrics.P_Recall(Y,Ypred));
 			//}
-			results.put("F-micro"			,Metrics.P_FmicroAvg(Y,Ypred));
-			results.put("F-macro_D"			,Metrics.P_FmacroAvgD(Y,Ypred));
-			results.put("F-macro_L"			,Metrics.P_FmacroAvgL(Y,Ypred));
-			results.put("N_empty"			,MLUtils.emptyVectors(Ypred));
+			results.put("F1 micro avg"				,Metrics.P_FmicroAvg(Y,Ypred));
+			results.put("F1 macro avg, by ex."		,Metrics.P_FmacroAvgD(Y,Ypred));
+			results.put("F1 macro avg, by lbl"		,Metrics.P_FmacroAvgL(Y,Ypred));
+			results.put("Percent no-labels"				,MLUtils.emptyVectors(Ypred));
 
 			if (V > 2) {
 				for(int j = 0; j < L; j++) {
