@@ -16,7 +16,7 @@
 package meka.classifiers.multilabel;
 
 import weka.core.Instance;
-import meka.core.MLUtils;
+import meka.core.PSUtils;
 import weka.core.RevisionUtils;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
@@ -62,37 +62,19 @@ public class PSt extends PS implements TechnicalInformationHandler {
 		return result;
 	}
 
-	/**
-	 * Convert Distribution - Given the posterior across combinations, return the distribution across labels.
-	 * @param	p[]	the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [0.3,0.7]
-	 * @param	L 	the number of labels
-	 * @return	the distribution across labels, e.g., P(1,2,3) = [0.3,0.7,0.3]
-	 */
-	@Override
-	public double[] convertDistribution(double p[], int L) {
-		double y[] = new double[L];
-		for(int i = 0; i < p.length; i++) {                                                              
-			double d[] = MLUtils.fromBitString(m_InstancesTemplate.classAttribute().value(i)); // e.g. d = [1,0,0,1,0,0]    p[i] = 0.5
-			for(int j = 0; j < d.length; j++) {
-				y[j] += (d[j] * p[i]);                                                         // e.g., y[0] += d[0] * p[i] = 1 * 0.5 = 0.5
-			}
-		}
-		return y;
-	}
-
 	@Override
 	public double[] distributionForInstance(Instance x) throws Exception {
 
 		int L = x.classIndex();
 
-		//if there is only one class (as for e.g. in some hier. mtds) predict it
+		// if there is only one class (as for e.g. in some hier. mtds) predict it
 		if(L == 1) return new double[]{1.0};
 
 		Instance x_ = convertInstance(x,L);
 		x_.setDataset(m_InstancesTemplate);
 
-		//Get a classification
-		return convertDistribution(m_Classifier.distributionForInstance(x_),L);
+		// Get a classification
+		return PSUtils.recombination_t(m_Classifier.distributionForInstance(x_),L,m_InstancesTemplate);
 	}
 
 	@Override

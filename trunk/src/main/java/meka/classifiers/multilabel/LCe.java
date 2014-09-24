@@ -64,49 +64,16 @@ public class LCe extends MultilabelClassifier implements OptionHandler {
 	  	
 		int L = D.classIndex();
 
-		if(getDebug()) System.out.print("Converting Instances ...");
-		Instances D_ = convertInstances(D,L);
+		// Transform Instances
+		if(getDebug()) System.out.print("Transforming Instances ...");
+		Instances D_ = PSUtils.LCTransformation(D,L);
+		m_InstancesTemplate = new Instances(D_,0);
 
-		// build classifier on new dataset
-		// Info
-		info = "K = " + m_InstancesTemplate.attribute(0).numValues() + ", N = "+D_.numInstances();
+		// Set Info ; Build Classifier
+		info = "K = "+m_InstancesTemplate.attribute(0).numValues() + ", N = "+D_.numInstances();
 		if(getDebug()) System.out.print("Building Classifier ("+info+"), ...");
 		m_Classifier.buildClassifier(D_);
 		if(getDebug()) System.out.println("Done");
-
-	}
-
-	public Instances convertInstances(Instances D, int L) throws Exception {
-
-		// Gather combinations
-		Set<LabelSet> distinctCombinations = PSUtils.countCombinationsSparse(D,L).keySet();
-
-		// Create class attribute
-		FastVector ClassValues = new FastVector(L);
-		for(LabelSet y : distinctCombinations)
-			ClassValues.addElement(y.toString());
-		Attribute NewClass = new Attribute("Class", ClassValues);
-
-		// Filter Remove all class attributes
-		Remove FilterRemove = new Remove();
-		FilterRemove.setAttributeIndices("1-"+L);
-		FilterRemove.setInputFormat(D);
-		Instances D_ = Filter.useFilter(D, FilterRemove);
-
-		// Insert new special attribute (which has all possible combinations of labels) 
-		D_.insertAttributeAt(NewClass,0);
-		D_.setClassIndex(0);
-
-		// Add class values
-		for (int i = 0; i < D_.numInstances(); i++) {
-			LabelSet y_i = new LabelSet(MLUtils.toSparseIntArray(D.instance(i),L));
-			D_.instance(i).setClassValue(y_i.toString());
-		}
-
-		m_InstancesTemplate = new Instances(D_, 0);
-
-		return D_;
-
 	}
 
 	/**
@@ -125,44 +92,6 @@ public class LCe extends MultilabelClassifier implements OptionHandler {
 		return x_;
 	}
 
-	/**
-	 * Convert Distribution - Given the posterior across combinations, return the distribution across labels.
-	 * @param	p[]	the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [1,0]
-	 * @param	L 	the number of labels
-	 * @return	the distribution across labels, e.g., P(1,2,3) = [1,0,1]
-	 */
-	public double[] convertDistribution(double p[], int L) {
-		
-		double y[] = new double[L];
-
-		int i = Utils.maxIndex(p);
-
-		double d[] = toDoubleArray(m_InstancesTemplate.classAttribute().value(i),L);
-		for(int j = 0; j < d.length; j++) {
-			if(d[j] > 0.0)
-				y[j] = 1.0;
-		}
-
-		return y;
-	}
-
-	protected static final double[] toDoubleArray(String labelSet, int L) {
-
-		int set[] = (labelSet.length() <= 2) ? new int[]{} : MLUtils.toIntArray(labelSet);
-		//StringBuffer y = new StringBuffer(L);
-		double y[] = new double[L];
-		//for(int j = 0; j < L; j++) {
-		//	y.append("0");
-		//}
-		for(int j : set) {
-			//y.setCharAt(j,'1');
-			y[j] = 1.;
-		}
-		return y;
-		//return y.toString();
-	}
-
-
 	@Override
 	public double[] distributionForInstance(Instance x) throws Exception {
 
@@ -171,15 +100,15 @@ public class LCe extends MultilabelClassifier implements OptionHandler {
 		//if there is only one class (as for e.g. in some hier. mtds) predict it
 		if(L == 1) return new double[]{1.0};
 
-		Instance slInstance = convertInstance(x,L);
-		slInstance.setDataset(m_InstancesTemplate);
+		Instance x_ = convertInstance(x,L);
+		x_.setDataset(m_InstancesTemplate);
 
 		//Get a classification
-		double y[] = new double[slInstance.numClasses()];
+		double y[] = new double[x_.numClasses()];
 
-		y[(int)m_Classifier.classifyInstance(slInstance)] = 1.0;
+		y[(int)m_Classifier.classifyInstance(x_)] = 1.0;
 
-		return convertDistribution(y,L);
+		return PSUtils.convertDistribution(y,L,m_InstancesTemplate);
 	}
 
 	private String info = "";
