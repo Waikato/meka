@@ -17,6 +17,7 @@ package meka.classifiers.multilabel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -29,6 +30,7 @@ import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import meka.core.MLUtils;
+import meka.core.A;
 import weka.core.Option;
 import weka.core.Randomizable;
 import weka.core.RevisionUtils;
@@ -225,6 +227,9 @@ public class PS extends LC implements Randomizable, TechnicalInformationHandler 
 
 		//Add class values
 		for (int i = 0; i < D.numInstances(); i++) {
+			Instance x = D.instance(i);
+			meka.core.LabelSet ytemp = new meka.core.LabelSet(MLUtils.toSparseIntArray(x,L));
+			System.out.println("==="+i+" "+ytemp);
 
 			String comb = MLUtils.toBitString(D.instance(i),L);
 			// add it
@@ -235,6 +240,9 @@ public class PS extends LC implements Randomizable, TechnicalInformationHandler 
 				String d_subsets[] = getTopNSubsets(comb,distinctCombinations,m_N);
 				//System.out.println("decomp: "+d_subsets.length);
 				for (String s : d_subsets) {
+					List<Integer> y_ = MLUtils.toIndicesSet(A.toIntArray(""+s+""));
+					meka.core.LabelSet y = new meka.core.LabelSet(y_);
+					System.out.println(""+y);
 					//===copy===(from I=0)
 					Instance copy = (Instance)(NewTrain.instance(i)).copy();
 					//===assign===(the class)

@@ -52,7 +52,7 @@ import meka.core.LabelSet;
  * @version	April 2014
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
-public class PSe extends LC implements Randomizable, TechnicalInformationHandler {
+public class PSe extends LCe implements Randomizable, TechnicalInformationHandler {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 8943667795912487237L;
@@ -204,104 +204,6 @@ public class PSe extends LC implements Randomizable, TechnicalInformationHandler
 
 	}
 
-	public Instances convertInstances(Instances D, int L) throws Exception {
-
-		//Gather combinations
-		HashMap<LabelSet,Integer> distinctCombinations = PSUtils.countCombinationsSparse(D,L);
-
-		//Prune combinations
-		MLUtils.pruneCountHashMap(distinctCombinations,m_P);
-
-		//Create class attribute
-		FastVector ClassValues = new FastVector(L);
-		for(LabelSet y : distinctCombinations.keySet()) 
-			ClassValues.addElement(y.toString());
-		Attribute NewClass = new Attribute("Class", ClassValues);
-
-		//Filter Remove all class attributes
-		Remove FilterRemove = new Remove();
-		FilterRemove.setAttributeIndices("1-"+L);
-		FilterRemove.setInputFormat(D);
-		Instances D_ = Filter.useFilter(D, FilterRemove);
-
-		//Insert new special attribute (which has all possible combinations of labels) 
-		D_.insertAttributeAt(NewClass,0);
-		D_.setClassIndex(0);
-
-		//Add class values
-		for (int i = 0; i < D.numInstances(); i++) {
-			Instance x = D.instance(i);
-			LabelSet y = new LabelSet(MLUtils.toSparseIntArray(x,L));
-			String y_string = y.toString();
-
-			// add it
-			if(ClassValues.contains(y_string)) 	//if its class value exists
-				D_.instance(i).setClassValue(y_string);
-			// decomp
-			else if(m_N > 0) { 
-				//String d_subsets[] = getTopNSubsets(comb,distinctCombinations,m_N);
-				LabelSet d_subsets[] = PSUtils.getTopNSubsets(y,distinctCombinations,m_N);
-				//LabelSet d_subsets[] = PSUtils.cover(y,distinctCombinations);
-				//System.out.println("decomp: "+d_subsets.length);
-				for (LabelSet s : d_subsets) {
-					//===copy===(from I=0)
-					Instance x_ = (Instance)(D_.instance(i)).copy();
-					//===assign===(the class)
-					x_.setClassValue(s.toString());
-					//===add===(to the end)
-					D_.add(x_);
-					//===remove so we can't choose this subset again!
-				}
-			}
-		}
-
-		// remove with missing class
-		D_.deleteWithMissingClass();
-
-		// keep the header of new dataset for classification
-		m_InstancesTemplate = new Instances(D_, 0);
-
-		return D_;
-	}
-
-	private static final double[] toDoubleArray(String labelSet, int L) {
-
-		int set[] = (labelSet.length() <= 2) ? new int[]{} : MLUtils.toIntArray(labelSet);
-		//StringBuffer y = new StringBuffer(L);
-		double y[] = new double[L];
-		//for(int j = 0; j < L; j++) {
-		//	y.append("0");
-		//}
-		for(int j : set) {
-			//y.setCharAt(j,'1');
-			y[j] = 1.;
-		}
-		return y;
-		//return y.toString();
-	}
-
-	/**
-	 * Convert Distribution - to be deprecated.
-	 * @NOTE THAT WE WON'T NEED THIS WHEN WE UPGRADE LC.java TO HAVE LabelSets INSTEAD OF Strings.
-	 * @TODO use PSUtils.recombination(p,L,map)
-	 * @TODO use PSUtils.recombination_t(p,L,map) for PSt
-	 */
-	public double[] convertDistribution(double p[], int L) {
-		
-		double y[] = new double[L];
-
-		int i = Utils.maxIndex(p);
-
-		double d[] = toDoubleArray(m_InstancesTemplate.classAttribute().value(i),L);
-
-		for(int j = 0; j < d.length; j++) {
-			if(d[j] > 0.0)
-				y[j] = 1.0;
-		}
-
-		return y;
-	}
-
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
 	  	testCapabilities(D);
@@ -319,8 +221,9 @@ public class PSe extends LC implements Randomizable, TechnicalInformationHandler
 			System.err.println("N set to "+m_N);
 		}
 
-		// Convert
-		Instances D_ = convertInstances(D,L);
+		// Transform
+		Instances D_ = PSUtils.PSTransformation(D,L,m_P,m_N); 
+		m_InstancesTemplate = new Instances(D_,0);
 
 		// Info
 		if(getDebug()) System.out.println("("+m_InstancesTemplate.attribute(0).numValues()+" classes, "+D_.numInstances()+" ins. )");
