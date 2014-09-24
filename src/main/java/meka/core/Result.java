@@ -77,7 +77,7 @@ public class Result implements Serializable {
 			int V = MLUtils.getIntegerOption(info.get("Verbosity"),1);
 			if ( V > 4) {
 				// output everything
-				resultString = Result.getResultAsStringNicely(this,V-5);
+				resultString = Result.getResultAsString(this,V-5);
 			}
 
 		}
@@ -86,8 +86,7 @@ public class Result implements Serializable {
 	}
 
 	/**
-	 * AddResult.
-	 * Add an entry.
+	 * AddResult - Add an entry.
 	 */
 	public void addResult(double pred[], Instance real) {
 		predictions.add(pred);
@@ -95,27 +94,32 @@ public class Result implements Serializable {
 	}
 
 	/**
-	 * RowActual.
-	 * Retrive the true values for the i-th instance.
+	 * RowActual - Retrive the true values for the i-th instance.
 	 */
 	public int[] rowActual(int i) {
 		return actuals.get(i);
 	}
 
 	/**
-	 * RowRanking.
-	 * Retrive the prediction confidences for the i-th instance.
+	 * RowRanking - Retrive the prediction confidences for the i-th instance.
+	 * @TODO rename to rowConfidence
 	 */
 	public double[] rowRanking(int i) {
 		return predictions.get(i);
 	}
 
 	/**
-	 * RowPrediction.
-	 * Retrive the predicted values for the i-th instance according to threshold t.
+	 * RowPrediction - Retrive the predicted values for the i-th instance according to threshold t.
 	 */
 	public int[] rowPrediction(int i, double t) {
 		return MLUtils.toIntArray(rowRanking(i),t);
+	}
+
+	/**
+	 * RowPrediction - Retrive the predicted values for the i-th instance according to pre-calibrated/chosen threshold.
+	 */
+	public int[] rowPrediction(int i) {
+		return ThresholdUtils.threshold(rowRanking(i),info.get("Threshold"));
 	}
 
 	/**
@@ -219,23 +223,34 @@ public class Result implements Serializable {
 	 * GetResultAsString - print out each prediction in a Result along with its true labelset.
 	 */
 	public static String getResultAsString(Result s) {
-		return getResultAsStringNicely(s,3);
+		return getResultAsString(s,3);
 	}
 
 	/**
-	 * GetResultAsStringNicely - print out each prediction in a Result (to a certain number of decimal points) along with its true labelset.
+	 * GetResultAsString - print out each prediction in a Result (to a certain number of decimal points) along with its true labelset.
 	 */
-	public static String getResultAsStringNicely(Result s, int adp) {
+	public static String getResultAsString(Result s, int adp) {
 		StringBuilder sb = new StringBuilder();
 		double N = (double)s.predictions.size();
+		sb.append("|==== PREDICTIONS ===============>\n");
 		for(int i = 0; i < N; i++) {
+			sb.append("|");
 			sb.append(Utils.doubleToString((i+1),5,0));
 			sb.append(" ");
-			sb.append(A.toString(s.actuals.get(i)));
-			sb.append(" ");
-			sb.append(A.toString(s.predictions.get(i),adp));
-			sb.append("\n");
+			if (adp == 0) {
+				LabelSet y = new LabelSet(MLUtils.toIndicesSet(s.actuals.get(i)));
+				sb.append(y).append(" ");
+				LabelSet ypred = new LabelSet(MLUtils.toIndicesSet(s.rowPrediction(i)));
+				sb.append(ypred).append("\n");
+			}
+			else {
+				sb.append(A.toString(s.actuals.get(i)));
+				sb.append(" ");
+				sb.append(A.toString(s.predictions.get(i),adp));
+				sb.append("\n");
+			}
 		}
+		sb.append("|==============================<\n");
 		return sb.toString();
 	}
 

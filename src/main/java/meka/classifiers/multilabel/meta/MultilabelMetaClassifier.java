@@ -50,23 +50,23 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier impl
 	}
 
 	@Override
-	public double[] distributionForInstance(Instance instance) throws Exception {
+	public double[] distributionForInstance(Instance x) throws Exception {
 
-		double r[] = new double[instance.classIndex()];
+		double p[] = new double[x.classIndex()];
 
 		for(int i = 0; i < m_NumIterations; i++) {
-			double d[] = m_Classifiers[i].distributionForInstance(instance);
+			double d[] = m_Classifiers[i].distributionForInstance(x);
 			for(int j = 0; j < d.length; j++) {
-				r[j] += d[j];
+				p[j] += d[j];
 			}
 		}
 
 		// turn votes into a [0,1] confidence for each label
-		for(int j = 0; j < r.length; j++) {
-			r[j] = r[j]/m_NumIterations;
+		for(int j = 0; j < p.length; j++) {
+			p[j] = p[j]/m_NumIterations;
 		}
 
-		return r;
+		return p;
 	}
 
 	public int getNumIterations() {

@@ -24,8 +24,8 @@ import weka.core.RevisionUtils;
 
 /**
  * RT.java - The 'Ranking + Threshold' classifier. 
- * Duplicate each multi-labelled example, assigning one of the labels to each copy. Train a regular multi-class base classifier.
- * Use the multi-class classifier as a multi-label classifier by <i>Ranking</i> outputs and using a <i>Threshold</i> to separate relevant from irrelevant labels.
+ * Duplicates each multi-labelled example, and assigns one of the labels (only) to each copy; then trains a regular multi-class base classifier.
+ * At test time, a <i>threshold</i> separates relevant from irrelevant labels using the posterior for each class value (i.e., label).
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  * @version 2010
  */
@@ -41,11 +41,8 @@ public class RT extends MultilabelClassifier {
 	 */
 	@Override
 	public String globalInfo() {
-		return 
-			"Duplicate each multi-labelled example, assigning one of the labels to each copy. Train a regular multi-class base classifier.\nUse the multi-class classifier as a multi-label classifier by Ranking outputs and using a Threshold to separate relevant from irrelevant labels.\n"
-				+ "Use a multi-class classifier as a multi-label classifier by 'Ranking' outputs and using a 'Threshold'.\n"
-				+ "See also MULAN framework:\n"
-				+ "http://mulan.sourceforge.net";
+		return "Duplicates each multi-labelled example, and assigns one of the labels (only) to each copy; then trains a regular multi-class base classifier.\n"+
+				 "At test time, a threshold separates relevant from irrelevant labels using the posterior for each class value (i.e., label).";
 	}
 
 	@Override
@@ -64,7 +61,7 @@ public class RT extends MultilabelClassifier {
 		//Make the new class attribute
 		FastVector classes = new FastVector(L);
 		for (int j = 0; j < L; j++)
-			classes.addElement(toBitString(j,L)); //(*) e.g. 00100 where j,N == 2,5
+			classes.addElement("C"+j);
 
 		//Add the new class attribute
 		D_.insertAttributeAt(new Attribute("ClassY",classes),0);
@@ -74,13 +71,15 @@ public class RT extends MultilabelClassifier {
 		for (int i = 0; i < D.numInstances(); i++) {
 			for (int j = 0; j < L; j++) {
 				if((int)D.instance(i).value(j) > 0) {
-					Instance inew = (Instance)D.instance(i).copy();
-					inew.setDataset(null);
+					// make a copy here ...
+					Instance x_ = (Instance)D.instance(i).copy();
+					x_.setDataset(null);
+					// make it multi-class, and set the appropriate class value ...
 					for (int k = 1; k < L; k++)
-						inew.deleteAttributeAt(1); 
-					inew.setDataset(D_);
-					inew.setClassValue(j); // (*) this just ponts to the right index
-					D_.add(inew);
+						x_.deleteAttributeAt(1); 
+					x_.setDataset(D_);
+					x_.setClassValue(j); // (*) this just ponts to the right index
+					D_.add(x_);
 				}
 			}
 		}
@@ -89,51 +88,40 @@ public class RT extends MultilabelClassifier {
 		m_InstancesTemplate = new Instances(D_,0);
 
 		//Build
-		if(getDebug())  System.out.println("Building classifier "+m_Classifier.getClass().getName()+" with "+D_.numInstances()+" instances");
+		if(getDebug())  System.out.println("Building classifier "+m_Classifier.getClass().getName()+" on "+D_.numInstances()+" instances (originally "+D.numInstances()+")");
 		m_Classifier.buildClassifier(D_);
 
 	}
 
-	private static final String toBitString(int j, int c) {
-		StringBuilder sb = new StringBuilder(c);  
-		for(int i = 0; i < c; i++) {
-			if (j == i) 
-				sb.append('1');
-			else
-				sb.append('0');
-		}
-		return sb.toString();
-	}
-
 	/**
 	 * ConvertInstance - Convert an Instance to multi-class format by deleting all but one of the label attributes.
-	 * @param	test	incoming Instance
+	 * @param	x	incoming Instance
 	 * @return	the converted Instance
 	 */
-	public Instance convertInstance(Instance test) {
+	public Instance convertInstance(Instance x) {
 
-		int L = test.classIndex();
+		int L = x.classIndex();
 
 		//Copy the original instance
-		Instance real = (Instance) test.copy(); 
-		real.setDataset(null);
+		Instance x_ = (Instance) x.copy(); 
+		x_.setDataset(null);
 
 		//Delete all class attributes
 		for (int i = 0; i < L; i++)
-			real.deleteAttributeAt(0);
+			x_.deleteAttributeAt(0);
 
 		//Add one of those class attributes at the begginning
-		real.insertAttributeAt(0);
+		x_.insertAttributeAt(0);
 
 		//Hopefully setting the dataset will configure that attribute properly
-		real.setDataset(m_InstancesTemplate);
+		x_.setDataset(m_InstancesTemplate);
 
-		return real;
+		return x_;
 	}
 
 	@Override
-	public double[] distributionForInstance(Instance test) throws Exception {
-		return m_Classifier.distributionForInstance(convertInstance(test));
+	public double[] distributionForInstance(Instance x) throws Exception {
+		return m_Classifier.distributionForInstance(convertInstance(x));
 	}
 
 	@Override

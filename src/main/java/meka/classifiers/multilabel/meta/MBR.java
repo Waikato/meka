@@ -32,10 +32,10 @@ import weka.core.TechnicalInformationHandler;
  * MBR.java - Meta BR: BR stacked with feature outputs into another BR.
  * Described in: Godbole and Sarawagi, <i>Discriminative Methods for Multi-labeled Classification</i>. 
  * 
+ * @version	June 2009
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
-public class MBR extends MultilabelClassifier 
-  implements TechnicalInformationHandler {
+public class MBR extends MultilabelClassifier implements TechnicalInformationHandler {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 865889198021748917L;
@@ -50,10 +50,7 @@ public class MBR extends MultilabelClassifier
 	 */
 	@Override
 	public String globalInfo() {
-		return 
-				"BR stacked with feature outputs.\n"
-				+ "For more information see:\n"
-				+ getTechnicalInformation().toString();
+		return "BR stacked with feature outputs.\nFor more information see:\n" + getTechnicalInformation().toString();
 	}
 
 	@Override
@@ -78,15 +75,15 @@ public class MBR extends MultilabelClassifier
 	  	
 		int c = data.classIndex();
 
-		//BASE
+		// Base BR
 
-		if (getDebug()) System.out.println(" Build BR Base ("+c+" models)");
+		if (getDebug()) System.out.println("Build BR Base ("+c+" models)");
 		m_BASE = (BR)AbstractClassifier.forName(getClassifier().getClass().getName(),((AbstractClassifier)getClassifier()).getOptions());
 		m_BASE.buildClassifier(data);
 
-		//META
+		// Meta BR
 
-		if (getDebug()) System.out.println(" Prepare Meta data           ");
+		if (getDebug()) System.out.println("Prepare Meta data           ");
 		Instances meta_data = new Instances(data);
 
 		FastVector BinaryClass = new FastVector(c);
@@ -107,12 +104,10 @@ public class MBR extends MultilabelClassifier
 		meta_data.setClassIndex(c);
 		m_InstancesTemplate = new Instances(meta_data, 0);
 
-		if (getDebug()) System.out.println(" Build BR Meta ("+c+" models)");
+		if (getDebug()) System.out.println("Build BR Meta ("+c+" models)");
 
-		//m_META = (BR)Classifier.forName(getClassifier().getClass().getName(),getClassifier().getOptions());
 		m_META = (BR)AbstractClassifier.forName(getClassifier().getClass().getName(),((AbstractClassifier)getClassifier()).getOptions());
 		m_META.buildClassifier(meta_data);
-
 	}
 
 	@Override
