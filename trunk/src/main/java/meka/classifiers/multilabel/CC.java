@@ -80,7 +80,7 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 
 
 			//Instances new_train = new Instances(train);
-			Instances new_train = CCUtils.linkTransform(train,j,this.index,this.excld);
+			Instances new_train = CCUtils.linkTransform(train,this.index,this.excld);
 
 			_template = new Instances(new_train,0);
 

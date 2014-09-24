@@ -20,10 +20,15 @@ import weka.classifiers.Classifier;
 import weka.core.*;
 import java.util.*;
 
+/**
+ * CCUtils.java - Handy Utils for working with Classifier Chains (and Trees and Graphs)
+ * @author Jesse Read 
+ * @version June 2014
+ */
 public abstract class CCUtils {
 
-	/* 
-	 * Build h_{s} : X -> Y
+	/** 
+	 * BuildCC - Given a base classifier 'g', build a new CC classifier on data D, given chain order 'chain'.
 	 */
 	public static CCe buildCC(int chain[], Instances D, Classifier g) throws Exception {
 
@@ -50,9 +55,34 @@ public abstract class CCUtils {
 	*/
 
 	/**
-	 * RandomSearch. Basically Simulated Annealing without temperature. Start searching from y0[]
+	 * RandomSearch -  Basically Simulated Annealing without temperature, starting from y0[].
 	 */
 	public static double[] RandomSearch(CCe h, Instance x, int T, Random r, double y0[]) throws Exception {
+
+		double y[] = Arrays.copyOf(y0,y0.length); 				// prior y
+		double w  = A.product(h.probabilityForInstance(x,y));	// p(y|x)
+
+		Instance t_[] = h.getTransformTemplates(x);
+
+		//System.out.println("----");
+		//System.out.println("p0("+Arrays.toString(y)+") = "+Arrays.toString(h.getConfidences())+", w="+w);
+		for(int t = 0; t < T; t++) {
+			double y_[] = h.sampleForInstanceFast(t_,r); 	    // propose y' by sampling i.i.d.
+			double p_[] = h.getConfidences();                   //
+			double w_  = A.product(h.getConfidences()); 		// rate y' as w'  --- @TODO allow for command-line option
+			//System.out.println("p("+Arrays.toString(y_)+") = "+Arrays.toString(p_)+", w="+w_);
+			if (w_ > w) { 										// accept ? 
+				w = w_;
+				y = y_;
+				//System.out.println("* ACCEPT *");
+			}
+		}
+		return y;
+	}
+
+	// An old slower version of the above
+	@Deprecated
+	public static double[] RandomSearchOLD(CCe h, Instance x, int T, Random r, double y0[]) throws Exception {
 
 		double y[] = Arrays.copyOf(y0,y0.length); 				// prior y
 		double w  = A.product(h.probabilityForInstance(x,y));	// p(y|x)
@@ -77,7 +107,7 @@ public abstract class CCUtils {
 	}
 
 	/**
-	 * RandomSearch. Basically Simulated Annealing without temperature.
+	 * RandomSearch - Basically Simulated Annealing without temperature.
 	 */
 	public static double[] RandomSearch(CCe h, Instance x, int T, Random r) throws Exception {
 
@@ -85,8 +115,8 @@ public abstract class CCUtils {
 	}
 
 	/**
-	 * SetPath - set 'path[]' into the first L attributos of Instance 'xy'.
-	 * @param	xy		an Instance
+	 * SetPath - set 'path[]' into the first L attributes of Instance 'xy'.
+	 * @param	xy		an Example (x,y)
 	 * @param	path	a label vector
 	 */
 	public static void setPath(Instance xy, double path[]) {
@@ -97,15 +127,17 @@ public abstract class CCUtils {
 	}
 
 	/**
-	 * LinkTransform - prepare 'D' for training at node 'j' of the chain, using index 'idx'.
-	 * j isn't necessary in this function!
+	 * LinkTransform - prepare 'D' for training at a node 'j' of the chain, by excluding 'exl'.
+	 * @param	D		dataset
+	 * @param	j		index of the label of this node
+	 * @param	exl		indices of labels which are NOT parents of j
 	 * @return	the transformed dataset (which can be used as a template)
 	 */
-	public static Instances linkTransform(Instances D, int j, int idx, int exl[]) {
+	public static Instances linkTransform(Instances D, int j, int exl[]) {
 		Instances D_j = new Instances(D);
 		D_j.setClassIndex(-1); 
 		// delete all the attributes (and track where our index ends up)
-		int ndx = idx;
+		int ndx = j;
 		for(int i = exl.length-1; i >= 0; i--) {
 			D_j.deleteAttributeAt(exl[i]);
 			if (exl[i] < ndx)
@@ -115,7 +147,14 @@ public abstract class CCUtils {
 		return D_j;
 	}
 
-	public static Instance linkTransformation(Instance x, int excl[], Instances _template) {
+	/**
+	 * LinkTransform - prepare 'x' for testing at a node 'j' of the chain, by excluding 'exl'.
+	 * @param	x		instance
+	 * @param	exl		indices of labels which are NOT parents of j
+	 * @param	_D		the dataset template to use
+	 * @return	the transformed instance
+	 */
+	public static Instance linkTransformation(Instance x, int excl[], Instances _D) {
 		// copy
 		Instance copy = (Instance)x.copy();
 		copy.setDataset(null);
@@ -126,7 +165,7 @@ public abstract class CCUtils {
 		}
 
 		//set template
-		copy.setDataset(_template);
+		copy.setDataset(_D);
 
 		return copy;
 	}

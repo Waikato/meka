@@ -37,6 +37,8 @@ import java.util.*;
  * There we used a faster implementation, MCC.java, full of ugly hacks, but it got broken when I updated CCe.java.<br>
  * This version extends CCe, and thus is a bit more elegant, but for some reason inference is quite slower than expected with high m_Iy.
  *
+ * @TODO Option for hold-out set, instead of training and testing on training data (internally).
+ *
  * @see meka.classifiers.multilabel.CCe
  * @author Jesse Read
  * @version	April 2014
@@ -139,8 +141,10 @@ public class MCCe extends CCe implements TechnicalInformationHandler {
 	public double[] distributionForInstance(Instance x) throws Exception {
 
 
+		//  T = 0
 		double y0[] = super.distributionForInstance(x);
 
+		// T > 0
 		double yT[] = CCUtils.RandomSearch(this,x,m_Iy,m_R,y0);
 
 		return yT;
