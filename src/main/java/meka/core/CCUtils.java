@@ -54,9 +54,8 @@ public abstract class CCUtils {
 	}
 	*/
 
-	/**
+	/*
 	 * RandomSearch -  Basically Simulated Annealing without temperature, starting from y0[].
-	 */
 	public static double[] RandomSearch(CC h, Instance x, int T, Random r, double y0[]) throws Exception {
 
 		double y[] = Arrays.copyOf(y0,y0.length); 				// prior y
@@ -72,6 +71,7 @@ public abstract class CCUtils {
 			double w_  = A.product(h.getConfidences()); 		// rate y' as w'  --- @TODO allow for command-line option
 			//System.out.println("p("+Arrays.toString(y_)+") = "+Arrays.toString(p_)+", w="+w_);
 			if (w_ > w) { 										// accept ? 
+				//if (getDebug()) System.out.println("y' = "+Arrays.toString(y_)+", :"+w_);
 				w = w_;
 				y = y_;
 				//System.out.println("* ACCEPT *");
@@ -79,7 +79,9 @@ public abstract class CCUtils {
 		}
 		return y;
 	}
+	*/
 
+	/*
 	// An old slower version of the above
 	@Deprecated
 	public static double[] RandomSearchOLD(CC h, Instance x, int T, Random r, double y0[]) throws Exception {
@@ -105,14 +107,15 @@ public abstract class CCUtils {
 		}
 		return y;
 	}
+	*/
 
-	/**
+	/*
 	 * RandomSearch - Basically Simulated Annealing without temperature.
-	 */
 	public static double[] RandomSearch(CC h, Instance x, int T, Random r) throws Exception {
 
 		return RandomSearch(h,x,T,r,h.distributionForInstance(x));
 	}
+	*/
 
 	/**
 	 * SetPath - set 'path[]' into the first L attributes of Instance 'xy'.

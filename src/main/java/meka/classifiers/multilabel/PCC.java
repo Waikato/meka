@@ -41,7 +41,7 @@ public class PCC extends CC implements TechnicalInformationHandler{ // MT Capabl
 	 * Push - increment y[0] until = K[0], then reset and start with y[0], etc ...
 	 * @return	True if finished
 	 */
-	private boolean push(double y[], int K[], int j) {
+	private static boolean push(double y[], int K[], int j) {
 		if (j >= y.length) {
 			return true;
 		}
