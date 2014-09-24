@@ -74,7 +74,7 @@ public class CCe extends MultilabelClassifier implements Randomizable, Technical
 
 		int indices[] = getChain();
 		if (indices == null) {
-			indices = MLUtils.gen_indices(L);
+			indices = A.make_sequence(L);
 			MLUtils.randomize(indices,m_R);
 			setChain(indices);
 			if(getDebug()) 
@@ -87,7 +87,6 @@ public class CCe extends MultilabelClassifier implements Randomizable, Technical
 		for(int j : m_Chain) {
 			if (getDebug()) 
 				System.out.print(" "+D.attribute(j).name());
-				//System.out.println("\t node h_"+j+" : P(y_"+j+" | x_[:], y_"+Arrays.toString(pa)+")");
 			nodes[j] = new CNode(j, null, pa);
 			nodes[j].build(D, m_Classifier);
 			pa = A.append(pa,j);
@@ -139,31 +138,40 @@ public class CCe extends MultilabelClassifier implements Randomizable, Technical
 		return y;
 	}
 
+
+	/**
+	 * GetTransformTemplates - pre-transform the instance x, to make things faster.
+	 * @return	the templates
+	 */
+	public Instance[] getTransformTemplates(Instance x) throws Exception {
+		int L = x.classIndex();
+		Instance t_[] = new Instance[L];
+		double ypred[] = new double[L];
+		for(int j : m_Chain) {
+			t_[j] = this.nodes[j].transform(x,ypred);
+		}
+		return t_;
+	}
+
 	/**
 	 * SampleForInstance - NOT YET IMPLEMENTED (do it yourself for now).
-	 * fast version, templates already prepared
+	 * If we are going to sample many times for each instance, it makes sense to transform the instance first, here, instead of doing it each time.
+	 * Call #transformTemplates(x) first to get the templates.
+	 * @param	t_	Instance templates (pre-transformed)
 	 */
-	public double[] sampleForInstance(Instance x[], Random r) throws Exception {
-		return null;
+	public double[] sampleForInstanceFast(Instance t_[], Random r) throws Exception {
 
-//		/*
-//		for(int i = 0; i < x.length; i++) {
-//			System.out.println("x["+i+"] = "+x[i]);
-//		}
-//		*/
-//		//int L = x[0].classIndex();
-//		int L = x.length;
-//		double vals[] = new double[L];
-//		// CHECK THIS FUNCTION IF NOT WORKING
-//		Instance res = root.sample(x,r,vals);
-//		// MAKE SURE TO SELECT THE COORECT INDEX HERE
-//		/*
-//		System.out.println("est: "+Arrays.toString(MLUtils.toDoubleArray(res,L)));
-//		System.out.print("est: "+Arrays.toString(vals)+" @ ");
-//		*/
-//		//System.out.println(Arrays.toString(confidences));
-//		//return confidences; //MLUtils.toDoubleArray(x[x.length-1]);
-//		return MLUtils.toDoubleArray(res,L);
+		int L = t_.length;
+		double y[] = new double[L];
+
+		for(int j : m_Chain) {
+			//setLabelsInto(t_[j],y);
+			double p[] = nodes[j].distributionT(t_[j]);                // @todo copy necessary?
+			y[j] = A.samplePMF(p,r);
+			confidences[j] = p[(int)y[j]];
+		}
+
+		return y;
 	}
 
 	/**
@@ -183,11 +191,11 @@ public class CCe extends MultilabelClassifier implements Randomizable, Technical
 	}
 
 	/**
-	 * ProbabilityForInstance - P(y=1|x).
-	 * Force our way down 'path' (y). For example p (y=1010|x) = [0.9,0.8,0.1,0.2]
+	 * ProbabilityForInstance - Force our way down the imposed 'path'. 
+	 * For example p (y=1010|x) = [0.9,0.8,0.1,0.2]. If the product = 1, this is probably the correct path!
 	 * @param	x		test Instance
 	 * @param	path	the path we want to go down
-	 * @return	The probabilities associated with this path
+	 * @return	the probabilities associated with this path: [p(Y_1==path[1]|x),...,p(Y_L==path[L]|x)]
 	 */
 	public double[] probabilityForInstance(Instance x, double path[]) throws Exception {
 		int L = x.classIndex();

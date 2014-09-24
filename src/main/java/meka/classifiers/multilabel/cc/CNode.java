@@ -20,6 +20,7 @@ import weka.classifiers.functions.*; // @temp, for tests
 import weka.core.*;
 import meka.core.A;
 import meka.core.F;
+import meka.core.MLUtils;
 import java.util.*;
 import java.io.*; // @temp, for tests
 import java.io.Serializable;
@@ -42,13 +43,17 @@ public class CNode implements Serializable {
 
 	/**
 	 * CNode - A Node 'j', taking inputs from all parents inX and paY.
+	 * @param	j		the label index of this node
+	 * @param	inX		attribute indices going into this node
+	 * @param	paX		label indices going into this node
 	 */
 	public CNode(int j, int inX[], int paY[]) {
 		this.j = j;
 		this.inX = inX;
-		this.paY = paY; //Arrays.copyOf(paY,paY.length); // almost certainly not necessary
+		this.paY = paY; 
 	}
 
+	/** getParentsY - get the parents (indices) of this node */
 	public int[] getParentsY() {
 		return paY;
 	}
@@ -64,7 +69,7 @@ public class CNode implements Serializable {
 		d = D.numAttributes() - L;
 		int keep[] = A.append(this.paY,j);		// keep all parents and self!
 		Arrays.sort(keep);
-		int remv[] = complement(keep,L); 	// i.e., remove the rest < L
+		int remv[] = A.invert(keep,L); 	// i.e., remove the rest < L
 		Arrays.sort(remv);
 		map = new int[L];
 		for(int j = 0; j < L; j++) {
@@ -85,9 +90,10 @@ public class CNode implements Serializable {
 		// build SLC 'h'
 		h = AbstractClassifier.makeCopy(H);
 		h.buildClassifier(T);
-		t_ = new SparseInstance(T.numAttributes());
-		t_.setDataset(T);
-		t_.setClassMissing();								// [?,x,x,x]
+		// save templates
+		//t_ = new SparseInstance(T.numAttributes());
+		//t_.setDataset(T);
+		//t_.setClassMissing();								// [?,x,x,x]
 		T.clear();
 	}
 
@@ -96,6 +102,11 @@ public class CNode implements Serializable {
 	 */
 	public double[] distribution(Instance x, double ypred[]) throws Exception {
 		Instance x_ = transform(x,ypred);
+		return h.distributionForInstance(x_);
+	}
+
+	/** distributionT - same as distribution(Instance, double[]), but the Instance is pre-transformed. */
+	public double[] distributionT(Instance x_) throws Exception {
 		return h.distributionForInstance(x_);
 	}
 
@@ -111,6 +122,26 @@ public class CNode implements Serializable {
 	 * Transform - turn [y1,y2,y3,x1,x2] into [y1,y2,x1,x2].
 	 */
 	public Instance transform(Instance x, double ypred[]) throws Exception {
+		x = (Instance)x.copy();
+		int L = x.classIndex();
+		int L_c = (paY.length + 1);
+		x.setDataset(null);
+		for(int j = 0; j < (L - L_c); j++) {
+			x.deleteAttributeAt(0);
+		}
+		for(int pa : paY) {
+			//System.out.println("x_["+map[pa]+"] <- "+ypred[pa]);
+			x.setValue(map[pa],ypred[pa]);
+		}
+		x.setDataset(T);
+		x.setClassMissing();
+		return x;
+	}
+
+	/*
+	public Instance transformOLD(Instance x, double ypred[]) throws Exception {
+
+		//if (t_ != null) return t_;
 
 		int L = x.classIndex();
 		double array[] = x.toDoubleArray();  				// [y,c,y,x,x,x]
@@ -124,18 +155,26 @@ public class CNode implements Serializable {
 		x_.setDataset(T);
 		x_.setClassMissing();								// [?,x,x,x]
 
+		//t_ = x_;
 		return x_;
-		/*
-		Instance x_ = MLUtils.setTemplate(x,(Instance)T.firstInstance().copy(),T);
+	}
+	*/
+
+	/* 
+	 * @TODO	I thought this would be faster, but apparenty not
+	public Instance transform(Instance x, double ypred[]) throws Exception {
+		int L = x.classIndex();
+		int L_ = paY.length + 1;
+		t_ = MLUtils.copyValues(t_,x,L,L_);
 		for(int pa : paY) {
-			x_.setValue(map[pa],ypred[pa]);
+			t_.setValue(map[pa],ypred[pa]);
 		}
 		//x_.setDataset(T);
-		x_.setClassMissing();
+		t_.setClassMissing();
 		//System.out.println("x_ = "+MLUtils.toBitString(x_,L_));
-		return x_;
-		*/
+		return t_;
 	}
+	*/
 
 	/**
 	 * y_i = argmax_{y_i = 0,1,...} p( y_i | x , y_pred )
@@ -171,7 +210,7 @@ public class CNode implements Serializable {
 		int L = D.classIndex();
 		int keep[] = A.append(pa_c,c);			// keep all parents and self!
 		Arrays.sort(keep);
-		int remv[] = complement(keep,L); 	// i.e., remove the rest < L
+		int remv[] = A.invert(keep,L); 	// i.e., remove the rest < L
 		Arrays.sort(remv);
 		Instances T = F.remove(new Instances(D),remv, false); 
 		int map[] = new int[L];
@@ -180,20 +219,6 @@ public class CNode implements Serializable {
 		}
 		T.setClassIndex(map[c]);
 		return T;
-	}
-
-	// complement([1,2,3],5) -> [0,4]
-	// N.B. this already exists as 'invert' in MLUtils
-	private static final int[] complement(int indices[], int L) {
-		int sindices[] = Arrays.copyOf(indices,indices.length);
-		Arrays.sort(sindices);
-		int inverted[] = new int[L-sindices.length];
-		for(int j = 0,i = 0; j < L; j++) {
-			if (Arrays.binarySearch(sindices,j) < 0) {
-				inverted[i++] = j;
-			}
-		}
-		return inverted;
 	}
 
 	/**
