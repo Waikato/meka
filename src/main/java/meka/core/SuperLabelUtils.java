@@ -15,6 +15,7 @@
 
 package meka.core;
 
+import weka.core.Instances;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +28,17 @@ import java.util.Arrays;
  * @version March 2014
  */
 public abstract class SuperLabelUtils {
+
+	/**
+	 * Get k subset - return a set of k label indices (of L possible labels).
+	 */
+	public static int[] get_k_subset(int L, int k, Random r) {
+		int indices[] = A.make_sequence(L);
+		A.shuffle(indices, r);
+		int part[] = Arrays.copyOf(indices,k);
+		Arrays.sort(part);
+		return part;
+	}
 
 	private static int[][] generatePartition(int num, double M[][], Random r) {
 		int L = M.length;
@@ -106,7 +118,71 @@ public abstract class SuperLabelUtils {
 		}
 
 		// convert <int[]>List into an int[][] array
-		return convertListArrayTo2DArray(selection);
+		int partition[][] = convertListArrayTo2DArray(selection);
+
+		for(int part[] : partition) {
+			Arrays.sort(part);
+		}
+
+		return partition;
+	}
+
+	// returns SORTED partition
+	public static int[][] generatePartition(int indices[], int num, Random r, boolean balanced) {
+		if (!balanced) 
+			return generatePartition(indices,num,r);
+
+		int L = indices.length;
+
+		// shuffle indices
+		MLUtils.randomize(indices,r);
+
+		int partition[][] = new int[num][];
+		int k = L / num;
+		int e = L % num;
+		int m = 0;
+		for(int c = 0; c < num; c++) {
+			if (c < e) {
+				partition[c] = Arrays.copyOfRange(indices,m,m+k+1);
+				m = m + k + 1;
+			}
+			else {
+				partition[c] = Arrays.copyOfRange(indices,m,Math.min(L,m+k));
+				m = m + k;
+			}
+			Arrays.sort(partition[c]);
+		}
+
+		return partition;
+	}
+
+	/** 
+	 * Get Partition From Dataset Hierarchy - assumes attributes are hierarchically arranged with '.'. 
+	 * For example europe.spain indicates leafnode spain of branch europe.
+	 * @param	D		Dataset
+	 * @return	partition
+	 */
+	public static final int[][] getPartitionFromDatasetHierarchy(Instances D) {
+		HashMap<String,LabelSet> map = new HashMap<String,LabelSet>();
+		int L = D.classIndex();
+		for(int j = 0; j < L; j++) {
+			String s = D.attribute(j).name().split("\\.")[0];
+			LabelSet Y = map.get(s);
+			if (Y==null)
+				Y = new LabelSet(new int[]{j});
+			else {
+				Y.indices = A.append(Y.indices,j);
+				Arrays.sort(Y.indices);
+			}
+			map.put(s, Y);
+		}
+		int partition[][] = new int[map.size()][];
+		int i = 0;
+		for(LabelSet part : map.values()) { 
+			//System.out.println(""+i+": "+Arrays.toString(part.indices));
+			partition[i++] = part.indices;
+		}
+		return partition;
 	}
 
 
@@ -147,4 +223,33 @@ public abstract class SuperLabelUtils {
 		return sb.toString();
 	}
 
+	/**
+	 * Make Partition Dataset - out of dataset D, on indices part[].
+	 * @param	D		regular multi-label dataset (of L = classIndex() labels)
+	 * @param	part	list of indices we want to make into an LP dataset.
+	 * @return Dataset with 1 multi-valued class label, representing the combinations of part[].
+	 */
+	public static Instances makePartitionDataset(Instances D, int part[]) throws Exception {
+		return makePartitionDataset(D,part,0,0);
+	}
+
+	/**
+	 * Make Partition Dataset - out of dataset D, on indices part[].
+	 * @param	D		regular multi-label dataset (of L = classIndex() labels)
+	 * @param	part	list of indices we want to make into a PS dataset.
+	 * @param	P		@see PSUtils.java
+	 * @param	N		@see PSUtils.java
+	 * @return Dataset with 1 multi-valued class label, representing the combinations of part[].
+	 */
+	public static Instances makePartitionDataset(Instances D, int part[], int P, int N) throws Exception {
+		int L = D.classIndex();
+		Instances D_ = new Instances(D);
+		// strip out irrelevant attributes
+		D_.setClassIndex(-1);
+		D_ = F.keepLabels(D,L,part);
+		D_.setClassIndex(part.length);
+		// make LC transformation
+		D_ = PSUtils.PSTransformation(D_,P,N);
+		return D_;
+	}
 }

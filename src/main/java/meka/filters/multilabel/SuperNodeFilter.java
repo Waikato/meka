@@ -15,19 +15,6 @@
 
 package meka.filters.multilabel;
 
-/**
- * SuperNodeFilter.java - Super Class Filter.
- *
- * Input:
- * 		Data with label attributes,       e.g., [0,1,2,3,4]
- * 		A desired partition of indices,   e.g., [[1,3],[4],[0,2]], filter 
- * Output:
- * 		New data with label attributes:         [1+3,4,0+2]
- * 		(the values each attribute can take are pruned if necessary)
- *
- * @author 	Jesse Read (jesse@tsc.uc3m.es)
- * @version	June 2012
- */
 import weka.core.*;
 import meka.core.MLUtils;
 import meka.classifiers.multitarget.NSR;
@@ -35,6 +22,19 @@ import weka.filters.*;
 import java.util.*;
 import java.io.*; // for test routin main()
 
+/**
+ * SuperNodeFilter.java - Super Class Filter.
+ *
+ * Input:<br>
+ * 		Data with label attributes,       e.g., [0,1,2,3,4]<br>
+ * 		A desired partition of indices,   e.g., [[1,3],[4],[0,2]], filter <br>
+ * Output:<br>
+ * 		New data with label attributes:         [1+3,4,0+2]<br>
+ * 		(the values each attribute can take are pruned if necessary)<br>
+ *
+ * @author 	Jesse Read (jesse@tsc.uc3m.es)
+ * @version	June 2012
+ */
 public class SuperNodeFilter extends SimpleBatchFilter {
 
 	protected Instance x_template = null;
