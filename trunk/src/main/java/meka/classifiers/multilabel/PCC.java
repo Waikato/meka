@@ -35,7 +35,7 @@ import java.util.*;
  * @author Jesse Read (jesse@tsc.uc3m.es)
  * @version	November 2012
  */
-public class PCC extends CCe implements TechnicalInformationHandler{ // MT Capable
+public class PCC extends CC implements TechnicalInformationHandler{ // MT Capable
 
 	/**
 	 * Push - increment y[0] until = K[0], then reset and start with y[0], etc ...

@@ -16,7 +16,7 @@
 package meka.classifiers.multilabel;
 
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Set;
 
 import weka.core.Attribute;
 import weka.core.FastVector;
@@ -24,6 +24,8 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Utils;
 import meka.core.MLUtils;
+import meka.core.PSUtils;
+import meka.core.LabelSet;
 import weka.core.OptionHandler;
 import weka.core.RevisionUtils;
 import weka.filters.Filter;
@@ -32,10 +34,10 @@ import weka.filters.unsupervised.attribute.Remove;
 /**
  * LC.java - The LC (Label Combination) aka LP (Laber Powerset) Method.
  * Treats each label combination as a single class in a multi-class learning scheme. The set of possible values of each class is the powerset of labels.
+ * This code was rewritten at some point.
  * See also <i>LP</i> from the <a href=http://mulan.sourceforge.net>MULAN</a> framework.
- * @see 	meka.classifiers.multilabel.LC
- * @version January 2009
- * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
+ * @version June 2014
+ * @author 	Jesse Read
  */
 public class LC extends MultilabelClassifier implements OptionHandler {
 
@@ -61,44 +63,16 @@ public class LC extends MultilabelClassifier implements OptionHandler {
 	  	
 		int L = D.classIndex();
 
-		//Create a nominal class attribute of all (existing) possible combinations of labels as possible values
-		FastVector ClassValues = new FastVector(L);
-		HashSet<String> UniqueValues = new HashSet<String>();
-		for (int i = 0; i < D.numInstances(); i++) {
-			UniqueValues.add(MLUtils.toBitString(D.instance(i),L));
-		}
-		Iterator<String> it = UniqueValues.iterator();
-		while (it.hasNext()) {
-			ClassValues.addElement(it.next());
-		}
-		Attribute Y_new = new Attribute("Class", ClassValues);
+		// Transform Instances
+		if(getDebug()) System.out.print("Transforming Instances ...");
+		Instances D_ = PSUtils.LCTransformation(D,L);
+		m_InstancesTemplate = new Instances(D_,0);
 
-		//Filter Remove all class attributes
-		Remove FilterRemove = new Remove();
-		FilterRemove.setAttributeIndices("1-"+L);
-		FilterRemove.setInputFormat(D);
-		Instances NewTrain = Filter.useFilter(D, FilterRemove);
-
-		//Insert new special attribute (which has all possible combinations of labels) 
-		NewTrain.insertAttributeAt(Y_new, 0);
-		NewTrain.setClassIndex(0);
-
-		//Add class values
-		for (int i = 0; i < NewTrain.numInstances(); i++) {
-			String comb = MLUtils.toBitString(D.instance(i),L);
-			NewTrain.instance(i).setClassValue(comb);
-		}
-
-		// keep the header of new dataset for classification
-		m_InstancesTemplate = new Instances(NewTrain, 0);
-
-		// build classifier on new dataset
-		// Info
-		if(getDebug()) System.out.println("("+m_InstancesTemplate.attribute(0).numValues()+" classes, "+NewTrain.numInstances()+" ins. )");
-		if(getDebug()) System.out.print("Building Classifier "+m_Classifier.getClass()+" with "+ClassValues.size()+" possible classes .. ");
-		m_Classifier.buildClassifier(NewTrain);
+		// Set Info ; Build Classifier
+		info = "K = "+m_InstancesTemplate.attribute(0).numValues() + ", N = "+D_.numInstances();
+		if(getDebug()) System.out.print("Building Classifier ("+info+"), ...");
+		m_Classifier.buildClassifier(D_);
 		if(getDebug()) System.out.println("Done");
-
 	}
 
 	/**
@@ -117,28 +91,6 @@ public class LC extends MultilabelClassifier implements OptionHandler {
 		return x_;
 	}
 
-	/**
-	 * Convert Distribution - Given the posterior across combinations, return the distribution across labels.
-	 * @param	p[]	the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [1,0]
-	 * @param	L 	the number of labels
-	 * @return	the distribution across labels, e.g., P(1,2,3) = [1,0,1]
-	 */
-	public double[] convertDistribution(double p[], int L) {
-		
-		double y[] = new double[L];
-
-		int i = Utils.maxIndex(p);
-
-		double d[] = MLUtils.fromBitString(m_InstancesTemplate.classAttribute().value(i));
-		for(int j = 0; j < d.length; j++) {
-			if(d[j] > 0.0)
-				y[j] = 1.0;
-		}
-
-		return y;
-	}
-
-
 	@Override
 	public double[] distributionForInstance(Instance x) throws Exception {
 
@@ -147,15 +99,21 @@ public class LC extends MultilabelClassifier implements OptionHandler {
 		//if there is only one class (as for e.g. in some hier. mtds) predict it
 		if(L == 1) return new double[]{1.0};
 
-		Instance slInstance = convertInstance(x,L);
-		slInstance.setDataset(m_InstancesTemplate);
+		Instance x_ = convertInstance(x,L);
+		x_.setDataset(m_InstancesTemplate);
 
 		//Get a classification
-		double y[] = new double[slInstance.numClasses()];
+		double y[] = new double[x_.numClasses()];
 
-		y[(int)m_Classifier.classifyInstance(slInstance)] = 1.0;
+		y[(int)m_Classifier.classifyInstance(x_)] = 1.0;
 
-		return convertDistribution(y,L);
+		return PSUtils.convertDistribution(y,L,m_InstancesTemplate);
+	}
+
+	private String info = "";
+
+	public String toString() {
+		return info;
 	}
 
 	@Override

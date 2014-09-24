@@ -47,7 +47,7 @@ import meka.core.MLUtils;
  * @version June 2014
  */
 
-public class RAkEL extends PSe {
+public class RAkEL extends PS {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -6208337124440497991L;

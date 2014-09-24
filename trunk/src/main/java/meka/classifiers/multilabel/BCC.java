@@ -46,7 +46,7 @@ import weka.core.TechnicalInformationHandler;
  * @author	Jesse Read
  * @version June 2013
  */
-public class BCC extends CCe {
+public class BCC extends CC {
 
 	/**
 	 * Description to display in the GUI.

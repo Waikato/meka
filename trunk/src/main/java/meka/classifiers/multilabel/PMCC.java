@@ -17,7 +17,7 @@ package meka.classifiers.multilabel;
 
 /**
  * PMCC.java - Like MCC but selects the top M chains at training time, and using them in inference (instead of just the best).
- * WARNING, this class may be broken now, since upgrading CC to CCe and MCC to CCe. Extending MCC will work but will be less fast.<br>
+ * WARNING, this class may be broken now, since upgrading CC and MCC. Extending MCC will work but will be less fast.<br>
  * @TODO, use some kind of voting process as well
  *
  * @see weka.classifiers.multilabel.MCC.java
@@ -35,13 +35,13 @@ import weka.core.*;
 import meka.core.*;
 import java.util.*;
 
-public class PMCC extends MCCe { 
+public class PMCC extends MCC { 
 
 	protected int m_M = 0;
 	protected int m_O = 0;
 	protected double m_Beta = 0.03;
 
-	protected CCe h[] = null;
+	protected CC h[] = null;
 	protected double[] w = null;
 
 	/**
@@ -60,7 +60,7 @@ public class PMCC extends MCCe {
 	/**
 	 * GetClosest - returns the 'CC' in 'map' which is built on the sequence most matched to 'sequence'.
 	 */
-	protected static CCe getClosest(HashMap<String,CCe> map, String sequence) {
+	protected static CC getClosest(HashMap<String,CC> map, String sequence) {
 		int score = -1;
 		String best = sequence;
 		for (String key : map.keySet()) {
@@ -77,10 +77,10 @@ public class PMCC extends MCCe {
 	/**
 	 * RebuildCC - rebuild a classifier chain 'h_old' to have a new sequence 's_new'.
 	 */
-	protected CCe rebuildCC(CCe h_old, int s_new[], Instances D) throws Exception {
+	protected CC rebuildCC(CC h_old, int s_new[], Instances D) throws Exception {
 
 		// make a deep copy
-		CCe h = (CCe)AbstractClassifier.makeCopy(h_old);
+		CC h = (CC)AbstractClassifier.makeCopy(h_old);
 
 		// rebuild this chain
 		h.rebuildClassifier(s_new,new Instances(D));
@@ -91,10 +91,10 @@ public class PMCC extends MCCe {
 	 * BuildCC - Build a CC on sequence 's'. 
 	 * Build h_{s} : X -> Y
 	 */
-	protected CCe buildCC(int s[], Instances D) throws Exception {
+	protected CC buildCC(int s[], Instances D) throws Exception {
 
 		// a new classifier chain
-		CCe h = new CCe();
+		CC h = new CC();
 
 		// build this chain
 		h.setChain(s);
@@ -146,13 +146,13 @@ public class PMCC extends MCCe {
 		int N = D.numInstances();
 		int d = D.numAttributes()-L;
 
-		h = new CCe[m_M];
+		h = new CC[m_M];
 		w = new double[m_M];
 		//int s[][] = new int[m_M][L]; // for interest's sake
 
 		if (m_Is > 0) {
 
-			HashMap<String,CCe> id2cc = new HashMap<String,CCe>();
+			HashMap<String,CC> id2cc = new HashMap<String,CC>();
 
 			// Make CC
 			int s[] = MLUtils.gen_indices(L); 
@@ -171,7 +171,7 @@ public class PMCC extends MCCe {
 					  A.swap(Arrays.copyOf(s,s.length),m_R) ;	        // special simple option - swap two elements
 
 				// build h' with sequence s'
-				CCe h_ = rebuildCC(getClosest(id2cc,Arrays.toString(s_)),s_,D);
+				CC h_ = rebuildCC(getClosest(id2cc,Arrays.toString(s_)),s_,D);
 				id2cc.put(Arrays.toString(s_), h_);
 
 				// rate h' (by its performance on the training data)
@@ -209,7 +209,7 @@ public class PMCC extends MCCe {
 	 * @param	y0[]	initial guess for y
 	 * @return	the classification y
 	 */
-	public static double[] RandomSearch(CCe h[], double h_weights[], Instance x, int T, Random r, double y0[]) throws Exception {
+	public static double[] RandomSearch(CC h[], double h_weights[], Instance x, int T, Random r, double y0[]) throws Exception {
 
 		double y[] = Arrays.copyOf(y0,y0.length); 					// prior y
 		double w  = A.product(h[0].probabilityForInstance(x,y));	// weight
@@ -235,7 +235,7 @@ public class PMCC extends MCCe {
 	 * RandomSearch. 
 	 * Simulated Annealing without temperature.
 	 */
-	public static double[] RandomSearch(CCe h[], double ww[], Instance x, int T, Random r) throws Exception {
+	public static double[] RandomSearch(CC h[], double ww[], Instance x, int T, Random r) throws Exception {
 
 		return RandomSearch(h,ww,x,T,r,h[0].distributionForInstance(x));
 	}

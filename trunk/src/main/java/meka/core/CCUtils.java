@@ -15,7 +15,7 @@
 
 package meka.core;
 
-import meka.classifiers.multilabel.CCe;
+import meka.classifiers.multilabel.CC;
 import weka.classifiers.Classifier;
 import weka.core.*;
 import java.util.*;
@@ -30,10 +30,10 @@ public abstract class CCUtils {
 	/** 
 	 * BuildCC - Given a base classifier 'g', build a new CC classifier on data D, given chain order 'chain'.
 	 */
-	public static CCe buildCC(int chain[], Instances D, Classifier g) throws Exception {
+	public static CC buildCC(int chain[], Instances D, Classifier g) throws Exception {
 
 		// a new classifier chain
-		CCe h = new CCe();
+		CC h = new CC();
 
 		// build this chain
 		h.setChain(chain);
@@ -57,7 +57,7 @@ public abstract class CCUtils {
 	/**
 	 * RandomSearch -  Basically Simulated Annealing without temperature, starting from y0[].
 	 */
-	public static double[] RandomSearch(CCe h, Instance x, int T, Random r, double y0[]) throws Exception {
+	public static double[] RandomSearch(CC h, Instance x, int T, Random r, double y0[]) throws Exception {
 
 		double y[] = Arrays.copyOf(y0,y0.length); 				// prior y
 		double w  = A.product(h.probabilityForInstance(x,y));	// p(y|x)
@@ -82,7 +82,7 @@ public abstract class CCUtils {
 
 	// An old slower version of the above
 	@Deprecated
-	public static double[] RandomSearchOLD(CCe h, Instance x, int T, Random r, double y0[]) throws Exception {
+	public static double[] RandomSearchOLD(CC h, Instance x, int T, Random r, double y0[]) throws Exception {
 
 		double y[] = Arrays.copyOf(y0,y0.length); 				// prior y
 		double w  = A.product(h.probabilityForInstance(x,y));	// p(y|x)
@@ -109,7 +109,7 @@ public abstract class CCUtils {
 	/**
 	 * RandomSearch - Basically Simulated Annealing without temperature.
 	 */
-	public static double[] RandomSearch(CCe h, Instance x, int T, Random r) throws Exception {
+	public static double[] RandomSearch(CC h, Instance x, int T, Random r) throws Exception {
 
 		return RandomSearch(h,x,T,r,h.distributionForInstance(x));
 	}
