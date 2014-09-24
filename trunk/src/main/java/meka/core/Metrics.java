@@ -145,6 +145,12 @@ public abstract class Metrics {
 		return accuracy/(double)N;
 	}
 
+	/** Jaccard Index -- often simply called multi-label 'accuracy'. Multi-label only. */
+	public static double P_JaccardIndex(int Y[][], int Ypred[][]) {
+		return P_Accuracy(Y,Ypred);
+	}
+
+	/** Jaccard Distance -- the loss version of Jaccard Index */
 	public static double L_JaccardDist(int Y[][], int Ypred[][]) {
 		return 1. - P_Accuracy(Y,Ypred);
 	}
@@ -301,10 +307,14 @@ public abstract class Metrics {
 		//return (double)correct / (double)relevant;
 	}
 
+	/**
+	 * P_FmicroAvg - Micro Averaged F-measure (F1, as if all labels in the dataset formed a single vector)
+	 */
 	public static double P_FmicroAvg(int Y[][], int Ypred[][]) {
-		double precision = P_Precision(M.flatten(Y),M.flatten(Ypred));
-		double recall = P_Recall(M.flatten(Y),M.flatten(Ypred));
-		return (2.0 * precision * recall) / (precision + recall);
+		return F1(M.flatten(Y),M.flatten(Ypred));
+		//double precision = P_Precision(M.flatten(Y),M.flatten(Ypred));
+		//double recall = P_Recall(M.flatten(Y),M.flatten(Ypred));
+		//return (2.0 * precision * recall) / (precision + recall);
 	}
 
 	
@@ -474,7 +484,27 @@ public abstract class Metrics {
 	   return i;
    }
 
-   // @TODO check
+   /** MSE */
+   public double[] L_MSE(int y[], double p[]) {
+	   int L = y.length;
+	   double l[] = new double[L];					// likelihood
+	   for(int j = 0; j < L; j++) {
+		   l[j] = Math.pow(p[j] - (double)y[j],2);	// MSE
+	   }
+	   return l;
+   }
+
+   /** MAE */
+   public double[] L_MAE(int y[], double p[]) {
+	   int L = y.length;
+	   double l[] = new double[L];					// likelihood
+	   for(int j = 0; j < L; j++) {
+		   l[j] = Math.abs(p[j] - (double)y[j]);	// MAE
+	   }
+	   return l;
+   }
+
+   /** Product */
    public double P_Product(int Y[][], double P[][]) {
 
 		int N = Y.length;
@@ -482,15 +512,13 @@ public abstract class Metrics {
 		double s = 1.; 
 
 		for(int i = 0; i < N; i++) {
-			int y[] = Y[i];
-			double p[] = P[i];     
-			s *= A.product(p);
+			s *= A.product(L_MAE(Y[i],P[i]));
 		}
 
 		return s;
 	}
 
-   // @TODO check
+   /** Log Sum */
    public double P_LogSum(int Y[][], double P[][]) {
 
 		int N = Y.length;
@@ -498,15 +526,13 @@ public abstract class Metrics {
 		double s = 0.; 
 
 		for(int i = 0; i < N; i++) {
-			int y[] = Y[i];
-			double p[] = P[i];     
-			s += Math.log(A.product(p));
+			s += Math.log(A.product(L_MAE(Y[i],P[i])));
 		}
 
 		return s;
 	}
 
-   // @TODO check
+   /** Avg Sum */
    public double P_Avg_Sum(int Y[][], double P[][]) {
 
 		int N = Y.length;
@@ -514,9 +540,7 @@ public abstract class Metrics {
 		double s = 0.; 
 
 		for(int i = 0; i < N; i++) {
-			int y[] = Y[i];
-			double p[] = P[i];     
-			s += A.sum(p);
+			s += A.sum(L_MAE(Y[i],P[i]));
 		}
 
 		return s / N;
