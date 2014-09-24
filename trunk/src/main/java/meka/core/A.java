@@ -166,7 +166,7 @@ public abstract class A {
 		return swap(array,a,(a==b) ? array.length-1 : b);
 	}
 
-	// select i with probabilitiy w[i] (w must be normalised) aka rndsrc
+	/** Sample a PMF - select i with probabilitiy w[i] (w must be normalised) */
 	public static int samplePMF(double w[], Random r) {
 		double u = r.nextDouble();
 		double sum = w[0];
