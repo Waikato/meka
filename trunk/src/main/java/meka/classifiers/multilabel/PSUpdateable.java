@@ -23,6 +23,8 @@ import weka.classifiers.UpdateableClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import meka.core.MLUtils;
+import meka.core.PSUtils;
+import meka.core.LabelSet;
 import weka.core.Option;
 import weka.core.Utils;
 
@@ -45,7 +47,7 @@ public class PSUpdateable extends PS implements UpdateableClassifier {
 	protected int m_Support = 10;
 	protected int L = -1;
 
-	protected HashMap<String,Integer> combinations = null;
+	protected HashMap<LabelSet,Integer> combinations = null;
 	protected Instances batch = null;
 	protected Instance m_InstanceTemplate = null;
 	protected MajorityLabelsetUpdateable mlu = new MajorityLabelsetUpdateable();
@@ -65,8 +67,7 @@ public class PSUpdateable extends PS implements UpdateableClassifier {
 		if (m_Counter > m_Limit)  {
 			// build
 			if (getDebug()) System.out.println("init build @ "+D.numInstances());
-			combinations = MLUtils.countCombinations(D,L);
-			//combinations.prune(m_P);
+			combinations = PSUtils.countCombinationsSparse(D,L);
 			MLUtils.pruneCountHashMap(combinations,m_P);
 			// { NEW (we don't want more than m_Support classes!)
 			int p = m_P;
@@ -99,7 +100,7 @@ public class PSUpdateable extends PS implements UpdateableClassifier {
 			// build when we're ready
 			if (++m_Counter >= m_Limit) {
 				// bulid PS
-				combinations = MLUtils.countCombinations(batch,L);
+				combinations = PSUtils.countCombinationsSparse(batch,L);
 				//combinations.prune(m_P);
 				MLUtils.pruneCountHashMap(combinations,m_P);
 				// { NEW (we don't want more than m_Support classes!) -- note, the while loop is a slow way to do this
@@ -117,7 +118,7 @@ public class PSUpdateable extends PS implements UpdateableClassifier {
 		}
 		else {
 			// update PS
-			for (Instance x_i : subsample(x,L,combinations)) {
+			for (Instance x_i : PSUtils.PSTransformation(x,L,combinations,m_N)) {
 				// update internal sl classifier (e.g. naive bayes)
 				((UpdateableClassifier)m_Classifier).updateClassifier(x_i);
 			}
@@ -136,42 +137,6 @@ public class PSUpdateable extends PS implements UpdateableClassifier {
 			// return PS prediction
 			return super.distributionForInstance(x);
 		}
-	}
-
-	public Instance[] subsample(Instance x, int L, HashMap<String,Integer> combinations) {
-
-		Instance x_subsets[] = new Instance[1];
-
-		String comb = MLUtils.toBitString(x,L);
-
-		// add it
-		if(combinations.containsKey(comb)) {	//if its class value exists
-			// make x a sl instance
-			Instance x_sl = convertInstance(x,L);
-			x_sl.setClassValue(comb);
-			x_subsets[0] = x_sl;
-			
-			return x_subsets;
-		}
-		// subsample it
-		else if(m_N > 0) { 
-			String d_subsets[] = getTopNSubsets(comb,combinations,m_N);
-			//System.out.println(">"+m_InstancesTemplate);
-			x_subsets = new Instance[d_subsets.length];
-			for(int i = 0; i < d_subsets.length; i++) {
-				//System.out.println(">"+d_subsets[i]);
-				// make x a sl instance
-				Instance x_sl = convertInstance(x,L);
-				x_sl.setDataset(m_InstancesTemplate);
-				x_sl.setClassValue(d_subsets[i]);
-				x_subsets[i] = x_sl;
-			}
-		}
-		// skip it
-		else {
-			return new Instance[]{};
-		}
-		return x_subsets;
 	}
 
 	@Override
