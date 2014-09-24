@@ -142,12 +142,34 @@ public class MCC extends CC implements TechnicalInformationHandler {
 
 
 		//  T = 0
-		double y0[] = super.distributionForInstance(x);
+		double y[] = super.distributionForInstance(x);
 
 		// T > 0
-		double yT[] = CCUtils.RandomSearch(this,x,m_Iy,m_R,y0);
+		if (m_Iy > 0) {
+			//double yT[] = CCUtils.RandomSearchaa(this,x,m_Iy,m_R,y0);
 
-		return yT;
+			double w  = A.product(this.probabilityForInstance(x,y));	// p(y|x)
+
+			Instance t_[] = this.getTransformTemplates(x);
+
+			//System.out.println("----");
+			//System.out.println("p0("+Arrays.toString(y)+") = "+Arrays.toString(h.getConfidences())+", w="+w);
+			for(int t = 0; t < m_Iy; t++) {
+				double y_[] = this.sampleForInstanceFast(t_,m_R); 	    // propose y' by sampling i.i.d.
+				//double p_[] = h.getConfidences();                   //
+				double w_  = A.product(this.getConfidences()); 		// rate y' as w'  --- @TODO allow for command-line option
+				//System.out.println("p("+Arrays.toString(y_)+") = "+Arrays.toString(p_)+", w="+w_);
+				if (w_ > w) { 										// accept ? 
+					if (getDebug()) System.out.println("y' = "+Arrays.toString(y_)+", :"+w_);
+					w = w_;
+					//y = y_;
+					y = Arrays.copyOf(y_,y_.length);
+					//System.out.println("* ACCEPT *");
+				}
+			}
+		}
+
+		return y;
 	}
 
 	@Override
