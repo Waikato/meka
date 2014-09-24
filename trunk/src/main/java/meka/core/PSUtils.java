@@ -15,7 +15,9 @@
 
 package meka.core;
 
+import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.Attribute;
 import weka.core.Utils;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -29,10 +31,16 @@ import java.util.Set;
 import java.util.Comparator;
 import java.io.*; // for saving/reading
 
+/**
+ * PSUtils.java - Handy Utils for working with Pruned Sets.
+ * Essentially, we have a <code>P<\code> parameter for pruning and an <code>N<\code> parameter for reintroduction.
+ * @author Jesse Read 
+ * @version June 2014
+ */
 public abstract class PSUtils {
 
 	/**
-	 * Count Subsets - returns the number of times subset 'ysub' exists in 'map'.
+	 * Sum Counts - sum all the values in 'map'.
 	 */
 	public static int sumCounts(HashMap<LabelSet,Integer> map) {
 		int c = 0;
@@ -43,7 +51,7 @@ public abstract class PSUtils {
 	}
 
 	/**
-	 * Count Subsets - returns the number of times subset 'ysub' exists in 'map'.
+	 * Count Subsets - returns the number of times labelset 'ysub' exists as a subset in 'Y'.
 	 */
 	public static int countSubsets(LabelSet ysub, Set<LabelSet> Y) {
 		int c = 0;
@@ -144,10 +152,10 @@ public abstract class PSUtils {
 	}
 
 	/**
-	 * GetAllSubsets - Get all frequent subsets of 'y' (according to 'map').
-	 * @see cover
-	 * @param	LabelSet	y		a labelset, e.g., [0,2,7]
-	 * @param	HashMap		jmap	a map of labelsets to counts e.g., {[0,2]:39, [2,7]:5, [2,9]:24...}
+	 * GetAllSubsets - Get all frequent subsets of 'y' according to 'map'.
+	 * @see 	#cover(LabelSet,Comparator)
+	 * @param	y	a labelset, e.g., [0,2,7]
+	 * @param	map	a map of labelsets to counts e.g., {[0,2]:39, [2,7]:5, [2,9]:24...}
 	 * @return	the LabelSets to use to decompose y into, e.g., [[0,2],[2,7]]
 	 */
 	public static LabelSet[] getAllSubsets(LabelSet y, HashMap<LabelSet,Integer> map) {
@@ -167,10 +175,10 @@ public abstract class PSUtils {
 
 	/**
 	 * GetTopNSubsets - Don't cover all (like cover(y,map), rather only the top 'n')
-	 * @see cover
-	 * @param	LabelSet	y		a labelset, e.g., [0,2,7]
-	 * @param	HashMap		jmap	a map of labelsets to counts e.g., {[0,2]:39, [2,7]:5, [2,9]:24...}
-	 * @param	int			n		the number of sets to take
+	 * @see #cover(LabelSet,Comparator)
+	 * @param	y	a labelset, e.g., [0,2,7]
+	 * @param	map	a map of labelsets to counts e.g., {[0,2]:39, [2,7]:5, [2,9]:24...}
+	 * @param	n	the number of sets to take
 	 * @return	the LabelSets to use to decompose y into, e.g., [[0,2],[2,7]]
 	 */
 	public static LabelSet[] getTopNSubsets(LabelSet y, HashMap<LabelSet,Integer> map, int n) {
@@ -231,6 +239,49 @@ public abstract class PSUtils {
 		return map;
 	}
 
+	/** used by convertDistribution(p,L) */
+	@Deprecated
+	private static final double[] toDoubleArray(String labelSet, int L) {
+
+		int set[] = (labelSet.length() <= 2) ? new int[]{} : MLUtils.toIntArray(labelSet);
+		//StringBuffer y = new StringBuffer(L);
+		double y[] = new double[L];
+		//for(int j = 0; j < L; j++) {
+		//	y.append("0");
+		//}
+		for(int j : set) {
+			//y.setCharAt(j,'1');
+			y[j] = 1.;
+		}
+		return y;
+		//return y.toString();
+	}
+
+
+	/**
+	 * Convert Distribution - Given the posterior across combinations, return the distribution across labels.
+	 * @TODO	Use recombination!!!
+	 * @see		PSUtils#recombination(double[],int,LabelSet[])
+	 * @param	p[]	the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [1,0]
+	 * @param	L 	the number of labels
+	 * @return	the distribution across labels, e.g., P(1,2,3) = [1,0,1]
+	 */
+	@Deprecated
+	public static double[] convertDistribution(double p[], int L, Instances iTemplate) {
+		
+		double y[] = new double[L];
+
+		int i = Utils.maxIndex(p);
+
+		double d[] = toDoubleArray(iTemplate.classAttribute().value(i),L);
+		for(int j = 0; j < d.length; j++) {
+			if(d[j] > 0.0)
+				y[j] = 1.0;
+		}
+
+		return y;
+	}
+
 	/**
 	 * Convert Distribution - Given the posterior across combinations, return the distribution across labels.
 	 * @param	p[]			the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [0.3,0.7]
@@ -256,6 +307,12 @@ public abstract class PSUtils {
 	}
 
 	// @todo name convertDistribution ?
+	/**
+	 * Convert Distribution - Given the posterior across combinations, return the distribution across labels.
+	 * @param	p[]	the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [1,0]
+	 * @param	L 	the number of labels
+	 * @return	the distribution across labels, e.g., P(1,2,3) = [1,0,1]
+	 */
 	public static final double[] recombination(double p[], int L, LabelSet map[]) {
 
 		double y[] = new double[L];
@@ -272,6 +329,25 @@ public abstract class PSUtils {
 	}
 
 	// @todo name convertDistribution ?
+	/**
+	 * Convert Distribution - Given the posterior across combinations, return the distribution across labels.
+	 * @param	p[]	the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [0.3,0.7]
+	 * @param	L 	the number of labels
+	 * @return	the distribution across labels, e.g., P(1,2,3) = [0.3,0.7,0.3]
+	 */
+	public static final double[] recombination_t(double p[], int L, Instances iTemplate) {
+
+		double y[] = new double[L];
+
+		for(int i = 0; i < p.length; i++) {                                                              
+
+			double d[] = MLUtils.fromBitString(iTemplate.classAttribute().value(i)); // e.g. d = [1,0,0,1,0,0]    p[i] = 0.5
+			for(int j = 0; j < d.length; j++) {
+				y[j] += (d[j] * p[i]);                                                         // e.g., y[0] += d[0] * p[i] = 1 * 0.5 = 0.5
+			}
+		}
+		return y;
+	}
 	public static final double[] recombination_t(double p[], int L, LabelSet map[]) {
 
 		double y[] = new double[L];
@@ -285,6 +361,185 @@ public abstract class PSUtils {
 			}
 		}
 		return y;
+	}
+
+	/**
+	 * Convert a multi-label instance into a multi-class instance, according to a template.
+	 */
+	public static Instance convertInstance(Instance x, int L, Instances template) {
+		Instance x_ = (Instance) x.copy(); 
+		x_.setDataset(null);
+		for (int i = 0; i < L; i++)
+			x_.deleteAttributeAt(0);
+		x_.insertAttributeAt(0);
+		x_.setDataset(template);
+		return x_;
+	}
+
+	//private static final int prune_limit(HashMap<LabelSet,Integer> map) {
+	//}
+
+	public static Instances LCTransformation(Instances D) {
+		return LCTransformation(D,D.classIndex());
+
+	}
+
+	public static Instances LCTransformation(Instances D, int L) {
+		return PSTransformation(D,L,0,0);
+	}
+
+	public static Instances PSTransformation(Instances D, int P, int N) {
+		return PSTransformation(D,D.classIndex(),P,N);
+	}
+
+	public static Instances PSTransformation(Instances D, int L, int p, int n) {
+		D = new Instances(D);
+
+		// Gather combinations
+		HashMap<LabelSet,Integer> distinctCombinations = PSUtils.countCombinationsSparse(D,L);
+
+		// Prune combinations
+		if (p > 0)
+			MLUtils.pruneCountHashMap(distinctCombinations,p);
+
+		// Check there are > 2
+		if (distinctCombinations.size() <= 1 && p > 0) {
+			// ... or try again if not ...
+			System.err.println("[Warning] You did too much pruning, setting P = P-1");
+			return PSTransformation(D,L,p-1,n);
+		}
+
+		// Create class attribute
+		ArrayList<String> ClassValues = new ArrayList<String>();
+		for(LabelSet y : distinctCombinations.keySet()) 
+			ClassValues.add(y.toString());
+		Attribute C = new Attribute("Class", ClassValues);
+
+		// Insert new special attribute (which has all possible combinations of labels) 
+		D.insertAttributeAt(C,L);
+		D.setClassIndex(L);
+
+		//Add class values
+		int N = D.numInstances();
+		for (int i = 0; i < N; i++) {
+			Instance x = D.instance(i);
+			LabelSet y = new LabelSet(MLUtils.toSparseIntArray(x,L));
+			String y_string = y.toString();
+
+			// add it
+			if(ClassValues.contains(y_string)) 	//if its class value exists
+				x.setClassValue(y_string);
+			// decomp
+			else if(n > 0) { 
+				//String d_subsets[] = getTopNSubsets(comb,distinctCombinations,n);
+				LabelSet d_subsets[] = PSUtils.getTopNSubsets(y,distinctCombinations,n);
+				//LabelSet d_subsets[] = PSUtils.cover(y,distinctCombinations);
+				if (d_subsets.length > 0) {
+					// fast
+					x.setClassValue(d_subsets[0].toString());
+					// additional
+					if (d_subsets.length > 1) {
+						for(int s_i = 1; s_i < d_subsets.length; s_i++) {
+							Instance x_ = (Instance)(x).copy();
+							x_.setClassValue(d_subsets[s_i].toString());
+							D.add(x_);
+						}
+					}
+				}
+				else {
+					x.setClassMissing();
+				}
+			}
+		}
+
+		// remove with missing class
+		D.deleteWithMissingClass();
+
+		try {
+			D = F.removeLabels(D,L);
+		} catch(Exception e) {
+			// should never happen
+		}
+		D.setClassIndex(0);
+
+		return D;
+	}
+
+	@Deprecated
+	public static Instances PSTransformationOLD(Instances D, int L, int P, int N) {
+
+		// Gather combinations
+		System.out.println("counting");
+		HashMap<LabelSet,Integer> distinctCombinations = PSUtils.countCombinationsSparse(D,L);
+
+		// Prune combinations
+		System.out.println("pruning");
+		if (P > 0)
+			MLUtils.pruneCountHashMap(distinctCombinations,P);
+
+		// Check there are > 2
+		if (distinctCombinations.size() <= 1 && P > 0) {
+			// ... or try again if not ...
+			System.err.println("[Warning] You did too much pruning, setting P = P-1");
+			return PSTransformation(D,L,P-1,N);
+		}
+
+		System.out.println("transforming");
+		// Create class attribute
+		ArrayList<String> ClassValues = new ArrayList<String>();
+		for(LabelSet y : distinctCombinations.keySet()) 
+			ClassValues.add(y.toString());
+		Attribute C = new Attribute("Class", ClassValues);
+
+		System.out.println("remove attributes");
+		// Filter Remove all class attributes
+		Instances D_ = null;
+		try {
+			D_ = F.removeLabels(D,L);
+		} catch(Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+
+		System.out.println("add attributes");
+		// Insert new special attribute (which has all possible combinations of labels) 
+		D_.insertAttributeAt(C,0);
+		D_.setClassIndex(0);
+
+		System.out.println("reintroing");
+		//Add class values
+		for (int i = 0; i < D.numInstances(); i++) {
+			Instance x = D.instance(i);
+			LabelSet y = new LabelSet(MLUtils.toSparseIntArray(x,L));
+			System.out.println("==="+i+" "+y);
+			String y_string = y.toString();
+
+			// add it
+			if(ClassValues.contains(y_string)) 	//if its class value exists
+				D_.instance(i).setClassValue(y_string);
+			// decomp
+			else if(N > 0) { 
+				//String d_subsets[] = getTopNSubsets(comb,distinctCombinations,N);
+				LabelSet d_subsets[] = PSUtils.getTopNSubsets(y,distinctCombinations,N);
+				//LabelSet d_subsets[] = PSUtils.cover(y,distinctCombinations);
+				//System.out.println("decomp: "+d_subsets.length);
+				for (LabelSet s : d_subsets) {
+					System.out.println(""+s);
+					//===copy===(from I=0)
+					Instance x_ = (Instance)(D_.instance(i)).copy();
+					//===assign===(the class)
+					x_.setClassValue(s.toString());
+					//===add===(to the end)
+					D_.add(x_);
+					//===remove so we can't choose this subset again!
+				}
+			}
+		}
+
+		// remove with missing class
+		D_.deleteWithMissingClass();
+
+		return D_;
 	}
 
 	/**

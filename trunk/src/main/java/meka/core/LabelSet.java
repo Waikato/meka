@@ -24,7 +24,10 @@ import java.util.Set;
 import java.io.Serializable;
 
 /**
- * Comparator - A very fast / sparse labelset representation
+ * Comparator - A fast sparse labelset representation.
+ * e.g. [0,2,3] -- the indices of relevant labels.
+ * @author 	Jesse Read 
+ * @version	March 2014
  */
 public class LabelSet implements Comparator, Serializable {
 
@@ -32,19 +35,24 @@ public class LabelSet implements Comparator, Serializable {
 	private static final long serialVersionUID = -6089833712444497991L;
 
 	public int indices[];  // indices of relevant labels, e.g., [1,5,7]
-	//double w;		// a weight, e.g., a acount
 
 	public LabelSet() {
 	}
 
+	/**
+	 * A new LabelSet, given a list of SORTED indices.
+	 */
 	public LabelSet(int indices[]) {
-		// ASSUME THEY ARE SORTED
+		// Assume they are sorted
 		this.indices = indices;
 	} 
 
+	/**
+	 * A new LabelSet, indicating sort=true if indices they need to be sorted (i.e., are NOT sorted).
+	 */
 	public LabelSet(int indices[], boolean sort) {
 		this.indices = indices;
-		// SORT THEM
+		// Sort them
 		if (sort == true)
 			Arrays.sort(this.indices);
 	}
@@ -175,7 +183,7 @@ public class LabelSet implements Comparator, Serializable {
 	}
 
 	/**
-	 * Minus - [3 4 7 9] \ [3 7] = [4 9].
+	 * Minus aka Set Difference, e.g., [3,4,7,9] \ [3,7] = [4,9].
 	 */
 	public static int[] minus(int y1[], int y2[]) {
 
