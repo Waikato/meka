@@ -43,7 +43,7 @@
 
 \tableofcontents
 
-\pagestyle{empty}
+\thispagestyle{empty}
 \pagebreak
 
 \section{Introduction}
@@ -315,21 +315,21 @@ java meka.classifiers.multilabel.BR -x 10 -R -t data/Music.arff \
 \end{lstlisting}
 conducts 10 fold cross validation on a randomised version of the \textit{Music.arff} data and outputs the average results across all folds with standard deviation. %Note that using the \texttt{-f} option in this case to save output to a file will output only the results of the validation; which can be useful for compiling results later.
 
-Sometimes it can be useful to analyse the actual predictions made at test time (for example if you wish to use an evaluation metric not included in \framework{\MEKA}). \framework{\MEKA} can produce plain-text files with the option \texttt{-f <file name>}; for example:
-\begin{lstlisting}
-java meka.classifiers.multilabel.BR -t data/Music.arff \ 
-  -f BR-NB.meka \
-  -W weka.classifiers.bayes.NaiveBayes
-\end{lstlisting}
-which produces the plain-text file \texttt{BR-NB.meka}. This provides a way to do further evaluation `offline'. Note that when cross validation (\texttt{-x}) is used, one file will be created for each fold, e.g., \texttt{BR-NB.meka.0}, \ldots, \texttt{BR-NB.meka.4} for a 5-fold validation. The results can be recalculated for any of these files with, e.g.:
-\begin{lstlisting}
-	java weka.core.Result -f BR-NB.meka
-\end{lstlisting}
-Or, if you used cross validation, with:
-\begin{lstlisting}
-	java weka.core.Result -f BR-NB.meka -x 5
-\end{lstlisting}
-In this way, it is also possible to use \framework{\MEKA}'s evaluation procedures with output from other software (simply by using the right text output format).
+%Sometimes it can be useful to analyse the actual predictions made at test time (for example if you wish to use an evaluation metric not included in \framework{\MEKA}). \framework{\MEKA} can produce plain-text files with the option \texttt{-f <file name>}; for example:
+%\begin{lstlisting}
+%java meka.classifiers.multilabel.BR -t data/Music.arff \ 
+%  -f BR-NB.meka \
+%  -W weka.classifiers.bayes.NaiveBayes
+%\end{lstlisting}
+%which produces the plain-text file \texttt{BR-NB.meka}. This provides a way to do further evaluation `offline'. Note that when cross validation (\texttt{-x}) is used, %one file will be created for each fold, e.g., \texttt{BR-NB.meka.0}, \ldots, \texttt{BR-NB.meka.4} for a 5-fold validation. The results can be recalculated for any of %these files with, e.g.:
+%\begin{lstlisting}
+%	java weka.core.Result -f BR-NB.meka
+%\end{lstlisting}
+%Or, if you used cross validation, with:
+%\begin{lstlisting}
+%	java weka.core.Result -f BR-NB.meka -x 5
+%\end{lstlisting}
+%In this way, it is also possible to use \framework{\MEKA}'s evaluation procedures with output from other software (simply by using the right text output format).
 
 \subsection{Examples} 
 
@@ -626,6 +626,7 @@ Other parameters are mostly set to the default found in the literature where the
 	Ensembles of CC `quick' (ECCq) [$U$,$M$] & \texttt{meta.RandomSubspaceML -W CCq} \\
 	Probabilistic Classifier Chains (PCC) [$M$] & \texttt{PCC} \\
 	Monte Carlo Optimization of CC (MCC) [$M$] & \texttt{MCC} \\
+	Bayesian Classifier Chains (BCC) [$M$] & \texttt{BCC} \\
 	\hline
 	Ranking + Threshold [$M$] (RT, a.k.a. PT5)  & \texttt{RT} \\
 	\hline
@@ -639,8 +640,10 @@ Other parameters are mostly set to the default found in the literature where the
 	\hline
 	Label Combination (LC, a.k.a. LP) & \texttt{LC} \\ 
 	Random $k$-labEL Sets (RA$k$EL) & \texttt{MULAN -S RAkEL1} \\ 
+	RA$k$EL combined with \texttt{PS}& \texttt{RAkEL} \\ 
+	\ldots disjoint subsets & \texttt{RAkELd} \\ 
 	Pruned Problem Transformation (PPT)  & \texttt{PSt} \\
-	Pruned Sets (PS)               & \texttt{PS} \\
+	Pruned Sets (PS) [$U$]              & \texttt{PS} \\
 	Ensembles of Pruned Sets (EPS  & \texttt{meta.EnsembleML -W PS} \\
 	Nearest Set Replacement (NSR) [$M$]  & \texttt{NSR} \\
 	\hline
