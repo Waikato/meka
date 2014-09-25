@@ -6,9 +6,6 @@ Release Notes
 This is a major release, most classifiers have been revised in some way since the last release. 
 Changes involve rewrites to improve in effeciency, or just minor updates to the java documentation.
 
-Changes
--------
-
 The main changes include,
 
 	- Faster evaluation code
@@ -19,4 +16,9 @@ The main changes include,
 		* RAkELd (disjoint sets)
 	- Cleaner, more comprehensible output of evaluation stats
 
-The results of some classifiers may change minorly from other versions, but these changes are not statistically significant.
+For example, the family of classifier chains methods (CC, PCC, MCC, BCC) now inherit common classes and make use of a common CNode and CCUtils class. 
+This makes it much easier to share functionality among them.
+Similar changes were made to the LP family (LC, PS, PSt), which now share tools in a PSUtils class, and have all been rewritten to use a LabelSet class.
+This translates to scalability improvements for large labelsets.
+
+Note that the predictive results of these classifiers may change minorly from those obtained by earlier versions, but these changes are not statistically significant.
