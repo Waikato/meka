@@ -106,10 +106,10 @@ public class Evaluation {
 		}
 
 		// Save for later?
-		String fname = null;
-		if (Utils.getOptionPos('f',options) >= 0) {
-			fname = Utils.getOption('f',options);
-		}
+		//String fname = null;
+		//if (Utils.getOptionPos('f',options) >= 0) {
+		//	fname = Utils.getOption('f',options);
+		//}
 		// Dump for later?
 		String dname = null;
 		if (Utils.getOptionPos('d',options) >= 0) {
@@ -142,11 +142,11 @@ public class Evaluation {
 				Result fold[] = Evaluation.cvModel(h,D_train,numFolds,top,voption);
 				r = MLEvalUtils.averageResults(fold);
 				System.out.println(r.toString());
-				if (fname != null) {
-					for(int i = 0; i < fold.length; i++) {
-						Result.writeResultToFile(fold[i],fname+"."+i);
-					}
-				}
+				//if (fname != null) {
+					//for(int i = 0; i < fold.length; i++) {
+						//Result.writeResultToFile(fold[i],fname+"."+i);
+					//}
+				//}
 			}
 			else {
 				// TRAIN-TEST SPLIT
@@ -213,9 +213,9 @@ public class Evaluation {
 			}
 
 			// Save ranking data to file?
-			if (fname != null) {
-				Result.writeResultToFile(r,fname);
-			}
+			//if (fname != null) {
+			//	Result.writeResultToFile(r,fname);
+			//}
 			// Save model to file?
 			if (dname != null) {
 				SerializationHelper.write(dname, (Object)h); 
@@ -552,8 +552,8 @@ public class Evaluation {
 		text.append("\tSets the type of thresholding; where\n\t\t'PCut1' automatically calibrates a threshold (the default);\n\t\t'PCutL' automatically calibrates one threshold for each label;\n\t\tany double number, e.g. '0.5', specifies that threshold.\n");
 		text.append("-C <number of classes/labels>\n");
 		text.append("\tSets the number of target attributes (classes/labels) to expect (indexed from the beginning).\n");
-		text.append("-f <results_file>\n");
-		text.append("\tSpecify a file to output results and evaluation statistics into.\n");
+		//text.append("-f <results_file>\n");
+		//text.append("\tSpecify a file to output results and evaluation statistics into.\n");
 		text.append("-d <classifier_file>\n");
 		text.append("\tSpecify a file to dump classifier into.\n");
 		text.append("-l <classifier_file>\n");
