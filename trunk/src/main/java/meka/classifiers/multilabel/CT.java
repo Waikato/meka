@@ -17,7 +17,7 @@ import java.util.*;
 import java.io.Serializable;
 
 /**
- * CT - Classifier Trellis. Run a CC in a trellis structure.
+ * CT - Classifier Trellis. CC in a trellis structure.
  * @author	Jesse Read
  * @version April 2014
  */
