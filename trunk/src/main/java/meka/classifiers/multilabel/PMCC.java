@@ -15,15 +15,6 @@
 
 package meka.classifiers.multilabel;
 
-/**
- * PMCC.java - Like MCC but selects the top M chains at training time, and using them in inference (instead of just the best).
- * WARNING, this class may be broken now, since upgrading CC and MCC. Extending MCC will work but will be less fast.<br>
- * @TODO, use some kind of voting process as well
- *
- * @see weka.classifiers.multilabel.MCC.java
- * @author Jesse Read (jesse@tsc.uc3m.es)
- * @version	June 2013
- */
 import weka.classifiers.*;
 import weka.classifiers.functions.*;
 import meka.classifiers.multitarget.*;
@@ -35,14 +26,28 @@ import weka.core.*;
 import meka.core.*;
 import java.util.*;
 
+/**
+ * PMCC.java - Like MCC but selects the top M chains at training time, and uses all them at test time (using Monte Carlo sampling -- this is not a typical majority-vote ensemble method).
+ *
+ * NOTE: this implementation used to be faster, because the chain was only rebuilt from the first node which was different -- this is no longer the case.
+ *
+ * @see #weka.classifiers.multilabel.MCC
+ * @author Jesse Read
+ * @version	Sep 2014
+ */
 public class PMCC extends MCC { 
 
-	protected int m_M = 0;
+	protected int m_M = 10;
 	protected int m_O = 0;
 	protected double m_Beta = 0.03;
 
 	protected CC h[] = null;
 	protected double[] w = null;
+
+	public PMCC() {
+		// a new default
+		super.setChainIterations(50);
+	}
 
 	/**
 	 * MatchedUpTo - returns the index i of the first character which differs between two strings.
@@ -70,7 +75,6 @@ public class PMCC extends MCC {
 				best = key;
 			}
 		}
-		System.out.println("found "+best+" closest to "+sequence);
 		return map.get(best);
 	}
 
@@ -88,8 +92,7 @@ public class PMCC extends MCC {
 	}
 
 	/** 
-	 * BuildCC - Build a CC on sequence 's'. 
-	 * Build h_{s} : X -> Y
+	 * BuildCC - Build a CC of chain-order 's'. 
 	 */
 	protected CC buildCC(int s[], Instances D) throws Exception {
 
@@ -104,8 +107,8 @@ public class PMCC extends MCC {
 	}
 
 	/**
-	 * pi - swap elements in s, depending on iteration t.
-	 * @todo - make faster! should be able to avoid second normalization ...
+	 * pi - proposal distribution; swap elements in s, depending on iteration t (temperature).
+	 * TODO - make faster!
 	 * @param	s[]		a chain sequence
 	 * @param	r  		a random number generator
 	 * @param	t   	the current iteration
@@ -150,16 +153,16 @@ public class PMCC extends MCC {
 		w = new double[m_M];
 		//int s[][] = new int[m_M][L]; // for interest's sake
 
-		if (m_Is > 0) {
+		if (m_Is > m_M) {
 
-			HashMap<String,CC> id2cc = new HashMap<String,CC>();
+			//HashMap<String,CC> id2cc = new HashMap<String,CC>();
 
 			// Make CC
 			int s[] = MLUtils.gen_indices(L); 
 			MLUtils.randomize(s,m_R);
 			h[0] = buildCC(Arrays.copyOf(s,s.length),D); // @todo move into setChain(..)
-			w[0] = payoff(h[0],new Instances(D));
-			id2cc.put(Arrays.toString(s),h[0]);			// save a copy
+			w[0] = likelihood(h[0],D);
+			//id2cc.put(Arrays.toString(s),h[0]);			// save a copy
 			//s[0] = s_;
 			if(getDebug()) System.out.println("s[0] = "+Arrays.toString(s));
 
@@ -171,20 +174,23 @@ public class PMCC extends MCC {
 					  A.swap(Arrays.copyOf(s,s.length),m_R) ;	        // special simple option - swap two elements
 
 				// build h' with sequence s'
-				CC h_ = rebuildCC(getClosest(id2cc,Arrays.toString(s_)),s_,D);
-				id2cc.put(Arrays.toString(s_), h_);
+				//CC h_ = rebuildCC(getClosest(id2cc,Arrays.toString(s_)),s_,D);
+				CC h_ = buildCC(Arrays.copyOf(s_,s_.length),D);
+				//id2cc.put(Arrays.toString(s_), h_);
 
 				// rate h' (by its performance on the training data)
-				double w_ = payoff(h_,new Instances(D));
+				double w_ = likelihood(h_,D);
 
 				// accept h' weighted more than the weakest h in the population
-				int m = Utils.sort(w)[0]; // (min index)
-				if (w_ > w[m]) {
-					w[m] = w_;
-					h[m] = h_;
-					if (getDebug()) System.out.println(" accepted h["+m+"] = "+w[m]);
+				int min = Utils.sort(w)[0]; // (min index)
+				if (w_ > w[min]) {
+					w[min] = w_;
+					h[min] = h_;
+					if (getDebug()) System.out.println(" accepted h_ with score "+w_+" > "+w[min]);
 					s = s_;
 				}
+				else
+					if (getDebug()) System.out.println(" DENIED h_ with score "+w_+" !> score "+w[min]);
 			}
 			if (getDebug()) System.out.println("---");
 
@@ -192,60 +198,43 @@ public class PMCC extends MCC {
 			Utils.normalize(w);
 		}
 		else {
-			System.err.println("[Warning] No population supplied with -Is <population> (defaulting to standard CC-like behaviour).");
+			System.err.println("[Error] Number of chains evaluated (Is) shoulld be at least as greater than the population selected (M), and greater than 0.");
 			super.buildClassifier(D);
 		}
 
 	}
 
-	/**
-	 * RandomSearch - Inference. 
-	 * This is like Simulated Annealing without temperature.
-	 * @param	h[]		a population of classifier chains
-	 * @param	h_w[] 	weights associated with h[]
-	 * @param	x   	the Instance to perform inference on (i.e, p(y|x))
-	 * @param	T		number of iterations
-	 * @param	r		random number generator
-	 * @param	y0[]	initial guess for y
-	 * @return	the classification y
-	 */
-	public static double[] RandomSearch(CC h[], double h_weights[], Instance x, int T, Random r, double y0[]) throws Exception {
+	@Override
+	public double[] distributionForInstance(Instance x) throws Exception {
 
-		double y[] = Arrays.copyOf(y0,y0.length); 					// prior y
-		double w  = A.product(h[0].probabilityForInstance(x,y));	// weight
+		// Start with a good guess
+		int max = Utils.maxIndex(w);
+		double y[] = h[max].distributionForInstance(x);
+		double wm  = A.product(h[max].probabilityForInstance(x,y));	
 
-		y = Arrays.copyOf(y,y.length);
-		for(int t = 0; t < T; t++) {
-			// choose h[i] according to w[i]
-			int m = A.samplePMF(h_weights,r);
-			// propose y' by sampling i.i.d.
-			double y_[] = h[m].sampleForInstance(x,r); 	       
-			// weight y' as w'
+		for(int t = 0; t < m_Iy; t++) {
+			// m ~ p(m|w) 
+			int m = A.samplePMF(w,m_R);
+			// y ~ p(y|x,m)
+			double y_[] = h[m].sampleForInstance(x,m_R); 	       // <-- TODO: can do this faster, see #MCC
+			// w = prod_j p(y[j]|x,m)
 			double w_  = A.product(h[m].getConfidences());
 			// accept ? 
-			if (w_ > w) {
-				w = w_;
+			if (w_ > wm) {
+				wm = w_;
 				y = y_;
 			}
 		}
+
 		return y;
-	}
-
-	/**
-	 * RandomSearch. 
-	 * Simulated Annealing without temperature.
-	 */
-	public static double[] RandomSearch(CC h[], double ww[], Instance x, int T, Random r) throws Exception {
-
-		return RandomSearch(h,ww,x,T,r,h[0].distributionForInstance(x));
 	}
 
 	@Override
 	public Enumeration listOptions() {
 
 		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tThe population size (of chains)\n\tdefault: "+m_M, "M", 1, "-M <value>"));
-		newVector.addElement(new Option("\tThe option for changing the sequences ~p(.|s)      \n\tdefault: "+m_O, "O", 1, "-O <value>"));
+		newVector.addElement(new Option("\tThe population size (of chains) -- should be smaller than the total number of chains evaluated (Is) \n\tdefault: "+m_M, "M", 1, "-M <value>"));
+		newVector.addElement(new Option("\tUse temperature: cool the chain down over time (from the beginning of the chain) -- can be faster\n\tdefault: "+m_O+" (no temperature)", "O", 1, "-O <value>"));
 		newVector.addElement(new Option("\tIf using O = 1 for temperature, this sets the Beta constant      \n\tdefault: "+m_Beta, "B", 1, "-B <value>"));
 
 		Enumeration enu = super.listOptions();
@@ -276,6 +265,21 @@ public class PMCC extends MCC {
 		result.add("-B");
 	  	result.add("" + m_Beta);
 		return result.toArray(new String[result.size()]);
+	}
+
+	/** Set the population size */
+	public void setM(int M) {
+		m_M = M;
+	}
+
+	/** Get the population size */
+	public int getM() {
+		return m_M;
+	}
+
+	@Override
+	public String globalInfo() {
+		return "PMCC - Like MCC but selects the top M chains at training time, and uses all them at test time (using Monte Carlo sampling -- this is not a typical majority-vote ensemble method). For more information see:\n" + getTechnicalInformation().toString();
 	}
 
 	public static void main(String args[]) {
