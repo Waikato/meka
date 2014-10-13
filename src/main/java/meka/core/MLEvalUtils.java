@@ -150,16 +150,18 @@ public abstract class MLEvalUtils {
 		int V = MLUtils.getIntegerOption(vop,1); // default 1
 
 		HashMap<String,Double> output = new LinkedHashMap<String,Double>();
-		output.put("N"					,(double)N);
+		output.put("N(test)"            ,(double)N);
 		output.put("L"					,(double)L);
-		output.put("Hamming loss"		,Metrics.L_Hamming(Y,Ypred));
-		output.put("ZeroOne loss"		,Metrics.L_ZeroOne(Y,Ypred));
 		output.put("Hamming score"		,Metrics.P_Hamming(Y,Ypred));
 		output.put("Exact match"		,Metrics.P_ExactMatch(Y,Ypred));
 
+		if (V > 1) {
+			output.put("Hamming loss"		,Metrics.L_Hamming(Y,Ypred));
+			output.put("ZeroOne loss"		,Metrics.L_ZeroOne(Y,Ypred));
+		}
 		if (V > 2) {
 			for(int j = 0; j < L; j++) {
-				output.put("L"+j+"_acc"				,1.0 - Metrics.P_Hamming(Y,Ypred,j));
+				output.put("Accuracy["+j+"]"				,1.0 - Metrics.P_Hamming(Y,Ypred,j));
 			}
 		}
 		return output;

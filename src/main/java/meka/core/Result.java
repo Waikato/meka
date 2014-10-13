@@ -31,9 +31,11 @@ import weka.core.Instance;
 /**
  * Result - Stores predictions alongside true labels, for evaluation. 
  * For more on the evaluation and threshold selection implemented here; see: 
- * Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer (2011).
- * Jesse Read, <i>Scalable Multi-label Classification</i>. PhD Thesis, University of Waikato, Hamilton, New Zealand (2010).
- * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
+ * <p>
+ * Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer (2011).<br>
+ * Jesse Read, <i>Scalable Multi-label Classification</i>. PhD Thesis, University of Waikato, Hamilton, New Zealand (2010).<br>
+ * </p>
+ * @author 	Jesse Read
  * @version	March 2012 - Multi-target Compatible
  */
 public class Result implements Serializable {
@@ -43,6 +45,7 @@ public class Result implements Serializable {
 	public int L = 0;
 
 	public ArrayList<double[]> predictions = null;
+	// TODO, store in sparse fashion with either LabelSet or LabelVector
 	public ArrayList<int[]> actuals = null;
 
 	public HashMap<String,Double> output = new LinkedHashMap<String,Double>();
@@ -212,12 +215,6 @@ public class Result implements Serializable {
 		else 
 			return MLEvalUtils.getMLStats(r.allPredictions(), r.allActuals(), r.getInfo("Threshold"), vop);
 	}
-	/*
-	// get stats for a particular measure
-	public static HashMap<String,Double> getStats(Result r, String measure) {
-		return MLUtils.getMLStat(r.allPredictions(), r.allActuals(), r.getInfo("Threshold"), measure);
-	}
-	*/
 
 	/**
 	 * GetResultAsString - print out each prediction in a Result along with its true labelset.
@@ -225,6 +222,17 @@ public class Result implements Serializable {
 	public static String getResultAsString(Result s) {
 		return getResultAsString(s,3);
 	}
+
+	/**
+	 * WriteResultToFile -- write a Result 'result' out in plain text format to file 'fname'.
+	 * @param result Result
+	 * @param fname file name
+	 */
+	public static void writeResultToFile(Result result, String fname) throws Exception {
+		PrintWriter outer = new PrintWriter(new BufferedWriter(new FileWriter(fname)));
+		outer.write(result.toString());
+		outer.close();
+	} 
 
 	/**
 	 * GetResultAsString - print out each prediction in a Result (to a certain number of decimal points) along with its true labelset.
@@ -254,152 +262,5 @@ public class Result implements Serializable {
 		return sb.toString();
 	}
 
-	/**
-	 * WriteResultToFile -- write a Result 'result' out in plain text format to file 'fname'.
-	 * @param	result	Result
-	 * @param	fname	file name
-	 */
-	public static void writeResultToFile(Result result, String fname) throws Exception {
-		PrintWriter outer = new PrintWriter(new BufferedWriter(new FileWriter(fname)));
-		StringBuilder sb = new StringBuilder();  
-		sb.append("L=").append(result.L).append('\n');		// @TODO "i:"+result.info.toString()
-		for (String k : result.info.keySet()) {
-			sb.append("i:").append(k).append('=').append(result.info.get(k)).append('\n');
-		}
-		for (String k : result.vals.keySet()) {				// @TODO "v:"+result.vals.toString()
-			sb.append("v:").append(k).append('=').append(result.vals.get(k)).append('\n');
-		}
-		sb.append(getResultAsString(result));
-		outer.write(sb.toString());
-		outer.close();
-	}
-
-	/**
-	 * ReadResultToFile -- read a Result in from a file called 'fname'.
-	 * @param	fname	file name
-	 * @return	a Result
-	 */
-	public static Result readResultFromFile(String fname) throws Exception {
-		BufferedReader in = new BufferedReader( new FileReader(fname) );
-		Result r = null;
-
-		try {
-			String line = null;
-			while (( ( line = in.readLine() ) ) != null ){
-				if (line.contains("[") && !line.contains(":")) {
-					int i1s = line.indexOf("[");
-					int i1e = line.indexOf("]");
-					int i2s = line.indexOf("[",i1s+1);
-					int i2e = line.indexOf("]",i1e+1);
-					r.predictions.add(MLUtils.toDoubleArray(line.substring(i2s+1,i2e).trim().split(" ")));
-					r.actuals.add(MLUtils.toIntArray(line.substring(i1s+1,i1e).trim().split(" ")));
-				}
-				else if (line.startsWith("i")) { // info
-					line = line.substring(line.indexOf(':')+1);
-					int idx = line.indexOf('=');
-					r.info.put(line.substring(0,idx),line.substring(idx+1));
-				}
-				else if (line.startsWith("v")) { // vals
-					line = line.substring(line.indexOf(':')+1);
-					int idx = line.indexOf('=');
-					r.vals.put(line.substring(0,idx),Double.parseDouble(line.substring(idx+1)));
-				}
-				else if (line.startsWith("L")) { // L=
-					r = new Result(Integer.parseInt(line.substring(line.indexOf('=')+1)));
-				}
-			}
-		} finally{
-			if ( in != null)  in.close();
-		}
-
-		return r;
-	}
-
-	public static void main (String args[]) {
-
-		// Verbosity Option
-		String voption = "1";
-		try {
-			if (Utils.getOptionPos("verbosity",args) >= 0) {
-				voption = Utils.getOption("verbosity",args);
-			}
-		} catch(Exception e) {
-			// Do nothing
-		}
-
-		// CROSS-FOLD-VALIDATION
-		if (Utils.getOptionPos('f',args) >= 0 && Utils.getOptionPos('x',args) >= 0) {
-
-			// Read folds in from file.meka.0 , ... , file.meka.<numFolds-1>
-			int numFolds = 0;
-			try {
-				numFolds = Integer.parseInt(Utils.getOption('x',args));
-			} catch(Exception e) {
-				System.err.println("Failed to parse the number of folds");
-				e.printStackTrace();
-				System.exit(1);
-			}
-			Result fold[] = new Result[numFolds];
-			String basename = null;
-			try {
-				basename = Utils.getOption('f',args);
-				for(int i = 0; i < numFolds; i++) {
-					fold[i] = Result.readResultFromFile(basename+"."+i);
-					fold[i].output = Result.getStats(fold[i],voption);
-					// check for threshold
-					if (fold[i].getInfo("Threshold")==null) {
-						System.out.println("Having to calculate a threshold ...");
-						System.exit(1);
-					}
-				}
-			} catch(Exception e) {
-				System.err.println("Error finding/loading files ... Was looking for "+basename+".0 ... "+basename+"."+numFolds);
-				e.printStackTrace();
-				System.exit(1);
-			}
-			// Create a super-Result, and get the results
-			Result r = MLEvalUtils.averageResults(fold);
-			System.out.println(r.toString());
-		}
-
-		// REGULAR-VALIDATION
-		else if (Utils.getOptionPos('f',args) >= 0) {
-
-			Result r = null;
-			try {
-				// load Result
-				r = Result.readResultFromFile(Utils.getOption('f',args));
-
-				// set threshold ?
-				if (Utils.getOptionPos("threshold",args) >= 0) {
-					r.setInfo("Threshold",Utils.getOption("threshold",args));
-					System.out.println("Setting threshold from command line: "+r.getInfo("Threshold"));
-				}
-				else if(r.getInfo("Threshold") != null) {
-					String t = r.getInfo("Threshold");
-					System.out.println("using threshold "+t);
-				}
-				else {
-					String t = Arrays.toString(ThresholdUtils.calibrateThresholds(r.predictions,MLUtils.labelCardinalities(r.actuals)));
-					System.out.println("Did not find threshold, calibrated a new one: "+t);
-					r.setInfo("Threshold",t);
-					
-				}
-
-			} catch(Exception e) {
-				e.printStackTrace();
-				System.exit(1);
-			}
-
-			r.setInfo("Verbosity",voption);
-			r.output = Result.getStats(r,voption);
-			System.out.println(r.toString());
-
-		}
-		else {
-			System.out.println("You must supply the filename with -f <filename> (and -x <num folds> if dealing with CV).");
-		}
-
-	}
 }
 
