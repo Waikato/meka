@@ -60,9 +60,10 @@ public class CNode implements Serializable {
 
 	/**
 	 * Transform - transform dataset D for this node.
-	 * 0. Get, e.g.,                                        paY = [1,4]
-	 * 1. remove everything except parents and self!, e.g., keep = [1,4,3]
-	 * @todo: keep a handy template of the data for 0 parents, 1 parent, 2 parents ??
+	 * this.j defines the current node index, e.g., 3
+	 * this.paY[] defines parents,            e.g., [1,4]
+	 * we should remove the rest,             e.g., [0,2,5,...,L-1]
+	 * @return dataset we should remove all variables from D EXCEPT current node, and parents.
 	 */
 	public Instances transform(Instances D) throws Exception {
 		int L = D.classIndex();
@@ -81,7 +82,7 @@ public class CNode implements Serializable {
 	}
 
 	/**
-	 * Build - Create dataset D_j, and train a 'hTemplate'-type classifier on it.
+	 * Build - Create transformation for this node, and train classifier of type H upon it.
 	 * The dataset should have class as index 'j', and remove all indices less than L *not* in paY.
 	 */
 	public void build(Instances D, Classifier H) throws Exception {
@@ -98,20 +99,22 @@ public class CNode implements Serializable {
 	}
 
 	/**
-	 * p( y_j = 1 | x , y_pred )
+	 * The distribution this this node, given input x.
+	 * @return p( y_j = k | x , y_pred ) for k in {0,1}
 	 */
 	public double[] distribution(Instance x, double ypred[]) throws Exception {
 		Instance x_ = transform(x,ypred);
 		return h.distributionForInstance(x_);
 	}
 
-	/** distributionT - same as distribution(Instance, double[]), but the Instance is pre-transformed. */
+	/** Same as #distribution(Instance, double[]), but the Instance is pre-transformed with ypred inside. */
 	public double[] distributionT(Instance x_) throws Exception {
 		return h.distributionForInstance(x_);
 	}
 
 	/**
-	 * y_j ~ p( y_i | x , y_pred )
+	 * Sample the distribution given by #distribution(Instance, double[]).
+	 * @return y_j ~ p( y_i | x , y_pred )
 	 */
 	public double sample(Instance x, double ypred[], Random r) throws Exception {
 		double p[] = distribution(x, ypred);
@@ -120,6 +123,7 @@ public class CNode implements Serializable {
 
 	/**
 	 * Transform - turn [y1,y2,y3,x1,x2] into [y1,y2,x1,x2].
+	 * @return transformed Instance
 	 */
 	public Instance transform(Instance x, double ypred[]) throws Exception {
 		x = (Instance)x.copy();
@@ -138,30 +142,14 @@ public class CNode implements Serializable {
 		return x;
 	}
 
-	/*
-	public Instance transformOLD(Instance x, double ypred[]) throws Exception {
-
-		//if (t_ != null) return t_;
-
-		int L = x.classIndex();
-		double array[] = x.toDoubleArray();  				// [y,c,y,x,x,x]
-		double array_[] = new double[d + paY.length + 1];	// [_,_,_,_]
-		for(int pa : paY) {
-			//System.out.println("x_["+map[pa]+"] <- "+ypred[pa]);
-			array_[map[pa]] = ypred[pa];
+	public void updateTransform(Instance t_, double ypred[]) throws Exception {
+		for(int pa : this.paY) {
+			t_.setValue(this.map[pa],ypred[pa]);
 		}
-		System.arraycopy(array,L,array_,paY.length+1,d);	// [_,x,x,x]
-		Instance x_ = new SparseInstance(1.,array_);
-		x_.setDataset(T);
-		x_.setClassMissing();								// [?,x,x,x]
-
-		//t_ = x_;
-		return x_;
 	}
-	*/
 
 	/* 
-	 * @TODO	I thought this would be faster, but apparenty not
+	 * TODO	I thought this would be faster, but apparenty not
 	public Instance transform(Instance x, double ypred[]) throws Exception {
 		int L = x.classIndex();
 		int L_ = paY.length + 1;
@@ -177,25 +165,11 @@ public class CNode implements Serializable {
 	*/
 
 	/**
-	 * y_i = argmax_{y_i = 0,1,...} p( y_i | x , y_pred )
+	 * Return the argmax on #distribution(Instance, double[]).
+	 * @return argmax_{k in 0,1,...} p( y_j = k | x , y_pred )
 	 */
 	public double classify(Instance x, double ypred[]) throws Exception {
 		Instance x_ = transform(x,ypred);
-		/*
-		int L = x.classIndex();
-		double array[] = x.toDoubleArray();  				// [y,c,y,x,x,x]
-		double array_[] = new double[d + paY.length + 1];	// [_,_,_,_]
-		System.arraycopy(array,L,array_,paY.length+1,d);	// [_,x,x,x]
-		DenseInstance x_ = new DenseInstance(1,array_);
-		x_.setDataset(T);
-		x_.setClassMissing();								// [?,x,x,x]
-		*/
-		//Instance x_ = this.transform(x, ypred);
-		//System.out.println("we want to classify: "+x_+" at node "+j+ " -> "+Arrays.toString(h.distributionForInstance(x_)));
-		//for(int i = 0; i < 10; i++) {
-		//	System.out.println("i_"+i+" = "+Arrays.toString(h.distributionForInstance(x_)));
-		//}
-		//System.out.println(""+Arrays.toString(h.distributionForInstance(T.firstInstance())));
 		return Utils.maxIndex(h.distributionForInstance(x_));
 	}
 

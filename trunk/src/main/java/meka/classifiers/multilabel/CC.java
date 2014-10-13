@@ -31,7 +31,7 @@ import java.util.*;
 import java.io.Serializable;
 
 /**
- * CC.java - The Classifier Chains Method.
+ * CC.java - The Classifier Chains Method. Like BR, but label outputs become new inputs for the next classifiers in the chain.
  * <br>
  * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer. Vol. 85(3), pp 333-359. (May 2011).
  * <br>
@@ -50,16 +50,6 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 	protected int m_S = 0;
 	protected Random m_R = null;
 
-	@Override
-	public void setSeed(int s) {
-		m_S = s;
-	}
-
-	@Override
-	public int getSeed() {
-		return m_S;
-	}
-
 	protected int m_Chain[] = null;
 
 	public void setChain(int chain[]) {
@@ -73,6 +63,7 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
 		testCapabilities(D);
+
 		int L = D.classIndex();
 		m_R = new Random(m_S);
 
@@ -85,9 +76,13 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 				System.out.println("Chain s="+Arrays.toString(indices));
 		}
 
+		/*
+		 * make a classifier node for each label, taking the parents of all previous nodes
+		 */
 		if(getDebug()) System.out.print(":- Chain (");
 		nodes = new CNode[L];
 		int pa[] = new int[]{};
+
 		for(int j : m_Chain) {
 			if (getDebug()) 
 				System.out.print(" "+D.attribute(j).name());
@@ -134,7 +129,7 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 		double y[] = new double[L];
 
 		for(int j : m_Chain) {
-			double p[] = nodes[j].distribution(x, y);                // @todo copy necessary?
+			double p[] = nodes[j].distribution(x, y);
 			y[j] = A.samplePMF(p,r);
 			confidences[j] = p[(int)y[j]];
 		}
@@ -158,10 +153,8 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 	}
 
 	/**
-	 * SampleForInstance - NOT YET IMPLEMENTED (do it yourself for now).
-	 * If we are going to sample many times for each instance, it makes sense to transform the instance first, here, instead of doing it each time.
-	 * Call #transformTemplates(x) first to get the templates.
-	 * @param	t_	Instance templates (pre-transformed)
+	 * SampleForInstance - given an Instance template for each label, and a Random.
+	 * @param	t_	Instance templates (pre-transformed) using #getTransformTemplates(x)
 	 */
 	public double[] sampleForInstanceFast(Instance t_[], Random r) throws Exception {
 
@@ -169,10 +162,10 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 		double y[] = new double[L];
 
 		for(int j : m_Chain) {
-			//setLabelsInto(t_[j],y);
-			double p[] = nodes[j].distributionT(t_[j]);                // @todo copy necessary?
-			y[j] = A.samplePMF(p,r);
-			confidences[j] = p[(int)y[j]];
+			double p[] = nodes[j].distribution(t_[j],y);               // e.g., [0.4, 0.6]
+			y[j] = A.samplePMF(p,r);                                   // e.g., 0
+			confidences[j] = p[(int)y[j]];                             // e.g., 0.4
+			nodes[j].updateTransform(t_[j],y); 						   // need to update the transform #SampleForInstance(x,r)
 		}
 
 		return y;
@@ -196,6 +189,7 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 
 	/**
 	 * ProbabilityForInstance - Force our way down the imposed 'path'. 
+	 * @TODO rename distributionForPath ? and simplify like distributionForInstance ?
 	 * For example p (y=1010|x) = [0.9,0.8,0.1,0.2]. If the product = 1, this is probably the correct path!
 	 * @param	x		test Instance
 	 * @param	path	the path we want to go down
@@ -207,36 +201,33 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 
 		for(int j : m_Chain) {
 			// h_j : x,pa_j -> y_j
-			double d[] = nodes[j].distribution((Instance)x.copy(),path); 
-			int k = (int)Math.round(path[j]);
-			p[j] = d[k];
+			double d[] = nodes[j].distribution((Instance)x.copy(),path);  // <-- posterior distribution
+			int k = (int)Math.round(path[j]);                             // <-- value of interest
+			p[j] = d[k];                                                  // <-- p(y_j==k) i.e., 'confidence'
 			//y[j] = path[j];
 		}
 
 		return p;
 	}
-
-	/*
-	 * ProbabilityForInstance.
-	 * Force our way down 'path' where 'path' = x[0],...,x[L] (set into x before calling this function).
-	 * @param	x		test Instance
-	public double[] probabilityForInstance(Instance x) throws Exception {
-		// run through chain
-		root.probability(x);
-		// return p(path|x)
-		return getConfidences();
-	}
-	*/
 	
 	/**
 	 * Rebuild - NOT YET IMPLEMENTED.
-	 * For efficiency reasons, we may want to rebuild part of the chain (which differs with nchain).
-	 * If chain[] = [1,2,3,4] and nchain[] = [1,2,4,3] we only need to rebuild the final two links.
-	 * @note This function does a lot more than necessary, but I was looking into improving CC at some point.
-	 * @param	nchain	the new chain
-	 * @param	D		the original training data
+	 * For efficiency reasons, we may want to rebuild part of the chain.
+	 * If chain[] = [1,2,3,4] and new_chain[] = [1,2,4,3] we only need to rebuild the final two links.
+	 * @param	new_chain	the new chain
+	 * @param	D			the original training data
 	 */
-	public void rebuildClassifier(int nchain[], Instances D) throws Exception {
+	public void rebuildClassifier(int new_chain[], Instances D) throws Exception {
+	}
+
+	@Override
+	public void setSeed(int s) {
+		m_S = s;
+	}
+
+	@Override
+	public int getSeed() {
+		return m_S;
 	}
 
 	/**
@@ -246,10 +237,7 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 	 */
 	@Override
 	public String globalInfo() {
-		return 
-				"The Classifier Chains Method."
-				+ "For more information see:\n"
-				+ getTechnicalInformation().toString();
+		return "Classifier Chains. " + "For more information see:\n" + getTechnicalInformation().toString();
 	}
 
 	@Override

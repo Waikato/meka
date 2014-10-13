@@ -50,19 +50,21 @@ public class MCC extends CC implements TechnicalInformationHandler {
 	protected int m_Payoff = 0;
 
 	/**
-	 * Payoff - Return a default score of h evaluated on D.
+	 * Likelihood - Return a default score of h evaluated on D.
 	 * sum ( p(y_i | x_i, h_s) )
 	 * @TODO use meka.core.Metrics
 	 */
-	public double payoff(CC h, Instances D) throws Exception {
-		return payoff(h,D,m_Payoff);
+	public double likelihood(CC h, Instances D) throws Exception {
+		return likelihood(h,D,m_Payoff);
 	}
 
 	/**
-	 * Payoff - Return a score of choice (payoff_fn) of h evaluated on D.
+	 * Likelihood - Return a score of choice (payoff_fn) of h evaluated on D.
+	 * maximizing likelihood is the same as minimizing the error ..
 	 * @TODO use meka.core.Metrics
+	 * @return sum log P(Y|X;h) where h defines e.g., a particular chain order
 	 */
-	public double payoff(CC h, Instances D, int payoff_fn) throws Exception {
+	public double likelihood(CC h, Instances D, int payoff_fn) throws Exception {
 		int L = D.classIndex();
 		int N = D.numInstances();
 		double s = 1.; // <-- @note!
@@ -70,6 +72,8 @@ public class MCC extends CC implements TechnicalInformationHandler {
 			Instance x = D.instance(i);
 			double y[] = MLUtils.toDoubleArray(x);			// y = [0 0 1 1]			<--- y_1,...,y_L
 			double p[] = h.probabilityForInstance(x,y);     // p = [0.9 0.9 0.2 0.1]    <--- p(y_1),...,p(y_L)
+
+			//s += Metrics.L_MAE(y,p);
 
 			if (payoff_fn == 5) 		// SUM OF SUM
 				s += A.sum(p);
@@ -105,7 +109,7 @@ public class MCC extends CC implements TechnicalInformationHandler {
 
 			if (getDebug()) System.out.println("Optimising s ... ("+m_Is+" iterations):");
 
-			double w = payoff(h,new Instances(D));
+			double w = likelihood(h,new Instances(D));
 			if (getDebug()) System.out.println("h_{t="+0+"} := "+Arrays.toString(s)); //+"; w = "+w);
 
 			for(int t = 0; t < m_Is; t++) {
@@ -117,7 +121,7 @@ public class MCC extends CC implements TechnicalInformationHandler {
 				CC h_ = CCUtils.buildCC(s_,D,m_Classifier);
 
 				// rate h'
-				double w_ = payoff(h_,new Instances(D));
+				double w_ = likelihood(h_,new Instances(D));
 
 				// accept h' over h ? 
 				if (w_ > w) {
@@ -125,9 +129,9 @@ public class MCC extends CC implements TechnicalInformationHandler {
 					s = s_;
 					h = h_;
 					if (getDebug()) System.out.println("h_{t="+(t+1)+"} := "+Arrays.toString(s)); //+"; w = "+w);
-					//if (getDebug()) System.out.print("& "+Utils.doubleToString(payoff(h_,new Instances(D),1),8,2));
-					//if (getDebug()) System.out.print("& "+Utils.doubleToString(payoff(h_,new Instances(D),2),8,2));
-					//if (getDebug()) System.out.println("& "+Utils.doubleToString(payoff(h_,new Instances(D),5),8,2));
+					//if (getDebug()) System.out.print("& "+Utils.doubleToString(likelihood(h_,new Instances(D),1),8,2));
+					//if (getDebug()) System.out.print("& "+Utils.doubleToString(likelihood(h_,new Instances(D),2),8,2));
+					//if (getDebug()) System.out.println("& "+Utils.doubleToString(likelihood(h_,new Instances(D),5),8,2));
 				}
 			}
 		}
@@ -156,6 +160,7 @@ public class MCC extends CC implements TechnicalInformationHandler {
 			//System.out.println("p0("+Arrays.toString(y)+") = "+Arrays.toString(h.getConfidences())+", w="+w);
 			for(int t = 0; t < m_Iy; t++) {
 				double y_[] = this.sampleForInstanceFast(t_,m_R); 	    // propose y' by sampling i.i.d.
+				//double y_[] = this.sampleForInstance(x,m_R); 	    // propose y' by sampling i.i.d.
 				//double p_[] = h.getConfidences();                   //
 				double w_  = A.product(this.getConfidences()); 		// rate y' as w'  --- @TODO allow for command-line option
 				//System.out.println("p("+Arrays.toString(y_)+") = "+Arrays.toString(p_)+", w="+w_);
@@ -210,6 +215,26 @@ public class MCC extends CC implements TechnicalInformationHandler {
 		options[current++] = String.valueOf(m_Payoff);
 		System.arraycopy(superOptions, 0, options, current, superOptions.length);
 		return options;
+	}
+
+	/** Set the inference iterations */
+	public void setInferenceInterations(int iy) {
+		m_Iy = iy;
+	}
+
+	/** Get the inference iterations */
+	public int getInferenceInterations() {
+		return m_Iy;
+	}
+
+	/** Set the iterations of s (chain order) */
+	public void setChainIterations(int is) {
+		m_Is = is;
+	}
+
+	/** Get the iterations of s (chain order) */
+	public int getChainIterations() {
+		return m_Is;
 	}
 
 	@Override
