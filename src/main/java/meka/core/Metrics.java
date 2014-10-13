@@ -484,27 +484,41 @@ public abstract class Metrics {
 	   return i;
    }
 
+   /** Log Likelihood */
+   public double P_LogLikelihood(int y[], double p[]) {
+	   int L = y.length;
+
+	   double l = 0.0;                              // likelihood
+	   for(int j = 0; j < L; j++) {
+		   // independence assumption
+		   l += Math.log( Math.pow(p[j],y[j]) * Math.pow(1.-p[j],1-y[j]) ); // multi-label only
+	   }
+	   return l;
+   }
+
    /** MSE */
-   public double[] L_MSE(int y[], double p[]) {
+   public double L_MSE(int y[], double p[]) {
 	   int L = y.length;
 	   double l[] = new double[L];					// likelihood
 	   for(int j = 0; j < L; j++) {
+		   // independence assumption
 		   l[j] = Math.pow(p[j] - (double)y[j],2);	// MSE
 	   }
-	   return l;
+	   return A.product(l);
    }
 
    /** MAE */
-   public double[] L_MAE(int y[], double p[]) {
+   public double L_MAE(int y[], double p[]) {
 	   int L = y.length;
 	   double l[] = new double[L];					// likelihood
 	   for(int j = 0; j < L; j++) {
+		   // independence assumption
 		   l[j] = Math.abs(p[j] - (double)y[j]);	// MAE
 	   }
-	   return l;
+	   return A.product(l);
    }
 
-   /** Product */
+   /** Product 
    public double P_Product(int Y[][], double P[][]) {
 
 		int N = Y.length;
@@ -512,13 +526,13 @@ public abstract class Metrics {
 		double s = 1.; 
 
 		for(int i = 0; i < N; i++) {
-			s *= A.product(L_MAE(Y[i],P[i]));
+			s *= L_MAE(Y[i],P[i]);
 		}
 
 		return s;
-	}
+		}*/
 
-   /** Log Sum */
+   /** Log Sum 
    public double P_LogSum(int Y[][], double P[][]) {
 
 		int N = Y.length;
@@ -530,9 +544,9 @@ public abstract class Metrics {
 		}
 
 		return s;
-	}
+		}*/
 
-   /** Avg Sum */
+   /** Avg Sum 
    public double P_Avg_Sum(int Y[][], double P[][]) {
 
 		int N = Y.length;
@@ -540,11 +554,11 @@ public abstract class Metrics {
 		double s = 0.; 
 
 		for(int i = 0; i < N; i++) {
-			s += A.sum(L_MAE(Y[i],P[i]));
+			s += L_MAE(Y[i],P[i]);
 		}
 
 		return s / N;
-   }
+		}*/
 
    /**
 	* Do some tests.

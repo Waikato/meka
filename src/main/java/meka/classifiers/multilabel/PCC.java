@@ -30,7 +30,7 @@ import java.util.*;
  * PCC.java - (Bayes Optimal) Probabalistic Classifier Chains.
  * Exactly like CC at build time, but explores all possible paths as inference at test time (hence, 'Bayes optimal'). <br>
  * This version is multi-target capable. <br>
- * See: Cheng et al, "Bayes Optimal Multi-label Classification via Probabalistic Classifier Chains", ICML 2010.
+ * See: Dembczynsky et al, <i>Bayes Optimal Multi-label Classification via Probabalistic Classifier Chains</i>, ICML 2010.
  *
  * @author Jesse Read (jesse@tsc.uc3m.es)
  * @version	November 2012
@@ -39,6 +39,7 @@ public class PCC extends CC implements TechnicalInformationHandler{ // MT Capabl
 
 	/**
 	 * Push - increment y[0] until = K[0], then reset and start with y[0], etc ...
+	 * Basically a counter.
 	 * @return	True if finished
 	 */
 	private static boolean push(double y[], int K[], int j) {
@@ -57,7 +58,9 @@ public class PCC extends CC implements TechnicalInformationHandler{ // MT Capabl
 
 	/**
 	 * GetKs - return [K_1,K_2,...,K_L] where each Y_j \in {1,...,K_j}.
+	 * In the multi-label case, K[j] = 2 for all j = 1,...,L.
 	 * @param	D	a dataset
+	 * @return	an array of the number of values that each label can take
 	 */
 	private static int[] getKs(Instances D) {
 		int L = D.classIndex();
@@ -85,8 +88,7 @@ public class PCC extends CC implements TechnicalInformationHandler{ // MT Capabl
 			System.out.println("K[] = "+Arrays.toString(K));
 		double y_[] = new double[L]; 
 
-		int i = 0;
-		for(i = 0; i < 1000000; i++) { // limit to 1m
+		for(int i = 0; i < 1000000; i++) { // limit to 1m
 			//System.out.println(""+i+" "+Arrays.toString(y_));
 			double w_  = A.product(super.probabilityForInstance(xy,y_));
 			if (w_ > w) {
@@ -94,11 +96,13 @@ public class PCC extends CC implements TechnicalInformationHandler{ // MT Capabl
 				y = Arrays.copyOf(y_,y_.length);
 				w = w_;
 			}
-			if (push(y_,K,0))
+			if (push(y_,K,0)) {
+				// Done !
+				if (getDebug())
+					System.out.println("Tried all "+(i+1)+" combinations.");
 				break;
+			}
 		}
-		if (getDebug())
-			System.out.println("Tried all "+(i+1)+" combinations.");
 
 		return y;
 	}
@@ -113,7 +117,7 @@ public class PCC extends CC implements TechnicalInformationHandler{ // MT Capabl
 		TechnicalInformation	result;
 		
 		result = new TechnicalInformation(Type.INPROCEEDINGS);
-		result.setValue(Field.AUTHOR, "Weiwei Cheng and Krzysztof Dembczynsky and Eyke Hullermeier");
+		result.setValue(Field.AUTHOR, "Krzysztof Dembczynsky and Weiwei Cheng and Eyke Hullermeier");
 		result.setValue(Field.TITLE, "Bayes Optimal Multi-label Classification via Probabalistic Classifier Chains");
 		result.setValue(Field.BOOKTITLE, "ICML '10: 27th International Conference on Machine Learning");
 		result.setValue(Field.YEAR, "2010");
