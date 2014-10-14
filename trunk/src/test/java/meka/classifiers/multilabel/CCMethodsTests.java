@@ -77,7 +77,21 @@ public class CCMethodsTests extends TestCase {
 		smo.setBuildLogisticModels(true);
 		h.setClassifier(smo);
 		Result r = EvaluationTests.cvEvaluateClassifier(h);
-		assertTrue("MCC Accuracy Correct", r.info.get("Accuracy").equals("0.544 +/- 0.037") );
+		assertTrue("MCC Accuracy Correct", r.info.get("Accuracy").equals("0.561 +/- 0.035") );
+	}
+
+	public void testPMCC() {
+		// Test MCC (with SMO -- -M)
+		System.out.println("Test PMCC");
+		PMCC h = new PMCC();
+		h.setM(10);
+		h.setChainIterations(50);
+		h.setInferenceInterations(20);
+		SMO smo = new SMO();
+		smo.setBuildLogisticModels(true);
+		h.setClassifier(smo);
+		Result r = EvaluationTests.cvEvaluateClassifier(h);
+		assertTrue("PMCC Accuracy Correct", r.info.get("Accuracy").equals("0.587 +/- 0.035") );
 	}
 
 	public void testPCC() {
@@ -88,7 +102,6 @@ public class CCMethodsTests extends TestCase {
 		smo.setBuildLogisticModels(true);
 		h.setClassifier(smo);
 		Result r = EvaluationTests.cvEvaluateClassifier(h);
-		System.out.println("PCC "+r.info.get("Accuracy"));
 		assertTrue("PCC Accuracy Correct", r.info.get("Accuracy").equals("0.565 +/- 0.032") );
 	}
 }
