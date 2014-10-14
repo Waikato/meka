@@ -109,23 +109,23 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 		return buffer.toString();
 	}
 
-	// (3,'_') -> "c_3"
+	/** (3,'_') -> "c_3" */
 	public static String encodeClass(int j) {
 		return "c_"+j;
 	}
 
-	// ("c_3",'_') -> 3
+	/** ("c_3",'_') -> 3 */
 	public static int decodeClass(String a) {
 		//System.out.println(""+a);
 		return Integer.parseInt(a.substring(a.indexOf('_')+1));
 	}
 
-	// (["c_3","c_1"]) -> "c_3+1"
+	/** (["c_3","c_1"]) -> "c_3+1" */
 	public static String encodeClass(String c_j, String c_k) {
 		return "c_"+join(decodeClasses(c_j),"+")+"+"+join(decodeClasses(c_k),"+");
 	}
 
-	// ([3,1]) -> "c_3+1"
+	/** ([3,1]) -> "c_3+1" */
 	public static String encodeClass(int c_[]) {
 		String c = "c_";
 		for(int j = 0; j < c_.length; j++) {
@@ -135,7 +135,7 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 		return c;
 	}
 
-	// ("c_3+1") -> [3,1]
+	/** ("c_3+1") -> [3,1] */
 	public static int[] decodeClasses(String a) {
 		String s[] = new String(a.substring(a.indexOf('_')+1)).split("\\+");
 		int vals[] = new int[s.length]; 
@@ -145,12 +145,12 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 		return vals;
 	}
 
-	// (3,1) -> "3+1"
+	/** (3,1) -> "3+1" */
 	public static String encodeValue(String v_j, String v_k) {
 		return String.valueOf(v_j)+"+"+String.valueOf(v_k);
 	}
 
-	// (3,1,2) -> "3+1+2"
+	/** (3,1,2) -> "3+1+2" */
 	public static String encodeValue(Instance x, int indices[]) {
 		String v = "";
 		for(int j = 0; j < indices.length; j++) {
@@ -160,20 +160,22 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 		return v;
 	}
 
-	// "C+A+B" -> ["C","A","B"]
+	/** "C+A+B" -> ["C","A","B"] */
 	public static String[] decodeValue(String a) {
 		return a.split("\\+");
 	}
 
-	/*
-	   Return a set of all the combinations of 'indices' in 'D', pruned by 'p'
-	   e.g. {00,01,11}
-   */
+	/** 
+	 * Return a set of all the combinations of attributes at 'indices' in 'D', pruned by 'p'; e.g., {00,01,11}.
+	 */
 	public static Set<String> getValues(Instances D, int indices[], int p) {
 		HashMap<String,Integer> count = getCounts(D,indices,p);
 		return count.keySet();
 	}
 
+	/** 
+	 * Return a set of all the combinations of attributes at 'indices' in 'D', pruned by 'p'; AND THEIR COUNTS, e.g., {(00:3),(01:8),(11:3))}.
+	 */
 	public static HashMap<String,Integer> getCounts(Instances D, int indices[], int p) {
 		HashMap<String,Integer> count = new HashMap<String,Integer>();
 		for(int i = 0; i < D.numInstances(); i++) {
@@ -186,9 +188,8 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 
 	/**
 	 * Merge Labels - Make a new 'D', with labels made into superlabels, according to partition 'indices', and pruning values 'p' and 'n'.
-	 * @assume	j < k
-	 * @assume attributes in D labeled by original index
-	 * @returns	 Instaces with attributes at j and k moved to position L as (j,k), with classIndex = L-1
+	 * @param 	D	assume attributes in D labeled by original index
+	 * @return	 	Instances with attributes at j and k moved to position L as (j,k), with classIndex = L-1
 	 */
 	public static Instances mergeLabels(Instances D, int indices[][], int p, int n) {
 
@@ -252,9 +253,11 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 
 	/**
 	 * Merge Labels.
-	 * @assume	j < k
-	 * @assume: attributes in D labeled by original index
-	 * @returns	 Instaces with attributes at j and k moved to position L as (j,k), with classIndex = L-1
+	 *
+	 * @param	j 	index 1 (assume that <code>j < k</code>)
+	 * @param	k	index 2 (assume that <code>j < k</code>)
+	 * @param	D	iInstances, with attributes in labeled by original index
+	 * @return	 	Instaces with attributes at j and k moved to position L as (j,k), with classIndex = L-1
 	 */
 	public static Instances mergeLabels(Instances D, int j, int k, int p) {
 		int L = D.classIndex();
@@ -329,8 +332,11 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 		return (String[])Y.toArray(new String[Y.size()]);
 	}
 
-	public static String[] getNeighbours(String y, HashMap <String,Integer>S, int n) {
-		return getNeighbours(y,new ArrayList<String>(S.keySet()),n);
+	/**
+	 * GetNeighbours - return from set S (the keySet of HashMap C), label-vectors closest to y, having no more different than 'n' bits different.
+	 */
+	public static String[] getNeighbours(String y, HashMap <String,Integer>C, int n) {
+		return getNeighbours(y,new ArrayList<String>(C.keySet()),n);
 	}
 
 	protected int m_Seed = 0;
