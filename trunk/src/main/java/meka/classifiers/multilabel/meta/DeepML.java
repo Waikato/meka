@@ -64,6 +64,7 @@ public class DeepML extends AbstractDeepNeuralNet implements Randomizable {
 		double X_[][] = MLUtils.getXfromD(D);
 
 		// Pre Tune ===========================
+		/*
 		if (m_M < 0 || m_R < 0 || m_H < 0) {
 			System.out.println("We will do some pre-tuning here ...");
 			//BR h = new BR();
@@ -72,6 +73,7 @@ public class DeepML extends AbstractDeepNeuralNet implements Randomizable {
 			System.out.println("got: "+Arrays.toString(ops));
 			this.setOptions(ops);
 		}
+		*/
 		// ====================================
 
 		// Build DBM
