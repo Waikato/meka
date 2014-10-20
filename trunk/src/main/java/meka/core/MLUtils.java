@@ -85,7 +85,7 @@ public abstract class MLUtils {
 
 	/**
 	 * Instance with L labels to double[] of length L.
-	 * @Note: assumes in [0,1]
+	 * Rounds to the nearest whole number.
 	 */
 	public static final double[] toDoubleArray(Instance x, int L) {
 		double a[] = new double[L];
@@ -97,7 +97,7 @@ public abstract class MLUtils {
 
 	/**
 	 * Instance with L labels to double[] of length L, where L = x.classIndex().
-	 * @Note: assumes in [0,1]
+	 * Rounds to the nearest whole number.
 	 */
 	public static final double[] toDoubleArray(Instance x) {
 		int L = x.classIndex();
@@ -106,7 +106,7 @@ public abstract class MLUtils {
 
 	/**
 	 * ToBitString - returns a String representation of x = [0,0,1,0,1,0,0,0], e.g., "000101000".
-	 * @note that it may be better to use a sparse representation for some applications.
+	 * NOTE: It may be better to use a sparse representation for some applications.
 	 */
 	public static final String toBitString(Instance x, int L) {
 		StringBuilder sb = new StringBuilder(L);  
@@ -301,7 +301,7 @@ public abstract class MLUtils {
 
 	/** 
 	 * LabelCardinality - return the label cardinality of label data Y.
-	 * @TODO move to Metrics.java ? / Use M.sum(Y)/N
+	 * TODO: move to Metrics.java ? / Use M.sum(Y)/N
 	 */
 	public static final double labelCardinality(int Y[][]) {
 		int N = Y.length;
@@ -438,8 +438,7 @@ public abstract class MLUtils {
 
 	/**
 	 * CountCombinations - return a mapping of each distinct label combination and its count.
-	 * @note that a sparse representation would be much better for many applications, i.e., instead of using toBitString(...) 
-	 * i.e., use toSparseRepresentation(...) instead.
+	 * NOTE: A sparse representation would be much better for many applications, i.e., instead of using toBitString(...), use toSparseRepresentation(...) instead.
 	 * @param	D	dataset 
 	 * @param	L	number of labels
 	 * @return	a HashMap where a String representation of each label combination is associated with an Integer count, e.g., "00010010",3
@@ -455,13 +454,21 @@ public abstract class MLUtils {
 		return map;
 	}
 
+	/**
+	 * CountCombinations in a sparse way.
+	 * @see		MLUtils#countCombinations(Instances,int)
+	 * @param	D	dataset 
+	 * @param	L	number of labels
+	 * @return	a HashMap where a String representation of each label combination is associated with an Integer count, e.g., "00010010",3
+	 */
 	public static final HashMap<LabelSet,Integer> countCombinationsSparse(Instances D, int L) {
 		return PSUtils.countCombinationsSparse(D,L);
 	}
 
 	/**
 	 * ClassCombinationCounts - multi-target version of countCombinations(...).
-	 * @note that this uses the encodeValue(...) function which does NOT consider sparse data.
+	 * NOTE: uses the encodeValue(...) function which does NOT consider sparse data.
+	 * TODO: use LabelVector instead of Strings
 	 * @param	D	dataset 
 	 * @return	a HashMap where a String representation of each class combination is associated with an Integer count, e.g. [0,2,2,3,2],5
 	 */
@@ -476,21 +483,10 @@ public abstract class MLUtils {
 		return map;
 	}
 
-	/*
-	// ["A","B","NEG"] -> "A+B+NEG"
-	public static String encodeValue(String s[]) {
-	StringBuilder sb = new StringBuilder(String.valueOf(s[0]));  
-	for(int i = 1; i < s.length; i++) {
-	sb.append('+').append(s[i]);
-	}
-	return sb.toString();
-	}
-	*/
-
 	/**
 	 * Encode Value.
 	 * [0,3,2] -> "0+3+2"
-	 * Deprecated - Use LabelSet
+	 * Deprecated - Use LabelSet or LabelVector
 	 */
 	@Deprecated
 	public static String encodeValue(int s[]) {
@@ -504,7 +500,7 @@ public abstract class MLUtils {
 	/**
 	 * Encode Value.
 	 * "0+3+2"-> [0,3,2]
-	 * Deprecated - Use LabelSet
+	 * Deprecated - Use LabelSet or LabelVector
 	 */
 	@Deprecated
 	public static int[] decodeValue(String a) {
@@ -528,25 +524,23 @@ public abstract class MLUtils {
 	}
 
 	/**
-	 * argmax - argmax function for a HashMap
-	 * @note used only by SuperNodeFilter.java
-	 * @return 	argmax_k map.get(k)
+	 * maxItem - argmax function for a HashMap
+	 * NOTE: same as above, but for integer
+	 * (TODO: do something more clever than this)
 	 */
-	public static final Object argmax(HashMap<String,Integer> map) {
-
-		Object max_s = null;
-		int max_v  = 0;
-
-		for(Object s : map.keySet()) {
-			Integer v = map.get(s);
-			if (v > max_v) {
-				max_v = v;
-				max_s = s;
+	public static final Object argmax(HashMap<?,Integer> map) {
+		Object max_k = null;
+		double max_v = 0.0;
+		for (Object k : map.keySet()) {
+			if (map.get(k) >= max_v) {
+				max_k = k;
+				max_v = map.get(k);
 			}
 		}
-		return max_s;
+		return max_k;
 	}
 
+	/** Get the number of unique label combinations in a dataset */
 	public static final int numberOfUniqueCombinations(Instances D) {
 		HashMap<String,Integer> hm = classCombinationCounts(D);
 		return hm.size();
@@ -636,37 +630,13 @@ public abstract class MLUtils {
 
 	/**
 	 * SetValues - set the attribute values in Instsance x (having L labels) to z[].
-	 * @todo call above method
+	 * TODO: call above method
 	 */
 	public static final Instance setValues(Instance x, double z[], int L) {
 		for(int a = 0; a < z.length; a++) {
 			x.setValue(L+a,z[a]);
 		}
 		return x;
-	}
-
-	/* not in use
-	   public static int max(int array[]) {
-	   int max = Integer.MIN_VALUE;
-	   for(int i : array) {
-	   if (max > i)
-	   max = i;
-	   }
-	   return max;
-	   }
-	   */
-
-	public static int mode(int a[]) {
-		int max = 0;
-		int count = 0;
-		HashMap<Integer,Integer> d = new HashMap<Integer,Integer>();
-		for(int v : a) {
-			int n = d.containsKey(v) ? d.get(v) + 1 : 1;
-			d.put(v,n);
-			if (n > count)
-				max = v;
-		}
-		return max;
 	}
 
 	public static String printAsTextMatrix(double M[][]) {
@@ -871,7 +841,7 @@ public abstract class MLUtils {
 
 	/**
 	 * GetXfromD - Extract attributes as a double X[][] from Instances D.
-	 * @TODO getXfromInstances would be a better name.
+	 * TODO: getXfromInstances would be a better name.
 	 */
 	public static double[][] getXfromD(Instances D) {
 		int N = D.numInstances();
@@ -889,7 +859,7 @@ public abstract class MLUtils {
 
 	/**
 	 * GetXfromD - Extract labels as a double Y[][] from Instances D.
-	 * @TODO getYfromInstances would be a better name.
+	 * TODO: getYfromInstances would be a better name.
 	 */
 	public static double[][] getYfromD(Instances D) {
 		int L = D.classIndex();
