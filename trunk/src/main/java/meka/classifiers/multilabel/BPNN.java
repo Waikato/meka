@@ -18,13 +18,15 @@ package meka.classifiers.multilabel;
 import meka.classifiers.multilabel.NN.*;
 import weka.core.*;
 import meka.core.*;
+import rbms.Mat; /** @TEMP */
 import java.util.*;
 import Jama.Matrix;
 
 /**
  * BPNN.java - Back Propagation Neural Network.
- * This is a standard back-propagated Neural Network with multiple outputs that correspond to multiple labels.
- * @author Jesse Read (jesse@tsc.uc3m.es)
+ * This is a standard back-propagated Neural Network with multiple outputs that correspond to multiple labels.<br>
+ * If trained 'from scratch' only 1 layer is possible, but if you initialise it (from another method) with pre-trained weight matrices, the number of layers is inferred from that.
+ * @author Jesse Read 
  * @version March 2013
 */
 
@@ -47,10 +49,18 @@ public class BPNN extends AbstractNeuralNet {
 		double X_[][] = MLUtils.getXfromD(D);
 		double Y_[][] = MLUtils.getYfromD(D);
 
-		// @todo, parameterize this
-		int h[] = new int[]{m_H};
+		if (this.W == null) {
+			if (getDebug())
+				System.out.println("initialize weights ...");
+			int h[] = new int[]{m_H}; // TODO: parameterize this
+			int d = X_[0].length;
+			int L = D.classIndex();
+			initWeights(d,L,h); 
+		}
+		// else ... probably pre-initialized, continue ...
+		else if (getDebug())
+				System.out.println("weights already preset, continue ...");
 
-		init(X_,Y_,h); 
 		train(X_,Y_,m_E);
 	}
 
@@ -61,33 +71,42 @@ public class BPNN extends AbstractNeuralNet {
 	}
 
 	/**
-	 * Init - Initialize a BPNN with input X, output Y, and weight matrices W.
-	 * You may initilise W outside this class, but 
-	 * 		W.length must = number of hidden layers; and 
-	 * 		W.getRowDimension(), W.getColumnDimension() must correspond correctly.
+	 * SetWeights - Initialize a BPNN with (pre-trained) weight matrices W (which also determines X dimensions).
+	 * @param	W	pre-trained weight matrix (should include bias weights, assume W[-1]-1 hidden units in penultimate layer not including bias])
+	 * @param	L	the number of labels (for making the final matrix)
 	 */
-	public void init(double[][] X_, double[][] Y_, Matrix W[]) throws Exception {
+	public void setWeights(Matrix W[], int L) throws Exception {
 
 		r = new Random(0);
 
-		this.W = W;								// weights
-
-		this.dW_ = new Matrix[W.length];		// weight deltas
-
-		for(int i = 0; i < this.dW_.length; i++) {
-			this.dW_[i] = new Matrix(W[i].getRowDimension(),W[i].getColumnDimension(),0.0);
+		this.W = new Matrix[W.length+1];
+		for(int l = 0; l < W.length; l++) {
+			this.W[l] = W[l];
 		}
 
+		int h = W[1].getRowDimension()-1;
+		this.W[W.length] = Matrix.random(h+1,L).plusEquals(new Matrix(h+1,L,-0.5)).timesEquals(0.1);
+
+		makeMomentumMatrices();
+	}
+
+	private void makeMomentumMatrices() {
+		this.dW_ = new Matrix[this.W.length];		// weight deltas
+
+		for(int i = 0; i < this.dW_.length; i++) {
+			this.dW_[i] = new Matrix(this.W[i].getRowDimension(),this.W[i].getColumnDimension(),0.0);
+		}
 	}
 
 	/**
-	 * Init - Initialize a BPNN with input X, output Y, to be of H.length hidden layers.
-	 * W will be initialised for you randomly.
+	 * InitWeights - Initialize a BPNN of H.length hidden layers with H[0], H[1], etc hidden units in each layer (W will be random, and of the corresponding dimensions).
+	 * @param	d	number of visible units
+	 * @param	L	number of labels (output units)
+	 * @param	H	number of units in hidden layers, H.length = number of hidden layers. CURRENTLY LIMITED TO 1.
 	 */
-	public void init(double[][] X_, double[][] Y_, int H[]) throws Exception {
+	public void initWeights(int d, int L, int H[]) throws Exception {
 
-		int L = Y_[0].length;
-		int d = X_[0].length;
+		int numHidden = H.length;
 
 		if (getDebug()) {
 			System.out.println("Initializing "+(H.length)+" hidden Layers ...");
@@ -95,18 +114,21 @@ public class BPNN extends AbstractNeuralNet {
 			System.out.println("L = "+L);
 		}
 
+		// We need weights for Z to Y, as well as from X to Z
 		Matrix W[] = new Matrix[H.length+1];
+		int h = H[0];
+		H = new int[]{d,h,L};
 
-		for(int n = 0; n < H.length; n++) {
-			int h = H[n];
-			if (getDebug()) System.out.println("W["+n+"] = "+(d+1)+" x "+h);
-			W[n] 	 = Matrix.random(d+1,h).plusEquals(new Matrix(d+1,h,-0.5)).timesEquals(0.1);
-			d = h;
+		// Hidden layers 
+		System.out.println(""+Arrays.toString(H));
+		for(int n = 0; n < H.length-1; n++) {
+			W[n] = Matrix.random(H[n]+1,H[n+1]).plusEquals(new Matrix(H[n]+1,H[n+1],-0.5)).timesEquals(0.1);
+			if (getDebug()) System.out.println("W["+n+"] = "+(H[n]+1)+" x "+H[n+1]);
 		}
-		W[H.length] = Matrix.random(d+1,L).plusEquals(new Matrix(d+1,L,-0.5)).timesEquals(0.1);
-		if (getDebug()) System.out.println("W["+H.length+"] = "+(d+1)+" x "+L);
 
-		init(X_, Y_, W); 
+		//setWeights(W, L); 
+		this.W = W;
+		makeMomentumMatrices();
 
 	}
 
@@ -173,27 +195,38 @@ public class BPNN extends AbstractNeuralNet {
 
 	/**
 	 * Forward Pass - Given input X_, get output of all layers Z[0]...
-	 * @param	X_	input
-	 * @return  Y 	output
+	 * @param	X_	input (no bias included)
+	 * @return  output Z[] = {X,Z1,Z2,...,Y}
 	 */
 	public Matrix[] forwardPass(double X_[][]) {
 
-		int nW = W.length; // number of weight matrices
-		Matrix Z[] = new Matrix[nW+1];
+		int numW = W.length; // number of weight matrices
+		Matrix Z[] = new Matrix[numW+1];
 
 		// input activations
 		Z[0] = new Matrix(M.addBias(X_));
 
 		// hidden layer(s)
-		for(int i = 1; i < Z.length; i++) {
+		int i = 1;
+		for(i = 1; i < numW; i++) {
+			if (getDebug())
+				System.out.print("DO: ["+i+"] "+Mat.getDim(Z[i-1].getArray())+" * "+Mat.getDim(W[i-1].getArray())+" => ");
+
 			Matrix A_z = Z[i-1].times(W[i-1]);									// 					A = X * W1 		= Z[n-1] * W[n-1]	 
 			Z[i] = M.sigma(A_z);
 			Z[i] = M.addBias(Z[i]);											// ACTIVATIONS      Z[n] = sigma(A)	=  
+
+			if (getDebug())
+				System.out.println("==: "+Mat.getDim(A_z.getArray()));
 		}
 
 		// output layer
-		Matrix A_y = Z[nW-1].times(W[nW-1]);			// 					A = X * W1 		= Z[n-1] * W[n-1]	 
-		Z[nW] = M.sigma(A_y);					// ACTIVATIONS      Z[n] = sigma(A)	=  
+		if (getDebug())
+			System.out.print("DX: ["+i+"] "+Mat.getDim(Z[i-1].getArray())+" * "+Mat.getDim(W[i-1].getArray())+" => ");
+		Matrix A_y = Z[i-1].times(W[i-1]);			// 					A = X * W1 		= Z[n-1] * W[n-1]	 
+		if (getDebug())
+			System.out.println("==: "+Mat.getDim(A_y.getArray()));
+		Z[numW] = M.sigma(A_y);					// ACTIVATIONS      Z[n] = sigma(A)	=  
 
 		return Z;
 	}

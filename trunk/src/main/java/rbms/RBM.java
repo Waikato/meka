@@ -479,8 +479,8 @@ public class RBM {
 		Matrix E_neg = X_1.transpose().times(pZ_1);								// negative energy, P(Z_1) * X_1
 
 		// CALCULATE ERROR (Optional!)
-		double _Err = Mat.meanSquaredError(X_0.getArray(),X_1.getArray());			// @note: this take some milliseconds to calculate
-		System.out.println(""+_Err);
+		//double _Err = Mat.meanSquaredError(X_0.getArray(),X_1.getArray());			// @note: this take some milliseconds to calculate
+		//System.out.println(""+_Err);
 
 		// CONTRASTIVE DIVERGENCE
 		Matrix CD = ((E_pos.minusEquals(E_neg)).times(1./N));					// CD = difference between energies
