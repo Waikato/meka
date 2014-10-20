@@ -93,6 +93,7 @@ public class DeepML extends AbstractDeepNeuralNet implements Randomizable {
 			System.out.println("W = \n"+M.toString(tW[0].getArray()));
 			System.out.println("Y = \n"+M.toString(MLUtils.getYfromD(D),0));
 			System.out.println("Z = \n"+M.toString(M.threshold(Z,0.5),0));
+			/*
 			Instances newD = RBMTools.makeDataset(D,M.threshold(Z,0.5));
 			System.out.println(""+newD);
 			ArffSaver saver = new ArffSaver();
@@ -100,6 +101,7 @@ public class DeepML extends AbstractDeepNeuralNet implements Randomizable {
 			saver.setFile(new File("newD.arff"));
 			saver.writeBatch();
 			System.exit(1);
+			*/
 		}
 
 		// Train Classifier
