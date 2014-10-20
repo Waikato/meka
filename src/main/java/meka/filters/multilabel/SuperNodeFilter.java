@@ -32,7 +32,7 @@ import java.io.*; // for test routin main()
  * 		New data with label attributes:         [1+3,4,0+2]<br>
  * 		(the values each attribute can take are pruned if necessary)<br>
  *
- * @author 	Jesse Read (jesse@tsc.uc3m.es)
+ * @author 	Jesse Read
  * @version	June 2012
  */
 public class SuperNodeFilter extends SimpleBatchFilter {
