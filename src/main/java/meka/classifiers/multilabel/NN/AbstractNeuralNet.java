@@ -21,7 +21,7 @@ import weka.core.*;
 
 /**
  * AbstractNeuralNet.java - Provides common options, constants, and other functions for NNs.
- * @author Jesse Read (jesse@tsc.uc3m.es)
+ * @author Jesse Read
  * @version December 2012
  */
 public abstract class AbstractNeuralNet extends MultilabelClassifier  {
@@ -37,19 +37,6 @@ public abstract class AbstractNeuralNet extends MultilabelClassifier  {
 
 	/** momentum  */
 	protected double m_M = 0.1;
-
-	/*
-	public abstract void buildClassifier(Instances trainingSet) throws Exception;
-
-	public abstract double[] distributionForInstance(Instance i) throws Exception;
-	   @Override
-	   public void buildClassifier(Instances D) throws Exception {
-	   }
-
-	   @Override
-	   public double[] distributionForInstance(Instance yx) throws Exception {
-	   }
-	   */
 
 	public void setH(int h) { 
 		m_H = h;

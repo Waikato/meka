@@ -108,6 +108,20 @@ public abstract class A {
 		return p;
 	}
 
+	/** Mode */
+	public static int mode(int a[]) {
+		int max = 0;
+		int count = 0;
+		HashMap<Integer,Integer> d = new HashMap<Integer,Integer>();
+		for(int v : a) {
+			int n = d.containsKey(v) ? d.get(v) + 1 : 1;
+			d.put(v,n);
+			if (n > count)
+				max = v;
+		}
+		return max;
+	}
+
 	// append value 'v' to 'array[]' 
 	public static int[] append(int array[], final int v) {
 		int n = array.length;
