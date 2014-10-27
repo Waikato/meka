@@ -34,7 +34,7 @@ import java.util.*;
  * </verbatim>
  *
  * @see RBM
- * @author Jesse Read (jesse@tsc.uc3m.es)
+ * @author Jesse Read
  * @version April 2013
  */
 public class DBM extends RBM {
