@@ -46,6 +46,7 @@ public class MekaTests extends WekaTestSuite {
 	suite.addTest(MetaMethodsTests.suite());
 	suite.addTest(CCMethodsTests.suite());
 	suite.addTest(LPMethodsTests.suite());
+	suite.addTest(DeepMethodsTests.suite());
 	suite.addTest(MiscMethodsTests.suite());
 
 	/*
