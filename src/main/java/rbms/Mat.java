@@ -62,77 +62,6 @@ public abstract class Mat {
 		return s;
 	}
 
-	/**
-	 * Flatten - turn Matrix [0.0 0.1; 0.2 0.3] into vector [0.0 0.1 0.2 0.3].
-	public static double[] flatten(double M_[][]) {
-		Matrix M = new Matrix(M_);
-		return M.getColumnPackedCopy();
-	}
-	*/
-
-	/*
-	// add a row at the front with value v
-	public static double[][] addRow(double[][] M, int v) {
-		final double[][] C = new double[M.length+1][M[0].length];
-		for(int j = 0; j < M[0].length; j++) {
-			C[0][j] = v;
-		}
-		for (int i = 0; i < M.length; i++) {
-			for(int j = 0; j < M[i].length; j++) {
-				C[i+1][j] = M[i][j];
-			}
-		}
-        return C;
-    }
-
-	// add a col at the front with value v
-	public static double[][] addCol(double[][] M, double v) {
-		final double[][] C = new double[M.length][M[0].length+1];
-		for (int i = 0; i < M.length; i++) {
-			C[i][0] = v;
-			for(int j = 0; j < M[i].length; j++) {
-				C[i][j+1] = M[i][j];
-			}
-		}
-        return C;
-    }
-
-	public static Matrix delLastCol(Matrix M) {
-		final double[][] M_ = M.getArray();
-		final double[][] C_ = new double[M_.length][M_[0].length-1];
-		for (int i = 0; i < C_.length; i++) {
-			for(int j = 0; j < C_[i].length; j++) {
-				C_[i][j] = M_[i][j];
-			}
-		}
-        return new Matrix(C_);
-	}
-
-	public static Matrix delLastRow(Matrix M) {
-		//W[i] = new Matrix(Arrays.copyOf(W[i].getArray(),30));
-		final double[][] M_ = M.getArray();
-		final double[][] C_ = new double[M_.length-1][M_[0].length];
-		for (int i = 0; i < C_.length; i++) {
-			for(int j = 0; j < C_[i].length; j++) {
-				C_[i][j] = M_[i][j];
-			}
-		}
-        return new Matrix(C_);
-    }
-
-	/*
-	public static double[][] setCol(double[][] M, int i, double v) {
-		final double[][] C = new double[M.length][M[0].length];
-		for (int i = 0; i < M.length; i++) {
-			C[i][0] = v;
-			for(int j = 0; j < M[i].length; j++) {
-				C[i][j+1] = M[i][j];
-			}
-		}
-        return C;
-    }
-	*/
-
 	public static final void fillRow(double M[][], int k, double val) {
 		for(int j = 0; j < M[k].length; j++) {
 			M[k][j] = val;
@@ -145,6 +74,7 @@ public abstract class Mat {
 		}
 	}
 
+	/** A 2D array of Gaussian random numbers */
 	public static double[][] randn(int rows, int cols, Random r) {
 		double X[][] = new double[rows][cols];
 		for(int i = 0; i < rows; i++) {
@@ -155,7 +85,12 @@ public abstract class Mat {
 		return X;
 	}
 
-	// copy
+	/** A matrix of Gaussian random numbers */
+	public static Matrix randomn(int nrows, int ncols, Random r) {
+		return new Matrix(Mat.randn(nrows,ncols,r));
+	}
+
+	/** Copy a 2D array */
 	public static final double[][] copy(double P[][]) {
 		double X[][] = new double[P.length][P[0].length];
 		for(int i = 0; i < P.length; i++) {
@@ -166,6 +101,7 @@ public abstract class Mat {
 		return X;
 	}
 
+	/*
 	// the derivative of the sigmoid fn
 	public static final double sigmaP(double a) {
 		return Math.exp(-a) / Math.pow(1. + Math.exp(a),2);
@@ -186,6 +122,7 @@ public abstract class Mat {
 		}
 		return X;
 	}
+	*/
 
 	// derivative of the sigmoid function
 	public static final double dsigma(double a) {
@@ -215,14 +152,7 @@ public abstract class Mat {
 
 	// derivative of the sigmoid function applied to each value of a matrix
 	public static final Matrix dsigma(Matrix A) {
-		double A_[][] = A.getArray();
-		double X[][] = new double[A_.length][A_[0].length];
-		for(int i = 0; i < A_.length; i++) {
-			for(int j = 0; j < A_[i].length; j++) {
-				X[i][j] = dsigma(A_[i][j]);
-			}
-		}
-		return new Matrix(X);
+		return new Matrix(dsigma(A.getArray()));
 	}
 
 	/**
@@ -406,6 +336,8 @@ public abstract class Mat {
     }
 
 	public static Matrix addBias(Matrix M) {
+		return new Matrix(addBias(M.getArray()));
+		/*
 		double[][] M_ = M.getArray();
 		final double[][] C = new double[M_.length][M_[0].length+1];
 		for (int i = 0; i < M_.length; i++) {
@@ -415,6 +347,7 @@ public abstract class Mat {
 			}
 		}
 		return new Matrix(C);
+		*/
     }
 
 	public static double[] removeBias(double[] x) {
@@ -507,6 +440,8 @@ public abstract class Mat {
         return error / vectorBatch1.length;
     }
 
+	/*
+	 * TODO: USE A.prod
 	public static double product(double v[]) {
 		double prod = 1.0;
 		for(int i = 0; i < v.length; i++) {
@@ -514,7 +449,9 @@ public abstract class Mat {
 		}
 		return prod;
 	}
+	*/
 
+	/** dot product of two vectors */
 	public static double dot(double v[], double u[]) {
 		double sum = 0.0;
 		for(int i = 0; i < v.length; i++) {

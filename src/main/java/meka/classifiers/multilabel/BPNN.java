@@ -85,7 +85,7 @@ public class BPNN extends AbstractNeuralNet {
 		}
 
 		int h = W[1].getRowDimension()-1;
-		this.W[W.length] = Matrix.random(h+1,L).plusEquals(new Matrix(h+1,L,-0.5)).timesEquals(0.1);
+		this.W[W.length] = Mat.randomn(h+1,L,r).timesEquals(0.1);
 
 		makeMomentumMatrices();
 	}
@@ -122,7 +122,7 @@ public class BPNN extends AbstractNeuralNet {
 		// Hidden layers 
 		System.out.println(""+Arrays.toString(H));
 		for(int n = 0; n < H.length-1; n++) {
-			W[n] = Matrix.random(H[n]+1,H[n+1]).plusEquals(new Matrix(H[n]+1,H[n+1],-0.5)).timesEquals(0.1);
+			W[n] = Mat.randomn(H[n]+1,H[n+1],r).timesEquals(0.1);
 			if (getDebug()) System.out.println("W["+n+"] = "+(H[n]+1)+" x "+H[n+1]);
 		}
 
