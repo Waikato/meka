@@ -85,7 +85,7 @@ public class DBPNN extends AbstractDeepNeuralNet  {
 		Matrix W[] = trimBiases(dbm.getWs());
 
 		// Back propagate with batch size of 1 to fine tune the DBM into a supervised DBN
-		if ((MultilabelClassifier)m_Classifier instanceof BPNN) {
+		if (m_Classifier instanceof BPNN) {
 			if (getDebug())
 				System.out.println("You have chosen to use BPNN (very good!)");
 		}
