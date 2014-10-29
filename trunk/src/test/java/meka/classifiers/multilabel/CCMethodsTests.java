@@ -104,4 +104,31 @@ public class CCMethodsTests extends TestCase {
 		Result r = EvaluationTests.cvEvaluateClassifier(h);
 		assertTrue("PCC Accuracy Correct", r.info.get("Accuracy").equals("0.565 +/- 0.032") );
 	}
+
+	public void testCT() {
+		// Test CT (with SMO -- -M)
+		System.out.println("Test CT");
+		CT h = new CT();
+		SMO smo = new SMO();
+		smo.setBuildLogisticModels(true);
+		h.setClassifier(smo);
+		h.setInferenceInterations(10);
+		h.setChainIterations(10);
+		Result r = EvaluationTests.cvEvaluateClassifier(h);
+		//System.out.println("CT ACC: "+r.info.get("Accuracy"));
+		assertTrue("CT Accuracy Correct", r.info.get("Accuracy").equals("0.56  +/- 0.034") );
+	}
+
+	public void testCDT() {
+		// Test CDT (with SMO -- -M)
+		System.out.println("Test CDT");
+		CDT h = new CDT();
+		SMO smo = new SMO();
+		smo.setBuildLogisticModels(true);
+		h.setClassifier(smo);
+		Result r = EvaluationTests.cvEvaluateClassifier(h);
+		//System.out.println("CDT ACC: "+r.info.get("Accuracy"));
+		assertTrue("CDT Accuracy Correct", r.info.get("Accuracy").equals("0.519 +/- 0.039") );
+	}
+
 }
