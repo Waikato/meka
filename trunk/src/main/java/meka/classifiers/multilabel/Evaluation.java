@@ -282,8 +282,8 @@ public class Evaluation {
 		}
 		else if (h instanceof MultilabelClassifier) {
 			r.setInfo("Type","ML");
+			r.setInfo("Threshold",MLEvalUtils.getThreshold(r.predictions,D_train,top)); // <-- only relevant to ML (for now), but we'll put it in here in any case
 		}
-		r.setInfo("Threshold",MLEvalUtils.getThreshold(r.predictions,D_train,top)); // <-- only relevant to ML (for now), but we'll put it in here in any case
 		r.setInfo("Verbosity",vop);
 		r.output = Result.getStats(r, vop);
 		return r;

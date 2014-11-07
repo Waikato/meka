@@ -646,8 +646,15 @@ public abstract class StatUtils {
 
 		double Yprob[][] = result.allPredictions(); 
 		int Ytrue[][] = result.allActuals(); 
-		double ts[] = ThresholdUtils.thresholdStringToArray(result.getInfo("Threshold"),L); // <-- @TODO should not assume this for multi-target
-		int Ypred[][] = ThresholdUtils.threshold(Yprob,ts);
+		int Ypred[][] = null;
+		if (result.getInfo("Type").equals("MT")) {
+			// Multi-target, so just round!
+			Ypred = ThresholdUtils.round(Yprob);
+		}
+		else {
+			double ts[] = ThresholdUtils.thresholdStringToArray(result.getInfo("Threshold"),L); 
+			Ypred = ThresholdUtils.threshold(Yprob,ts);
+		}
 
 		double E[] = new double[L];
 		for(int j = 0; j < L; j++) {
