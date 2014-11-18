@@ -37,7 +37,7 @@ import weka.core.Utils;
  * Important Note: currently can only handle 10 values (or fewer) per target variable.
  * @see		meka.classifiers.multilabel.PS
  * @version	Jan 2013
- * @author 	Jesse Read (jesse@tsc.uc3m.es)
+ * @author 	Jesse Read
  */
 public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetClassifier {
 
@@ -121,7 +121,7 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 		return y;
 	}
 
-	// @TODO, use PSUtils
+	// TODO: use PSUtils
 	public double[] convertDistribution(double y_sl[], int L) {
 		double y_ml[] = new double[L];
 		for(int i = 0; i < y_sl.length; i++) {
@@ -136,7 +136,7 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 		return y_ml;
 	}
 
-	// @TODO, use PSUtils
+	// TODO use PSUtils
 	public Instances convertInstances(Instances D, int L) throws Exception {
 
 		//Gather combinations
