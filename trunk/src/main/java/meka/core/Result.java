@@ -240,12 +240,12 @@ public class Result implements Serializable {
 	public static String getResultAsString(Result s, int adp) {
 		StringBuilder sb = new StringBuilder();
 		double N = (double)s.predictions.size();
-		sb.append("|==== PREDICTIONS ===============>\n");
+		sb.append("|==== PREDICTIONS (N="+N+") =====>\n");
 		for(int i = 0; i < N; i++) {
 			sb.append("|");
 			sb.append(Utils.doubleToString((i+1),5,0));
 			sb.append(" ");
-			if (adp == 0) {
+			if (adp == 0 && !s.getInfo("Type").equalsIgnoreCase("MT")) {
 				LabelSet y = new LabelSet(MLUtils.toIndicesSet(s.actuals.get(i)));
 				sb.append(y).append(" ");
 				LabelSet ypred = new LabelSet(MLUtils.toIndicesSet(s.rowPrediction(i)));
