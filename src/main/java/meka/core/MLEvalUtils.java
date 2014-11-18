@@ -161,7 +161,7 @@ public abstract class MLEvalUtils {
 		}
 		if (V > 2) {
 			for(int j = 0; j < L; j++) {
-				output.put("Accuracy["+j+"]"				,1.0 - Metrics.P_Hamming(Y,Ypred,j));
+				output.put("Accuracy["+j+"]"				,Metrics.P_Hamming(Y,Ypred,j));
 			}
 		}
 		return output;

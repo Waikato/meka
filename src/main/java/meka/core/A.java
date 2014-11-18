@@ -61,7 +61,9 @@ public abstract class A {
 
 	/** ToString - Return a double[] as a nice String (formated to a 'adp' digits after the decimal point). */
 	public static String toString(double v[], int adp) {
-		int w = adp > 0 ? adp + 2 : 0;
+		if (adp <= 0)
+			return toString(toIntArray(v));
+		int w = adp + 2;
 		StringBuilder sb = new StringBuilder("[ ");  
 		for(int k = 0; k < v.length; k++) {
 			sb.append(String.format("%"+w+"."+adp+"f ", v[k]));
