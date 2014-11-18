@@ -51,12 +51,11 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 	private SuperNodeFilter f = new SuperNodeFilter();
 
 	private int m_P = 1;
-	private int m_N = 0;
+	private int m_Iv = 0;
 	private int m_L = 2;
 	private int m_I = 1000;
-	private int m_O = 0;
 
-	/* @TODO make external options */
+	/* TODO make external options */
 	private static final int i_SPLIT = 67;
 	private static final String i_ErrFn = "Exact match";
 
@@ -296,13 +295,13 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		 * refine the set we started with above, with a few iterations.
 		 * we mutate a set, and accept whenever the classification performance is GREATER
 		 */
-		if (m_N > 0) {
+		if (m_Iv > 0) {
 			if (getDebug()) System.out.println("4. REFINING THE INITIAL SET WITH SOME OLD-FASHIONED INTERNAL EVAL");
 			// Build & evaluate the classifier with the latest partition
 			result_1 = testClassifier((MultilabelClassifier)m_Classifier,D_train,D_test,partition);
 			w = result_1.output.get(i_ErrFn);
 			if (getDebug()) System.out.println("@0 : "+SuperLabelUtils.toString(partition)+ "\t("+w+")");
-			for(int i = 0; i < m_N; i++) {
+			for(int i = 0; i < m_Iv; i++) {
 				int partition_[][] = mutateCombinations(M.deep_copy(partition),rand);
 				// Build the classifier with the new combination
 				trainClassifier(m_Classifier,D_train,partition);
@@ -376,6 +375,38 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		return m_S;
 	}
 
+	public void setP(int p) {
+		m_P = p;
+	}
+
+	public int getP() {
+		return m_P;
+	}
+
+	public void setN(int l) {
+		m_L = l;
+	}
+
+	public int getN() {
+		return m_L;
+	}
+
+	public void setI(int i) {
+		m_I = i;
+	}
+
+	public int getI() {
+		return m_I;
+	}
+
+	public void setIv(int v) {
+		m_Iv = v;
+	}
+
+	public int getIv() {
+		return m_Iv;
+	}
+
 	public static void main(String args[]) {
 		MultilabelClassifier.evaluation(new SCC(),args);
 	}
@@ -392,10 +423,9 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 
 		Vector newVector = new Vector();
 		newVector.addElement(new Option("\tSets the number of simulated annealing iterations\n\tdefault: "+m_I, "I", 1, "-I <value>"));
-		newVector.addElement(new Option("\tSets the number of connections\n\tdefault: "+m_N, "N", 1, "-N <value>"));
+		newVector.addElement(new Option("\tSets the number of internal-validation iterations\n\tdefault: "+m_Iv, "V", 1, "-V <value>"));
 		newVector.addElement(new Option("\tSets the pruning number for PS\n\tdefault: "+m_P, "P", 1, "-P <value>"));
 		newVector.addElement(new Option("\tSets the limit for PS (was N) \n\tdefault: "+m_L, "L", 1, "-L <value>"));
-		newVector.addElement(new Option("\tAnother random open option.\n\tdefault: "+m_O, "O", 1, "-O <value>"));
 
 		Enumeration enu = super.listOptions();
 
@@ -409,9 +439,8 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 	public void setOptions(String[] options) throws Exception {
 		m_I = (Utils.getOptionPos('I',options) >= 0) ? Integer.parseInt(Utils.getOption('I', options)) : m_I;
 		m_L = (Utils.getOptionPos('L',options) >= 0) ? Integer.parseInt(Utils.getOption('L', options)) : m_L;
-		m_N = (Utils.getOptionPos('N',options) >= 0) ? Integer.parseInt(Utils.getOption('N', options)) : m_N;
+		m_Iv = (Utils.getOptionPos('V',options) >= 0) ? Integer.parseInt(Utils.getOption('V', options)) : m_Iv;
 		m_P = (Utils.getOptionPos('P',options) >= 0) ? Integer.parseInt(Utils.getOption('P', options)) : m_P;
-		m_O = (Utils.getOptionPos('O',options) >= 0) ? Integer.parseInt(Utils.getOption('O', options)) : m_O;
 		super.setOptions(options);
 	}
 
@@ -419,18 +448,16 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 	public String [] getOptions() {
 
 		String [] superOptions = super.getOptions();
-		String [] options = new String [superOptions.length + 10];
+		String [] options = new String [superOptions.length + 8];
 		int current = 0;
 		options[current++] = "-I";
 		options[current++] = String.valueOf(m_I);
-		options[current++] = "-N";
-		options[current++] = String.valueOf(m_N);
+		options[current++] = "-V";
+		options[current++] = String.valueOf(m_Iv);
 		options[current++] = "-P";
 		options[current++] = String.valueOf(m_P);
 		options[current++] = "-L";
 		options[current++] = String.valueOf(m_L);
-		options[current++] = "-O";
-		options[current++] = String.valueOf(m_O);
 		System.arraycopy(superOptions, 0, options, current, superOptions.length);
 		return options;
 
