@@ -238,6 +238,10 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		int L = D.classIndex(); 
 		rand = new Random(m_S); 
 
+		if (!(m_Classifier instanceof MultiTargetClassifier)) {
+			throw new Exception("[Error] The base classifier must be multi-target capable, i.e., from meka.classifiers.multitarget.");
+		}
+
 		// 0. SPLIT INTO TRAIN AND VALIDATION SET/S
 		Instances D_r = new Instances(D);
 		D_r.randomize(rand);
