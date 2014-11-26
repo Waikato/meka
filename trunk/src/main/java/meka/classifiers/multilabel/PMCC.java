@@ -27,9 +27,11 @@ import meka.core.*;
 import java.util.*;
 
 /**
- * PMCC.java - Like MCC but selects the top M chains at training time, and uses all them at test time (using Monte Carlo sampling -- this is not a typical majority-vote ensemble method).
+ * PMCC.java - Like MCC but creates a population of M chains at training time (from Is <i>candidate</i> chains, using Monte Carlo sampling), and uses this population for inference at test time; If you are looking for a 'more typical' majority-vote ensemble method, use something like EnsembleML or BaggingML with MCC.
  *
- * NOTE: this implementation used to be faster, because the chain was only rebuilt from the first node which was different -- this is no longer the case.
+ * <p>
+ * <b>NOTE:</b> this implementation was faster, because the chain was only rebuilt from the first node which was different -- this is no longer the case (due to updates to way classifier chains works, using the CNode class).
+ * </p>
  *
  * @see #weka.classifiers.multilabel.MCC
  * @author Jesse Read
@@ -153,7 +155,7 @@ public class PMCC extends MCC {
 		w = new double[m_M];
 		//int s[][] = new int[m_M][L]; // for interest's sake
 
-		if (m_Is > m_M) {
+		if (m_Is >= m_M) {
 
 			//HashMap<String,CC> id2cc = new HashMap<String,CC>();
 
@@ -198,8 +200,7 @@ public class PMCC extends MCC {
 			Utils.normalize(w);
 		}
 		else {
-			System.err.println("[Error] Number of chains evaluated (Is) shoulld be at least as greater than the population selected (M), and greater than 0.");
-			super.buildClassifier(D);
+			throw new Exception("[Error] Number of chains evaluated (Is) should be at least as great as the population selected (M), and always greater than 0.");
 		}
 
 	}
