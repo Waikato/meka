@@ -339,11 +339,10 @@ public abstract class PSUtils {
 
 		double y[] = new double[L];
 
-		for(int i = 0; i < p.length; i++) {                                                              
-
-			double d[] = MLUtils.fromBitString(iTemplate.classAttribute().value(i)); // e.g. d = [1,0,0,1,0,0]    p[i] = 0.5
-			for(int j = 0; j < d.length; j++) {
-				y[j] += (d[j] * p[i]);                                                         // e.g., y[0] += d[0] * p[i] = 1 * 0.5 = 0.5
+		for(int k = 0; k < p.length; k++) {                                                              
+			int d[] = MLUtils.toIntArray(iTemplate.classAttribute().value(k)); 		   // e.g. d = [1,3,5]    p[k] = 0.5
+			for(int j : d) {
+				y[j] += p[k];                                                         // e.g., y[0] += d[0] * p[k] = 1 * 0.5 = 0.5
 			}
 		}
 		return y;
@@ -352,12 +351,12 @@ public abstract class PSUtils {
 
 		double y[] = new double[L];
 
-		for(int i = 0; i < p.length; i++) {                                                              
+		for(int k = 0; k < p.length; k++) {                                                              
 
-			LabelSet y_meta = map[i];
+			LabelSet y_meta = map[k];
 
 			for(int j : y_meta.indices) {
-				y[j] += p[i];
+				y[j] += p[k];
 			}
 		}
 		return y;
@@ -375,9 +374,6 @@ public abstract class PSUtils {
 		x_.setDataset(template);
 		return x_;
 	}
-
-	//private static final int prune_limit(HashMap<LabelSet,Integer> map) {
-	//}
 
 	public static Instances LCTransformation(Instances D) {
 		return LCTransformation(D,D.classIndex());

@@ -75,22 +75,6 @@ public class LC extends MultilabelClassifier implements OptionHandler {
 		if(getDebug()) System.out.println("Done");
 	}
 
-	/**
-	 * Convert Instance - Convert e.g., [1,2,3] to [13,2]
-	 * @param	x	original Instance (e.g., [1,2,3],x)
-	 * @param	L 	the number of labels
-	 * @return	converted Instance (e.g., [13,2],x)
-	 */
-	public Instance convertInstance(Instance x, int L) {
-		Instance x_ = (Instance) x.copy(); 
-		x_.setDataset(null);
-		for (int i = 0; i < L; i++)
-			x_.deleteAttributeAt(0);
-		x_.insertAttributeAt(0);
-		x_.setDataset(m_InstancesTemplate);
-		return x_;
-	}
-
 	@Override
 	public double[] distributionForInstance(Instance x) throws Exception {
 
@@ -99,7 +83,7 @@ public class LC extends MultilabelClassifier implements OptionHandler {
 		//if there is only one class (as for e.g. in some hier. mtds) predict it
 		if(L == 1) return new double[]{1.0};
 
-		Instance x_ = convertInstance(x,L);
+		Instance x_ = PSUtils.convertInstance(x,L,m_InstancesTemplate); //convertInstance(x,L);
 		x_.setDataset(m_InstancesTemplate);
 
 		//Get a classification
