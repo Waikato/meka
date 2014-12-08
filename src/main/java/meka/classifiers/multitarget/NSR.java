@@ -22,6 +22,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.core.PSUtils;
+
 import weka.core.Attribute;
 import weka.core.Capabilities;
 import weka.core.Instance;
@@ -91,8 +93,8 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 		//if there is only one class (as for e.g. in some hier. mtds) predict it
 		//if(L == 1) return new double[]{1.0};
 
-		Instance x_sl = convertInstance(x,L);							// the sl instance
-		x_sl.setDataset(m_InstancesTemplate);							// where y in {comb_1,comb_2,...,comb_k}
+		Instance x_sl = PSUtils.convertInstance(x,L,m_InstancesTemplate);							// the sl instance
+		//x_sl.setDataset(m_InstancesTemplate);							// where y in {comb_1,comb_2,...,comb_k}
 
 		double w[] = m_Classifier.distributionForInstance(x_sl);		// w[j] = p(y_j) for each j = 1,...,L
 		int max_j  = Utils.maxIndex(w);									// j of max w[j]

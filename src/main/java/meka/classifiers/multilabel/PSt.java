@@ -70,8 +70,8 @@ public class PSt extends PS implements TechnicalInformationHandler {
 		// if there is only one class (as for e.g. in some hier. mtds) predict it
 		if(L == 1) return new double[]{1.0};
 
-		Instance x_ = convertInstance(x,L);
-		x_.setDataset(m_InstancesTemplate);
+		Instance x_ = PSUtils.convertInstance(x,L,m_InstancesTemplate); //convertInstance(x,L);
+		//x_.setDataset(m_InstancesTemplate);
 
 		// Get a classification
 		return PSUtils.recombination_t(m_Classifier.distributionForInstance(x_),L,m_InstancesTemplate);
