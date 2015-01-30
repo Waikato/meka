@@ -188,7 +188,7 @@
         <zipfileset dir="${basedir}" includes="lib/README.txt" prefix="meka-${version}"/>
         <zipfileset dir="${basedir}" includes="data/*.*" prefix="meka-${version}"/>
         <zipfileset dir="${javadoc}" prefix="meka-${version}/api"/>
-        <zipfileset dir="${scripts}" prefix="meka-${version}"/>
+        <zipfileset dir="${scripts}" prefix="meka-${version}" filemode="755"/>
       </zip>
     </target>
 
