@@ -17,17 +17,21 @@ package meka.classifiers.multilabel;
 
 import weka.classifiers.SingleClassifierEnhancer;
 import weka.classifiers.UpdateableClassifier;
+import weka.classifiers.trees.J48;
 import weka.core.Attribute;
+import weka.core.Utils;
 import weka.core.Capabilities;
 import weka.core.Capabilities.Capability;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.RevisionUtils;
 import weka.core.SerializedObject;
+import java.util.Arrays;
 
 /**
  *  MultilabelClassifier.java - A Multilabel Classifier.
- * 	@author Jesse Read (jmr30@cs.waikato.ac.nz)
+ * 	@author Jesse Read
+ *  @version Jan 2015
  */
 
 public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
@@ -46,6 +50,16 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 	public String globalInfo() {
 		// highly recommended to overwrite this method!
 		return "A multi-label classifier";
+	}
+
+	public MultilabelClassifier() {
+		this.m_Classifier = new J48();
+	}
+
+	@Override
+	protected String defaultClassifierString() {
+
+		return "weka.classifiers.trees.J48";
 	}
 
 	@Override
@@ -104,11 +118,11 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 	/**
 	 * Evaluation. 
 	 * Use runClassifier(MultilabelClassifier,String[]) instead.
-	 */
 	@Deprecated
 	public static void evaluation(MultilabelClassifier h, String args[]) {
 		runClassifier(h,args);
 	}
+	 */
 
 	/**
 	 * Creates a given number of deep copies of the given multi-label classifier using serialization.
@@ -132,7 +146,6 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 	}
 
 	/**
-	 * runClassifier. 
 	 * Called by classifier's main() method upon initialisation from the command line. 
 	 * @param	h		A classifier
 	 * @param	args	Command-line options.
