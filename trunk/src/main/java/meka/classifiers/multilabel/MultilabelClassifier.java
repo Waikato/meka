@@ -116,15 +116,6 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 	}
 
 	/**
-	 * Evaluation. 
-	 * Use runClassifier(MultilabelClassifier,String[]) instead.
-	@Deprecated
-	public static void evaluation(MultilabelClassifier h, String args[]) {
-		runClassifier(h,args);
-	}
-	 */
-
-	/**
 	 * Creates a given number of deep copies of the given multi-label classifier using serialization.
 	 *
 	 * @param model the classifier to copy
@@ -143,6 +134,16 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 			classifiers[i] = (MultilabelClassifier) so.getObject();
 		}
 		return classifiers;
+	}
+
+	/**
+	 * Called by classifier's main() method upon initialisation from the command line. 
+	 * TODO: In the future Use runClassifier(h,args) directly, and depreciated this function.
+	 * @param	h		A classifier
+	 * @param	args	Command-line options.
+	 */
+	public static void evaluation(MultilabelClassifier h, String args[]) {
+		runClassifier(h,args);
 	}
 
 	/**
