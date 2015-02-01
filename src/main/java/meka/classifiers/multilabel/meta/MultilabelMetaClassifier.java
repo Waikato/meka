@@ -20,6 +20,7 @@ import java.util.Vector;
 
 import weka.classifiers.Classifier;
 import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.CC;
 import weka.core.Randomizable;
 import weka.core.Instance;
 import weka.core.Option;
@@ -47,6 +48,17 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier impl
 	@Override
 	public String globalInfo() {
 		return "For ensembles of multi-label methods.";
+	}
+
+	public MultilabelMetaClassifier() {
+		// default classifier for GUI
+		this.m_Classifier = new CC();
+	}
+
+	@Override
+	protected String defaultClassifierString() {
+		// default classifier for CLI
+		return "meka.classifiers.multilabel.CC";
 	}
 
 	@Override

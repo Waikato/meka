@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.BR;
 import weka.core.Instance;
 import weka.core.Instances;
 import meka.core.MLUtils;
@@ -55,6 +56,18 @@ public class SubsetMapper extends MultilabelClassifier
 				"Maps the output of a multi-label classifier to a known label combination using the hamming distance."
 				+ "For more information see:\n"
 				+ getTechnicalInformation().toString();
+	}
+
+	public SubsetMapper() {
+		// default classifier for GUI
+		this.m_Classifier = new BR();
+	}
+
+	@Override
+	protected String defaultClassifierString() {
+
+		// default classifier for CLI
+		return "meka.classifiers.multilabel.BR";
 	}
 
 	@Override
