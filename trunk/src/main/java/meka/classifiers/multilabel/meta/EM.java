@@ -37,6 +37,7 @@ import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.core.TechnicalInformationHandler;
+import weka.classifiers.functions.Logistic;
 import meka.classifiers.multilabel.*;
 
 /**
@@ -56,6 +57,17 @@ public class EM extends MultilabelClassifier implements SemisupervisedClassifier
 
 	protected int m_I = 10;
 	protected Instances D_ = null;
+
+	public EM() {
+		// default classifier for GUI
+		this.m_Classifier = new Logistic();
+	}
+
+	@Override
+	protected String defaultClassifierString() {
+		// default classifier for CLI
+		return "weka.classifiers.trees.Logistic";
+	}
 
 	@Override
 	public void setUnlabelledData(Instances D) {

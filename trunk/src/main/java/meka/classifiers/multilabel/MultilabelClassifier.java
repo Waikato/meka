@@ -53,12 +53,13 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 	}
 
 	public MultilabelClassifier() {
+		// default classifier for GUI
 		this.m_Classifier = new J48();
 	}
 
 	@Override
 	protected String defaultClassifierString() {
-
+		// default classifier for CLI
 		return "weka.classifiers.trees.J48";
 	}
 
