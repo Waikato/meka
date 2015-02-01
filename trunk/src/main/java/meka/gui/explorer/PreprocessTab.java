@@ -15,14 +15,18 @@
 
 /**
  * PreprocessTab.java
- * Copyright (C) 2012 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2012-2015 University of Waikato, Hamilton, New Zealand
  */
 package meka.gui.explorer;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import meka.filters.unsupervised.attribute.MekaClassAttributes;
+import meka.gui.components.AttributeSelectionPanel;
+import meka.gui.goe.GenericObjectEditor;
+import weka.core.Instances;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.Remove;
+import weka.gui.AttributeSummaryPanel;
+import weka.gui.InstancesSummaryPanel;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -31,15 +35,10 @@ import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import meka.gui.goe.GenericObjectEditor;
-import weka.core.Instances;
-import weka.filters.Filter;
-import meka.filters.unsupervised.attribute.MekaClassAttributes;
-import weka.filters.unsupervised.attribute.Remove;
-import weka.gui.AttributeSelectionPanel;
-import weka.gui.AttributeSummaryPanel;
-import weka.gui.InstancesSummaryPanel;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * For preprocessing data.
