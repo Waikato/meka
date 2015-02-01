@@ -7,7 +7,7 @@
 \newcommand{\MOA}{Moa}
 \newcommand{\WEKA}{Weka}
 \newcommand{\MULAN}{Mulan}
-\def\version{{\tt 1.7.3}}
+\def\version{{\tt 1.7.5}}
 \usepackage{listings}
 \usepackage{courier}
 \lstset{basicstyle=\small\ttfamily,breaklines=true,frame=L,xleftmargin=\parindent}
@@ -89,9 +89,9 @@ java -cp "./lib/*" meka.classifiers.multilabel.BR -t data/Music.arff
 
 If you are on a Microsoft Windows system, you need to use back slashes instead of forward slashes (\texttt{.\textbackslash lib\textbackslash*}). If you add the \texttt{jar} files to the system's \texttt{CLASSPATH}, you do not need to supply the \texttt{-cp} option at runtime. For the remainder of examples in this tutorial we will assume that this is the case.
 
-Since Version 1.2 \framework{\MEKA} has a graphical user interface (GUI). Run this with either the \texttt{run.sh} script (under Linux, OSX) as follows:
+Since Version 1.2 \framework{\MEKA} has a graphical user interface (GUI). Run this with either the \texttt{run.sh} script (under Linux or OSX) as follows:
 \begin{lstlisting}
-bash run.sh
+./run.sh
 \end{lstlisting}
 Run \texttt{run.bat} instead of you are using Microsoft windows.
 
@@ -128,20 +128,21 @@ Since the number of target attributes tends to vary with each dataset, for conve
 
 Note that the format of the \texttt{label} attribute (binary) is the \emph{only} kind of target attribute in multi-\emph{label} datasets. For more examples of \framework{\MEKA} ARFF files; see the \texttt{data/} directory for several multi-label and multi-target datasets (some of these are in a compressed format).
 
-\framework{\MEKA} can also read ARFF files in the \framework{\MULAN} format where target attributes are the \emph{last} attributes, rather than the first ones. This format can also be read by \framework{\MEKA} by specifying a minus sign `\texttt{-}' before the number of target attributes in the \texttt{-C} option. For example, \texttt{-C -3} will set the \emph{last} \texttt{3} attributes as the target attributes automatically when the file is loaded. Alternatively, the class attributes can be moved using \framework{\WEKA}'s \texttt{Reorder} filter, or in the GUI, as in the following. %weka.filters.unsupervised.attribute.
+\framework{\MEKA} can also read ARFF files in the \framework{\MULAN} format where target attributes are the \emph{last} attributes, rather than the first ones. This format can also be read by \framework{\MEKA} by specifying a minus sign `\texttt{-}' before the number of target attributes in the \texttt{-C} option. For example, \texttt{-C -3} will set the \emph{last} \texttt{3} attributes as the target attributes automatically when the file is loaded. Alternatively, the target attributes can be moved using \framework{\WEKA}'s \texttt{Reorder} filter, or in the GUI as detailed in the following section. %weka.filters.unsupervised.attribute.
 
 %Note that the \framework{\MULAN} format expects the target attributes to be indexed \emph{last} rather than the first. Specifying \texttt{-c $-L$} to \framework{\MEKA} will automatically move the last $L$ attributes to the beginning upon loading. 
 
 \subsection{Manipulating Datasets in the GUI}
 \label{sec:data.gui}
 
-A good way to set up an ARFF file for multi-dimensional classification is using the GUI. Open an ARFF file with `\textsf{Open}' from the \textsf{File} menu. In the \textsf{Preprocess} tab in the right-hand column (see \Fig{screen:arff}), simply select the attributes you wish to use as class attributes and click the button `\textsf{Use class attributes}'. You can then save this file using `\textsf{Save}' from the \textsf{File} menu, which will also save the \texttt{-C} flag into the \texttt{@relation} tag as described above (displayed under '\textsf{Relation:}' in the GUI), so next time the classes will be set automatically.
+A good way to set up an ARFF file for multi-dimensional classification is using the GUI. Open an ARFF file with `\textsf{Open}' from the \textsf{File} menu. In the \textsf{Preprocess} tab in the right-hand column (see \Fig{screen:arff}; note that the class attributes are listed in \textbf{bold} face), simply select the attributes you wish to use as class attributes and click the button `\textsf{Use class attributes}'. You can then save this file using `\textsf{Save}' from the \textsf{File} menu, which will also save the \texttt{-C} flag into the \texttt{@relation} tag as described above (displayed under '\textsf{Relation:}' in the GUI), so next time the classes will be set automatically.
 
 The datasets that come with \framework{\MEKA} already come with the \texttt{-C} flag specified correctly, so you do not need to set this information.
 
 You can also run any of \framework{\WEKA}'s filters on the dataset with the \textsf{Choose} button. See the \framework{\WEKA} documentation for more information.
 
 \begin{figure}
+	\centering
 	\includegraphics[height=0.75\textwidth]{GUI01.png}
 	\caption{\label{screen:arff} \framework{MEKA}'s GUI interface; having loaded the \textit{Music} dataset.}
 \end{figure}
@@ -239,12 +240,14 @@ The CLI is the most powerful way to work with \framework{\MEKA}, but the GUI is 
 
 
 \begin{figure}
+	\centering
 	\includegraphics[height=0.60\textwidth]{GUI02.png}
 	\caption{\label{screen:eval} \framework{MEKA}'s GUI interface; setting Bagging of Classifier Chains with SMO.}
 \end{figure}
 
 
 \begin{figure}
+	\centering
 	\includegraphics[height=0.60\textwidth]{GUI03.png}
 	\caption{\label{screen:split} \framework{MEKA}'s GUI interface; setting a train/test split.}
 \end{figure}
@@ -255,30 +258,38 @@ Running a BR classifier with Naive Bayes on the \textit{Music} data will output 
 
 {\small
 \begin{lstlisting}
-     Classifier_name : meka.classifiers.multilabel.BR
-      Classifier_ops : [-W, weka.classifiers.bayes.NaiveBayes, --, , , ]
-     Classifier_info : 
-        Dataset_name : Music
-                Type : ML
-           Threshold : 0.9974578524138343
-           Verbosity : 1
+Classifier_name      : meka.classifiers.multilabel.BR
+Classifier_ops       : [-W, weka.classifiers.bayes.NaiveBayes]
+Classifier_info      : 
+Dataset_name         : Music
+Type                 : ML
+Threshold            : 0.9974578524138343
+Verbosity            : 1
 
-                   L : 6    
-            Accuracy : 0.436
-       Hamming score : 0.745
-         Exact match : 0.215
+N(test)              : 237
+L                    : 6    
+Accuracy             : 0.436
+Hamming score        : 0.745
+Exact match          : 0.215
 
-             N_train : 355
-              N_test : 237
-         LCard_train : 1.789
-          LCard_test : 1.992
-          Build_time : 0.113
-           Test_time : 0.067
-          Total_time : 0.18 
+N_train              : 355
+N_test               : 237
+LCard_train          : 1.789
+LCard_test           : 1.992
+Build_time           : 0.157
+Test_time            : 0.113
+Total_time           : 0.27 
 \end{lstlisting}
 }
 
-Note that by increasing the \texttt{verbosity} level, you can get more output: \texttt{-verbosity <n>} where \texttt{<n>} = 
+The results of the experiment in \Fig{screen:split} is shown in \Fig{screen:result}.
+\begin{figure}
+	\centering
+	\includegraphics[height=0.95\textwidth]{GUI04.png}
+	\caption{\label{screen:result} \framework{MEKA}'s GUI interface; results.}
+\end{figure}
+
+Note that by increasing the verbosity level, you can get more or less output. On the command line, this is with \texttt{-verbosity <n>} where \texttt{<n>} = 
 \begin{center}
 \begin{tabular}{ll}
 	\hline
@@ -296,11 +307,11 @@ Note that by increasing the \texttt{verbosity} level, you can get more output: \
 \end{tabular}
 \end{center}
 
-Most of these measures are described in \cite{Thesis,ECC2,MMD}. The most common measures in the multi-label literature are \textit{Hamming Loss} (\texttt{H\_loss}), which is the accuracy for each label, averaged across all labels; \textit{Exact Match} (\texttt{Exact\_match}), which is the is the accuracy of each \emph{example} -- where all label relevances must match exactly for an example to be correct; and \textit{Accuracy} (\texttt{Accuracy}), which is neither as strict as Exact Match nor as `easy' as Hamming Loss.
+Most of these metrics are described in \cite{ECC2,MMD}. The most common measures reported in the multi-label literature are \texttt{Hamming Loss} -- the accuracy for each label, averaged across all labels; \texttt{Exact Match} -- the accuracy of each example (all label relevances must match exactly for an example to be correct); and \texttt{Accuracy} (called Jaccard Index in information retrieval), which is neither as strict as Exact Match nor as `easy' as Hamming Loss.
 
 %\subsection{Thresholds}
 
-Note that a \texttt{Threshold} has been calibrated automatically; to minimise the difference between the label cardinality of the training set and the predictions on the test set; a practice described in \cite{ECC2}. To calibrate a threshold for \emph{each} label, add the \texttt{-threshold PCutL} option\footnote{Note: this was \texttt{-T C} in previous versions of \framework{\MEKA}}. This gives a vector of thresholds which, in this case, increases \texttt{Accuracy} slightly (to \texttt{0.456}). Different thresholds are calculated for different methods and datasets.
+Note that a \texttt{Threshold} has been calibrated automatically; to minimise the difference between the label cardinality of the training set and the predictions on the test set; a practice described in \cite{ECC2}. To calibrate a threshold for \emph{each} label, add the \texttt{-threshold PCutL} option\footnote{Note: this was \texttt{-T C} in previous versions of \framework{\MEKA}}. This gives a vector of thresholds which, in this case, increases \texttt{Accuracy} slightly (to \texttt{0.456}). Different thresholds are calculated for different methods and datasets. Note that \texttt{PCutL} is being specified in \Fig{screen:split}, which results in a threshold for each label in \Fig{screen:result}.
 
 %\begin{lstlisting}
 %          Threshold : [0.29971988795518206, 0.26330532212885155, \
@@ -332,6 +343,8 @@ conducts 10 fold cross validation on a randomised version of the \textit{Music.a
 %In this way, it is also possible to use \framework{\MEKA}'s evaluation procedures with output from other software (simply by using the right text output format).
 
 \subsection{Examples} 
+
+In the following we give some examples, with an emphasis on general usage and parameters. An extensive list of examples is given at \url{http://meka.sourceforge.net/methods.html}. 
 
 %\paragraph{Multi-label}
 
@@ -391,9 +404,9 @@ Evaluating incremental classifiers will carry out evaluation and display statist
 
 \paragraph{Multi-target: Ensembles of Class Relevance} (see \cite{UPM}) The multi-target version of the Binary Relevance classifier) on the \textit{solar flare} dataset with Logistic Regression as a base classifier under $5$-fold cross-validation:
 \begin{lstlisting}
-java weka.classifiers.multitarget.meta.BaggingMT -x 10 -R \
+java meka.classifiers.multitarget.meta.BaggingMT -x 10 -R \
   -t data/solar_flare.arff \
-  -W weka.classifiers.multitarget.CR -- \
+  -W meka.classifiers.multitarget.CR -- \
     -W weka.classifiers.functions.Logistic
 \end{lstlisting}
 
@@ -419,7 +432,7 @@ svn checkout svn://svn.code.sf.net/p/meka/code/trunk meka
 \end{lstlisting}
 This will create a new directory called \texttt{meka} in the current directory, containing the source code and build scripts.
 
-Instead of using subversion, you can simply use the source code that is part of each MEKA release, contained in the \texttt{meka-src-X.Y.jar} Java archive\footnote{\url{http://en.wikipedia.org/wiki/JAR\_(file\_format)}}. A Java archive can be opened with any archive manager that can handle ZIP files.
+Instead of using subversion, you can simply use the source code that is part of each MEKA release, contained in the \texttt{meka-src-\version.jar} Java archive\footnote{\url{http://en.wikipedia.org/wiki/JAR\_(file\_format)}}. A Java archive can be opened with any archive manager that can handle ZIP files.
 
 \subsection{Compiling}
 \label{compiling}
@@ -588,67 +601,15 @@ Note that \framework{\MOA} now also supports \framework{\MEKA} classifiers via a
 
 \section{Getting Help / Reporting Bugs / Contributing}
 
+A list of methods available using \framework{\MEKA} is maintained at \url{http://meka.sourceforge.net/methods.html} with descriptions and command-line examples.
+
 If you need help with \framework{\MEKA}, you can post your problem on \MEKA's \textsf{Mailing List}: \url{http://sourceforge.net/p/meka/mailman/}.
 
 If you have found a bug with \framework{\MEKA}, you can report in via the \textsf{Tracker}  of \framework{\MEKA}'s \url{SourceForge.net} site: \url{http://sourceforge.net/p/meka/bugs/}.
 
 If you would like to contribute to \framework{\MEKA}, such as adding new classifiers, please get in touch with the developers.
 
-More more information (such as contact information) can be found at the \framework{\MEKA} website:
-\url{http://meka.sourceforge.net}.
-
-\appendix
-
-\section{Methods Implemented in \MEKA}
- 
-Below is a list of the major methods supported in \framework{\MEKA}, along with their abbreviations (in some cases methods are known by more than one name), and the class name (given from the \texttt{classifiers} directory). Problem transformation methods expect a \texttt{-W} option. For example, to run classifier chains:
-\begin{lstlisting}
-java meka.classifiers.multilabel.meta.BaggingML -P 100 \
-    -W meka.classifiers.multilabel.CC -- -W weka.classifiers.functions.SMO	
-\end{lstlisting}
-and to run CLR:
-\begin{lstlisting}
-java meka.classifiers.multilabel.MULAN -S CLR\
-    -W weka.classifiers.functions.SMO	
-\end{lstlisting}
-Other parameters are mostly set to the default found in the literature where the method was introduced. The methods have been grouped approximately together. Citations are included within the \texttt{TechnicalInformation} of the source code files. $U$ indicates that an \texttt{Updateable} version is available. $M$ indicates that a multi-target version (or can be used directly) is available.\\
-{
-{\par \vspace{2mm}}
-\begin{tabular}{ll}
-	\hline
-	\textbf{Algorithm}               & \textbf{Class Name} \\
-	\hline
-	Majority Labelset [$U$,$M$] & \texttt{MajorityLabelset} \\
-	\hline
-	Binary Relevance (BR) [$U$,$M$] & \texttt{BR} \\
-	Classifier Chains (CC) [$U$,$M$] & \texttt{CC} \\
-	Ensembles of CC (ECC)  [$U$,$M$] & \texttt{meta.BaggingML -P 100 -W CC} \\
-	Ensembles of CC `quick' (ECCq) [$U$,$M$] & \texttt{meta.RandomSubspaceML -W CCq} \\
-	Probabilistic Classifier Chains (PCC) [$M$] & \texttt{PCC} \\
-	Monte Carlo Optimization of CC (MCC) [$M$] & \texttt{MCC} \\
-	Bayesian Classifier Chains (BCC) [$M$] & \texttt{BCC} \\
-	\hline
-	Ranking + Threshold [$M$] (RT, a.k.a. PT5)  & \texttt{RT} \\
-	\hline
-	Fourclass Pairwise (FW, a.k.a. PW)  & \texttt{FW} \\
-	Calibrated Label Ranking [R] & \texttt{MULAN -S CLR} \\ 
-	\hline
-	Learning EM-style from unlabeled examples  & \texttt{meta.EM} \\ 
-	\hline
-	Conditional Dependency Networks [$M$] & \texttt{CDN} \\ 
-	%Deep Belief Network            & \texttt{DBN} \\
-	\hline
-	Label Combination (LC, a.k.a. LP) & \texttt{LC} \\ 
-	Random $k$-labEL Sets (RA$k$EL) & \texttt{MULAN -S RAkEL1} \\ 
-	RA$k$EL combined with \texttt{PS}& \texttt{RAkEL} \\ 
-	\ldots disjoint subsets & \texttt{RAkELd} \\ 
-	Pruned Problem Transformation (PPT)  & \texttt{PSt} \\
-	Pruned Sets (PS) [$U$]              & \texttt{PS} \\
-	Ensembles of Pruned Sets (EPS  & \texttt{meta.EnsembleML -W PS} \\
-	Nearest Set Replacement (NSR) [$M$]  & \texttt{NSR} \\
-	\hline
-\end{tabular}
-}
+More more information (such as contact information) can be found at the \framework{\MEKA} website: \url{http://meka.sourceforge.net}.
 
 \include{bibliography}
 
