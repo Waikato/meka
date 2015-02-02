@@ -549,7 +549,7 @@ public class Evaluation {
 		text.append("-s <random number seed>\n");
 		text.append("\tSets random number seed (use with -R, for different CV or train/test splits).\n");
 		text.append("-threshold <threshold>\n");
-		text.append("\tSets the type of thresholding; where\n\t\t'PCut1' automatically calibrates a threshold (the default);\n\t\t'PCutL' automatically calibrates one threshold for each label;\n\t\tany double number, e.g. '0.5', specifies that threshold.\n");
+		text.append("\tSets the type of thresholding; where\n\t\t'PCut1' automatically calibrates a threshold (the default);\n\t\t'PCutL' automatically calibrates one threshold for each label;\n\t\tany number, e.g. '0.5', specifies that threshold.\n");
 		text.append("-C <number of classes/labels>\n");
 		text.append("\tSets the number of target attributes (classes/labels) to expect (indexed from the beginning).\n");
 		//text.append("-f <results_file>\n");
