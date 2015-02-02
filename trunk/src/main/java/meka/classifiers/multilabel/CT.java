@@ -1,7 +1,6 @@
 package meka.classifiers.multilabel;
 
 import weka.classifiers.*;
-//import weka.classifiers.meta.*;
 import meka.classifiers.multilabel.*;
 import meka.classifiers.multilabel.cc.CNode;
 import meka.classifiers.multilabel.cc.Trellis;
@@ -11,8 +10,6 @@ import meka.core.F;
 import meka.core.MLUtils;
 import meka.core.CCUtils;
 import meka.core.StatUtils;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.*;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
@@ -21,7 +18,8 @@ import java.util.*;
 import java.io.Serializable;
 
 /**
- * CT - Classifier Trellis. CC in a trellis structure.
+ * CT - Classifier Trellis. 
+ * CC in a trellis structure (rather than a cascaded chain). You set the width and type/connectivity of the trellis, and optionally change the payoff function which guides the placement of nodes (labels) within the trellis.
  * @author	Jesse Read
  * @version April 2014
  */
@@ -39,6 +37,11 @@ public class CT extends MCC implements TechnicalInformationHandler {
 
 	public String toString() {
 		return info;
+	}
+
+	@Override
+	public String globalInfo() {
+		return "CC in a trellis structure (rather than a cascaded chain). You set the width and type/connectivity of the trellis, and optionally change the payoff function which guides the placement of nodes (labels) within the trellis.";
 	}
 
 	@Override

@@ -37,8 +37,9 @@ import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.core.TechnicalInformationHandler;
-import weka.classifiers.functions.Logistic;
-import meka.classifiers.multilabel.*;
+import meka.classifiers.multilabel.CC;
+import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.SemisupervisedClassifier;
 
 /**
  * EM.java - Expectation Maximization using any multi-label classifier.
@@ -51,7 +52,7 @@ import meka.classifiers.multilabel.*;
  * <br>
  *
  * @version 2010
- * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
+ * @author 	Jesse Read 
  */
 public class EM extends MultilabelClassifier implements SemisupervisedClassifier, TechnicalInformationHandler {
 
@@ -60,13 +61,13 @@ public class EM extends MultilabelClassifier implements SemisupervisedClassifier
 
 	public EM() {
 		// default classifier for GUI
-		this.m_Classifier = new Logistic();
+		this.m_Classifier = new CC();
 	}
 
 	@Override
 	protected String defaultClassifierString() {
 		// default classifier for CLI
-		return "weka.classifiers.trees.Logistic";
+		return "meka.classifiers.multilabel.CC";
 	}
 
 	@Override
@@ -76,7 +77,11 @@ public class EM extends MultilabelClassifier implements SemisupervisedClassifier
 
 	@Override
 	public String globalInfo() {
-		return "Train a classifier using labelled and unlabelled data (semi-supervised) using an EM-type algorithm. Works best if the classifier can give good probabalistic outputs. " + "A similar procedure was used with LC and Naive Bayes in:\n" + getTechnicalInformation().toString();
+		return   ""//"Train a classifier using labelled and unlabelled data (semi-supervised) using an EM-type algorithm. Works best if the classifier can give good probabalistic outputs. " + "A similar procedure was used with LC and Naive Bayes in:\n" + getTechnicalInformation().toString();
+				 + "A specified multi-label classifier is built on the training data. This model is then used to classify the test data. "
+				 + "The confidence with which instances are classified is used to reweight them. This data is then used to retrain the classifier. "
+				 + "This cycle continues ('EM'-style) for I iterations. The final model is used to officially classifier the test data. "
+				 + "Because of the weighting, it is advised to use a classifier which gives good confidence (probabalistic) outputs. ";
 	}
 
 	@Override
