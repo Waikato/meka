@@ -38,11 +38,11 @@ import weka.core.Utils;
 
 /**
  * CDN.java - Conditional Dependency Networks.
- * A fully connected network, each node (label) is connected to each other node (label). Each node is a BR classifier that predicts p(y_j|x,y_1,...,y_{j-1},y_{j-1},...,y_L). Inference is done using Gibbs sampling over I iterations. The final I_c iterations are used to collected the marginal probabilities, which becomes the prediction y[].
+ * A fully connected undirected network, each node (label) is connected to each other node (label). Each node is a binary classifier that predicts p(y_j|x,y_1,...,y_{j-1},y_{j-1},...,y_L). Inference is done using Gibbs sampling over I iterations. The final I_c iterations are used to collected the marginal probabilities, which becomes the prediction y[].
  * <br>
  * See: Yuhong Guoand and Suicheng Gu. <i>Multi-Label Classification Using Conditional Dependency Networks</i>. IJCAI '11. 2011.
  * <br>
- * @author 	Jesse Read (jesse@tsc.uc3m.es)
+ * @author 	Jesse Read
  * @version	November 2012
  */
 public class CDN extends MultilabelClassifier implements Randomizable, TechnicalInformationHandler {

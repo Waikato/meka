@@ -37,14 +37,13 @@ import weka.core.TechnicalInformationHandler;
 import weka.core.Utils;
 
 /**
- * RandomSubspaceML.java - Downsize the attribute space and instance space randomly for each ensemble member. 
+ * RandomSubspaceML.java - Subsample the attribute space and instance space randomly for each ensemble member. 
  * Basically a generalized version of Random Forests. It is computationally cheaper than EnsembleML for the same number of models.
  * <br>
  * As used with CC in: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer. Vol. 85(3), pp 333-359. (May 2011).
  * <br>
  * In earlier versions of Meka this class was called <i>BaggingMLq</i> and used Bagging procedure. Now it uses a simple ensemble cut.
  * <br>
- * Note: The Random generator was initialised differently in versions prior to June 2014 (may affect exact reproduction of results from the above paper).
  *
  * @author 	Jesse Read 
  * @version	June 2014

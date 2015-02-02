@@ -24,11 +24,13 @@ import java.util.ArrayList;
 
 import meka.classifiers.multilabel.cc.CNode;
 import meka.classifiers.multilabel.cc.Trellis;
+import meka.classifiers.multilabel.CT;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import meka.core.A;
+import meka.core.StatUtils;
 import weka.core.Randomizable;
 import weka.core.Option;
 import weka.core.RevisionUtils;
@@ -40,7 +42,9 @@ import weka.core.Utils;
 
 /**
  * CDT.java - Conditional Dependency Trellis.
- * Like CDN, but with a trellis structure rather than a fully connected network.
+ * Like CDN, but with a trellis structure (like CT) rather than a fully connected network.
+ * @see CDN
+ * @see CT
  * @author 	Jesse Read
  * @version	January 2014
  */
@@ -48,6 +52,7 @@ public class CDT extends CDN {
 
 	protected int m_Width = -1;
 	protected int m_Connectivity = 1;
+	protected String m_DependencyPayoff = "_";
 
 	Trellis trel = null;
 
@@ -74,6 +79,10 @@ public class CDT extends CDN {
 		trel = new Trellis(indices, m_Width, m_Connectivity);
 		if (getDebug())
 			System.out.println("==>\n"+trel.toString());
+
+		/* NEW  - ORDER THE TRELLIS */
+		if (!m_DependencyPayoff.equals("_"))
+			trel = CT.orderTrellis(trel,StatUtils.margDepMatrix(D,m_DependencyPayoff),u);
 
 		/*
 		 * Build Trellis
@@ -134,6 +143,7 @@ public class CDT extends CDN {
 		Vector newVector = new Vector();
 		newVector.addElement(new Option("\tThe width of the trellis.\n\tdefault: "+m_Width, "H", 1, "-H <value>"));
 		newVector.addElement(new Option("\tThe density/type of the trellis.\n\tdefault: "+m_Connectivity+"\n\trange: 0-3 (0=BR)", "L", 1, "-L <value>"));
+		newVector.addElement(new Option("\tThe dependency payoff function.\n\tdefault: "+m_DependencyPayoff+"(random)\n\t", "X", 1, "-X <value>"));
 
 		Enumeration enu = super.listOptions();
 
@@ -148,6 +158,7 @@ public class CDT extends CDN {
 
 		m_Width = (Utils.getOptionPos('H',options) >= 0) ? Integer.parseInt(Utils.getOption('H', options)) : m_Width;
 		m_Connectivity = (Utils.getOptionPos('L',options) >= 0) ? Integer.parseInt(Utils.getOption('L', options)) : m_Connectivity;
+		m_DependencyPayoff = (Utils.getOptionPos('X',options) >= 0) ? Utils.getOption('X', options) : m_DependencyPayoff;
 
 		super.setOptions(options);
 	}
@@ -161,6 +172,8 @@ public class CDT extends CDN {
 	  	result.add("" + m_Width);
 		result.add("-L");
 	  	result.add("" + m_Connectivity);
+		result.add("-P");
+	  	result.add("" + m_DependencyPayoff);
 		return result.toArray(new String[result.size()]);
 	}
 
@@ -204,7 +217,7 @@ public class CDT extends CDN {
 	@Override
 	public String globalInfo() {
 		return 
-				"A Conditional Dependency Network. "
+				"A Conditional Dependency Trellis. Like CDN, but with a trellis structure (like CT) rather than a fully connected network."
 				+ "For more information see:\n"
 				+ getTechnicalInformation().toString();
 	}
@@ -218,6 +231,8 @@ public class CDT extends CDN {
 		result.setValue(Field.TITLE, "Multi-Label Classification Using Conditional Dependency Networks");
 		result.setValue(Field.BOOKTITLE, "IJCAI '11");
 		result.setValue(Field.YEAR, "2011");
+
+		result.add(new CT().getTechnicalInformation());
 
 		return result;
 	}
