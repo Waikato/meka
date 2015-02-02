@@ -20,6 +20,7 @@ import java.util.HashMap;
 import meka.classifiers.multilabel.MultilabelClassifier;
 import meka.classifiers.multilabel.meta.BaggingML;
 import meka.classifiers.multitarget.MultiTargetClassifier;
+import meka.classifiers.multitarget.CC;
 import weka.core.Instance;
 import meka.core.MLUtils;
 import weka.core.RevisionUtils;
@@ -27,7 +28,8 @@ import weka.core.RevisionUtils;
 /**
  * BaggingMT.java - The Multi-Target Version of BaggingML.
  * It takes votes using the confidence outputs of the base classifier.
- * @author Jesse Read (jesse@tsc.uc3m.es)
+ * @see #meka.classifiers.multilabel.BaggingML
+ * @author Jesse Read
  * @version	March 2012
  */
 
@@ -35,6 +37,17 @@ public class BaggingMT extends BaggingML implements MultiTargetClassifier {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -8107887827513707843L;
+
+	public BaggingMT() {
+		// default classifier for GUI
+		this.m_Classifier = new CC();
+	}
+
+	@Override
+	protected String defaultClassifierString() {
+		// default classifier for CLI
+		return "meka.classifiers.multitarget.CC";
+	}
 
 	/**
 	 * Description to display in the GUI.
