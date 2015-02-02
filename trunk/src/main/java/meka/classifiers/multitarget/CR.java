@@ -26,6 +26,7 @@ import weka.classifiers.AbstractClassifier;
 import meka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.classifiers.trees.J48;
 import meka.core.MLUtils;
 import weka.core.RevisionUtils;
 import weka.core.Utils;
@@ -36,6 +37,17 @@ public class CR extends meka.classifiers.multilabel.BR implements MultiTargetCla
 	private static final long serialVersionUID = 1627371180786293843L;
 	
 	protected Instances m_Templates[] = null; // TEMPLATES
+
+	public CR() {
+		// default classifier for GUI
+		this.m_Classifier = new J48();
+	}
+
+	@Override
+	protected String defaultClassifierString() {
+		// default classifier for CLI
+		return "weka.classifiers.trees.J48";
+	}
 
 	/**
 	 * Description to display in the GUI.

@@ -26,12 +26,24 @@ import java.util.Arrays;
 
 import meka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instance;
+import weka.classifiers.trees.J48;
 import weka.core.RevisionUtils;
 
 public class CC extends meka.classifiers.multilabel.CC implements MultiTargetClassifier {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 2395428645144026318L;
+
+	public CC() {
+		// default classifier for GUI
+		this.m_Classifier = new J48();
+	}
+
+	@Override
+	protected String defaultClassifierString() {
+		// default classifier for CLI
+		return "weka.classifiers.trees.J48";
+	}
 
 	/**
 	 * Description to display in the GUI.
