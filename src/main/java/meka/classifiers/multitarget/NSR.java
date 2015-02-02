@@ -28,6 +28,7 @@ import weka.core.Attribute;
 import weka.core.Capabilities;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.classifiers.trees.J48;
 import meka.core.MLUtils;
 import meka.core.A;
 import weka.core.RevisionUtils;
@@ -45,6 +46,17 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 
 	/** for serialization. */
 	private static final long serialVersionUID = 8373228150066785001L;
+
+	public NSR() {
+		// default classifier for GUI
+		this.m_Classifier = new J48();
+	}
+
+	@Override
+	protected String defaultClassifierString() {
+		// default classifier for CLI
+		return "weka.classifiers.trees.J48";
+	}
 
 	/**
 	 * Description to display in the GUI.

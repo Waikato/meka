@@ -26,6 +26,7 @@ import java.util.Arrays;
 
 import meka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instance;
+import weka.classifiers.trees.J48;
 import weka.core.RevisionUtils;
 
 public class BCC extends meka.classifiers.multilabel.BCC implements MultiTargetClassifier {
@@ -43,6 +44,17 @@ public class BCC extends meka.classifiers.multilabel.BCC implements MultiTargetC
 		return 
 				"The Bayesian Classifier Chains (BCC) method.\n"
 				+ "Multi-target version of the BCC method (directly applicable).";
+	}
+
+	public BCC() {
+		// default classifier for GUI
+		this.m_Classifier = new J48();
+	}
+
+	@Override
+	protected String defaultClassifierString() {
+		// default classifier for CLI
+		return "weka.classifiers.trees.J48";
 	}
 
 	@Override
