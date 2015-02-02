@@ -49,6 +49,7 @@ import meka.core.LabelSet;
  * This class was rewritten and extended to be faster, use sparse LabelSets, and better OOP. There may be minor variation in results (probably on account of internal randomness, different set orderings, etc) but this should not be statistically significant.
  * <br>
  * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes. <i>Multi-label Classification using Ensembles of Pruned Sets</i>. Proc. of IEEE International Conference on Data Mining (ICDM 2008), Pisa, Italy, 2008
+ * @see LC
  * @version	April 2014
  * @author 	Jesse Read
  */
