@@ -17,9 +17,9 @@ package meka.classifiers.multitarget;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
-import meka.classifiers.multilabel.*;
-import meka.classifiers.multilabel.meta.*;
-import meka.classifiers.multitarget.*;
+import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.Evaluation;
+import meka.classifiers.multitarget.CC;
 import meka.classifiers.multitarget.meta.*;
 import weka.classifiers.functions.*;
 import weka.filters.unsupervised.attribute.*;
@@ -42,8 +42,11 @@ import weka.core.TechnicalInformation.Type;
 import weka.core.TechnicalInformationHandler;
 
 /**
- * SCC.java - Super Class Classifier
- * @author 	Jesse Read (jesse@tsc.uc3m.es)
+ * SCC.java - Super Class Classifier (aka Super Node Classifier).
+ * The output space is manipulated into super classes (based on label dependence), upon which a multi-target base classifier is applied. 
+ * This is related to the RAkELd-type classifiers for multi-label classification. 
+ *
+ * @author 	Jesse Read 
  * @version	June 2012
  */
 public class SCC extends MultilabelClassifier implements Randomizable, MultiTargetClassifier, TechnicalInformationHandler {
@@ -61,6 +64,17 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 
 	private Random rand = null;
 
+	public SCC() {
+		// default classifier for GUI
+		this.m_Classifier = new CC();
+	}
+
+	@Override
+	protected String defaultClassifierString() {
+		// default classifier for CLI
+		return "meka.classifiers.multitarget.CC";
+	}
+
 	/**
 	 * Description to display in the GUI.
 	 * 
@@ -70,7 +84,8 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 	public String globalInfo() {
 		return 
 				"Super Class Classifier (SCC).\n"
-				+ "Like a multi-target-capable PS. Removes examples with P-infrequent labelsets from the training data, then makes super classes out of what's left; and then trains a standard ML classifier on them.\n"
+				+ "The output space is manipulated into super classes (based on label dependence; and pruning and nearest-subset-replacement like NSR), upon which a multi-target base classifier is applied.\n" 
+				+ "For example, a super class based on two labels might take values in {[0,3],[0,0],[1,2]}.\n"
 				+ "For more information see:\n"
 				+ getTechnicalInformation().toString();
 	}
@@ -466,4 +481,5 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		return options;
 
 	}
+
 }
