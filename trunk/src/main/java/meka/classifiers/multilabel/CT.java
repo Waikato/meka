@@ -13,6 +13,10 @@ import meka.core.CCUtils;
 import meka.core.StatUtils;
 import weka.filters.unsupervised.attribute.*;
 import weka.filters.*;
+import weka.core.TechnicalInformation;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
+import weka.core.TechnicalInformationHandler;
 import java.util.*;
 import java.io.Serializable;
 
@@ -21,7 +25,7 @@ import java.io.Serializable;
  * @author	Jesse Read
  * @version April 2014
  */
-public class CT extends MCC {
+public class CT extends MCC implements TechnicalInformationHandler {
 
 	protected int m_Width = -1;
 	protected int m_Connectivity = 1;
@@ -68,58 +72,16 @@ public class CT extends MCC {
 		 * If specified, try and reorder the nodes in the trellis (i.e., get a superior structure)
 		 */
 		if (m_Is > 0) {
+			double I[][] =  StatUtils.margDepMatrix(D,m_DependencyPayoff);
 
 			/*
 			 * Get dependency Matrix
 			 */
-			double I[][] =  StatUtils.margDepMatrix(D,m_DependencyPayoff);
 			if (getDebug()) 
 				System.out.println("Got "+m_DependencyPayoff+"-type Matrix in "+((System.currentTimeMillis() - start)/1000.0)+"s");
 
-			int Y[] = new int[L];
-
-			/*
-			 * Make list of indices
-			 */
-			ArrayList<Integer> list = new ArrayList<Integer>();
-			for (int i : indices) {
-				list.add(new Integer(i));
-			}
-
-			/*
-			 * Take first index, and proceed
-			 */
-			Y[0] = list.remove(m_R.nextInt(L)); 
-			if (getDebug()) 
-				System.out.print(" "+String.format("%4d", Y[0]));
-			// @todo: update(I,j_0) to make faster
-			for(int j = 1; j < L; j++) {
-
-				if (getDebug() && j % m_Width == 0) 
-						System.out.println();
-
-				double max_w = -1.;
-				int j_ = -1;
-				for(int j_prop : list) {
-					double w = trel.weight(Y,j,j_prop,I);
-					if (w >= max_w) {
-						max_w = w;
-						j_ = j_prop;
-					}
-				}
-				list.remove(new Integer(j_));
-
-				if (getDebug()) {
-					System.out.print(" "+String.format("%4d", j_));
-				}
-
-				Y[j] = j_;
-				// @todo: update(I,j_), because it will be a parent now
-			}
-			if (getDebug())
-				System.out.println();
-
-			trel = new Trellis(Y, m_Width, m_Connectivity);
+			// ORDER THE TRELLIS ACCORDING TO THE DEPENDENCY MATRIX
+			trel = orderTrellis(trel,I,m_R);
 		}
 
 		info = String.valueOf((System.currentTimeMillis() - start)/1000.0);
@@ -147,6 +109,106 @@ public class CT extends MCC {
 		// So we can use the MCC.java and CC.java framework
 		confidences = new double[L];
 		m_Chain = trel.indices;
+	}
+
+	/**
+	 * OrderTrellis - order the trellis according to marginal label dependencies.
+	 * @param	trel	a randomly initialised trellis
+	 * @param	I		a matrix of marginal pairwise dependencies
+	 * @param	rand	a random seed
+	 * @return	the modified trellis
+	 * TODO: move to Trellis.java ?
+	 */
+	public static Trellis orderTrellis(Trellis trel, double I[][], Random rand) {
+
+		int L = I.length;
+		int Y[] = new int[L];
+
+		/*
+		 * Make list of indices
+		 */
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for (int i : trel.indices) {
+			list.add(new Integer(i));
+		}
+
+		/*
+		 * Take first index, and proceed
+		 */
+		Y[0] = list.remove(rand.nextInt(L)); 
+		//if (getDebug()) 
+		//	System.out.print(" "+String.format("%4d", Y[0]));
+		// @todo: update(I,j_0) to make faster
+		for(int j = 1; j < L; j++) {
+
+		//	if (getDebug() && j % m_Width == 0) 
+		//		System.out.println();
+
+			double max_w = -1.;
+			int j_ = -1;
+			for(int j_prop : list) {
+				double w = trel.weight(Y,j,j_prop,I);
+				if (w >= max_w) {
+					max_w = w;
+					j_ = j_prop;
+				}
+			}
+			list.remove(new Integer(j_));
+
+		//	if (getDebug()) {
+		//		System.out.print(" "+String.format("%4d", j_));
+		//	}
+
+			Y[j] = j_;
+			// @todo: update(I,j_), because it will be a parent now
+		}
+		//if (getDebug())
+		//	System.out.println();
+
+		trel = new Trellis(Y, trel.WIDTH, trel.TYPE);
+		return trel;
+	}
+
+	/** 
+	 * GetI - Get the neighbourhood type (number of neighbours for each node).
+	 */
+	public int getType() {
+		return m_Connectivity;
+	}
+
+	/** 
+	 * SetI - Sets the neighbourhood type (number of neighbours for each node).
+	 */
+	public void setType(int c) {
+		m_Connectivity = c;
+	}
+
+	/** 
+	 * GetH - Get the trellis width.
+	 */
+	public int getWidth() {
+		return m_Width;
+	}
+
+	/** 
+	 * SetH - Sets the trellis width.
+	 */
+	public void setWidth(int h) {
+		m_Width = h;
+	}
+
+	@Override
+	public TechnicalInformation getTechnicalInformation() {
+		TechnicalInformation	result;
+
+		result = new TechnicalInformation(Type.ARTICLE);
+		result.setValue(Field.AUTHOR, "Jesse Read, Luca Martino, David Luengo, Pablo Olmos");
+		result.setValue(Field.TITLE, "Scalable multi-output label prediction: From classifier chains to classifier trellises");
+		result.setValue(Field.JOURNAL, "Pattern Recognition");
+		result.setValue(Field.URL, "http://www.sciencedirect.com/science/article/pii/S0031320315000084");
+		result.setValue(Field.YEAR, "2015");
+
+		return result;
 	}
 
 	@Override

@@ -20,8 +20,10 @@ import weka.classifiers.meta.*;
 import meka.classifiers.multilabel.*;
 import weka.core.*;
 import meka.core.*;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.*;
+import weka.core.TechnicalInformation;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
+import weka.core.TechnicalInformationHandler;
 import java.util.*;
 
 /**
@@ -31,7 +33,7 @@ import java.util.*;
  * @author 	Jesse Read 
  * @version June 2014
  */
-public class RAkELd extends RAkEL {
+public class RAkELd extends RAkEL implements TechnicalInformationHandler {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -6208388889440497990L;
@@ -125,6 +127,31 @@ public class RAkELd extends RAkEL {
 
 	}
 	*/
+
+	@Override
+	public TechnicalInformation getTechnicalInformation() {
+		TechnicalInformation	result;
+		TechnicalInformation	additional;
+		
+		result = new TechnicalInformation(Type.ARTICLE);
+		result.setValue(Field.AUTHOR, "Grigorios Tsoumakas, Ioannis Katakis, Ioannis Vlahavas");
+		result.setValue(Field.TITLE, "Random k-Labelsets for Multi-Label Classification");
+		result.setValue(Field.JOURNAL, "IEEE Transactions on Knowledge and Data Engineering");
+		result.setValue(Field.YEAR, "2011");
+		result.setValue(Field.VOLUME, "23");
+		result.setValue(Field.NUMBER, "7");
+		result.setValue(Field.PAGES, "1079--1089");
+		
+		additional = new TechnicalInformation(Type.INPROCEEDINGS);
+		additional.setValue(Field.AUTHOR, "Jesse Read, Antti Puurula, Albert Bifet");
+		additional.setValue(Field.TITLE, "Classifier Chains for Multi-label Classification");
+		result.setValue(Field.BOOKTITLE, "ICDM'14: International Conference on Data Mining (ICDM 2014). Shenzen, China.");
+		result.setValue(Field.YEAR, "2014");
+
+		result.add(additional);
+    
+		return result;
+	}
 
 	@Override
 	public String getRevision() {
