@@ -407,7 +407,14 @@ java meka.classifiers.multitarget.meta.BaggingMT -x 10 -R \
   -W meka.classifiers.multitarget.CR -- \
     -W weka.classifiers.functions.Logistic
 \end{lstlisting}
-
+ 
+\paragraph{Semi-supervised: EM} on CC with Logistic Regression as a base classifier, using a separate set of unlabelled data:
+\begin{lstlisting}
+java meka.classifiers.multilabel.meta.EM -t data-train.arff \
+  -T data-unlabelled.arff -d em.saved
+java meka.classifiers.multilabel.meta.EM -t data-train.arff 
+  -T data-test.arff -l em.saved
+\end{lstlisting}
 %\begin{lstlisting}
 %java -cp meka.jar:weka.jar weka.classifiers.multitarget.meta.BaggingMT -x 5 -R -t data/solar_flare.arff -W weka.%classifiers.multitarget.C    C -- -W weka.classifiers.functions.Logistic
 %\end{lstlisting}
@@ -596,6 +603,10 @@ java meka.classifiers.multilabel.BRUpdateable -output-debug-info -t data/Music.a
 \end{lstlisting}
 
 Note that \framework{\MOA} now also supports \framework{\MEKA} classifiers via a wrapper class; and is currently being developed to support a range of incremental multi-label classification and evaluation for data streams.
+
+\subsubsection{Semi-supervised Classifiers}
+
+Semi-supervised classifiers implement \texttt{SemisupervisedClassifier} interface and must implement the method \texttt{setUnlabelledData(Instances)} which is called automatically by the \texttt{Evaluation} class prior to \texttt{buildClassifier(Instances)}. It is up to the classifier to decide what to do with the unlabelled instances. Currently, \framework{\MEKA} assumes that unlabelled instances are the test instances (e.g., supplied with the \texttt{-T} flag). It sets all labels to missing beforehand just in case. In the case of a separate set of unlabelled instances, a model can be built, given unlabelled instances with \texttt{-T}, and then saved/dumped into a file with the \texttt{-d <filename>} option, and loaded again (with the \texttt{-l} option) along with a \emph{different} set with \texttt{-T}. 
 
 \section{Getting Help / Reporting Bugs / Contributing}
 
