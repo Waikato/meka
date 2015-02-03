@@ -408,11 +408,11 @@ java meka.classifiers.multitarget.meta.BaggingMT -x 10 -R \
     -W weka.classifiers.functions.Logistic
 \end{lstlisting}
  
-\paragraph{Semi-supervised: EM} on CC with Logistic Regression as a base classifier, using a separate set of unlabelled data:
+\paragraph{Semi-supervised: EM} with CC with Logistic Regression as a base classifier, using a separate set of unlabelled data (in two separate commands):
 \begin{lstlisting}
 java meka.classifiers.multilabel.meta.EM -t data-train.arff \
   -T data-unlabelled.arff -d em.saved
-java meka.classifiers.multilabel.meta.EM -t data-train.arff 
+java meka.classifiers.multilabel.meta.EM -t data-train.arff \
   -T data-test.arff -l em.saved
 \end{lstlisting}
 %\begin{lstlisting}
@@ -598,7 +598,7 @@ public class TestClassifierUpdateable extends TestClassifier
 
 Note that the \texttt{IncrementalEvaluation} class is called for evaluation in this case; see Section \ref{sec:evaluation}. The \framework{\MOA} framework \cite{MOA} for learning in data streams contains a number of incremental classifiers that \WEKA{} does not, for example Hoeffding trees. It is included in \framework{\MEKA}, and you can run these classifiers using \WEKA's \texttt{MOA} meta classifier (wrapper), e.g., 
 \begin{lstlisting}
-java meka.classifiers.multilabel.BRUpdateable -output-debug-info -t data/Music.arff \
+java meka.classifiers.multilabel.BRUpdateable -t data/Music.arff \
 	-W weka.classifiers.meta.MOA -- -B moa.classifiers.trees.HoeffdingTree
 \end{lstlisting}
 
