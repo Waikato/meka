@@ -1,24 +1,31 @@
 See the Tutorial.pdf for detailed information on obtaining, using and extending MEKA.
+For a list of included methods and 'quick-start' command line examples, 
+	see: http://meka.sourceforge.net/methods.html
 
 Release Notes
 -------------
 
-This is a major release, most classifiers have been revised in some way since the last release. 
-Changes involve rewrites to improve in effeciency, or just minor updates to the java documentation.
+This is a relatively minor release. There are no fundamental changes to the internals.
 
-The main changes include,
+However, many classifiers have been revised in some way since the last release, and there are several new classifiers:
 
-	- Faster evaluation code
-	- Faster implementation of most classifiers
-	- New consolidated implementation of the CC and LC/PS family of classifiers
-	- New classifier implementations, including
-		* RAkEL 
-		* RAkELd (disjoint sets)
-	- Cleaner, more comprehensible output of evaluation stats
+	- CT: classifier trellis
+	- CDT: conditional depndency trellis
+	- HASEL: a RAkEL-like algorithm, that partitions labelsets based on a dataset defined hierarchy
 
-For example, the family of classifier chains methods (CC, PCC, MCC, BCC) now inherit common classes and make use of a common CNode and CCUtils class. 
-This makes it much easier to share functionality among them.
-Similar changes were made to the LP family (LC, PS, PSt), which now share tools in a PSUtils class, and have all been rewritten to use a LabelSet class.
-This translates to scalability improvements for large labelsets.
+Also, there have been several small but helpful changes to the GUI:
 
-Note that the predictive results of these classifiers may change minorly from those obtained by earlier versions, but these changes are not statistically significant.
+	- An indicator of when an experiment is in progress
+	- Label variables are set in *bold* to distinguish from the input/attribute variables
+	- Cleaner output
+	- Bookmarks in the load-file dialog.
+	- Minor bug fixes
+	- Default classifiers have been set sensibly (not ZeroR for everything as before)
+	- Some 'missing' classifier options are now present for manipulation
+
+And a lot of minor changes throughout
+
+	- Sensible default classifiers for the command line 
+	- Updated tutorial 
+	- Improved documentation all-around (tutorial, javadoc and code comments
+			and list of methods with examples: http://meka.sourceforge.net/methods.html)
