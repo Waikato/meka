@@ -15,16 +15,16 @@
 
 /**
  * ResultHistory.java
- * Copyright (C) 2012 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2012-2015 University of Waikato, Hamilton, New Zealand
  */
 package meka.gui.core;
+
+import meka.core.Result;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
-
-import meka.core.Result;
 
 /**
  * For maintaining a history of results.
@@ -40,7 +40,10 @@ public class ResultHistory
 
 	/** for storing the results (timestamp / result). */
 	protected Hashtable<Date,Result> m_Results;
-	
+
+	/** for storing the suffixes for the index (timestamp / suffix). */
+	protected Hashtable<Date,String> m_Suffixes;
+
 	/** the ordered list of results. */
 	protected ArrayList<Date> m_Ordered;
 	
@@ -48,8 +51,9 @@ public class ResultHistory
 	 * Initializes the history.
 	 */
 	public ResultHistory() {
-		m_Results = new Hashtable<Date,Result>();
-		m_Ordered = new ArrayList<Date>();
+		m_Results  = new Hashtable<Date,Result>();
+		m_Suffixes = new Hashtable<Date,String>();
+		m_Ordered  = new ArrayList<Date>();
 	}
 	
 	/**
@@ -57,6 +61,7 @@ public class ResultHistory
 	 */
 	public synchronized void clear() {
 		m_Results.clear();
+		m_Suffixes.clear();
 		m_Ordered.clear();
 	}
 	
@@ -88,17 +93,29 @@ public class ResultHistory
 	public synchronized Date getTimestamp(int index) {
 		return m_Ordered.get(index);
 	}
-	
+
+	/**
+	 * Returns the specified suffix.
+	 *
+	 * @param index the index of the item to retrieve
+	 * @return the suffix
+	 */
+	public synchronized String getSuffix(int index) {
+		return m_Suffixes.get(m_Ordered.get(index));
+	}
+
 	/**
 	 * Adds the item to the history.
 	 * 
 	 * @param result the result to add
+	 * @param suffix the suffix to add
 	 */
-	public synchronized void add(Result result) {
+	public synchronized void add(Result result, String suffix) {
 		Date date;
 		
 		date = new Date();
 		m_Results.put(date, result);
+		m_Suffixes.put(date, suffix);
 		m_Ordered.add(date);
 	}
 	
@@ -113,6 +130,7 @@ public class ResultHistory
 		Date date;
 		
 		date   = m_Ordered.remove(index);
+		m_Suffixes.remove(date);
 		result = m_Results.remove(date);
 		
 		return result;
@@ -133,6 +151,8 @@ public class ResultHistory
 			if (result.length() > 1)
 				result.append(", ");
 			result.append(date);
+			result.append(":");
+			result.append(m_Suffixes.get(date));
 			result.append("=");
 			result.append(m_Results.get(date));
 		}

@@ -15,26 +15,19 @@
 
 /**
  * ResultHistoryList.java
- * Copyright (C) 2012 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2012-2015 University of Waikato, Hamilton, New Zealand
  */
 package meka.gui.core;
 
-import java.awt.Rectangle;
+import meka.core.Result;
+import weka.gui.ExtensionFileFilter;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import javax.swing.AbstractListModel;
-import javax.swing.JFileChooser;
-import javax.swing.JList;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.ListModel;
-
-import meka.core.Result;
-import weka.gui.ExtensionFileFilter;
 
 /**
  * A specialized {@link JList} to display results.
@@ -103,9 +96,10 @@ public class ResultHistoryList
 		 * Adds the element to the history.
 		 * 
 		 * @param result the item to add
+		 * @param suffix the suffix to add
 		 */
-		public void addElement(Result result) {
-			m_History.add(result);
+		public void addElement(Result result, String suffix) {
+			m_History.add(result, suffix);
 			fireIntervalAdded(this, m_History.size() - 1, m_History.size() - 1);
 		}
 
@@ -117,8 +111,12 @@ public class ResultHistoryList
 		 */
 		@Override
 		public Object getElementAt(int index) {
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");		        
-			return formatter.format(getTimestampAt(index));
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String element = formatter.format(getTimestampAt(index));
+			String suffix = getSuffixAt(index);
+			if ((suffix != null) && (suffix.trim().length() > 0))
+				element += ": " + suffix;
+			return element;
 		}
 
 		/**
@@ -139,6 +137,16 @@ public class ResultHistoryList
 		 */
 		public Result getResultAt(int index) {
 			return m_History.get(index);
+		}
+
+		/**
+		 * Returns the suffix at the specified location.
+		 *
+		 * @param index the location
+		 * @return the suffix
+		 */
+		public String getSuffixAt(int index) {
+			return m_History.getSuffix(index);
 		}
 
 		/**
@@ -324,9 +332,10 @@ public class ResultHistoryList
 	 * Adds the element to the history.
 	 * 
 	 * @param result the item to add
+	 * @param suffix the suffix to add
 	 */
-	public void addResult(Result result) {
-		((ResultHistoryModel) getModel()).addElement(result);
+	public void addResult(Result result, String suffix) {
+		((ResultHistoryModel) getModel()).addElement(result, suffix);
 		setSelectedIndex(getModel().getSize() - 1);
 	}
 
@@ -340,7 +349,18 @@ public class ResultHistoryList
 		return ((ResultHistoryModel) getModel()).getResultAt(index);
 
 	}
-	
+
+	/**
+	 * Returns the suffix at the specified location.
+	 *
+	 * @param index the location
+	 * @return the suffix
+	 */
+	public String getSuffixAt(int index) {
+		return ((ResultHistoryModel) getModel()).getSuffixAt(index);
+
+	}
+
 	/**
 	 * Sets the model to use, must derived from {@link ResultHistoryModel}.
 	 * 
