@@ -25,7 +25,8 @@ import weka.filters.*;
 import java.util.*;
 
 /**
- * HASEL - Partitions labels into subsets based on the dataset defined hierarchy (assuming that a '.' in the attribute names defines hierarchical branches, e.g., "Europe.Spain").
+ * HASEL - Partitions labels into subsets based on the dataset defined hierarchy.
+ * Note: assuming that a <code>.<\code> (fullstop/period) in the attribute names defines hierarchical branches, e.g., <code>Europe.Spain</code>.
  * @author 	Jesse Read 
  * @version June 2014
  */
