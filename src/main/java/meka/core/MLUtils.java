@@ -894,7 +894,7 @@ public abstract class MLUtils {
 		for(int j = 0; j < m; j++) {
 			D.deleteAttributeAt(L);
 		}
-		return addZtoD(D,Z,L);
+		return addZtoD(D, Z, L);
 	}
 
 	/**
@@ -910,7 +910,7 @@ public abstract class MLUtils {
 		for(int j = 0; j < L; j++) {
 			D.deleteAttributeAt(0);
 		}
-		return insertZintoD(D,Z);
+		return insertZintoD(D, Z);
 	}
 
 	/**
@@ -1013,6 +1013,26 @@ public abstract class MLUtils {
 		oos.writeObject(object);
 		oos.flush();
 		oos.close();
+	}
+
+	/**
+	 * Fixes the relation name by adding the "-C" attribute to it if necessary.
+	 *
+	 * @param data the dataset to fix
+	 */
+	public static void fixRelationName(Instances data) {
+		fixRelationName(data, 0);
+	}
+
+	/**
+	 * Fixes the relation name by adding the "-C" attribute to it if necessary.
+	 *
+	 * @param data the dataset to fix
+	 * @param numClassAtts the number of class attributes (0 for none, >0 for attributes at start, <0 for attributes at end)
+	 */
+	public static void fixRelationName(Instances data, int numClassAtts) {
+		if (data.relationName().indexOf(":") == -1)
+			data.setRelationName(data.relationName() + ": -C " + numClassAtts);
 	}
 
 	/**

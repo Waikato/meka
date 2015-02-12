@@ -19,29 +19,6 @@
  */
 package meka.gui.explorer;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
-import javax.swing.KeyStroke;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import meka.core.MLUtils;
 import meka.gui.core.FileChooserBookmarksPanel;
 import meka.gui.core.GUIHelper;
@@ -56,6 +33,15 @@ import weka.core.converters.SerializedInstancesLoader;
 import weka.gui.BrowserHelper;
 import weka.gui.ConverterFileChooser;
 import weka.gui.ViewerDialog;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.ArrayList;
 
 /**
  * Explorer GUI for MEKA.
@@ -363,13 +349,12 @@ public class Explorer
 	public void open(File file, AbstractFileLoader loader) {
 		Instances data;
 
+		// load data
 		try {
-			addUndoPoint();
 			loader.setFile(file);
 			data          = loader.getDataSet();
-			m_CurrentFile = file;
-			MLUtils.prepareData(data);
-			notifyTabsDataChanged(null, data);
+			// fix class attributes definition in relation name if necessary
+			MLUtils.fixRelationName(data);
 		}
 		catch (Exception e) {
 			System.err.println("Failed to load data from '" + file + "':");
@@ -379,6 +364,25 @@ public class Explorer
 					"Failed to load dataset from '" + file + "':\n" + e, 
 					"Error loading",
 					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		// prepare data
+		try {
+			addUndoPoint();
+			MLUtils.prepareData(data);
+			m_CurrentFile = file;
+			notifyTabsDataChanged(null, data);
+		}
+		catch (Exception e) {
+			System.err.println("Failed to prepare data from '" + file + "':");
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(
+					this,
+					"Failed to load prepare data from '" + file + "':\n" + e,
+					"Error loading",
+					JOptionPane.ERROR_MESSAGE);
+			return;
 		}
 
 		updateMenu();
