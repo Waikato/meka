@@ -15,29 +15,9 @@
 
 /**
  * ClassifyTab.java
- * Copyright (C) 2012 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2012-2015 University of Waikato, Hamilton, New Zealand
  */
 package meka.gui.explorer;
-
-import java.awt.BorderLayout;
-import java.awt.Dialog.ModalityType;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Random;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import meka.classifiers.multilabel.Evaluation;
 import meka.classifiers.multilabel.IncrementalEvaluation;
@@ -49,6 +29,15 @@ import meka.gui.core.GUIHelper;
 import meka.gui.core.ResultHistoryList;
 import meka.gui.goe.GenericObjectEditor;
 import weka.core.Instances;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
+import java.awt.Dialog.ModalityType;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Random;
 
 /**
  * Simple panel for performing classification.
@@ -259,7 +248,8 @@ extends AbstractThreadedExplorerTab {
 		//System.out.println("data.classIndex() "+data.classIndex());
 	    results = Evaluation.cvModel(classifier, data, m_Folds, m_TOP, m_VOP);
 		addResultToHistory(
-			MLEvalUtils.averageResults(results)
+				MLEvalUtils.averageResults(results),
+				classifier.getClass().getName().replace("meka.classifiers.", "")
 		);
 		finishBusy("");
 	  }
@@ -301,7 +291,10 @@ extends AbstractThreadedExplorerTab {
 	    classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
 		//System.out.println("data.classIndex() "+train.classIndex());
 	    result     = Evaluation.evaluateModel(classifier, train, test, m_TOP, m_VOP);
-	    addResultToHistory(result);
+	    addResultToHistory(
+			    result,
+				classifier.getClass().getName().replace("meka.classifiers.", "")
+	    );
 		finishBusy("");
 	  }
 	  catch (Exception e) {
@@ -328,8 +321,11 @@ extends AbstractThreadedExplorerTab {
 	    classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
 		//System.out.println("data.classIndex() "+data.classIndex());
 	    results    = IncrementalEvaluation.evaluateModel(classifier, data, 20, 1., m_TOP, m_VOP);
-	    for (Result result: results) 
-	      addResultToHistory(result);
+	    for (Result result: results)
+		    addResultToHistory(
+				    result,
+				    classifier.getClass().getName().replace("meka.classifiers.", "")
+	      );
 		finishBusy("");
 	  }
 	  catch (Exception e) {
@@ -418,14 +414,17 @@ extends AbstractThreadedExplorerTab {
   
   /**
    * Adds the result to the history.
+   *
+   * @param result the result to add
+   * @param suffix the suffix to add
    */
-  protected void addResultToHistory(final Result result) {
+  protected void addResultToHistory(final Result result, final String suffix) {
     Runnable run;
 
     run = new Runnable() {
       @Override
       public void run() {
-		  m_ResultHistoryList.addResult(result);
+		  m_ResultHistoryList.addResult(result, suffix);
       }
     };
     SwingUtilities.invokeLater(run);
