@@ -56,7 +56,7 @@ The multi-label problem is in fact a special case of \keyword{multi-target} lear
 
 \framework{\MEKA} can also includes \emph{incremental} classifiers suitable for the \keyword{data streams} context. An overview of some of the methods included in \framework{\MEKA} for learning from incremental data streams is given in \cite{MEDS2}.
 
-\framework{\MEKA} is released under the GNU GPL licence. The latest release, source code, API reference, this tutorial, and further information and links to additional material, can be found at the website: \url{http://meka.sourceforge.net}. 
+\framework{\MEKA} is released under the GNU GPL v3 licence. The latest release, source code, API reference, this tutorial, and further information and links to additional material, can be found at the website: \url{http://meka.sourceforge.net}. 
 
 This tutorial applies to \framework{\MEKA} version {\version}. 
 
@@ -93,7 +93,7 @@ Since Version 1.2 \framework{\MEKA} has a graphical user interface (GUI). Run th
 \begin{lstlisting}
 ./run.sh
 \end{lstlisting}
-Run \texttt{run.bat} instead of you are using Microsoft windows.
+Run \texttt{run.bat} instead if you are using Microsoft windows.
 
 
 %\begin{lstlisting}
@@ -209,7 +209,7 @@ Classifier Options:
 
 The only required options are \texttt{-t} to specify the dataset, and \texttt{-C} to specify the number of target attributes (which is typically included within the dataset, as explained in the previous section).  
 
-The \texttt{Classifier Options} are specific to each classifier, which in this case (for \texttt{java meka.classifiers.multilabel.BR}) are not very extensive. However, in nearly all methods, performance varies considerably with the \emph{base classifier}. In version 1.7.5 the default is \texttt{J48} (decision trees). The base classifier is changed with the \texttt{-W} option. For example, to use Naive Bayes, type\footnote{If typed on one line, the bar `\texttt{\textbackslash}' should be omitted when typed as a single line} on the command line:
+The \texttt{Classifier Options} are specific to each classifier, which in this case (for \texttt{java meka.classifiers.multilabel.BR}) are not very extensive. However, in nearly all methods, performance varies considerably with the \emph{base classifier}. In version 1.7.5 the default is \texttt{J48} (decision trees). The base classifier is changed with the \texttt{-W} option. For example, to use Naive Bayes, type\footnote{If typed on one line, the backslash `\texttt{\textbackslash}' should be omitted} on the command line:
 
 \begin{lstlisting}
 java meka.classifiers.multilabel.BR -t data/Music.arff \
@@ -228,7 +228,7 @@ The CLI is the most powerful way to work with \framework{\MEKA}, but the GUI is 
 	\item Load a dataset file using \textsf{Open} from the file menu. %See \Sec{sec:data.gui} for information on preprocessing the datasets.
 	\item Click on the \textsf{Classify} tab.
 	\item \textsf{Choose} a multi-label or multi-target classifier and (in most cases) an appropriate \framework{\WEKA} base classifier, as well as its options. For \framework{\MEKA}'s meta classifiers, you will need to choose a \framework{\MEKA} base classifier, and a single-label \framework{\WEKA} base classifier for this classifier. See, for example, \Fig{screen:eval}, using Bagging of Classifier Chains with SMO.
-	\item In the \textsf{Evaluation} panel you configure what type of evaluation you want to do, and some of the options given in the previous section are available here. For example, a 50/50 train/test split, as being specified in \Fig{screen:split}.
+	\item In the \textsf{Evaluation} panel you configure what type of evaluation you want to do, and some of the options given in the previous section are available here. For example, a 55/45 train/test split, as being specified in \Fig{screen:split}.
 	\item When you click \textsf{Start} the experiment will be run. When finished, the result will appear in the \textsf{History} panel; or multiple results in the case of incremental validation. This is the same output as would be seen on the command line, and explained in the following section.
 	%\item You can export results to text, or copy of paste it.
 	\item Optionally, you can click on the \textsf{Visualize} tab and visualize the results.
@@ -280,7 +280,7 @@ Total_time           : 0.27
 \end{lstlisting}
 }
 
-The results of the experiment in \Fig{screen:split} is shown in \Fig{screen:result}.
+The results of the experiment in \Fig{screen:split} are shown in \Fig{screen:result}.
 \begin{figure}
 	\centering
 	\includegraphics[height=0.95\textwidth]{GUI04.png}
@@ -400,7 +400,7 @@ java meka.classifiers.multilabel.meta.BaggingMLUpdateable -B 20\
 
 Evaluating incremental classifiers will carry out evaluation and display statistics for the data over $\texttt{B}-1$ evaluation windows (an initial window is used for the initial training; making \texttt{B} windows in total). %Note that the \framework{\MOA} framework \cite{MOA} for evaluating incremental classifiers is much more sophisticated; and a new release will include a wrapper to \framework{\MEKA}. 
 
-\paragraph{Multi-target: Ensembles of Class Relevance} (see \cite{UPM}) The multi-target version of the Binary Relevance classifier) on the \textit{solar flare} dataset with Logistic Regression as a base classifier under $5$-fold cross-validation:
+\paragraph{Multi-target: Ensembles of Class Relevance} (see \cite{UPM}) The multi-target version of the Binary Relevance classifier) on the \textit{solar flare} dataset with Logistic Regression as a base classifier under $10$-fold cross-validation:
 \begin{lstlisting}
 java meka.classifiers.multitarget.meta.BaggingMT -x 10 -R \
   -t data/solar_flare.arff \
@@ -514,7 +514,7 @@ This shows how easy it is to create a new classifier. However, for more useful e
 
 \subsubsection{Building Classifiers}
 
-In the \texttt{buildClassifier(Instances)} method, you build your classifier. Here is where you can take advantage of all of \WEKA's libraries. You can use any \WEKA classifier to your needs. The \texttt{m\_Classifier} variable is already available for this, which \textit{already contains} the \WEKA{} classifier you specify on the command line. You can simply do:
+In the \texttt{buildClassifier(Instances)} method, you build your classifier. Here is where you can take advantage of all of \framework{WEKA}'s libraries. You can use any \WEKA classifier to your needs. The \texttt{m\_Classifier} variable is already available for this, which \textit{already contains} the \framework{WEKA} classifier you specify on the command line. You can simply do:
 {
 \lstset{basicstyle=\small\ttfamily,breaklines=true,language=java,frame=L,xleftmargin=\parindent}
 \begin{lstlisting}
@@ -596,7 +596,7 @@ public class TestClassifierUpdateable extends TestClassifier
 \end{lstlisting}
 }
 
-Note that the \texttt{IncrementalEvaluation} class is called for evaluation in this case; see Section \ref{sec:evaluation}. The \framework{\MOA} framework \cite{MOA} for learning in data streams contains a number of incremental classifiers that \WEKA{} does not, for example Hoeffding trees. It is included in \framework{\MEKA}, and you can run these classifiers using \WEKA's \texttt{MOA} meta classifier (wrapper), e.g., 
+Note that the \texttt{IncrementalEvaluation} class is called for evaluation in this case; see Section \ref{sec:evaluation}. The \framework{\MOA} framework \cite{MOA} for learning in data streams contains a number of incremental classifiers that \framework{WEKA} does not, for example Hoeffding trees. It is included in \framework{\MEKA}, and you can run these classifiers using \framework{WEKA}'s \texttt{MOA} meta classifier (wrapper), e.g., 
 \begin{lstlisting}
 java meka.classifiers.multilabel.BRUpdateable -t data/Music.arff \
 	-W weka.classifiers.meta.MOA -- -B moa.classifiers.trees.HoeffdingTree
@@ -618,7 +618,7 @@ If you have found a bug with \framework{\MEKA}, you can report in via the \texts
 
 If you would like to contribute to \framework{\MEKA}, such as adding new classifiers, please get in touch with the developers.
 
-More more information (such as contact information) can be found at the \framework{\MEKA} website: \url{http://meka.sourceforge.net}.
+More information (such as contact information) can be found at the \framework{\MEKA} website: \url{http://meka.sourceforge.net}.
 
 \include{bibliography}
 
