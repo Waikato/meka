@@ -16,10 +16,11 @@
 package meka.classifiers.multitarget;
 
 /**
- * CC.java - The Classifier Chains (CC) method.
- * Multi-target version of CC method (directly applicable) -- only the confidence information is different.
+ * CC.java - Multi-target version of Classifier Chains (CC).
+ * Only the confidence information is different, since multi-target implies a multi-dimensional posterior distribution.
+ *
  * @see 	meka.classifiers.multilabel.CC
- * @author 	Jesse Read (jesse@tsc.uc3m.es)
+ * @author 	Jesse Read 
  * @version	Jan 2012
  */
 import java.util.Arrays;
@@ -54,7 +55,7 @@ public class CC extends meka.classifiers.multilabel.CC implements MultiTargetCla
 	public String globalInfo() {
 		return 
 				"The Classifier Chains (CC) method.\n"
-				+ "Multi-target version of the BR-based CC method (directly applicable).";
+				+ "Multi-target version of CC (directly applicable, but the posterior distribution is multidimensional (may help ensemble performance)).";
 	}
 
 	@Override
