@@ -51,7 +51,7 @@ import weka.core.Utils;
  */
 
 
-public class RandomSubspaceEnsembleML extends MultilabelMetaClassifier implements TechnicalInformationHandler {
+public class RandomSubspaceML extends MultilabelMetaClassifier implements TechnicalInformationHandler {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 3608541911971484299L;
@@ -177,7 +177,7 @@ public class RandomSubspaceEnsembleML extends MultilabelMetaClassifier implement
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new RandomSubspaceEnsembleML(),args);
+		MultilabelClassifier.evaluation(new RandomSubspaceML(),args);
 	}
 
 	/**
