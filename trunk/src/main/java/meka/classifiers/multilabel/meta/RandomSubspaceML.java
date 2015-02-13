@@ -25,6 +25,7 @@ import weka.classifiers.AbstractClassifier;
 import meka.classifiers.multilabel.MultilabelClassifier;
 import meka.core.A;
 import meka.core.F;
+import meka.core.MLUtils;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Option;
@@ -49,23 +50,26 @@ import weka.core.Utils;
  * @version	June 2014
  */
 
-public class RandomSubspaceML extends MultilabelMetaClassifier implements TechnicalInformationHandler {
+
+public class RandomSubspaceEnsembleML extends MultilabelMetaClassifier implements TechnicalInformationHandler {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 3608541911971484299L;
 
 	protected int m_AttSizePercent = 50;
 
-	protected int m_Indices[][] = null;
+	protected int m_IndicesCut[][] = null;
 	protected Instances m_InstancesTemplates[] = null;
+	protected Instance m_InstanceTemplates[] = null;
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
 	  	testCapabilities(D);
 	  	
 		m_InstancesTemplates = new Instances[m_NumIterations];
+		m_InstanceTemplates = new Instance[m_NumIterations];
 
-		if (getDebug()) System.out.print("-: Models: ");
+		if (getDebug()) System.out.println("-: Models: ");
 
 		m_Classifiers = MultilabelClassifier.makeCopies((MultilabelClassifier)m_Classifier, m_NumIterations);
 
@@ -76,32 +80,39 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 		int L = D.classIndex();
 		int d = D.numAttributes() - L;
 		int d_new = d * m_AttSizePercent / 100;
-		m_Indices = new int[m_NumIterations][];
+		m_IndicesCut = new int[m_NumIterations][];
 
 		for(int i = 0; i < m_NumIterations; i++) {
 
 			// Downsize the instance space (exactly like in EnsembleML.java)
 
+			if (getDebug()) 
+				System.out.print("\t"+(i+1)+": ");
 			D.randomize(r);
 			Instances D_cut = new Instances(D,0,N_sub);
+			if (getDebug()) 
+				System.out.print("N="+D.numInstances()+" -> N'="+D_cut.numInstances()+", ");
 
 			// Downsize attribute space
 
 			D_cut.setClassIndex(-1);
-			int indices_a[] = A.make_sequence(d);
+			int indices_a[] = A.make_sequence(L,d+L);
 			A.shuffle(indices_a,r);
 			indices_a = Arrays.copyOfRange(indices_a,0,d-d_new);
 			Arrays.sort(indices_a);
-			m_Indices[i] = indices_a;
+			m_IndicesCut[i] = A.invert(indices_a,D.numAttributes());
 			D_cut = F.remove(D_cut,indices_a,false);
 			D_cut.setClassIndex(L);
+			if (getDebug()) 
+				System.out.print(" A:="+(D.numAttributes() - L)+" -> A'="+(D_cut.numAttributes() - L)+" ("+m_IndicesCut[i][L]+",...,"+m_IndicesCut[i][m_IndicesCut[i].length-1]+")");
 
 			// Train multi-label classifier
 
 			if (m_Classifiers[i] instanceof Randomizable) ((Randomizable)m_Classifiers[i]).setSeed(m_Seed+i);
-			if(getDebug()) System.out.print(""+i+" ");
+			if(getDebug()) System.out.println(".");
 
 			m_Classifiers[i].buildClassifier(D_cut);
+			m_InstanceTemplates[i] = D_cut.instance(1);
 			m_InstancesTemplates[i] = new Instances(D_cut,0);
 		}
 		if (getDebug()) System.out.println(":-");
@@ -111,19 +122,17 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 	@Override
 	public double[] distributionForInstance(Instance x) throws Exception {
 
-		double p[] = new double[x.classIndex()];
+		int L = x.classIndex();
+		double p[] = new double[L];
 
 		for(int i = 0; i < m_NumIterations; i++) {
-
-			// Downsize the attribute space (in the same way as above)
-			Instance x_ = (Instance) x.copy(); 
-			x_.setDataset(null);
-			for(int j = m_Indices[i].length-1; j >= 0; j--) {
-				x_.deleteAttributeAt(j);
-			}
+			// Use a template Instance from training, and copy values over
+			// (this is faster than copying x and cutting it to shape)
+			Instance x_ = (Instance) m_InstanceTemplates[i];
+			MLUtils.copyValues(x_,x,m_IndicesCut[i]);
 			x_.setDataset(m_InstancesTemplates[i]);
 
-			// TODO: use generic voting scheme somewhere?
+			// TODO, use generic voting scheme somewhere?
 			double d[] = ((MultilabelClassifier)m_Classifiers[i]).distributionForInstance(x_);
 			for(int j = 0; j < d.length; j++) {
 				p[j] += d[j];
@@ -136,7 +145,7 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 	@Override
 	public Enumeration listOptions() {
 		Vector newVector = new Vector();
-		newVector.addElement(new Option("\t@Size of attribute space, as a percentage of total attribute space size (must be between 1 and 100, default: "+m_AttSizePercent+")", "A", 1, "-A <size percentage>"));
+		newVector.addElement(new Option("\tSize of attribute space, as a percentage of total attribute space size (must be between 1 and 100, default: "+m_AttSizePercent+")", "A", 1, "-A <size percentage>"));
 		Enumeration enu = super.listOptions();
 		while (enu.hasMoreElements()) {
 			newVector.addElement(enu.nextElement());
@@ -145,16 +154,16 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 	}
 
 	@Override
-	public void setOptions(String[] options) throws Exception {
+    public void setOptions(String[] options) throws Exception {
 
-		String tmpStr; 
+        String tmpStr;
 
-		tmpStr = Utils.getOption('A', options);
-		if (tmpStr.length() != 0) 
-			setAttSizePercent(Integer.parseInt(tmpStr)); 
+        tmpStr = Utils.getOption('A', options);
+        if (tmpStr.length() != 0)
+            setAttSizePercent(Integer.parseInt(tmpStr));
 
-		super.setOptions(options);
-	}
+        super.setOptions(options);
+    }
 
 	@Override
 	public String [] getOptions() {
@@ -168,7 +177,7 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new RandomSubspaceML(),args);
+		MultilabelClassifier.evaluation(new RandomSubspaceEnsembleML(),args);
 	}
 
 	/**
@@ -203,15 +212,15 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 	}
 
 	/** 
-	 * Sets the percentage of attributes to sample from the original set.
-	 */
+     * Sets the percentage of attributes to sample from the original set.
+     */
 	public void setAttSizePercent(int value) {
 		m_AttSizePercent = value;
 	}
 
-	/** 
-	 * Gets the percentage of attributes to sample from the original set.
-	 */
+    /** 
+     * Gets the percentage of attributes to sample from the original set.
+     */
 	public int getAttSizePercent() {
 		return m_AttSizePercent;
 	}
