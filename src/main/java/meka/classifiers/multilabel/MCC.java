@@ -52,7 +52,7 @@ public class MCC extends CC implements TechnicalInformationHandler {
 	/**
 	 * Likelihood - Return a default score of h evaluated on D.
 	 * sum ( p(y_i | x_i, h_s) )
-	 * @TODO use meka.core.Metrics
+	 * TODO: use meka.core.Metrics
 	 */
 	public double likelihood(CC h, Instances D) throws Exception {
 		return likelihood(h,D,m_Payoff);
@@ -61,7 +61,7 @@ public class MCC extends CC implements TechnicalInformationHandler {
 	/**
 	 * Likelihood - Return a score of choice (payoff_fn) of h evaluated on D.
 	 * maximizing likelihood is the same as minimizing the error ..
-	 * @TODO use meka.core.Metrics
+	 * TODO: use meka.core.Metrics
 	 * @return sum log P(Y|X;h) where h defines e.g., a particular chain order
 	 */
 	public double likelihood(CC h, Instances D, int payoff_fn) throws Exception {

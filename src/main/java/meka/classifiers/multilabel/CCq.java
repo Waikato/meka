@@ -164,18 +164,32 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 		result = new TechnicalInformation(Type.ARTICLE);
 		result.setValue(Field.AUTHOR, "Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank");
 		result.setValue(Field.TITLE, "Classifier Chains for Multi-label Classification");
-    result.setValue(Field.JOURNAL, "Machine Learning Journal");
-    result.setValue(Field.YEAR, "2011");
-    result.setValue(Field.VOLUME, "85");
-    result.setValue(Field.NUMBER, "3");
-    result.setValue(Field.PAGES, "333-359");
+		result.setValue(Field.JOURNAL, "Machine Learning Journal");
+		result.setValue(Field.YEAR, "2011");
+		result.setValue(Field.VOLUME, "85");
+		result.setValue(Field.NUMBER, "3");
+		result.setValue(Field.PAGES, "333-359");
 		
 		return result;
+	}
+
+	public int getSeed() {
+		return m_S;
 	}
 
 	public void setSeed(int s) {
 		m_S = s;
 		m_Random = new Random(m_S);
+	}
+
+	/** Set the downsample ratio  */
+	public void setDownSampleRatio(double r) {
+		m_DownSampleRatio = r;
+	}
+
+	/** Get the downsample ratio  */
+	public double getDownSampleRatio() {
+		return m_DownSampleRatio;
 	}
 	
 	public String seedTipText() {
@@ -186,7 +200,7 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 	public Enumeration listOptions() {
 
 		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tSets the downsampling ratio        \n\tdefault: "+m_DownSampleRatio+"\t(% of original)", "P", 1, "-P <value>"));
+		newVector.addElement(new Option("\tSets the downsampling ratio        \n\tdefault: "+m_DownSampleRatio+"\t(of original)", "P", 1, "-P <value>"));
 
 		Enumeration enu = super.listOptions();
 
@@ -199,11 +213,10 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 	@Override
 	public void setOptions(String[] options) throws Exception {
 
-		try {
-			m_DownSampleRatio = Double.parseDouble(Utils.getOption('P', options));
-		} catch(Exception e) {
-			if(getDebug()) System.err.println("Using default P = "+m_DownSampleRatio);
-		}
+		String tmpStr; 
+		tmpStr = Utils.getOption('P', options);
+		if (tmpStr.length() != 0) 
+			setDownSampleRatio(Double.parseDouble(tmpStr));
 
 		super.setOptions(options);
 	}
@@ -219,10 +232,6 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 		System.arraycopy(superOptions, 0, options, current, superOptions.length);
 		return options;
 
-	}
-
-	public int getSeed() {
-		return m_S;
 	}
 
 	@Override

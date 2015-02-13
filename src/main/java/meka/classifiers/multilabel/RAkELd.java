@@ -146,6 +146,7 @@ public class RAkELd extends RAkEL implements TechnicalInformationHandler {
 		additional.setValue(Field.AUTHOR, "Jesse Read, Antti Puurula, Albert Bifet");
 		additional.setValue(Field.TITLE, "Classifier Chains for Multi-label Classification");
 		result.setValue(Field.BOOKTITLE, "ICDM'14: International Conference on Data Mining (ICDM 2014). Shenzen, China.");
+		result.setValue(Field.PAGES, "941--946");
 		result.setValue(Field.YEAR, "2014");
 
 		result.add(additional);

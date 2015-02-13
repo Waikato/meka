@@ -124,9 +124,21 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier impl
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
-		try { m_Seed = Integer.parseInt(Utils.getOption('S',options)); } catch(Exception e) { }
-		try { m_NumIterations = Integer.parseInt(Utils.getOption('I',options)); } catch(Exception e) { }
-		try { m_BagSizePercent = Integer.parseInt(Utils.getOption('P',options)); } catch(Exception e) { }
+
+		String tmpStr; 
+
+		tmpStr = Utils.getOption('S', options);
+		if (tmpStr.length() != 0) 
+			setSeed(Integer.parseInt(tmpStr)); 
+
+		tmpStr = Utils.getOption('I', options);
+		if (tmpStr.length() != 0) 
+			setNumIterations(Integer.parseInt(tmpStr)); 
+
+		tmpStr = Utils.getOption('P', options);
+		if (tmpStr.length() != 0) 
+			setBagSizePercent(Integer.parseInt(tmpStr)); 
+
 		super.setOptions(options);
 	}
 

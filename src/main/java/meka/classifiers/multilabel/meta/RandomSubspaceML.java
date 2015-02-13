@@ -123,7 +123,7 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 			}
 			x_.setDataset(m_InstancesTemplates[i]);
 
-			// @TODO, use generic voting scheme somewhere?
+			// TODO: use generic voting scheme somewhere?
 			double d[] = ((MultilabelClassifier)m_Classifiers[i]).distributionForInstance(x_);
 			for(int j = 0; j < d.length; j++) {
 				p[j] += d[j];
@@ -136,7 +136,7 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 	@Override
 	public Enumeration listOptions() {
 		Vector newVector = new Vector();
-		newVector.addElement(new Option("\t@Size of attribute space, as a percentage of total attribute space size (default "+m_AttSizePercent+")", "A", 1, "-A <size percentage>"));
+		newVector.addElement(new Option("\t@Size of attribute space, as a percentage of total attribute space size (must be between 1 and 100, default: "+m_AttSizePercent+")", "A", 1, "-A <size percentage>"));
 		Enumeration enu = super.listOptions();
 		while (enu.hasMoreElements()) {
 			newVector.addElement(enu.nextElement());
@@ -146,7 +146,13 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
-		try { m_AttSizePercent = Integer.parseInt(Utils.getOption('A',options)); } catch(Exception e) { }
+
+		String tmpStr; 
+
+		tmpStr = Utils.getOption('A', options);
+		if (tmpStr.length() != 0) 
+			setAttSizePercent(Integer.parseInt(tmpStr)); 
+
 		super.setOptions(options);
 	}
 
@@ -196,14 +202,16 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 		return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
+	/** 
+	 * Sets the percentage of attributes to sample from the original set.
+	 */
 	public void setAttSizePercent(int value) {
-		if ((value > 0) && (value <= 100))
-			m_AttSizePercent = value;
-		else {
-			System.err.println("Bad percentage (must be between 1 and 100");
-		}
+		m_AttSizePercent = value;
 	}
 
+	/** 
+	 * Gets the percentage of attributes to sample from the original set.
+	 */
 	public int getAttSizePercent() {
 		return m_AttSizePercent;
 	}
