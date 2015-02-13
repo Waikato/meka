@@ -218,8 +218,16 @@ public class RAkEL extends PS {
 	@Override
 	public void setOptions(String[] options) throws Exception {
 		//try { m_S = Integer.parseInt(Utils.getOption('S',options)); } catch(Exception e) { }
-		try { m_M = Integer.parseInt(Utils.getOption('M',options)); } catch(Exception e) { }
-		try { m_K = Integer.parseInt(Utils.getOption('k',options)); } catch(Exception e) { }
+		//
+		String tmpStr; 
+		tmpStr = Utils.getOption('M', options);
+		if (tmpStr.length() != 0) 
+			setM(Integer.parseInt(tmpStr)); 
+
+		tmpStr = Utils.getOption('k', options);
+		if (tmpStr.length() != 0) 
+			setK(Integer.parseInt(tmpStr)); 
+
 		super.setOptions(options);
 	}
 

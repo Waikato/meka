@@ -171,21 +171,17 @@ public class PS extends LC implements Randomizable, TechnicalInformationHandler 
 	@Override
 	public void setOptions(String[] options) throws Exception {
 
-		try {
-			m_sP = Utils.getOption('P', options);
+		m_sP = Utils.getOption('P', options);
+		if (m_sP.length() != 0)
 			setP(parseValue(m_sP));
-		} catch(Exception e) {
+		else
 			m_sP = String.valueOf(getP());
-			if(getDebug()) System.err.println("Using default P = "+getP());
-		}
 
-		try {
-			m_sN = Utils.getOption('N', options);
+		m_sN = Utils.getOption('N', options);
+		if (m_sN.length() != 0)
 			setN(parseValue(m_sN));
-		} catch(Exception e) {
+		else
 			m_sN = String.valueOf(m_N);
-			if(getDebug()) System.err.println("Using default N = "+getN());
-		}
 
 		super.setOptions(options);
 	}

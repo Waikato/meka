@@ -234,7 +234,7 @@ public class CT extends MCC implements TechnicalInformationHandler {
 	public void setOptions(String[] options) throws Exception {
 
 		m_Width = (Utils.getOptionPos('H',options) >= 0) ? Integer.parseInt(Utils.getOption('H', options)) : m_Width;
-		if (getDebug()) System.out.println("WIDTH SET AS: "+m_Width);
+		if (getDebug()) System.out.println("Width set as: "+m_Width);
 		m_Connectivity = (Utils.getOptionPos('L',options) >= 0) ? Integer.parseInt(Utils.getOption('L', options)) : m_Connectivity;
 		if (getDebug()) System.out.println("Trellis Type: "+m_Connectivity);
 		m_DependencyPayoff = (Utils.getOptionPos('X',options) >= 0) ? Utils.getOption('X', options) : m_DependencyPayoff;
