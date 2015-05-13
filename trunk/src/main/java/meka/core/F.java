@@ -15,11 +15,11 @@
 
 package meka.core;
 
-import java.util.*;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.*;
-import weka.core.Instances;
 import weka.core.Instance;
+import weka.core.Instances;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.Remove;
+import weka.filters.unsupervised.attribute.Reorder;
 
 /**
  * F.java - TRANSFORM/FILTER OPERATIONS.
@@ -129,7 +129,7 @@ public abstract class F {
 	 * Remove Indices - Remove some labels (assume they are the first L attributes) from D.
 	 * @param	D		Dataset
 	 * @param	L 		number of labels
-	 * @param	j[]		indices of labels to keep
+	 * @param	j		indices of labels to keep
 	 * @return	New dataset with labels removed.
 	 */
 	public static Instances keepLabels(Instances D, int L, int j[]) throws Exception {

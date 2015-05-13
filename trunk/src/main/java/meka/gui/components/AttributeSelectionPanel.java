@@ -53,11 +53,11 @@ import weka.core.Instances;
  * names match a regular expression (Pattern button). E.g. for removing all
  * attributes that contain an ID and therefore unwanted information, one can
  * match all names that contain "id" in the name:<br>
- * <p/>
+ * <p>
  * <pre>
  * (.*_id_.*|.*_id$|^id$)
  * </pre>
- * <p/>
+ * <p>
  * This does not match e.g. "humidity", which could be an attribute we would
  * like to keep.
  *

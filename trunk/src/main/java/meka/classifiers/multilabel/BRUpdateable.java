@@ -22,7 +22,7 @@ import meka.core.MLUtils;
 /**
  * BRUpdateable.java - Updateable BR.
  * Must be run with an UpdateableClassifier base classifier.
- * @see BR.java
+ * @see BR
  * @author 		Jesse Read (jesse@tsc.uc3m.es)
  * @version 	September, 2011
  */

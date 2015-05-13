@@ -15,15 +15,14 @@
 
 package meka.classifiers.multilabel;
 
-import weka.classifiers.*;
-import weka.classifiers.functions.*;
-import meka.classifiers.multitarget.*;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.supervised.attribute.*;
-import weka.attributeSelection.*;
-import weka.filters.*;
-import weka.core.*;
-import meka.core.*;
+import meka.core.A;
+import meka.core.MLUtils;
+import weka.classifiers.AbstractClassifier;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.Option;
+import weka.core.Utils;
+
 import java.util.*;
 
 /**
@@ -33,7 +32,7 @@ import java.util.*;
  * <b>NOTE:</b> this implementation was faster, because the chain was only rebuilt from the first node which was different -- this is no longer the case (due to updates to way classifier chains works, using the CNode class).
  * </p>
  *
- * @see #weka.classifiers.multilabel.MCC
+ * @see meka.classifiers.multilabel.MCC
  * @author Jesse Read
  * @version	Sep 2014
  */
@@ -110,8 +109,9 @@ public class PMCC extends MCC {
 
 	/**
 	 * pi - proposal distribution; swap elements in s, depending on iteration t (temperature).
+	 * <br>
 	 * TODO - make faster!
-	 * @param	s[]		a chain sequence
+	 * @param	s		a chain sequence
 	 * @param	r  		a random number generator
 	 * @param	t   	the current iteration
 	 * @return 	s' ~ p(s'|s)

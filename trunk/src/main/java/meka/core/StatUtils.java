@@ -15,13 +15,15 @@
 
 package meka.core;
 
-import weka.core.*;
-import weka.classifiers.Classifier; // for 'LEAD' method
-import weka.classifiers.functions.SMO; // for 'LEAD' method
-import meka.classifiers.multilabel.*; // for 'LEAD' method
+import meka.classifiers.multilabel.BR;
+import meka.classifiers.multilabel.Evaluation;
+import meka.classifiers.multilabel.MultilabelClassifier;
+import weka.classifiers.Classifier;
+import weka.classifiers.functions.SMO;
+import weka.core.Instance;
+import weka.core.Instances;
 
 import java.util.HashMap;
-import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -37,7 +39,7 @@ public abstract class StatUtils {
 
 	/**
 	 * P - Empirical prior.
-	 * @param	Y[][]	label matrix
+	 * @param	Y   	label matrix
 	 * @param	x	 	label values
 	 * @return 	[P(Y_1==x[1]), P(Y_2==x[2]), ..., P(Y_L==x[L])]
 	 */
@@ -48,7 +50,7 @@ public abstract class StatUtils {
 
 	/**
 	 * P - Empirical prior.
-	 * @param	Y[][]	label matrix
+	 * @param	Y   	label matrix
 	 * @param	x	 	label values
 	 * @param	j		label indices
 	 * @return 	[P(Y_j[1]==x[1]), P(Y_j[2]==x[2]), ..., P(Y_j[L]==x[L])]
@@ -65,9 +67,9 @@ public abstract class StatUtils {
 	/**
 	 * p - Empirical prior.
 	 * In the multi-label case, k in {0,1}
-	 * @param	Y[][]	label matrix
+	 * @param	Y   	label matrix
 	 * @param	j		label index
-	 * @param	x	 	label value
+	 * @param	k	 	label value
 	 * @return 	P(Y_j==k) in Y.
 	 */
 	public static double p(double Y[][], int j, int k) {
@@ -144,8 +146,8 @@ public abstract class StatUtils {
 	 * P - Empirical joint.
 	 * Multi-target friendly.
 	 * @param	D       Instances
-	 * @param	j[]		label indices, e.g., 1,2,3
-	 * @param	v[]		label values, e.g., 0,0,1
+	 * @param	j		label indices, e.g., 1,2,3
+	 * @param	v		label values, e.g., 0,0,1
 	 * @return 	P(x_1,x_2,x_3 = v_1,v_2,v_3) for j = 1,2,3 in D
 	 */
 	public static double P(Instances D, int j[], int v[]) {
@@ -191,7 +193,8 @@ public abstract class StatUtils {
 
 	/**
 	 * GetP - Get a pairwise empirical joint-probability matrix P[][] from dataset D.
-	 * @note multi-label only
+	 * <br>
+	 * NOTE multi-label only
 	 */
 	public static double[][] getP(Instances D) {
 		double N = (double)D.numInstances();
@@ -281,7 +284,8 @@ public abstract class StatUtils {
 
 	/**
 	 * GetC - Get pairwise co-ocurrence counts from the training data D.
-	 * @note multi-label only
+	 * <br>
+	 * NOTE multi-label only
 	 * @return 	C[][] where C[j][k] is the number of times where Y[i][j] = 1 and y[i][k] = 1 over all i = 1,...,N
 	 */
 	public static int[][] getC(Instances D) {
@@ -305,7 +309,7 @@ public abstract class StatUtils {
 	/**
 	 * I - Mutual Information I(y_j;y_k).
 	 * multi-label only -- count version
-	 * @param	C[][]	count matrix
+	 * @param	C   	count matrix
 	 * @param	j		j-th label index
 	 * @param	k		k-th label index
 	 * @param	Ncount	number of instances in the training set
@@ -333,7 +337,7 @@ public abstract class StatUtils {
 	/**
 	 * H - Conditional Entropy H(y_j|y_k).
 	 * multi-label only
-	 * @param	C[][]	count matrix
+	 * @param	C   	count matrix
 	 * @param	j		j-th label index
 	 * @param	k		k-th label index
 	 * @param	Ncount	number of instances in the training set
@@ -361,10 +365,11 @@ public abstract class StatUtils {
 			);
 	}
 
-	/**
+	/*
 	 * I - Mutual Information -- fast version, must calcualte P[][] = getP(D) first.
 	 * multi-label only
-	 * @todo -- check this 
+	 * <br>
+	 * TODO -- check this
 	 * @return I(Y_j;Y_k)
 	public static double I(double P[][], int j, int k) {
 		double p_j = P[j][j];
@@ -376,7 +381,7 @@ public abstract class StatUtils {
 
 	/**
 	 * I - Mutual Information -- fast version, must calcualte P[][] = getP(D) first.
-	 * @see #I(P,j,k)
+	 * @see #I(double[][], int, int)
 	 * @return I[][]
 	 */
 	public static double[][] I(double P[][]) {
@@ -392,7 +397,8 @@ public abstract class StatUtils {
 
 	/**
 	 * I - Mutual Information.
-	 * @note binary only
+	 * <br>
+	 * NOTE binary only
 	 * @return I(Y_j;Y_k) in dataset D.
 	 */
 	public static double I(double P[][], int j, int k) {
@@ -407,8 +413,10 @@ public abstract class StatUtils {
 
 	/**
 	 * I - Mutual Information.
-	 * @note Multi-target friendly (does not assume binary labels).
-	 * @note a bit slow
+	 * <br>
+	 * NOTE Multi-target friendly (does not assume binary labels).
+	 * <br>
+	 * NOTE a bit slow
 	 * @return I(Y_j;Y_k) in dataset D.
 	 */
 	public static double I(Instances D, int j, int k) {
@@ -447,7 +455,9 @@ public abstract class StatUtils {
 
 	/**
 	 * Chi^2 - Do the chi-squared test on the j-th and k-th labels in Y.
-	 * @NOTE multi-label only! @TODO Use enumerateValues() !!!
+	 * <br>
+	 * NOTE multi-label only! @TODO Use enumerateValues() !!!
+	 * <br>
 	 * If they are correlated, this means unconditional dependence!
 	 * @return	The chi-square statistic for labels j and k in Y.
 	 */
@@ -467,7 +477,7 @@ public abstract class StatUtils {
 
 	/**
 	 * Chi^2 - Do the chi-squared test on all pairs of labels.
-	 * @see #chi2(D,j,k)
+	 * @see #chi2(Instances, int, int)
 	 * @param	D	dataset
 	 * @return	The chi-square statistic matrix X
 	 */
@@ -485,8 +495,8 @@ public abstract class StatUtils {
 	/**
 	 * Chi^2 - Chi-squared test.
 	 * If they are correlated, this means unconditional dependence!
-	 * @param	M[][][]			measured joint  P(Y_1,Y_2)      
-	 * @param	Exp[][][]		expect joint 	P(Y_1)P(Y_2)	given null hypothesis
+	 * @param	M			measured joint  P(Y_1,Y_2)
+	 * @param	Exp		expect joint 	P(Y_1)P(Y_2)	given null hypothesis
 	 * @return	The chi-square statistic for labels j and k in Y; normalized by critical value.
 	 */
 	public static double[][] chi2 (double M[][][], double Exp[][][]) {
@@ -783,7 +793,8 @@ public abstract class StatUtils {
 
 	/**
 	 * LEAD - Performs LEAD on dataset 'D', using BR with base classifier 'h', under random seed 'r'.
-	 * @warning : changing this method will affect the perfomance of e.g., BCC -- on the other hand the original BCC paper did not use LEAD, so don't worry.
+	 * <br>
+	 * WARNING: changing this method will affect the perfomance of e.g., BCC -- on the other hand the original BCC paper did not use LEAD, so don't worry.
 	 */
 	public static double[][] LEAD(Instances D, Classifier h, Random r)  throws Exception {
 		Instances D_r = new Instances(D);

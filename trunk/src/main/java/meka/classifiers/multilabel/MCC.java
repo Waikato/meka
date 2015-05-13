@@ -15,17 +15,17 @@
 
 package meka.classifiers.multilabel;
 
-import weka.classifiers.*;
-import weka.classifiers.functions.*;
-import meka.classifiers.multitarget.*;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.supervised.attribute.*;
-import weka.core.TechnicalInformation.*;
-import weka.attributeSelection.*;
-import weka.filters.*;
+import meka.core.A;
+import meka.core.CCUtils;
+import meka.core.MLUtils;
 import weka.core.*;
-import meka.core.*;
-import java.util.*;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
+
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Random;
+import java.util.Vector;
 
 /**
  * MCC.java - CC with Monte Carlo optimisation. 
@@ -37,7 +37,8 @@ import java.util.*;
  * There we used a faster implementation, full of ugly hacks, but it got broken when I updated CC.java.<br>
  * This version extends CC, and thus is a bit cleaner, but for some reason inference is quite slower than expected with high m_Iy.
  *
- * @TODO Option for hold-out set, instead of training and testing on training data (internally).
+ * <br>
+ * TODO Option for hold-out set, instead of training and testing on training data (internally).
  *
  * @see meka.classifiers.multilabel.CC
  * @author Jesse Read

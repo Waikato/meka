@@ -15,20 +15,20 @@
 
 package meka.classifiers.multitarget.meta;
 
-import java.util.HashMap;
-
 import meka.classifiers.multilabel.MultilabelClassifier;
 import meka.classifiers.multilabel.meta.BaggingML;
-import meka.classifiers.multitarget.MultiTargetClassifier;
 import meka.classifiers.multitarget.CC;
-import weka.core.Instance;
+import meka.classifiers.multitarget.MultiTargetClassifier;
 import meka.core.MLUtils;
+import weka.core.Instance;
 import weka.core.RevisionUtils;
+
+import java.util.HashMap;
 
 /**
  * BaggingMT.java - The Multi-Target Version of BaggingML.
  * It takes votes using the confidence outputs of the base classifier.
- * @see #meka.classifiers.multilabel.BaggingML
+ * @see meka.classifiers.multilabel.meta.BaggingML
  * @author Jesse Read
  * @version	March 2012
  */

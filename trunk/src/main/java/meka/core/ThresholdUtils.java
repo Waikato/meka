@@ -15,8 +15,9 @@
 
 package meka.core;
 
-import weka.core.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * ThresholdUtils - Helpful functions for calibrating thresholds.
@@ -76,7 +77,7 @@ public abstract class ThresholdUtils {
 	/**
 	 * CalibrateThreshold - Calibrate a vector of thresholds (one for each label) using PCut: the threshold t[j] which results in the best approximation of the frequency of the j-th label in the training data.
 	 * @param	Y			labels
-	 * @param	LC_train[]	average frequency of each label
+	 * @param	LC_train	average frequency of each label
 	 */
 	public static double[] calibrateThresholds(ArrayList<double[]> Y, double LC_train[]) { 
 
@@ -103,8 +104,8 @@ public abstract class ThresholdUtils {
 
 	/**
 	 * Threshold - returns the labels after the prediction-confidence vector is passed through a vector of thresholds.
-	 * @param	Rpred[][]	label confidence predictions in [0,1]
-	 * @param	t[]			threshold for each label
+	 * @param	Rpred	label confidence predictions in [0,1]
+	 * @param	t			threshold for each label
 	 */
 	public static final int[][] threshold(double Rpred[][], double t[]) {
 		int Ypred[][] = new int[Rpred.length][Rpred[0].length];
@@ -118,7 +119,7 @@ public abstract class ThresholdUtils {
 
 	/**
 	 * Threshold - returns the labels after the prediction-confidence vector is passed through threshold.
-	 * @param	Rpred[][]	label confidence predictions in [0,1]
+	 * @param	Rpred	label confidence predictions in [0,1]
 	 * @param	t			threshold
 	 */
 	public static final int[][] threshold(double Rpred[][], double t) {
@@ -133,7 +134,7 @@ public abstract class ThresholdUtils {
 
 	/**
 	 * Threshold - returns the labels after the prediction-confidence vector is passed through threshold(s).
-	 * @param	rpred[]	label confidence predictions in [0,1]
+	 * @param	rpred	label confidence predictions in [0,1]
 	 * @param	ts		threshold String
 	 */
 	public static final int[] threshold(double rpred[], String ts) {
@@ -148,7 +149,7 @@ public abstract class ThresholdUtils {
 
 	/**
 	 * Round - simply round numbers (e.g., 2.0 to 2) -- for multi-target data (where we don't *yet* use a threshold).
-	 * @param	Rpred[][]	class predictions in [0,1,...,K]
+	 * @param	Rpred	class predictions in [0,1,...,K]
 	 * @return  integer representation of the predictions
 	 */
 	public static final int[][] round(double Rpred[][]) {

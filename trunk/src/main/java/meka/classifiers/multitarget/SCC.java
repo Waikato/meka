@@ -15,31 +15,19 @@
 
 package meka.classifiers.multitarget;
 
-import weka.classifiers.Classifier;
-import weka.classifiers.bayes.NaiveBayes;
-import meka.classifiers.multilabel.MultilabelClassifier;
 import meka.classifiers.multilabel.Evaluation;
-import meka.classifiers.multitarget.CC;
-import meka.classifiers.multitarget.meta.*;
-import weka.classifiers.functions.*;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.supervised.attribute.*;
+import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.core.*;
 import meka.filters.multilabel.SuperNodeFilter;
-import weka.attributeSelection.*;
-import weka.filters.*;
+import weka.classifiers.Classifier;
 import weka.core.*;
-import meka.core.MLUtils;
-import meka.core.MLEvalUtils;
-import meka.core.StatUtils;
-import meka.core.Result;
-import meka.core.A;
-import meka.core.M;
-import meka.core.SuperLabelUtils;
-import java.util.*;
-import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
+
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Random;
+import java.util.Vector;
 
 /**
  * SCC.java - Super Class Classifier (aka Super Node Classifier).
@@ -211,7 +199,8 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 
 	/**
 	 * Test classifier h, on dataset D, under super-class partition 'partition'.
-	 * @TODO should be able to use something out of meka.classifiers.Evaluation instead of all this ...
+	 * <br>
+	 * TODO should be able to use something out of meka.classifiers.Evaluation instead of all this ...
 	 */
 	public Result testClassifier(Classifier h, Instances D_train, Instances D_test, int partition[][]) throws Exception {
 

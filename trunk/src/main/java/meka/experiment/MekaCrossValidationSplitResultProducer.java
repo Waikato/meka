@@ -39,11 +39,11 @@ import weka.experiment.SplitEvaluator;
  * cross-validation run. This producer's sole purpose is to allow more
  * fine-grained distribution of cross-validation experiments. If the class
  * attribute is nominal, the dataset is stratified.
- * <p/>
+ * <p>
  * <!-- globalinfo-end -->
  * 
  * <!-- options-start --> Valid options are:
- * <p/>
+ * <p>
  * 
  * <pre>
  * -X &lt;number of folds&gt;

@@ -23,7 +23,8 @@ import java.util.Arrays;
 
 /**
  * SuperLabelUtils.java - Handy Utils for working with Meta Labels.
- * @todo call this class SuperClassUtils? SuperLabelUtils? Partition? PartitionUtils?
+ * <br>
+ * TODO call this class SuperClassUtils? SuperLabelUtils? Partition? PartitionUtils?
  * @author Jesse Read 
  * @version March 2014
  */
@@ -90,7 +91,9 @@ public abstract class SuperLabelUtils {
 
 	/** 
 	 * generatePartition.
-	 * @TODO can generate 'indices' inside, given L
+	 * <br>
+	 * TODO can generate 'indices' inside, given L
+	 * <br>
 	 * Get a random layout of 'num' sets of 'indices'.
 	 * @param	indices		[1,2,...,L]
 	 * @param	num			number of super-nodes to generate (between 1 and L)
@@ -186,7 +189,7 @@ public abstract class SuperLabelUtils {
 	}
 
 
-	/**
+	/*
 	 * Rating - Return a score for the super-class 'partition' using the pairwise info in 'M'.
 	 * +1 if two co-ocurring labels are in different partitions. 
 	 * -1 if two co-ocurring labels are in different partitions. 
