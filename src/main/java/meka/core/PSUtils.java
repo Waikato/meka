@@ -24,7 +24,7 @@ import java.util.*;
 
 /**
  * PSUtils.java - Handy Utils for working with Pruned Sets.
- * Essentially, we have a <code>P<\code> parameter for pruning and an <code>N<\code> parameter for reintroduction.
+ * Essentially, we have a <code>P</code> parameter for pruning and an <code>N</code> parameter for reintroduction.
  * @author Jesse Read 
  * @version June 2014
  */

@@ -15,20 +15,22 @@
 
 package meka.classifiers.multilabel;
 
-import weka.classifiers.*;
-import weka.classifiers.meta.*;
-import meka.classifiers.multilabel.*;
-import weka.core.*;
-import meka.core.*;
+import meka.core.MLUtils;
+import meka.core.SuperLabelUtils;
+import weka.classifiers.AbstractClassifier;
+import weka.core.Instances;
+import weka.core.RevisionUtils;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.core.TechnicalInformationHandler;
-import java.util.*;
+
+import java.util.Arrays;
+import java.util.Random;
 
 /**
  * RAkELd - Takes RAndom partition of labELs; like RAkEL but labelsets are disjoint / non-overlapping subsets.
- * Thus, <code>m<\code> is set automatically to the <i>number</i> of partitions (<code>k</code> still indicates the size of partitions, although anything more than L/2 doesn't make much sense).
+ * Thus, <code>m</code> is set automatically to the <i>number</i> of partitions (<code>k</code> still indicates the size of partitions, although anything more than L/2 doesn't make much sense).
  * @see		RAkEL
  * @author 	Jesse Read 
  * @version June 2014

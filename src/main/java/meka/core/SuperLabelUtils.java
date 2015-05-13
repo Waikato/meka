@@ -240,8 +240,8 @@ public abstract class SuperLabelUtils {
 	 * Make Partition Dataset - out of dataset D, on indices part[].
 	 * @param	D		regular multi-label dataset (of L = classIndex() labels)
 	 * @param	part	list of indices we want to make into a PS dataset.
-	 * @param	P		@see PSUtils.java
-	 * @param	N		@see PSUtils.java
+	 * @param	P		see {@link PSUtils}
+	 * @param	N		see {@link PSUtils}
 	 * @return Dataset with 1 multi-valued class label, representing the combinations of part[].
 	 */
 	public static Instances makePartitionDataset(Instances D, int part[], int P, int N) throws Exception {

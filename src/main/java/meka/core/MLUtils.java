@@ -474,7 +474,7 @@ public abstract class MLUtils {
 
 	/**
 	 * Encode Value.
-	 * [0,3,2] -> "0+3+2"
+	 * [0,3,2] -&gt; "0+3+2"
 	 * Deprecated - Use LabelSet or LabelVector
 	 */
 	@Deprecated
@@ -488,7 +488,7 @@ public abstract class MLUtils {
 
 	/**
 	 * Encode Value.
-	 * "0+3+2"-> [0,3,2]
+	 * "0+3+2"-&gt; [0,3,2]
 	 * Deprecated - Use LabelSet or LabelVector
 	 */
 	@Deprecated
@@ -1017,7 +1017,7 @@ public abstract class MLUtils {
 	 * Fixes the relation name by adding the "-C" attribute to it if necessary.
 	 *
 	 * @param data the dataset to fix
-	 * @param numClassAtts the number of class attributes (0 for none, >0 for attributes at start, <0 for attributes at end)
+	 * @param numClassAtts the number of class attributes (0 for none, &gt;0 for attributes at start, &lt;0 for attributes at end)
 	 */
 	public static void fixRelationName(Instances data, int numClassAtts) {
 		if (data.relationName().indexOf(":") == -1)

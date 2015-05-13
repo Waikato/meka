@@ -15,18 +15,16 @@
 
 package meka.classifiers.multilabel;
 
-import weka.classifiers.*;
-import weka.classifiers.meta.*;
-import meka.classifiers.multilabel.*;
-import weka.core.*;
-import meka.core.*;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.*;
-import java.util.*;
+import meka.core.SuperLabelUtils;
+import weka.classifiers.AbstractClassifier;
+import weka.core.Instances;
+import weka.core.RevisionUtils;
+
+import java.util.Arrays;
 
 /**
  * HASEL - Partitions labels into subsets based on the dataset defined hierarchy.
- * Note: assuming that a <code>.<\code> (fullstop/period) in the attribute names defines hierarchical branches, e.g., <code>Europe.Spain</code>.
+ * Note: assuming that a <code>.</code> (fullstop/period) in the attribute names defines hierarchical branches, e.g., <code>Europe.Spain</code>.
  * @author 	Jesse Read 
  * @version June 2014
  */

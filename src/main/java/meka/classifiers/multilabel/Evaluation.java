@@ -485,7 +485,7 @@ public class Evaluation {
 		return D;
 	}
 
-	/**
+	/*
 	 * GetL - get number of labels (option 'C' from options 'options').
 	private static int getL(String options[]) throws Exception {
 		return (Utils.getOptionPos('C', options) >= 0) ? Integer.parseInt(Utils.getOption('C',options)) : 0;
