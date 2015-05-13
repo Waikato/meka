@@ -15,21 +15,12 @@
 
 package meka.core;
 
+import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.Attribute;
 import weka.core.Utils;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.TreeSet;
-import java.util.SortedSet;
-import java.util.Collections;
-import java.util.List;
-import java.util.HashSet;
-import java.util.Arrays;
-import java.util.Set;
-import java.util.Comparator;
-import java.io.*; // for saving/reading
+
+import java.util.*;
 
 /**
  * PSUtils.java - Handy Utils for working with Pruned Sets.
@@ -153,7 +144,6 @@ public abstract class PSUtils {
 
 	/**
 	 * GetAllSubsets - Get all frequent subsets of 'y' according to 'map'.
-	 * @see 	#cover(LabelSet,Comparator)
 	 * @param	y	a labelset, e.g., [0,2,7]
 	 * @param	map	a map of labelsets to counts e.g., {[0,2]:39, [2,7]:5, [2,9]:24...}
 	 * @return	the LabelSets to use to decompose y into, e.g., [[0,2],[2,7]]
@@ -175,7 +165,6 @@ public abstract class PSUtils {
 
 	/**
 	 * GetTopNSubsets - Don't cover all (like cover(y,map), rather only the top 'n')
-	 * @see #cover(LabelSet,Comparator)
 	 * @param	y	a labelset, e.g., [0,2,7]
 	 * @param	map	a map of labelsets to counts e.g., {[0,2]:39, [2,7]:5, [2,9]:24...}
 	 * @param	n	the number of sets to take
@@ -260,9 +249,10 @@ public abstract class PSUtils {
 
 	/**
 	 * Convert Distribution - Given the posterior across combinations, return the distribution across labels.
-	 * @TODO	Use recombination!!!
+	 * <br>
+	 * TODO	Use recombination!!!
 	 * @see		PSUtils#recombination(double[],int,LabelSet[])
-	 * @param	p[]	the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [1,0]
+	 * @param	p	the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [1,0]
 	 * @param	L 	the number of labels
 	 * @return	the distribution across labels, e.g., P(1,2,3) = [1,0,1]
 	 */
@@ -284,7 +274,7 @@ public abstract class PSUtils {
 
 	/**
 	 * Convert Distribution - Given the posterior across combinations, return the distribution across labels.
-	 * @param	p[]			the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [0.3,0.7]
+	 * @param	p			the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [0.3,0.7]
 	 * @param	L 			the number of labels, e.g., L = 3
 	 * @param	meta_labels	typical mapping, e.g., [13] to [1,3]
 	 * @return	the distribution across labels, e.g., P(1,2,3) = [0.3,0.7,0.3]
@@ -309,7 +299,7 @@ public abstract class PSUtils {
 	// @todo name convertDistribution ?
 	/**
 	 * Convert Distribution - Given the posterior across combinations, return the distribution across labels.
-	 * @param	p[]	the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [1,0]
+	 * @param	p	the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [1,0]
 	 * @param	L 	the number of labels
 	 * @return	the distribution across labels, e.g., P(1,2,3) = [1,0,1]
 	 */
@@ -331,7 +321,7 @@ public abstract class PSUtils {
 	// @todo name convertDistribution ?
 	/**
 	 * Convert Distribution - Given the posterior across combinations, return the distribution across labels.
-	 * @param	p[]	the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [0.3,0.7]
+	 * @param	p	the posterior of the super classes (combinations), e.g., P([1,3],[2]) = [0.3,0.7]
 	 * @param	L 	the number of labels
 	 * @return	the distribution across labels, e.g., P(1,2,3) = [0.3,0.7,0.3]
 	 */

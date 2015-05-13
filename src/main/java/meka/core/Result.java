@@ -15,18 +15,16 @@
 
 package meka.core;
 
-import java.io.BufferedReader;
+import weka.core.Instance;
+import weka.core.Utils;
+
 import java.io.BufferedWriter;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import weka.core.Utils;
-import weka.core.Instance;
 
 /**
  * Result - Stores predictions alongside true labels, for evaluation. 
@@ -105,7 +103,8 @@ public class Result implements Serializable {
 
 	/**
 	 * RowRanking - Retrive the prediction confidences for the i-th instance.
-	 * @TODO rename to rowConfidence
+	 * <br>
+	 * TODO rename to rowConfidence
 	 */
 	public double[] rowRanking(int i) {
 		return predictions.get(i);

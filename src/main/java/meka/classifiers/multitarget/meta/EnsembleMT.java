@@ -15,20 +15,20 @@
 
 package meka.classifiers.multitarget.meta;
 
-import java.util.HashMap;
-
 import meka.classifiers.multilabel.MultilabelClassifier;
 import meka.classifiers.multilabel.meta.EnsembleML;
-import meka.classifiers.multitarget.MultiTargetClassifier;
 import meka.classifiers.multitarget.CC;
-import weka.core.Instance;
+import meka.classifiers.multitarget.MultiTargetClassifier;
 import meka.core.MLUtils;
+import weka.core.Instance;
 import weka.core.RevisionUtils;
+
+import java.util.HashMap;
 
 /**
  * The Multi-Target Version of EnsembleML.
  * It takes votes using the confidence outputs of the base classifier.
- * @see #meka.classifiers.multilabel.EnsembleML
+ * @see meka.classifiers.multilabel.meta.EnsembleML
  * @author Jesse Read
  * @version	Sepetember 2012
  */

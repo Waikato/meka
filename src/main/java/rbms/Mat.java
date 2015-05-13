@@ -20,8 +20,11 @@ import java.util.*;
 
 /**
  * Mat.java - Handy array operations
- * @TODO	Clean up duplication with M.java
- * @TODO 	Make a Matrix class (inheriting Jama), but don't delete this (keep some of the static methods, integrate others).
+ * <br>
+ * TODO	Clean up duplication with M.java
+ * <br>
+ * TODO Make a Matrix class (inheriting Jama), but don't delete this (keep some of the static methods, integrate others).
+ *
  * @version 	April 2014
  * @author 		Jesse Read 
  */

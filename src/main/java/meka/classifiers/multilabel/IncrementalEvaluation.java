@@ -15,13 +15,16 @@
 
 package meka.classifiers.multilabel;
 
+import meka.core.MLEvalUtils;
+import meka.core.MLUtils;
+import meka.core.Result;
+import meka.core.ThresholdUtils;
+import weka.classifiers.UpdateableClassifier;
 import weka.core.*;
-import meka.core.*;
-import weka.classifiers.*;
-import meka.gui.explorer.*;
-import meka.classifiers.multilabel.*;
-import java.util.*;
-import java.io.*;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Enumeration;
 
 /**
  * IncrementalEvaluation.java - For Evaluating Incremental (Updateable) Classifiers.
@@ -33,7 +36,7 @@ public class IncrementalEvaluation {
 	/**
 	 * RunExperiment - Build and evaluate a model with command-line options.
 	 * @param	h			a multi-label updateable classifier
-	 * @param	args[]		classifier + dataset options
+	 * @param	args		classifier + dataset options
 	 */
 	public static void runExperiment(MultilabelClassifier h, String args[]) {
 		try {
@@ -50,7 +53,7 @@ public class IncrementalEvaluation {
 	/**
 	 * EvaluateModel - Build and evaluate.
 	 * @param	h			a multi-label updateable classifier
-	 * @param	options[]	dataset options (classifier options should already be set)
+	 * @param	options	dataset options (classifier options should already be set)
 	 * @return	The evaluation Result
 	 */
 	public static Result evaluateModel(MultilabelClassifier h, String options[]) throws Exception {

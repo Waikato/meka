@@ -212,7 +212,7 @@ public class RBM {
 	/**
 	 * Visible Activation Probability - returns P(X|Z).
 	 * A bias column is assumed to be included.
-	 * @param	z_	z (bias included)
+	 * @param	Z	z (bias included)
 	 * @return	P(X|Z) 
 	 */
 	public Matrix prob_X(Matrix Z) {
@@ -272,7 +272,8 @@ public class RBM {
 	/**
 	 * Update - Carry out one epoch of CD, update W.
 	 * We use dW_ to manage momentum.
-	 * @TODO weight decay SHOULD NOT BE APPLIED TO BIASES
+	 * <br>
+	 * TODO weight decay SHOULD NOT BE APPLIED TO BIASES
 	 * @param	X 	X
 	 */
 	public void update(Matrix X) {
@@ -286,7 +287,8 @@ public class RBM {
 
 	/**
 	 * Update - Carry out one epoch of CD, update W.
-	 * @TODO	combine with above fn.
+	 * <br>
+	 * TODO	combine with above fn.
 	 * @param	X 	X
 	 * @param	s	multiply the gradient by this scalar
 	 */
@@ -365,8 +367,10 @@ public class RBM {
 
 	/**
 	 * Train - Setup and batch-train the RBM on X.
-	 * @TODO, above function train(X_) could really be trained with train(X_,N), so, should share code with train(X)
-	 * @TODO, divide gradient by the size of the batch! (doing already? .. no)
+	 * <br>
+	 * TODO, above function train(X_) could really be trained with train(X_,N), so, should share code with train(X)
+	 * <br>
+	 * TODO, divide gradient by the size of the batch! (doing already? .. no)
 	 * @param	X_			X
 	 * @param	batchSize	the batch size
 	 */
@@ -400,7 +404,8 @@ public class RBM {
 
 	/**
 	 * Train - Setup and batch-train the RBM on X, with some random sampling involved.
-	 *         @todo should share code with train(X)
+	 * <br>
+	 * TODO should share code with train(X)
 	 * @param	X_			X
 	 * @param	batchSize	the batch size
 	 * @param	r			the randomness
@@ -430,8 +435,10 @@ public class RBM {
 
 	/**
 	 * Calculate the Error right now.
-	 * @NOTE: this will take a few miliseconds longer than calculating directly in the epoch() loop (where we have to calculate X_down anyway).
-	 * @TODO rename this function
+	 * <br>
+	 * NOTE: this will take a few miliseconds longer than calculating directly in the epoch() loop (where we have to calculate X_down anyway).
+	 * <br>
+	 * TODO rename this function
 	 * @param	X X
 	 * @return	The error
 	 */

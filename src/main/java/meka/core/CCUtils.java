@@ -17,8 +17,8 @@ package meka.core;
 
 import meka.classifiers.multilabel.CC;
 import weka.classifiers.Classifier;
-import weka.core.*;
-import java.util.*;
+import weka.core.Instance;
+import weka.core.Instances;
 
 /**
  * CCUtils.java - Handy Utils for working with Classifier Chains (and Trees and Graphs)
@@ -153,7 +153,7 @@ public abstract class CCUtils {
 	/**
 	 * LinkTransform - prepare 'x' for testing at a node 'j' of the chain, by excluding 'exl'.
 	 * @param	x		instance
-	 * @param	exl		indices of labels which are NOT parents of j
+	 * @param	excl	indices of labels which are NOT parents of j
 	 * @param	_D		the dataset template to use
 	 * @return	the transformed instance
 	 */

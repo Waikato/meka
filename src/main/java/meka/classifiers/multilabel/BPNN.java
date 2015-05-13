@@ -15,12 +15,20 @@
 
 package meka.classifiers.multilabel;
 
-import meka.classifiers.multilabel.NN.*;
-import weka.core.*;
-import meka.core.*;
-import rbms.Mat; /** @TEMP */
-import java.util.*;
 import Jama.Matrix;
+import meka.classifiers.multilabel.NN.AbstractNeuralNet;
+import meka.core.M;
+import meka.core.MLUtils;
+import rbms.Mat;
+import weka.core.Instance;
+import weka.core.Instances;
+
+import java.util.Arrays;
+import java.util.Random;
+
+/**
+ * @TEMP
+ */
 
 /**
  * BPNN.java - Back Propagation Neural Network.
@@ -175,7 +183,7 @@ public class BPNN extends AbstractNeuralNet {
 
 	/**
 	 * Forward Pass - Given input x_, get output y_.
-	 * @param	y_	input
+	 * @param	x_	input
 	 * @return  y_	output
 	 */
 	public double[] popy(double x_[]) {

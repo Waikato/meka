@@ -15,27 +15,17 @@
 
 package meka.classifiers.multilabel;
 
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Random;
-import java.io.File;
-
 import meka.classifiers.multitarget.MultiTargetClassifier;
-import weka.core.AbstractInstance;
-import weka.core.Instance;
-import weka.core.Instances;
 import meka.core.MLEvalUtils;
 import meka.core.MLUtils;
-import meka.core.F;
-import weka.core.Option;
-import weka.core.Randomizable;
 import meka.core.Result;
-import weka.core.Utils;
-import weka.core.SerializationHelper;
+import weka.core.*;
 import weka.core.converters.ConverterUtils.DataSource;
-import weka.filters.Filter;
-import weka.filters.unsupervised.instance.RemoveRange;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Random;
 
 /**
  * Evaluation.java - Evaluation functionality.
@@ -503,10 +493,12 @@ public class Evaluation {
 	*/
 	
 
-	/**
+	/*
 	 * SetClassesFromOptions - set the class index correctly in a dataset 'D', given command line options 'options'.
-	 * @note: there is a similar function in Exlorer.prepareData(D) but that function can only take -C from the dataset options.
-	 * @todo: replace the call to Exlorer.prepareData(D) with this method here (use the name 'prepareData' -- it souds better).
+	 * <br>
+	 * NOTE: there is a similar function in Exlorer.prepareData(D) but that function can only take -C from the dataset options.
+	 * <br>
+	 * TODO: replace the call to Exlorer.prepareData(D) with this method here (use the name 'prepareData' -- it souds better).
 	public static void setClassesFromOptions(Instances D, String options[]) throws Exception {
 		try {
 			// get L

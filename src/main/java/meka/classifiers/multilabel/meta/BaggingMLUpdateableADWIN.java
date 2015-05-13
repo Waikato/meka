@@ -15,17 +15,18 @@
 
 package meka.classifiers.multilabel.meta;
 
+import meka.classifiers.multilabel.IncrementalEvaluation;
+import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.core.MLUtils;
 import moa.classifiers.core.driftdetection.ADWIN;
-import weka.core.*;
-import meka.core.*;
-import weka.classifiers.*;
-import weka.classifiers.meta.*;
-import meka.classifiers.multilabel.*;
-import java.util.*;
+import weka.classifiers.AbstractClassifier;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.Utils;
 
 /**
  * BaggingMLUpdatableUpdateableADWIN.java - Using the OzaBag scheme (see OzaBag.java from MOA)).
- * @see			BaggingMLUpdatable
+ * @see			BaggingMLUpdateable
  * @version 	Jan 2013
  * @author 		Jesse Read (jesse@tsc.uc3m.es)
  */

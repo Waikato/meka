@@ -15,25 +15,14 @@
 
 package meka.core;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream; // for serialized
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Utils;
 import weka.core.converters.ConverterUtils.DataSource;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * MLUtils - Helpful functions for dealing with multi-labelled data.
@@ -916,7 +905,7 @@ public abstract class MLUtils {
 	/**
 	 * InsertZintoD - Insert data Z[][] to Instances D (e.g., as labels).
 	 * NOTE: Assumes binary labels!
-	 * @see #addZtoD(Instances,double[][])
+	 * @see #addZtoD(Instances, double[][], int)
 	 */
 	private static Instances insertZintoD(Instances D, double Z[][]) {
 

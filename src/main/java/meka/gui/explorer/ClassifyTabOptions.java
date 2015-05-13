@@ -19,19 +19,14 @@
  */
 package meka.gui.explorer;
 
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
-import weka.core.converters.ConverterUtils.DataSource;
-import weka.core.Instances;
-import java.io.FileInputStream;
-
 import meka.gui.core.ParameterPanel;
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileInputStream;
 
 /**
  * Panel for options for classification.
@@ -113,7 +108,7 @@ public class ClassifyTabOptions
   /**
    * Sets the Test File option
    * 
-   * @param B	the Randomize value to use
+   * @param file	the test dataset
    */
   public void setTestFile(Instances file) {
 	  m_FileTestset = file;
@@ -122,7 +117,7 @@ public class ClassifyTabOptions
   /**
    * Returns the currently selected Test File (if any).
    * 
-   * @return		the Randomize value
+   * @return		the test set
    */
   public Instances getTestFile() {
       return m_FileTestset;

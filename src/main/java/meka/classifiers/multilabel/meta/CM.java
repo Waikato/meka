@@ -15,29 +15,11 @@
 
 package meka.classifiers.multilabel.meta;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Vector;
-
-import weka.core.Attribute;
-import weka.core.FastVector;
+import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.core.MLUtils;
 import weka.core.Instance;
 import weka.core.Instances;
-import meka.core.MLUtils;
-import weka.core.Option;
-import weka.core.Randomizable;
 import weka.core.RevisionUtils;
-import weka.core.Utils;
-import weka.core.TechnicalInformation;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
-import meka.classifiers.multilabel.*;
 
 /**
  * CM.java - Classification Maximization using any multi-label classifier.
@@ -47,7 +29,7 @@ import meka.classifiers.multilabel.*;
  *
  * @version July, 2014
  * @author 	Jesse Read
- * @see 	EM.java
+ * @see 	EM
  */
 public class CM extends EM {
 

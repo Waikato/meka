@@ -15,20 +15,15 @@
 
 package meka.classifiers.multilabel;
 
-import weka.classifiers.*;
-import weka.classifiers.meta.*;
-import meka.classifiers.multilabel.*;
-import weka.core.*;
-import meka.core.*;
 import meka.classifiers.multilabel.cc.CNode;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.*;
-import weka.core.TechnicalInformation;
+import meka.core.A;
+import meka.core.MLUtils;
+import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
-import java.util.*;
-import java.io.Serializable;
+
+import java.util.Arrays;
+import java.util.Random;
 
 /**
  * CC.java - The Classifier Chains Method. Like BR, but label outputs become new inputs for the next classifiers in the chain.
@@ -189,7 +184,9 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 
 	/**
 	 * ProbabilityForInstance - Force our way down the imposed 'path'. 
-	 * @TODO rename distributionForPath ? and simplify like distributionForInstance ?
+	 * <br>
+	 * TODO rename distributionForPath ? and simplify like distributionForInstance ?
+	 * <br>
 	 * For example p (y=1010|x) = [0.9,0.8,0.1,0.2]. If the product = 1, this is probably the correct path!
 	 * @param	x		test Instance
 	 * @param	path	the path we want to go down

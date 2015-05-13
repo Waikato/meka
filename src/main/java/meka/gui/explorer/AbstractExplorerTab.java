@@ -106,7 +106,7 @@ public abstract class AbstractExplorerTab
 	
 	/**
 	 * Gets called when the data changed.
-	 * <p/>
+	 * <p>
 	 * Default implementation does nothing.
 	 */
 	protected void update() {

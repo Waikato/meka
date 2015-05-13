@@ -33,11 +33,11 @@ import weka.experiment.RandomSplitResultProducer;
 /**
  * <!-- globalinfo-start --> Generates a single train/test split and calls the
  * appropriate SplitEvaluator to generate some results.
- * <p/>
+ * <p>
  * <!-- globalinfo-end -->
  * 
  * <!-- options-start --> Valid options are:
- * <p/>
+ * <p>
  * 
  * <pre>
  * -P &lt;percent&gt;

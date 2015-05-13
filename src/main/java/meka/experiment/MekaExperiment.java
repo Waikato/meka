@@ -49,7 +49,7 @@ import weka.experiment.xml.XMLExperiment;
  * 
  * <!-- options-start -->
  * Valid options are:
- * <p/>
+ * <p>
  * 
  * <pre>
  * -L &lt;num&gt;

@@ -20,7 +20,7 @@ import weka.core.Instance;
 
 /**
  * MajorityLabelsetUpdateable.java - Updateable version of MajorityLabelset.
- * @see MajorityLabelset.java
+ * @see MajorityLabelset
  * @author 		Jesse Read (jesse@tsc.uc3m.es)
  * @version 	September 2011
  */

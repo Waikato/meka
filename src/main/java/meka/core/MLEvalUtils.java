@@ -20,7 +20,7 @@ import java.util.*;
 
 /**
  * MLEvalUtils - Utility functions for Evaluation.
- * @see meka.core.Metrics.java
+ * @see meka.core.Metrics
  * @author 	Jesse Read
  * @version	March 2014
  */
@@ -47,10 +47,10 @@ public abstract class MLEvalUtils {
 
 	/**
 	 * GetMLStats - Given predictions and corresponding true values and a threshold string, retreive statistics.
-	 * @param	Confidences	predictions (may be real-valued confidences)
-	 * @param	TrueValues	corresponding true values
-	 * @param	t			a threshold string, e.g. "0.387"
-	 * @return	the evaluation statistics
+	 * @param	Rpred	predictions (may be real-valued confidences)
+	 * @param	Y   	corresponding true values
+	 * @param	t		a threshold string, e.g. "0.387"
+	 * @return	        the evaluation statistics
 	 */
 	public static HashMap<String,Double> getMLStats(double Rpred[][], int Y[][], String t, String vop) {
 		double ts[] = ThresholdUtils.thresholdStringToArray(t,Y[0].length);
@@ -68,10 +68,10 @@ public abstract class MLEvalUtils {
 
 	/**
 	 * GetMLStats - Given predictions and corresponding true values and a threshold string, retreive statistics.
-	 * @param	Confidences	predictions (may be double-valued confidences in the multi-label case)
-	 * @param	TrueValues	corresponding true values
-	 * @param	t			a vector of thresholds, e.g. [0.1,0.1,0.1] or [0.1,0.5,0.4,0.001]
-	 * @return	the evaluation statistics
+	 * @param	Rpred	predictions (may be double-valued confidences in the multi-label case)
+	 * @param	Y   	corresponding true values
+	 * @param	t		a vector of thresholds, e.g. [0.1,0.1,0.1] or [0.1,0.5,0.4,0.001]
+	 * @return	    the evaluation statistics
 	 */
 	public static HashMap<String,Double> getMLStats(double Rpred[][], int Y[][], double t[], String vop) {
 
@@ -136,9 +136,9 @@ public abstract class MLEvalUtils {
 
 	/**
 	 * GetMTStats - Given multi-target predictions and corresponding true values, retreive evaluation statistics.
-	 * @param	Predictions	predictions
-	 * @param	TrueValues	corresponding true values
-	 * @return	the evaluation statistics
+	 * @param	Rpred	predictions
+	 * @param	Y	    corresponding true values
+	 * @return	        the evaluation statistics
 	 */
 	public static HashMap<String,Double> getMTStats(double Rpred[][], int Y[][], String vop) {
 

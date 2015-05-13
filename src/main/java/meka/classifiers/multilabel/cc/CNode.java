@@ -15,15 +15,19 @@
 
 package meka.classifiers.multilabel.cc;
 
-import weka.classifiers.*;
-import weka.classifiers.functions.*; // @temp, for tests
-import weka.core.*;
 import meka.core.A;
 import meka.core.F;
-import meka.core.MLUtils;
-import java.util.*;
-import java.io.*; // @temp, for tests
+import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
+import weka.classifiers.functions.SMO;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.Utils;
+
+import java.io.FileReader;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Random;
 
 /**
  * CNode.java - A Classifier Node class (for CC-like clasifiers).
@@ -45,7 +49,7 @@ public class CNode implements Serializable {
 	 * CNode - A Node 'j', taking inputs from all parents inX and paY.
 	 * @param	j		the label index of this node
 	 * @param	inX		attribute indices going into this node
-	 * @param	paX		label indices going into this node
+	 * @param	paY		label indices going into this node
 	 */
 	public CNode(int j, int inX[], int paY[]) {
 		this.j = j;

@@ -15,26 +15,15 @@
 
 package meka.classifiers.multilabel;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Random;
-import java.util.Vector;
-
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
-import weka.core.Randomizable;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.Option;
-import weka.core.RevisionUtils;
-import weka.core.TechnicalInformation;
+import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
-import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
+
+import java.util.*;
 
 /**
  * BRq.java - Random Subspace ('quick') Version.
@@ -42,7 +31,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * <br>
  * See: Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank. <i>Classifier Chains for Multi-label Classification</i>. Machine Learning Journal. Springer. Vol. 85(3), pp 333-359. (May 2011).
  * <br>
- * @see BR.java
+ * @see BR
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  * @version January 2009
  */

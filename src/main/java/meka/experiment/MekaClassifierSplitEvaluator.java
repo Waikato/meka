@@ -21,30 +21,26 @@
 
 package meka.experiment;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-import java.util.HashMap;
-
 import meka.classifiers.multilabel.Evaluation;
 import meka.classifiers.multilabel.MultilabelClassifier;
 import meka.core.Result;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
-import weka.core.AdditionalMeasureProducer;
-import weka.core.Instances;
-import weka.core.RevisionUtils;
-import weka.core.Summarizable;
-import weka.core.Utils;
+import weka.core.*;
 import weka.experiment.ClassifierSplitEvaluator;
+
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
 
 /**
  * <!-- globalinfo-start --> A SplitEvaluator that produces results for a
  * classification scheme on a nominal class attribute.
- * <p/>
+ * <p>
  * <!-- globalinfo-end -->
  * 
  * <!-- options-start --> Valid options are:
- * <p/>
+ * <p>
  * 
  * <pre>
  * -W &lt;class name&gt;
