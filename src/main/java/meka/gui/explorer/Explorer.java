@@ -352,7 +352,7 @@ public class Explorer
 		// load data
 		try {
 			loader.setFile(file);
-			data          = loader.getDataSet();
+			data = loader.getDataSet();
 			// fix class attributes definition in relation name if necessary
 			MLUtils.fixRelationName(data);
 		}
@@ -411,8 +411,9 @@ public class Explorer
 		if (saver == null)
 			saver = ConverterUtils.getSaverForFile(file);
 		try {
-			saver.setFile(file);
 			saver.setInstances(m_Data);
+			if ((saver.retrieveFile() == null) || !saver.retrieveFile().equals(file))
+				saver.setFile(file);
 			saver.writeBatch();
 			m_CurrentFile = file;
 		}
