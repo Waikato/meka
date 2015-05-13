@@ -117,7 +117,7 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 	 * SampleForInstance.
 	 * predict y[j] stochastically rather than deterministically (as with distributionForInstance(Instance x)).
 	 * @param	x	test Instance
-	 * @param	r	Random 			<- @TODO probably can use this.m_R instead
+	 * @param	r	Random 			&lt;- TODO probably can use this.m_R instead
 	 */
 	public double[] sampleForInstance(Instance x, Random r) throws Exception {
 		int L = x.classIndex();

@@ -15,27 +15,18 @@
 
 package meka.classifiers.multilabel.meta;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Set;
-import java.util.Vector;
-
-import meka.classifiers.multilabel.MultilabelClassifier;
 import meka.classifiers.multilabel.BR;
-import weka.core.Instance;
-import weka.core.Instances;
+import meka.classifiers.multilabel.MultilabelClassifier;
 import meka.core.MLUtils;
-import weka.core.RevisionUtils;
-import weka.core.TechnicalInformation;
+import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
+
+import java.util.*;
 
 /**
  * Maps the output of a multi-label classifier to a known label combination using the hamming distance.
- * described in	</i>Improved Boosting Algorithms Using Confidence-rated Predictions</i> by Schapire, Robert E. and Singer, Yoram  
+ * described in	<i>Improved Boosting Algorithms Using Confidence-rated Predictions</i> by Schapire, Robert E. and Singer, Yoram
  *
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */

@@ -15,13 +15,11 @@
 
 package meka.core;
 
-import java.util.Comparator;
-import java.util.HashMap;
+import java.io.Serializable;
 import java.util.Arrays;
-import meka.core.A;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.io.Serializable;
 
 /**
  * Comparator - A fast sparse labelset representation.
@@ -145,7 +143,7 @@ public class LabelSet implements Comparator, Serializable {
 	}
 
 	/**
-	 * Subset - returns > 0 if y1 \subsetof y2
+	 * Subset - returns &gt; 0 if y1 \subsetof y2
 	 */
 	public final static int subset(int y1[], int y2[]) {
 

@@ -15,8 +15,9 @@
 
 package meka.core;
 
-import java.util.*;
 import weka.core.Utils;
+
+import java.util.*;
 
 /**
  * A.java - Handy array operations
@@ -233,7 +234,7 @@ public abstract class A {
 	/** Shuffle 'array' given Random 'r' */
 	public static final void shuffle(int array[], Random r) {
 
-		//@TODO: use this (but beware some results may change):
+		//TODO: use this (but beware some results may change):
 		//Collections.shuffle(Arrays.asList(array), r);
 		//return array;
 
@@ -258,7 +259,7 @@ public abstract class A {
 	}
 
 	/**
-	 * ToPrimitive - cast List<Integer> to int[].
+	 * ToPrimitive - cast List&lt;Integer&gt; to int[].
 	 */
 	public static int[] toPrimitive(List<Integer> list) {
 		int[] a = new int[list.size()];       

@@ -109,23 +109,23 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 		return buffer.toString();
 	}
 
-	/** (3,'_') -> "c_3" */
+	/** (3,'_') -&gt; "c_3" */
 	public static String encodeClass(int j) {
 		return "c_"+j;
 	}
 
-	/** ("c_3",'_') -> 3 */
+	/** ("c_3",'_') -&gt; 3 */
 	public static int decodeClass(String a) {
 		//System.out.println(""+a);
 		return Integer.parseInt(a.substring(a.indexOf('_')+1));
 	}
 
-	/** (["c_3","c_1"]) -> "c_3+1" */
+	/** (["c_3","c_1"]) -&gt; "c_3+1" */
 	public static String encodeClass(String c_j, String c_k) {
 		return "c_"+join(decodeClasses(c_j),"+")+"+"+join(decodeClasses(c_k),"+");
 	}
 
-	/** ([3,1]) -> "c_3+1" */
+	/** ([3,1]) -&gt; "c_3+1" */
 	public static String encodeClass(int c_[]) {
 		String c = "c_";
 		for(int j = 0; j < c_.length; j++) {
@@ -135,7 +135,7 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 		return c;
 	}
 
-	/** ("c_3+1") -> [3,1] */
+	/** ("c_3+1") -&gt; [3,1] */
 	public static int[] decodeClasses(String a) {
 		String s[] = new String(a.substring(a.indexOf('_')+1)).split("\\+");
 		int vals[] = new int[s.length]; 
@@ -145,12 +145,12 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 		return vals;
 	}
 
-	/** (3,1) -> "3+1" */
+	/** (3,1) -&gt; "3+1" */
 	public static String encodeValue(String v_j, String v_k) {
 		return String.valueOf(v_j)+"+"+String.valueOf(v_k);
 	}
 
-	/** (3,1,2) -> "3+1+2" */
+	/** (3,1,2) -&gt; "3+1+2" */
 	public static String encodeValue(Instance x, int indices[]) {
 		String v = "";
 		for(int j = 0; j < indices.length; j++) {
@@ -160,7 +160,7 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 		return v;
 	}
 
-	/** "C+A+B" -> ["C","A","B"] */
+	/** "C+A+B" -&gt; ["C","A","B"] */
 	public static String[] decodeValue(String a) {
 		return a.split("\\+");
 	}
@@ -254,8 +254,8 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 	/**
 	 * Merge Labels.
 	 *
-	 * @param	j 	index 1 (assume that <code>j < k</code>)
-	 * @param	k	index 2 (assume that <code>j < k</code>)
+	 * @param	j 	index 1 (assume that <code>j &lt; k</code>)
+	 * @param	k	index 2 (assume that <code>j &lt; k</code>)
 	 * @param	D	iInstances, with attributes in labeled by original index
 	 * @return	 	Instaces with attributes at j and k moved to position L as (j,k), with classIndex = L-1
 	 */

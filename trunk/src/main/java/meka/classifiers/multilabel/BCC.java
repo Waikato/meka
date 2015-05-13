@@ -15,25 +15,21 @@
 
 package meka.classifiers.multilabel;
 
-import weka.classifiers.*;
-import weka.classifiers.meta.*;
-import meka.classifiers.multilabel.*;
 import meka.classifiers.multilabel.cc.CNode;
-import meka.classifiers.multitarget.*;
-import weka.core.*;
 import meka.core.A;
 import meka.core.M;
 import meka.core.StatUtils;
-import meka.core.Result;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.*;
-import java.util.*;
-import mst.*;
-import java.io.Serializable;
+import mst.Edge;
+import mst.EdgeWeightedGraph;
+import mst.KruskalMST;
+import weka.core.Instances;
+import weka.core.Option;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
+import weka.core.Utils;
+
+import java.util.*;
 
 /**
  * BCC.java - Bayesian Classifier Chains. 
@@ -42,7 +38,7 @@ import weka.core.TechnicalInformationHandler;
  * The original paper used Naive Bayes as a base classifier, hence the name. 
  * <br>
  * See Zaragoza et al. "Bayesian Classifier Chains for Multi-dimensional Classification. IJCAI 2011.
- * </br>
+ * <br>
  * @author	Jesse Read
  * @version June 2013
  */
