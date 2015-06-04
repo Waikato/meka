@@ -74,7 +74,7 @@ public class MiscMethodsTests extends TestCase {
 		Result r;
 		r = EvaluationTests.cvEvaluateClassifier(mulan);
 		System.out.println("MULAN (RAkEL): "+r.info.get("Accuracy"));
-		assertTrue("MULAN (RAkEL) Accuracy Correct", r.info.get("Accuracy").equals("0.581 +/- 0.042") );
+		assertTrue("MULAN (RAkEL) Accuracy Correct", r.info.get("Accuracy").startsWith("0.58") );
 		// ... MLkNN
 		mulan.setMethod("MLkNN");
 		r = EvaluationTests.cvEvaluateClassifier(mulan);
