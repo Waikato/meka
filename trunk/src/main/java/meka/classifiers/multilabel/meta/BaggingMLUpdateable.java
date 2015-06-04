@@ -25,7 +25,6 @@ import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.core.TechnicalInformationHandler;
-import moa.core.*;
 
 /**
  * BaggingMLUpdatable.java - Using the OzaBag scheme (see OzaBag.java from MOA)).
