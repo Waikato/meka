@@ -20,11 +20,18 @@ meka.classifiers.multilabel.SemisupervisedClassifier=\
  meka.classifiers.multilabel,\
  meka.classifiers.multilabel.meta
  
+# Packages with Updateableclassifier implementations
+weka.classifiers.Updateableclassifier=\
+ meka.classifiers.multilabel.incremental,\
+ meka.classifiers.multilabel.incremental.meta
+ 
 # Lists the Classifier-Packages that should be added to WEKA's
 # GenericObjectEditor
 weka.classifiers.Classifier=\
  meka.classifiers.multilabel,\
  meka.classifiers.multilabel.meta,\
+ meka.classifiers.multilabel.incremental,\
+ meka.classifiers.multilabel.incremental.meta,\
  meka.classifiers.multitarget,\
  meka.classifiers.multitarget.meta
 
