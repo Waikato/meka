@@ -675,12 +675,10 @@ public abstract class StatUtils {
 	}
 
 	/**
-	 * CondDepMatrix - Get a Conditional Depndency Matrix.
-	 * @version My version, based on Zhang's 'LEAD' approach:<br> 
-	 * the probability of labels j and k both getting errors on the same instance is L_loss(j)*L_loss(k)
+	 * CondDepMatrix - Get a Conditional Dependency Matrix.
+	 * Based on Zhang's 'LEAD' approach, where<br>
+	 * the probability of labels j and k both getting errors on the same instance is error(j)*error(k)
 	 * if the actual co-occurence is otherwise. 
-	 * @version note: currently we are only looking at two kinds: are the scores correlated or not
-	 * @version H0: the correlated scores == score*score
 	 * @param	D	dataset
 	 * @return a L*L matrix of Unconditional Depndence.
 	 */
@@ -688,14 +686,14 @@ public abstract class StatUtils {
 
 		int L = D.classIndex();
 		int N = D.numInstances();
-		double T[][] = MLUtils.getYfromD(D);						// OUTPUT (TEACHER)
-		double Y[][] = M.threshold(result.allPredictions(),0.5);	// OUTPUT (PREDICTED)
+		double T[][] = MLUtils.getYfromD(D);						// Output (TEACHER)
+		double Y[][] = M.threshold(result.allPredictions(),0.5);	// Output (PREDICTED)
 		result.output = Result.getStats(result,"6");	            // <-- high verbosity, because we need individual accuracies				
-		double E[] = fillError(result, L);							// ERRORS (EXPECTED)
-		double F[][][] = new double[3][L][L];						// ERRORS (ACTUAL)
+		double E[] = fillError(result, L);							// Errors (EXPECTED)
+		double F[][][] = new double[3][L][L];						// Errors (ACTUAL)
 		// Find the actual co-occurence ...
 		for(int i = 0; i < N; i++) {
-			int y[] = A.toIntArray(Y[i],0.5); 				// predicted
+			int y[] = A.toIntArray(Y[i],0.5); 					// predicted
 			int t[] = A.toIntArray(T[i],0.5);					// actual (teacher)
 			for(int j = 0; j < L; j++) {
 				for(int k = j+1; k < L; k++) {
@@ -715,7 +713,7 @@ public abstract class StatUtils {
 			}
 		}
 
-		// UnNormalize with the Expected error
+		// Un-Normalize with the Expected error
 		double E_norm[][][] = new double[3][L][L];
 		for(int j = 0; j < L; j++) {
 			for(int k = j+1; k < L; k++) {
