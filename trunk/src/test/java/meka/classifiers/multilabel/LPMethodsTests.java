@@ -16,19 +16,12 @@
 package meka.classifiers.multilabel;
 
 import junit.framework.Test;
-import junit.framework.TestSuite;
 import junit.framework.TestCase;
-
-import meka.classifiers.AbstractMekaClassifierTest;
-import weka.classifiers.Classifier;
-import meka.classifiers.multilabel.*;
-import meka.classifiers.multilabel.meta.*;
-import weka.classifiers.functions.SMO;
-import weka.core.converters.ConverterUtils.DataSource;
+import junit.framework.TestSuite;
+import meka.classifiers.multilabel.meta.EnsembleML;
 import meka.core.Result;
-import meka.core.MLEvalUtils;
-
-import meka.gui.explorer.Explorer;
+import meka.test.TestHelper;
+import weka.classifiers.functions.SMO;
 
 /**
  * EvaluationTests. Run from the command line with:<p/>
@@ -65,7 +58,7 @@ public class LPMethodsTests extends TestCase {
 		r = EvaluationTests.cvEvaluateClassifier(lc);
 		String s = r.info.get("Accuracy");
 		System.out.println("LC "+s);
-		assertTrue("LC Accuracy Correct", s.startsWith("0.57"));
+		TestHelper.assertAlmostEquals("LC Accuracy Correct", "0.568 +/- 0.032", s, 2);
 
 		// Test PS (0,0) -- should be identical
 		PS ps = new PS();
@@ -80,14 +73,14 @@ public class LPMethodsTests extends TestCase {
 
 		r = EvaluationTests.cvEvaluateClassifier(ps);
 		System.out.println("PS(3,1) "+r.info.get("Accuracy"));
-		assertTrue("PS(3,1) Accuracy Correct", r.info.get("Accuracy").startsWith("0.575 +/- 0.04") );
+		TestHelper.assertAlmostEquals("PS(3,1) Accuracy Correct", "0.565 +/- 0.04", r.info.get("Accuracy"), 2);
 
 		// Test EPS
 		EnsembleML eps = new EnsembleML();
 		eps.setClassifier(ps);
 		r = EvaluationTests.cvEvaluateClassifier(eps);
 		System.out.println("EPS "+r.info.get("Accuracy"));
-		assertTrue("EPS Accuracy Correct", r.info.get("Accuracy").equals("0.574 +/- 0.042") );
+		TestHelper.assertAlmostEquals("EPS Accuracy Correct", "0.574 +/- 0.042", r.info.get("Accuracy"), 2);
 	}
 
 }
