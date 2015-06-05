@@ -20,7 +20,7 @@
 package meka.gui.explorer;
 
 import meka.classifiers.multilabel.Evaluation;
-import meka.classifiers.multilabel.IncrementalEvaluation;
+import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
 import meka.classifiers.multilabel.MultilabelClassifier;
 import meka.core.MLEvalUtils;
 import meka.core.MLUtils;
