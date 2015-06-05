@@ -26,6 +26,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.RevisionUtils;
 import weka.core.SerializedObject;
+import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
 import java.util.Arrays;
 
 /**
