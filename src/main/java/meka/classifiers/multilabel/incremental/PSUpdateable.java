@@ -158,7 +158,7 @@ public class PSUpdateable extends PS implements UpdateableClassifier {
 		String [] superOptions = super.getOptions();
 		String [] options = new String [superOptions.length + 4];
 		int current = 0;
-		options[current++] = "-B";
+		options[current++] = "-I";
 		options[current++] = "" + m_Limit;
 		options[current++] = "-S";
 		options[current++] = "" + m_Support;
@@ -171,7 +171,7 @@ public class PSUpdateable extends PS implements UpdateableClassifier {
 	public void setOptions(String[] options) throws Exception {
 
 		try {
-			m_Limit = Integer.parseInt(Utils.getOption('B', options));
+			m_Limit = Integer.parseInt(Utils.getOption('I', options));
 		} catch(Exception e) {
 			if(getDebug()) System.err.println("Using default m_Limit = "+m_Limit);
 		}
@@ -189,7 +189,7 @@ public class PSUpdateable extends PS implements UpdateableClassifier {
 	public Enumeration listOptions() {
 
 		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tSets the buffer size        \n\tdefault: "+m_Limit+"", "B", 1, "-B <value>"));
+		newVector.addElement(new Option("\tSets the buffer size        \n\tdefault: "+m_Limit+"", "I", 1, "-I <value>"));
 		newVector.addElement(new Option("\tSets the max. num. of combs.\n\tdefault: "+m_Support+"", "S", 1, "-S <value>"));
 
 		Enumeration enu = super.listOptions();
