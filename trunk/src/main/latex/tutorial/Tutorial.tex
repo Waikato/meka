@@ -7,7 +7,7 @@
 \newcommand{\MOA}{Moa}
 \newcommand{\WEKA}{Weka}
 \newcommand{\MULAN}{Mulan}
-\def\version{{\tt 1.7.5}}
+\def\version{{\tt 1.7.6}}
 \usepackage{listings}
 \usepackage{courier}
 \lstset{basicstyle=\small\ttfamily,breaklines=true,frame=L,xleftmargin=\parindent}
@@ -227,9 +227,10 @@ The CLI is the most powerful way to work with \framework{\MEKA}, but the GUI is 
 \begin{enumerate}
 	\item Load a dataset file using \textsf{Open} from the file menu. %See \Sec{sec:data.gui} for information on preprocessing the datasets.
 	\item Click on the \textsf{Classify} tab.
-	\item \textsf{Choose} a multi-label or multi-target classifier and (in most cases) an appropriate \framework{\WEKA} base classifier, as well as its options. For \framework{\MEKA}'s meta classifiers, you will need to choose a \framework{\MEKA} base classifier, and a single-label \framework{\WEKA} base classifier for this classifier. See, for example, \Fig{screen:eval}, using Bagging of Classifier Chains with SMO.
+	\item \textsf{Choose} a multi-label or multi-target classifier (or leave the default choice). 
+	\item Click on the label to the right of this button and set specific options to the classifier. In most cases, these options also involve setting a \framework{\WEKA} single-label base classifier (and also its options). For \framework{\MEKA}'s meta classifiers, you will need to first choose a \framework{\MEKA} base classifier, and then a single-label \framework{\WEKA} base classifier for this classifier. See, for example, \Fig{screen:eval}, using a \texttt{BaggingML} ensemble of \texttt{CC} (classifier chains) with \texttt{SMO} as the single-label base classifier.
 	\item In the \textsf{Evaluation} panel you configure what type of evaluation you want to do, and some of the options given in the previous section are available here. For example, a 55/45 train/test split, as being specified in \Fig{screen:split}.
-	\item When you click \textsf{Start} the experiment will be run. When finished, the result will appear in the \textsf{History} panel; or multiple results in the case of incremental validation. This is the same output as would be seen on the command line, and explained in the following section.
+	\item When you click \textsf{Start} the experiment will be run. When finished, the result will appear in the \textsf{History} panel. This is the same output as would be seen on the command line, and explained in the following section. The verbosity of the results is controlled by the \textsf{Verbosity} option.
 	%\item You can export results to text, or copy of paste it.
 	\item Optionally, you can click on the \textsf{Visualize} tab and visualize the results.
 \end{enumerate}
