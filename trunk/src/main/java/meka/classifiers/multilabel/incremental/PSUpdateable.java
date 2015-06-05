@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import weka.classifiers.UpdateableClassifier;
+import weka.classifiers.trees.HoeffdingTree;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Option;
@@ -56,6 +57,17 @@ public class PSUpdateable extends PS implements UpdateableClassifier {
 	@Override
 	public String globalInfo() {
 		return "Updateable PS";
+	}
+
+	public PSUpdateable() {
+		// default classifier for GUI
+		this.m_Classifier = new HoeffdingTree();
+	}
+
+	@Override
+	protected String defaultClassifierString() {
+		// default classifier for CLI
+		return "weka.classifiers.trees.HoeffdingTree";
 	}
 
 	@Override

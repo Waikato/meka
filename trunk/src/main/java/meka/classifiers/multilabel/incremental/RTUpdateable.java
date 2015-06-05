@@ -16,6 +16,7 @@
 package meka.classifiers.multilabel.incremental;
 
 import weka.classifiers.UpdateableClassifier;
+import weka.classifiers.trees.HoeffdingTree;
 import weka.core.Instance;
 import meka.classifiers.multilabel.RT;
 
@@ -34,6 +35,17 @@ public class RTUpdateable extends RT implements UpdateableClassifier {
 	@Override
 	public String globalInfo() {
 		return "Updateable RT\nMust be run with an Updateable base classifier.";
+	}
+
+	public RTUpdateable() {
+		// default classifier for GUI
+		this.m_Classifier = new HoeffdingTree();
+	}
+
+	@Override
+	protected String defaultClassifierString() {
+		// default classifier for CLI
+		return "weka.classifiers.trees.HoeffdingTree";
 	}
 
 	@Override

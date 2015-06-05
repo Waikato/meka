@@ -20,6 +20,7 @@ import java.util.Random;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.UpdateableClassifier;
+import weka.classifiers.trees.HoeffdingTree;
 import weka.core.Instance;
 import weka.core.Instances;
 import meka.core.MLUtils;
@@ -37,6 +38,17 @@ public class CCUpdateable extends CC implements UpdateableClassifier {
 
 	/** for serialization. */
   	private static final long serialVersionUID = 2856976982562474367L;
+
+	public CCUpdateable() {
+		// default classifier for GUI
+		this.m_Classifier = new HoeffdingTree();
+	}
+
+	@Override
+	protected String defaultClassifierString() {
+		// default classifier for CLI
+		return "weka.classifiers.trees.HoeffdingTree";
+	}
 
 	@Override
 	public String globalInfo() {

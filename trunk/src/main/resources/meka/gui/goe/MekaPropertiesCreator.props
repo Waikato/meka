@@ -8,9 +8,9 @@ meka.classifiers.multilabel.MultilabelClassifier=\
  meka.classifiers.multilabel,\
  meka.classifiers.multilabel.meta,\
  meka.classifiers.multitarget,\
- meka.classifiers.multitarget.meta
- meka.classifiers.multitarget.incremental
- meka.classifiers.multitarget.incremental.meta
+ meka.classifiers.multitarget.meta,\
+ meka.classifiers.multilabel.incremental,\
+ meka.classifiers.multilabel.incremental.meta
 
 # Packages with MultiTargetClassifier implementations
 meka.classifiers.multitarget.MultiTargetClassifier=\

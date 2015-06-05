@@ -17,6 +17,7 @@ package meka.classifiers.multilabel.incremental;
 
 import weka.classifiers.UpdateableClassifier;
 import weka.core.Instance;
+import weka.classifiers.trees.HoeffdingTree;
 import meka.core.MLUtils;
 import meka.classifiers.multilabel.BR;
 
@@ -35,6 +36,17 @@ public class BRUpdateable extends BR implements UpdateableClassifier {
 	@Override
 	public String globalInfo() {
 		return "Updateable BR\nMust be run with an Updateable base classifier.";
+	}
+
+	public BRUpdateable() {
+		// default classifier for GUI
+		this.m_Classifier = new HoeffdingTree();
+	}
+
+	@Override
+	protected String defaultClassifierString() {
+		// default classifier for CLI
+		return "weka.classifiers.trees.HoeffdingTree";
 	}
 
 	@Override
