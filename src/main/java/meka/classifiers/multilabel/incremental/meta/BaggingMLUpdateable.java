@@ -21,6 +21,7 @@ import weka.classifiers.*;
 import weka.classifiers.meta.*;
 import meka.classifiers.multilabel.*;
 import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
+import meka.classifiers.multilabel.incremental.BRUpdateable;
 import meka.classifiers.multilabel.meta.EnsembleML;
 import java.util.*;
 import weka.core.TechnicalInformation;
@@ -38,6 +39,27 @@ import weka.core.TechnicalInformationHandler;
 public class BaggingMLUpdateable extends EnsembleML implements UpdateableClassifier, TechnicalInformationHandler {
 
 	protected Random random = null;
+
+	/**
+	 * Description to display in the GUI.
+	 * 
+	 * @return		the description
+	 */
+	@Override
+	public String globalInfo() {
+		return "Incremental Bagging";
+	}
+
+	public BaggingMLUpdateable() {
+		// default classifier for GUI
+		this.m_Classifier = new BRUpdateable();
+	}
+
+	@Override
+	protected String defaultClassifierString() {
+		// default classifier for CLI
+		return "meka.classifiers.multilabel.incremental.BRUpdateable";
+	}
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
