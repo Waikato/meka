@@ -22,6 +22,8 @@ import junit.framework.TestCase;
 import meka.classifiers.AbstractMekaClassifierTest;
 import weka.classifiers.Classifier;
 import meka.classifiers.multilabel.meta.*;
+import meka.classifiers.multilabel.incremental.*;
+import meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable;
 import meka.classifiers.multilabel.*;
 import weka.classifiers.functions.*;
 import weka.classifiers.lazy.*;
