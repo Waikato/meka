@@ -393,13 +393,13 @@ the \texttt{-verbosity 5} options increases the amount of evaluation output.
 \paragraph{Incremental Classification: Ensembles of Binary Relevance} (see \cite{ECC2,MEDS2}) With 10 ensemble members (default) on the \textit{Enron} dataset with \texttt{NaiveBayesUpdateable} as a base classifier; using over 20 evaluation windows:
 
 \begin{lstlisting}
-java meka.classifiers.multilabel.meta.BaggingMLUpdateable -B 20\
-  -t data/Enron.arff \
-  -W meka.classifiers.multilabel.BRUpdateable -- \
+java meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable\
+  -B 20 -t data/Enron.arff \
+  -W meka.classifiers.multilabel.incremental.BRUpdateable -- \
     -W weka.classifiers.bayes.NaiveBayesUpdateable
 \end{lstlisting}
 
-Evaluating incremental classifiers will carry out evaluation and display statistics for the data over $\texttt{B}-1$ evaluation windows (an initial window is used for the initial training; making \texttt{B} windows in total). %Note that the \framework{\MOA} framework \cite{MOA} for evaluating incremental classifiers is much more sophisticated; and a new release will include a wrapper to \framework{\MEKA}. 
+Evaluating incremental classifiers will carry out evaluation for the data over $\texttt{B}-1$ evaluation windows (an initial window is used for initial training but is not included in evaluation). The result shown is averaged across all windows. On the command line, the per-window evaluation statistics are also shown. %Note that the \framework{\MOA} framework \cite{MOA} for evaluating incremental classifiers is much more sophisticated; and a new release will include a wrapper to \framework{\MEKA}. 
 
 \paragraph{Multi-target: Ensembles of Class Relevance} (see \cite{UPM}) The multi-target version of the Binary Relevance classifier) on the \textit{solar flare} dataset with Logistic Regression as a base classifier under $10$-fold cross-validation:
 \begin{lstlisting}
@@ -574,30 +574,33 @@ where \texttt{C} is predicted as the value of the first target attribute with co
 
 \subsubsection{Incremental Classifiers}
 
-\framework{\MEKA} comes with incremental versions of many classifiers, as well as incremental evaluation methods. Incremental classifiers implement \framework{\WEKA}'s \texttt{UpdatebleClassifier} interface and therefore must implement the \texttt{updateClassifier(Instance)} method. The following extends \texttt{TestClassifier} for incremental learning.
+\framework{\MEKA} comes with incremental versions of many classifiers as well as incremental evaluation methods, located in the \texttt{meka/classifiers/multilabel/incremental/} folder. Incremental classifiers implement \framework{\WEKA}'s \texttt{UpdatebleClassifier} interface and therefore must implement the \texttt{updateClassifier(Instance)} method. The following extends \texttt{TestClassifier} for incremental learning.
 
 {
 \small
 \lstset{basicstyle=\small\ttfamily,breaklines=true,language=java,frame=L,xleftmargin=\parindent}
 \begin{lstlisting}
-package meka.classifiers.multilabel;
+package meka.classifiers.multilabel.incremental;
+import meka.classifiers.multilabel.TestClassifier;
+import weka.classifiers.UpdateableClassifier;
 import weka.core.*;
 
 public class TestClassifierUpdateable extends TestClassifier 
     implements UpdateableClassifier{
 	
     public void updateClassifier(Instance x) throws Exception {
-        int L = D.classIndex();
+        int L = x.classIndex();
     }
     
     public static void main(String args[]) {
-        IncrementalEvaluation.runExperiment(new TestClassifierUpdateable(),args);
+        IncrementalEvaluation.runExperiment(
+            new TestClassifierUpdateable(),args);
     }
 }
 \end{lstlisting}
 }
 
-Note that the \texttt{IncrementalEvaluation} class is called for evaluation in this case; see Section \ref{sec:evaluation}. The \framework{\MOA} framework \cite{MOA} for learning in data streams contains a number of incremental classifiers that \framework{WEKA} does not, for example Hoeffding trees. It is included in \framework{\MEKA}, and you can run these classifiers using \framework{WEKA}'s \texttt{MOA} meta classifier (wrapper), e.g., 
+Note that the \texttt{IncrementalEvaluation} class is called for evaluation in this case; see Section \ref{sec:evaluation}. For analysis of data streams, the \framework{\MOA} framework \cite{MOA} contains more possibilities than \framework{\WEKA}. For this reason we include the \texttt{moa.jar} in \framework{\MEKA}, and can be used via \framework{WEKA}'s \texttt{MOA} meta classifier (wrapper), e.g., 
 \begin{lstlisting}
 java meka.classifiers.multilabel.BRUpdateable -t data/Music.arff \
 	-W weka.classifiers.meta.MOA -- -B moa.classifiers.trees.HoeffdingTree
