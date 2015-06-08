@@ -20,6 +20,8 @@ import Jama.Matrix;
 import rbms.RBM;
 import rbms.DBM;
 import weka.core.*;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
 import meka.core.*;
 import meka.classifiers.multilabel.CC;
 import meka.classifiers.multilabel.MultilabelClassifier;
@@ -34,12 +36,14 @@ import weka.core.converters.*;
  * DeepML.java - Deep Multi-label Classification.
  * Trains an RBM/DBM on the feature space of the training data; then train on it (with the labels) with whichever multi-label classifier is specified.
  * <br>
+ * See: Jesse Read and Jaakko Hollmen. <i>A Deep Interpretation of Classifier Chains</i>. IDA 2014.
+ * <br>
  * The first RBM will have h = d / 2 hidden units, the second h = h / 2, and so on, where d is the number of original (visible) input feature attributes.
  *
  * @author Jesse Read 
  * @version December 2012
  */
-public class DeepML extends AbstractDeepNeuralNet implements Randomizable {
+public class DeepML extends AbstractDeepNeuralNet implements Randomizable, TechnicalInformationHandler {
 
 	protected RBM dbm = null;
 	protected long rbm_time = 0;
@@ -144,7 +148,28 @@ public class DeepML extends AbstractDeepNeuralNet implements Randomizable {
 	/* 
 	 * TODO: Make a generic abstract -dependency_user- class that has this option, and extend it here
 	 */
+
+	public String globalInfo() {
+		return 
+				"Create a new feature space using a stack of RBMs, then employ a multi-label classifier on top. "
+				+ "For more information see:\n"
+				+ getTechnicalInformation().toString();
+	}
 	
+	@Override
+	public TechnicalInformation getTechnicalInformation() {
+		TechnicalInformation	result;
+
+		result = new TechnicalInformation(Type.INPROCEEDINGS);
+		result.setValue(Field.AUTHOR, "Jesse Read and Jaako Hollmen");
+		result.setValue(Field.TITLE, "A Deep Interpretation of Classifier Chains");
+		result.setValue(Field.BOOKTITLE, "Advances in Intelligent Data Analysis {XIII} - 13th International Symposium, {IDA} 2014");
+		result.setValue(Field.PAGES, "251--262");
+		result.setValue(Field.YEAR, "2014");
+
+		return result;
+	}
+
 	public static void main(String args[]) throws Exception {
 		MultilabelClassifier.evaluation(new DeepML(),args);
 	}

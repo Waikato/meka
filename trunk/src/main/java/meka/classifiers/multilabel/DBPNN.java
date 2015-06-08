@@ -20,6 +20,8 @@ import Jama.Matrix;
 import rbms.RBM;
 import rbms.DBM;
 import weka.core.*;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
 import meka.core.*;
 import weka.classifiers.rules.*;
 import weka.classifiers.functions.*;
@@ -31,12 +33,15 @@ import meka.classifiers.multilabel.meta.BaggingML;
 /**
  * DBPNN.java - Deep Back-Propagation Neural Network.
  * Use an RBM to pre-train the network, then plug in BPNN.
+ * <br>
+ * See: Geoffrey Hinton and Ruslan Salakhutdinov. <i>Reducing the Dimensionality of Data with Neural Networks</i>. Science. Vol 313(5786), pages 504 - 507. 2006.
+ * <br>
  *
  * @see BPNN
  * @author Jesse Read
  * @version December 2012
  */
-public class DBPNN extends AbstractDeepNeuralNet  { 
+public class DBPNN extends AbstractDeepNeuralNet implements TechnicalInformationHandler  { 
 
 	protected RBM dbm = null;
 	protected long rbm_time = 0;
@@ -136,9 +141,38 @@ public class DBPNN extends AbstractDeepNeuralNet  {
 		return M;
 	}
 
+	/**
+	 * Description to display in the GUI.
+	 * 
+	 * @return		the description
+	 */
+	@Override
+	public String globalInfo() {
+		return 
+				"A Deep Back-Propagation Neural Network. "
+				+ "For more information see:\n"
+				+ getTechnicalInformation().toString();
+	}
+
+
+	@Override
+	public TechnicalInformation getTechnicalInformation() {
+		TechnicalInformation	result;
+
+		result = new TechnicalInformation(Type.ARTICLE);
+		result.setValue(Field.AUTHOR, "Geoffrey Hinton and Ruslan Salakhutdinov"); 
+		result.setValue(Field.TITLE, "Reducing the Dimensionality of Data with Neural Networks");
+		result.setValue(Field.JOURNAL, "Science");
+		result.setValue(Field.VOLUME, "313");
+		result.setValue(Field.NUMBER, "5786");
+		result.setValue(Field.PAGES, "504-507");
+		result.setValue(Field.YEAR, "2006");
+
+		return result;
+	}
+
 	public static void main(String args[]) throws Exception {
 		MultilabelClassifier.evaluation(new DBPNN(),args);
 	}
 
 }
-
