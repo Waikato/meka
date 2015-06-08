@@ -399,7 +399,7 @@ java meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable\
     -W weka.classifiers.bayes.NaiveBayesUpdateable
 \end{lstlisting}
 
-Evaluating incremental classifiers will carry out evaluation for the data over $\texttt{B}-1$ evaluation windows (an initial window is used for initial training but is not included in evaluation). The result shown is averaged across all windows. On the command line, the per-window evaluation statistics are also shown. %Note that the \framework{\MOA} framework \cite{MOA} for evaluating incremental classifiers is much more sophisticated; and a new release will include a wrapper to \framework{\MEKA}. 
+Evaluating incremental classifiers will carry out evaluation for the data over $\texttt{B}-1$ evaluation windows (an initial window is used for initial training but is not included in evaluation). The result shown is the average across all windows. On the command line, the per-window evaluation statistics are also shown, with a high-enough \texttt{verbosity}. %Note that the \framework{\MOA} framework \cite{MOA} for evaluating incremental classifiers is much more sophisticated; and a new release will include a wrapper to \framework{\MEKA}. 
 
 \paragraph{Multi-target: Ensembles of Class Relevance} (see \cite{UPM}) The multi-target version of the Binary Relevance classifier) on the \textit{solar flare} dataset with Logistic Regression as a base classifier under $10$-fold cross-validation:
 \begin{lstlisting}
