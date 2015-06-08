@@ -2,30 +2,15 @@ See the Tutorial.pdf for detailed information on obtaining, using and extending 
 For a list of included methods and 'quick-start' command line examples, 
 	see: http://meka.sourceforge.net/methods.html
 
-Release Notes
--------------
+Release Notes, Version 1.7.6
+----------------------------
 
-This is a relatively minor release. There are no fundamental changes to the internals.
+This is a minor release, fixing a few minor issues. 
 
-However, many classifiers have been revised in some way since the last release, and there are several new classifiers:
+	- Updateable classifiers are now moved to subfolders incremental/ and incremental/meta
+	- Updateable classifiers are now set with a sensible default classifier (HoeffdingTree), and BRUpdateable in the case of meta incremental classifiers
+	- Javadoc comments are cleaned up
+	- Some unused branches of weka/ and moa/ were removed
+	- Some overly stringent unit tests were changed
+	- Recent changes are reflected in the tutorial
 
-	- CT: classifier trellis
-	- CDT: conditional depndency trellis
-	- HASEL: a RAkEL-like algorithm, that partitions labelsets based on a dataset defined hierarchy
-
-Also, there have been several small but helpful changes to the GUI:
-
-	- An indicator of when an experiment is in progress
-	- Label variables are set in *bold* to distinguish from the input/attribute variables
-	- Cleaner output
-	- Bookmarks in the load-file dialog.
-	- Minor bug fixes
-	- Default classifiers have been set sensibly (not ZeroR for everything as before)
-	- Some 'missing' classifier options are now present for manipulation
-
-And a lot of minor changes throughout
-
-	- Sensible default classifiers for the command line 
-	- Updated tutorial 
-	- Improved documentation all-around (tutorial, javadoc and code comments
-			and list of methods with examples: http://meka.sourceforge.net/methods.html)
