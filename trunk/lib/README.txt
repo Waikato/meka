@@ -6,8 +6,8 @@ Jama.jar
 - download: http://math.nist.gov/javanumerics/jama/#Package
 
 weka.jar, weka-tests.jar
-- version: 3.7.11
-- download: http://sourceforge.net/projects/weka/files/weka-3-7/3.7.11/
+- version: 3.7.12
+- download: http://sourceforge.net/projects/weka/files/weka-3-7/3.7.12/
 
 mulan.jar
 - version: 1.4
