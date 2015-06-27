@@ -75,13 +75,13 @@
              debug="true" 
              debuglevel="lines,vars,source" 
              classpathref="project.class.path"
-             source="1.6" target="1.6">
+             source="1.7" target="1.7">
       </javac>
       <javac srcdir="${src-tests}" 
 	       destdir="${build-tests}" 
 	       debug="true" 
 	       debuglevel="lines,vars,source"
-	       source="1.6" target="1.6">
+	       source="1.7" target="1.7">
 		<classpath>
 	      <fileset dir="${lib}">
     	     <include name="*.jar"/>

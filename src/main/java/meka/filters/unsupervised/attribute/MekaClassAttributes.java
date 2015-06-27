@@ -57,7 +57,6 @@ public class MekaClassAttributes
    * @return 		a description of the filter suitable for
    * 			displaying in the explorer/experimenter gui
    */
-  @Override
   public String globalInfo() {
     return 
 	"Reorders attributes for MEKA. Attribute range defines the "
@@ -69,7 +68,6 @@ public class MekaClassAttributes
    *
    * @return an enumeration of all the available options.
    */
-  @Override
   public Enumeration listOptions() {
     Vector newVector = new Vector();
 
@@ -87,7 +85,6 @@ public class MekaClassAttributes
    * @param options the list of options as an array of strings
    * @throws Exception if an option is not supported
    */
-  @Override
   public void setOptions(String[] options) throws Exception {
     String orderList = Utils.getOption('R', options);
     if (orderList.length() != 0)
@@ -104,7 +101,6 @@ public class MekaClassAttributes
    *
    * @return an array of strings suitable for passing to setOptions
    */
-  @Override
   public String[] getOptions() {
     String[] options = new String [2];
     int current = 0;
@@ -168,7 +164,6 @@ public class MekaClassAttributes
    * @return            the capabilities of this object
    * @see               Capabilities
    */
-  @Override
   public Capabilities getCapabilities() {
     Capabilities	result;
     
@@ -189,7 +184,6 @@ public class MekaClassAttributes
    * @return                the output format
    * @throws Exception      in case the determination goes wrong
    */
-  @Override
   protected Instances determineOutputFormat(Instances inputFormat) throws Exception {
     int			i;
     int[]		indices;
@@ -230,14 +224,12 @@ public class MekaClassAttributes
    * @return            the modified data
    * @throws Exception  in case the processing goes wrong
    */
-  @Override
   protected Instance process(Instance instance) throws Exception {
     m_Reorder.input(instance);
     m_Reorder.batchFinished();
     return m_Reorder.output();
   }
 
-  @Override
   public String getRevision() {
     return RevisionUtils.extract("$Revision: 66 $");
   }
