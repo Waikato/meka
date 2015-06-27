@@ -18,7 +18,7 @@
     <property name="mainclass" value="meka.gui.explorer.Explorer"/>
     <property name="memory" value="512m"/>
 
-    <property name="version" value="1.7.6"/>
+    <property name="version" value="1.7.7-SNAPSHOT"/>
 
     <!-- CLASSPATH -->
     <path id="project.class.path">
