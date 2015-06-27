@@ -60,13 +60,13 @@ public class CCMethodsTests extends TestCase {
 		BR br = new BR();
 		br.setClassifier(new SMO());
 		Result r = EvaluationTests.cvEvaluateClassifier(br);
-		assertTrue("BR Accuracy Correct", r.info.get("Accuracy").equals("0.493 +/- 0.036") );
+		assertEquals("BR Accuracy Correct", "0.493 +/- 0.036", r.info.get("Accuracy"));
 
 		// Test EBR
 		EnsembleML ebr = new EnsembleML();
 		ebr.setClassifier(br);
 		Result Er = EvaluationTests.cvEvaluateClassifier(ebr);
-		assertTrue("EBR Accuracy Correct", Er.info.get("Accuracy").equals("0.557 +/- 0.04 ") );
+		assertEquals("EBR Accuracy Correct", "0.557 +/- 0.04 ", Er.info.get("Accuracy"));
 	}
 
 	public void testMCC() {
@@ -77,7 +77,7 @@ public class CCMethodsTests extends TestCase {
 		smo.setBuildLogisticModels(true);
 		h.setClassifier(smo);
 		Result r = EvaluationTests.cvEvaluateClassifier(h);
-		assertTrue("MCC Accuracy Correct", r.info.get("Accuracy").equals("0.561 +/- 0.035") );
+		assertEquals("MCC Accuracy Correct", "0.561 +/- 0.035", r.info.get("Accuracy"));
 	}
 
 	public void testPMCC() {
@@ -91,7 +91,7 @@ public class CCMethodsTests extends TestCase {
 		smo.setBuildLogisticModels(true);
 		h.setClassifier(smo);
 		Result r = EvaluationTests.cvEvaluateClassifier(h);
-		assertTrue("PMCC Accuracy Correct", r.info.get("Accuracy").equals("0.587 +/- 0.035") );
+		assertEquals("PMCC Accuracy Correct", "0.594 +/- 0.029", r.info.get("Accuracy"));
 	}
 
 	public void testPCC() {
@@ -102,7 +102,7 @@ public class CCMethodsTests extends TestCase {
 		smo.setBuildLogisticModels(true);
 		h.setClassifier(smo);
 		Result r = EvaluationTests.cvEvaluateClassifier(h);
-		assertTrue("PCC Accuracy Correct", r.info.get("Accuracy").equals("0.565 +/- 0.032") );
+		assertEquals("PCC Accuracy Correct", "0.565 +/- 0.032", r.info.get("Accuracy"));
 	}
 
 	public void testCT() {
@@ -116,7 +116,7 @@ public class CCMethodsTests extends TestCase {
 		h.setChainIterations(10);
 		Result r = EvaluationTests.cvEvaluateClassifier(h);
 		//System.out.println("CT ACC: "+r.info.get("Accuracy"));
-		assertTrue("CT Accuracy Correct", r.info.get("Accuracy").equals("0.56  +/- 0.034") );
+		assertEquals("CT Accuracy Correct", "0.56  +/- 0.034", r.info.get("Accuracy"));
 	}
 
 	public void testCDT() {
@@ -128,7 +128,7 @@ public class CCMethodsTests extends TestCase {
 		h.setClassifier(smo);
 		Result r = EvaluationTests.cvEvaluateClassifier(h);
 		//System.out.println("CDT ACC: "+r.info.get("Accuracy"));
-		assertTrue("CDT Accuracy Correct", r.info.get("Accuracy").equals("0.519 +/- 0.039") );
+		assertEquals("CDT Accuracy Correct", "0.519 +/- 0.039", r.info.get("Accuracy") );
 	}
 
 }
