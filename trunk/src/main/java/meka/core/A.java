@@ -116,11 +116,14 @@ public abstract class A {
 		int max = 0;
 		int count = 0;
 		HashMap<Integer,Integer> d = new HashMap<Integer,Integer>();
-		for(int v : a) {
-			int n = d.containsKey(v) ? d.get(v) + 1 : 1;
+		for (int v: a) {
+			Integer nn = d.get(v);
+			int n = (nn==null) ? 1 : nn + 1;
 			d.put(v,n);
-			if (n > count)
+			if (count < n) {
+				count = n;
 				max = v;
+			}
 		}
 		return max;
 	}
@@ -336,5 +339,14 @@ public abstract class A {
 		}
 		return u;
 	}
+
+	/**
+	 * Do some tests.
+	 */
+	public static void main (String args[]) {
+		int a[] = new int[] {1, 3, 4, 8, -4, -3, 4, 4, 4, 10, -3, -3, -3, -3, -3};
+		System.out.println("mode: "+A.mode(a));
+	}
+
 }
 
