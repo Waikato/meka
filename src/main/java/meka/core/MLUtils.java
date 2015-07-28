@@ -26,6 +26,8 @@ import java.util.*;
 
 /**
  * MLUtils - Helpful functions for dealing with multi-labelled data.
+ * Note that there are some similar/related methods in F.java.
+ * @see MLUtils
  * @author Jesse Read 
  * @version	March 2013
  */
@@ -535,34 +537,60 @@ public abstract class MLUtils {
 		return hm.size();
 	}
 
-	// NEW -- NOTE -- THESE FUNCTIONS (and the one above) ARE PRESENT IN F.java
+	// 
+	// ***NOTE*** The following functions are present in F.java in the form of removeLabels/keepLabels, but using the Remove() filter.
+	// I will keep these ones here for now in case they are faster or have some other advantage. Otherwise they can be deleted, and
+	// use F.java instead.
+	// 
 
-	/*
-	 * used in BR, CR
+	/**
+	 * Delete attributes from an instance 'x' indexed by 'indicesToRemove[]'.
+	 * @param	x					instance
+	 * @param	indicesToRemove[]	array of attribute indices
+	 * @return	the modified dataset
 	 */
 	public static final Instance deleteAttributesAt(Instance x, int indicesToRemove[]) {//, boolean keep) {
-		Utils.sort(indicesToRemove);
+		Arrays.sort(indicesToRemove);
 		for(int j = indicesToRemove.length-1; j >= 0; j--) {
 			x.deleteAttributeAt(indicesToRemove[j]);
 		}
 		return x;
 	}
 
+	/**
+	 * Delete all attributes from an instance 'x' <i>except</i> those indexed by 'indicesToRemove[]', up to the 'lim'-th attribute.
+	 * For example, lim = 10, indicesToRemove[] = {4,5}, keeps indices 4,5,10,11,12,...
+	 * @param	x					instance
+	 * @param	indicesToRemove[]	array of attribute indices
+	 * @param	lim					excluding 
+	 * @return	the modified dataset
+	 */
 	public static final Instance keepAttributesAt(Instance x, int indicesToRemove[], int lim){
 		return deleteAttributesAt(x, A.invert(indicesToRemove, lim));
 	}
 
-	/*
-	 * used in BR, CR
+	/**
+	 * Delete attributes from a dataset 'D' indexed by 'indicesToRemove[]'.
+	 * @param	D					dataset
+	 * @param	indicesToRemove[]	array of attribute indices
+	 * @return	the modified dataset
 	 */
 	public static final Instances deleteAttributesAt(Instances D, int indicesToRemove[]) {//, boolean keep) {
-		Utils.sort(indicesToRemove);
+		Arrays.sort(indicesToRemove);
 		for(int j = indicesToRemove.length-1; j >= 0; j--) {
 			D.deleteAttributeAt(indicesToRemove[j]);
 		}
 		return D;
 	}
 
+	/**
+	 * Delete all attributes from a dataset 'D' <i>except</i> those indexed by 'indicesToRemove[]', up to the 'lim'-th attribute.
+	 * For example, lim = 10, indicesToRemove[] = {4,5}, keeps indices 4,5,10,11,12,...
+	 * @param	D					dataset
+	 * @param	indicesToRemove[]	array of attribute indices
+	 * @param	lim					excluding 
+	 * @return	the modified dataset
+	 */
 	public static final Instances keepAttributesAt(Instances D, int indicesToRemove[], int lim){
 		return deleteAttributesAt(D, A.invert(indicesToRemove, lim));
 	}

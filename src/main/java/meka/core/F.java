@@ -22,9 +22,11 @@ import weka.filters.unsupervised.attribute.Remove;
 import weka.filters.unsupervised.attribute.Reorder;
 
 /**
- * F.java - TRANSFORM/FILTER OPERATIONS.
- * Transform 'D' and 'x' in many different ways.
- * @author Jesse Read (jesse@tsc.uc3m.es)
+ * F.java - transform/Filter Operations on instances.
+ * Transform 'D' and 'x' in many different ways wrt the labels. 
+ * Note that there are similar/related functions in MLUtils.java. In the future these should be combined together.
+ * @see MLUtils
+ * @author Jesse Read
  */
 public abstract class F {
 
