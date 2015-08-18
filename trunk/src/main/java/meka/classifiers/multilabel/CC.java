@@ -15,14 +15,18 @@
 
 package meka.classifiers.multilabel;
 
-import edu.princeton.cs.introcs.Draw;
 import meka.classifiers.multilabel.cc.CNode;
 import meka.core.A;
 import meka.core.MLUtils;
 import meka.core.MultiLabelDrawable;
-import weka.core.*;
+import weka.core.Drawable;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.Randomizable;
+import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
+import weka.core.TechnicalInformationHandler;
 
 import java.util.Arrays;
 import java.util.HashMap;
