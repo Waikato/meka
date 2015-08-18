@@ -200,6 +200,15 @@ public class CNode implements Serializable {
 	}
 
 	/**
+	 * Returns the underlying classifier.
+	 *
+	 * @return the classifier
+	 */
+	public Classifier getClassifier() {
+		return h;
+	}
+
+	/**
 	 * Main - run some tests.
 	 */
 	public static void main(String args[]) throws Exception {

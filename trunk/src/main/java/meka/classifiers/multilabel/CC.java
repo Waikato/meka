@@ -15,14 +15,18 @@
 
 package meka.classifiers.multilabel;
 
+import edu.princeton.cs.introcs.Draw;
 import meka.classifiers.multilabel.cc.CNode;
 import meka.core.A;
 import meka.core.MLUtils;
+import meka.core.MultiLabelDrawable;
 import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -38,7 +42,8 @@ import java.util.Random;
  * @author	Jesse Read
  * @version December 2013
  */
-public class CC extends MultilabelClassifier implements Randomizable, TechnicalInformationHandler {
+public class CC extends MultilabelClassifier
+		implements Randomizable, TechnicalInformationHandler, MultiLabelDrawable {
 
 	protected CNode nodes[] = null;
 
@@ -259,6 +264,51 @@ public class CC extends MultilabelClassifier implements Randomizable, TechnicalI
 
 		result.add(additional);
     
+		return result;
+	}
+
+	/**
+	 * Returns the type of graph representing
+	 * the object.
+	 *
+	 * @return the type of graph representing the object (label index as key)
+	 */
+	public Map<Integer,Integer> graphType() {
+		Map<Integer,Integer>	result;
+		int						i;
+
+		result = new HashMap<Integer,Integer>();
+
+		for (i = 0; i < nodes.length; i++) {
+			if (nodes[i].getClassifier() instanceof Drawable) {
+				result.put(i, ((Drawable) nodes[i].getClassifier()).graphType());
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Returns a string that describes a graph representing
+	 * the object. The string should be in XMLBIF ver.
+	 * 0.3 format if the graph is a BayesNet, otherwise
+	 * it should be in dotty format.
+	 *
+	 * @return the graph described by a string (label index as key)
+	 * @throws Exception if the graph can't be computed
+	 */
+	public Map<Integer,String> graph() throws Exception {
+		Map<Integer,String>		result;
+		int						i;
+
+		result = new HashMap<Integer,String>();
+
+		for (i = 0; i < nodes.length; i++) {
+			if (nodes[i].getClassifier() instanceof Drawable) {
+				result.put(i, ((Drawable) nodes[i].getClassifier()).graph());
+			}
+		}
+
 		return result;
 	}
 
