@@ -96,10 +96,11 @@ public class ResultHistoryList
 		 * Adds the element to the history.
 		 * 
 		 * @param result the item to add
+		 * @param payload the payload to add
 		 * @param suffix the suffix to add
 		 */
-		public void addElement(Result result, String suffix) {
-			m_History.add(result, suffix);
+		public void addElement(Result result, Object payload, String suffix) {
+			m_History.add(result, payload, suffix);
 			fireIntervalAdded(this, m_History.size() - 1, m_History.size() - 1);
 		}
 
@@ -140,6 +141,16 @@ public class ResultHistoryList
 		}
 
 		/**
+		 * Returns the payload at the specified location.
+		 *
+		 * @param index the location
+		 * @return the payload
+		 */
+		public Object getPayloadAt(int index) {
+			return m_History.getPayload(index);
+		}
+
+		/**
 		 * Returns the suffix at the specified location.
 		 *
 		 * @param index the location
@@ -171,10 +182,32 @@ public class ResultHistoryList
 			return m_History;
 		}
 	}
+
+	/**
+	 * The interface for classes that can customize the popup menu of the
+	 * result history.
+	 *
+	 * @author  fracpete (fracpete at waikato dot ac dot nz)
+	 * @version $Revision$
+	 */
+	public interface ResultHistoryPopupMenuCustomizer {
+
+		/**
+		 * Allows to customize the popup menu for the result history.
+		 *
+		 * @param history the list this popup menu is for
+		 * @param index the index of the select item from the history
+		 * @param menu the menu to customize
+		 */
+		public void customizePopupMenu(ResultHistoryList history, int index, JPopupMenu menu);
+	}
 	
 	/** the file chooser for saving the output. */
 	protected JFileChooser m_FileChooser;
-	
+
+	/** the popup menu customizer. */
+	protected ResultHistoryPopupMenuCustomizer m_PopupMenuCustomizer;
+
 	/**
 	 * Initializes the list.
 	 */
@@ -206,11 +239,32 @@ public class ResultHistoryList
 				}
 			}
 		});
+
 		m_FileChooser = new JFileChooser(System.getProperty("user.home"));
 		ExtensionFileFilter filter = new ExtensionFileFilter("txt", "Meka results format (*.txt)");
 		m_FileChooser.addChoosableFileFilter(filter);
 		m_FileChooser.setFileFilter(filter);
 		m_FileChooser.setMultiSelectionEnabled(false);
+
+		m_PopupMenuCustomizer = null;
+	}
+
+	/**
+	 * Sets the customizer to use for the popup menu.
+	 *
+	 * @param value the customizer, null to unset
+	 */
+	public void setPopupMenuCustomizer(ResultHistoryPopupMenuCustomizer value) {
+		m_PopupMenuCustomizer = value;
+	}
+
+	/**
+	 * Returns the current customizer for the popup menu.
+	 *
+	 * @return the customizer, null if none set
+	 */
+	public ResultHistoryPopupMenuCustomizer getPopupMenuCustomizer() {
+		return m_PopupMenuCustomizer;
 	}
 	
 	/**
@@ -265,7 +319,11 @@ public class ResultHistoryList
 			}
 		});
 		result.add(menuitem);
-		
+
+		// customize popup menu?
+		if (m_PopupMenuCustomizer != null)
+			m_PopupMenuCustomizer.customizePopupMenu(this, index, result);
+
 		return result;
 	}
 	
@@ -332,10 +390,11 @@ public class ResultHistoryList
 	 * Adds the element to the history.
 	 * 
 	 * @param result the item to add
+	 * @param payload the payload to add
 	 * @param suffix the suffix to add
 	 */
-	public void addResult(Result result, String suffix) {
-		((ResultHistoryModel) getModel()).addElement(result, suffix);
+	public void addResult(Result result, Object payload, String suffix) {
+		((ResultHistoryModel) getModel()).addElement(result, payload, suffix);
 		setSelectedIndex(getModel().getSize() - 1);
 	}
 
@@ -347,6 +406,17 @@ public class ResultHistoryList
 	 */
 	public Result getResultAt(int index) {
 		return ((ResultHistoryModel) getModel()).getResultAt(index);
+
+	}
+
+	/**
+	 * Returns the payload at the specified location.
+	 *
+	 * @param index the location
+	 * @return the payload
+	 */
+	public Object getPayloadAt(int index) {
+		return ((ResultHistoryModel) getModel()).getPayloadAt(index);
 
 	}
 

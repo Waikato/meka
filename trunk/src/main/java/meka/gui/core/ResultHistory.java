@@ -41,6 +41,9 @@ public class ResultHistory
 	/** for storing the results (timestamp / result). */
 	protected Hashtable<Date,Result> m_Results;
 
+	/** for storing an associated payload (timestamp / object). */
+	protected Hashtable<Date,Object> m_Payloads;
+
 	/** for storing the suffixes for the index (timestamp / suffix). */
 	protected Hashtable<Date,String> m_Suffixes;
 
@@ -52,6 +55,7 @@ public class ResultHistory
 	 */
 	public ResultHistory() {
 		m_Results  = new Hashtable<Date,Result>();
+		m_Payloads = new Hashtable<Date,Object>();
 		m_Suffixes = new Hashtable<Date,String>();
 		m_Ordered  = new ArrayList<Date>();
 	}
@@ -83,7 +87,17 @@ public class ResultHistory
 	public synchronized Result get(int index) {
 		return m_Results.get(m_Ordered.get(index));
 	}
-	
+
+	/**
+	 * Returns the payload of the specified history item.
+	 *
+	 * @param index the index of the item to retrieve
+	 * @return the payload
+	 */
+	public synchronized Object getPayload(int index) {
+		return m_Payloads.get(m_Ordered.get(index));
+	}
+
 	/**
 	 * Returns the specified timestamp.
 	 * 
@@ -108,13 +122,15 @@ public class ResultHistory
 	 * Adds the item to the history.
 	 * 
 	 * @param result the result to add
+	 * @param payload the payload to add
 	 * @param suffix the suffix to add
 	 */
-	public synchronized void add(Result result, String suffix) {
+	public synchronized void add(Result result, Object payload, String suffix) {
 		Date date;
 		
 		date = new Date();
 		m_Results.put(date, result);
+		m_Payloads.put(date, payload);
 		m_Suffixes.put(date, suffix);
 		m_Ordered.add(date);
 	}
@@ -131,6 +147,7 @@ public class ResultHistory
 		
 		date   = m_Ordered.remove(index);
 		m_Suffixes.remove(date);
+		m_Payloads.remove(date);
 		result = m_Results.remove(date);
 		
 		return result;
