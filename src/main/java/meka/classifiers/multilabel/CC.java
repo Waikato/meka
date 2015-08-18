@@ -283,9 +283,11 @@ public class CC extends MultilabelClassifier
 
 		result = new HashMap<Integer,Integer>();
 
-		for (i = 0; i < nodes.length; i++) {
-			if (nodes[i].getClassifier() instanceof Drawable) {
-				result.put(i, ((Drawable) nodes[i].getClassifier()).graphType());
+		if (nodes != null) {
+			for (i = 0; i < nodes.length; i++) {
+				if (nodes[i].getClassifier() instanceof Drawable) {
+					result.put(i, ((Drawable) nodes[i].getClassifier()).graphType());
+				}
 			}
 		}
 
@@ -307,9 +309,11 @@ public class CC extends MultilabelClassifier
 
 		result = new HashMap<Integer,String>();
 
-		for (i = 0; i < nodes.length; i++) {
-			if (nodes[i].getClassifier() instanceof Drawable) {
-				result.put(i, ((Drawable) nodes[i].getClassifier()).graph());
+		if (nodes != null) {
+			for (i = 0; i < nodes.length; i++) {
+				if (nodes[i].getClassifier() instanceof Drawable) {
+					result.put(i, ((Drawable) nodes[i].getClassifier()).graph());
+				}
 			}
 		}
 
