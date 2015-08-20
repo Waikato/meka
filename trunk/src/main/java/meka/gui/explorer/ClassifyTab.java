@@ -30,7 +30,9 @@ import meka.gui.core.GUIHelper;
 import meka.gui.core.MekaFileChooser;
 import meka.gui.core.ResultHistoryList;
 import meka.gui.goe.GenericObjectEditor;
+import weka.classifiers.Classifier;
 import weka.core.Instances;
+import weka.core.SerializationHelper;
 import weka.gui.ExtensionFileFilter;
 import weka.gui.graphvisualizer.GraphVisualizer;
 import weka.gui.treevisualizer.Node;
@@ -46,7 +48,7 @@ import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
-import java.io.FileReader;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.Serializable;
 import java.io.StringReader;
@@ -75,6 +77,26 @@ public class ClassifyTab
 	public static class HistoryCustomizer
 			implements Serializable, ResultHistoryList.ResultHistoryPopupMenuCustomizer {
 
+		/** the file chooser for saving the graphs. */
+		protected MekaFileChooser m_GraphFileChooser;
+
+		/** the file chooser for saving the models. */
+		protected MekaFileChooser m_ModelFileChooser;
+
+		public HistoryCustomizer() {
+			ExtensionFileFilter 	filter;
+
+			m_GraphFileChooser = new MekaFileChooser();
+			filter             = new ExtensionFileFilter(".txt", "Text file (*.txt)");
+			m_GraphFileChooser.addChoosableFileFilter(filter);
+			m_GraphFileChooser.setFileFilter(filter);
+
+			m_ModelFileChooser = new MekaFileChooser();
+			filter             = new ExtensionFileFilter(".model", "Model file (*.model)");
+			m_ModelFileChooser.addChoosableFileFilter(filter);
+			m_ModelFileChooser.setFileFilter(filter);
+		}
+
 		/**
 		 * Allows to customize the popup menu for the result history.
 		 *
@@ -93,128 +115,170 @@ public class ClassifyTab
 
 			menu.addSeparator();
 
+			menuitem = new JMenuItem("Save model..");
+			menuitem.setEnabled(item instanceof MultiLabelDrawable);
+			menuitem.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					saveModel((Classifier) item);
+				}
+			});
+			menu.add(menuitem);
+
+			menu.addSeparator();
+
 			menuitem = new JMenuItem("Show graph(s)");
 			menuitem.setEnabled(item instanceof MultiLabelDrawable);
 			menuitem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					MultiLabelDrawable d = (MultiLabelDrawable) item;
-					Map<Integer,String> graphs = null;
-					Map<Integer,Integer> types = null;
-					java.util.List<Integer> keys = null;
-					try {
-						types = d.graphType();
-						graphs = d.graph();
-						keys = new ArrayList<Integer>(types.keySet());
-					}
-					catch (Exception ex) {
-						System.err.println("Failed to obtain graph(s):");
-						ex.printStackTrace();
-						return;
-					}
-					JDialog dialog = new JDialog((Frame) null, suffix, false);
-					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					JTabbedPane tabbed = new JTabbedPane();
-					dialog.getContentPane().setLayout(new BorderLayout());
-					dialog.getContentPane().add(tabbed, BorderLayout.CENTER);
-					for (Integer label: keys) {
-						int type = types.get(label);
-						JComponent comp = null;
-						switch (type) {
-							case MultiLabelDrawable.TREE:
-								TreeBuild b = new TreeBuild();
-								PlaceNode2 arrange = new PlaceNode2();
-								Node top = b.create(new StringReader(graphs.get(label)));
-								comp = new TreeVisualizer(null, top, arrange);
-								break;
-							case MultiLabelDrawable.BayesNet:
-								GraphVisualizer g = new GraphVisualizer();
-								g.readDOT(new StringReader(graphs.get(label)));
-								comp = g;
-								break;
-							default:
-								System.err.println("Unsupported graph type for label " + label + ": " + type);
-						}
-						if (comp != null)
-							tabbed.addTab("" + label, comp);
-					}
-					dialog.setSize(800, 600);
-					dialog.setLocationRelativeTo(null);
-					dialog.setVisible(true);
+					displayGraphs((MultiLabelDrawable) item, suffix);
 				}
 			});
 			menu.add(menuitem);
 
-			menuitem = new JMenuItem("Save graph(s)");
+			menuitem = new JMenuItem("Save graph(s)...");
 			menuitem.setEnabled(item instanceof MultiLabelDrawable);
 			menuitem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					MultiLabelDrawable d = (MultiLabelDrawable) item;
-					Map<Integer,String> graphs = null;
-					Map<Integer,Integer> types = null;
-					java.util.List<Integer> keys = null;
-					try {
-						types = d.graphType();
-						graphs = d.graph();
-						keys = new ArrayList<Integer>(types.keySet());
-					}
-					catch (Exception ex) {
-						System.err.println("Failed to obtain graph(s):");
-						ex.printStackTrace();
-						return;
-					}
-					MekaFileChooser chooser = new MekaFileChooser();
-					ExtensionFileFilter filter = new ExtensionFileFilter(".txt", "Text file");
-					chooser.addChoosableFileFilter(filter);
-					chooser.setFileFilter(filter);
-					int retVal = chooser.showSaveDialog(history);
-					if (retVal != MekaFileChooser.APPROVE_OPTION)
-						return;
-					FileWriter fw = null;
-					BufferedWriter bw = null;
-					try {
-						fw = new FileWriter(chooser.getSelectedFile());
-						bw = new BufferedWriter(fw);
-						for (Integer key: keys) {
-							bw.write("Label: " + key);
-							bw.newLine();
-							bw.write("Type: " + types.get(key));
-							bw.newLine();
-							bw.newLine();
-							bw.write(graphs.get(key));
-							bw.newLine();
-							bw.write("---");
-							bw.newLine();
-						}
-						bw.flush();
-						fw.flush();
-					}
-					catch (Exception ex) {
-						System.err.println("Failed to write graph(s) to: " + chooser.getSelectedFile());
-						ex.printStackTrace();
-					}
-					finally {
-						if (fw != null) {
-							try {
-								fw.close();
-							}
-							catch (Exception ex) {
-								// ignored
-							}
-						}
-						if (bw != null) {
-							try {
-								bw.close();
-							}
-							catch (Exception ex) {
-								// ignored
-							}
-						}
-					}
+					saveGraphs((MultiLabelDrawable) item);
 				}
 			});
 			menu.add(menuitem);
+		}
+
+		/**
+		 * Saves the given classifier to a file.
+		 *
+		 * @param c			the classifier
+		 */
+		protected void saveModel(Classifier c) {
+			int retVal = m_ModelFileChooser.showSaveDialog(null);
+			if (retVal != MekaFileChooser.APPROVE_OPTION)
+				return;
+			File file = m_ModelFileChooser.getSelectedFile();
+			try {
+				SerializationHelper.write(file.getAbsolutePath(), c);
+			}
+			catch (Exception e) {
+				String msg = "Failed to write model to '" + file + "'!";
+				System.err.println(msg);
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(
+						null, msg + "\n" + e);
+			}
+		}
+
+		/**
+		 * Displays the given graphs.
+		 *
+		 * @param d			the graphs
+		 * @param suffix	the suffix in the result list
+		 */
+		protected void displayGraphs(MultiLabelDrawable d, String suffix) {
+			Map<Integer,String> graphs;
+			Map<Integer,Integer> types;
+			java.util.List<Integer> keys;
+			try {
+				types = d.graphType();
+				graphs = d.graph();
+				keys = new ArrayList<Integer>(types.keySet());
+			}
+			catch (Exception ex) {
+				System.err.println("Failed to obtain graph(s):");
+				ex.printStackTrace();
+				return;
+			}
+			JDialog dialog = new JDialog((Frame) null, suffix, false);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			JTabbedPane tabbed = new JTabbedPane();
+			dialog.getContentPane().setLayout(new BorderLayout());
+			dialog.getContentPane().add(tabbed, BorderLayout.CENTER);
+			for (Integer label: keys) {
+				int type = types.get(label);
+				JComponent comp = null;
+				switch (type) {
+					case MultiLabelDrawable.TREE:
+						TreeBuild b = new TreeBuild();
+						PlaceNode2 arrange = new PlaceNode2();
+						Node top = b.create(new StringReader(graphs.get(label)));
+						comp = new TreeVisualizer(null, top, arrange);
+						break;
+					case MultiLabelDrawable.BayesNet:
+						GraphVisualizer g = new GraphVisualizer();
+						g.readDOT(new StringReader(graphs.get(label)));
+						comp = g;
+						break;
+					default:
+						System.err.println("Unsupported graph type for label " + label + ": " + type);
+				}
+				if (comp != null)
+					tabbed.addTab("" + label, comp);
+			}
+			dialog.setSize(800, 600);
+			dialog.setLocationRelativeTo(null);
+			dialog.setVisible(true);
+		}
+
+		/**
+		 * Saves the given graphs to a file.
+		 *
+		 * @param d			the graphs
+		 */
+		protected void saveGraphs(MultiLabelDrawable d) {
+			Map<Integer, String> graphs;
+			Map<Integer, Integer> types;
+			java.util.List<Integer> keys;
+			try {
+				types = d.graphType();
+				graphs = d.graph();
+				keys = new ArrayList<Integer>(types.keySet());
+			} catch (Exception ex) {
+				System.err.println("Failed to obtain graph(s):");
+				ex.printStackTrace();
+				return;
+			}
+			int retVal = m_GraphFileChooser.showSaveDialog(null);
+			if (retVal != MekaFileChooser.APPROVE_OPTION)
+				return;
+			FileWriter fw = null;
+			BufferedWriter bw = null;
+			try {
+				fw = new FileWriter(m_GraphFileChooser.getSelectedFile());
+				bw = new BufferedWriter(fw);
+				for (Integer key : keys) {
+					bw.write("Label: " + key);
+					bw.newLine();
+					bw.write("Type: " + types.get(key));
+					bw.newLine();
+					bw.newLine();
+					bw.write(graphs.get(key));
+					bw.newLine();
+					bw.write("---");
+					bw.newLine();
+				}
+				bw.flush();
+				fw.flush();
+			} catch (Exception ex) {
+				System.err.println("Failed to write graph(s) to: " + m_GraphFileChooser.getSelectedFile());
+				ex.printStackTrace();
+			} finally {
+				if (fw != null) {
+					try {
+						fw.close();
+					} catch (Exception ex) {
+						// ignored
+					}
+				}
+				if (bw != null) {
+					try {
+						bw.close();
+					} catch (Exception ex) {
+						// ignored
+					}
+				}
+			}
 		}
 	}
 
