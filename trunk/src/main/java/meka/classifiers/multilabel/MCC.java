@@ -15,17 +15,17 @@
 
 package meka.classifiers.multilabel;
 
-import meka.core.A;
-import meka.core.CCUtils;
-import meka.core.MLUtils;
+import weka.classifiers.*;
+import weka.classifiers.functions.*;
+import meka.classifiers.multitarget.*;
+import weka.filters.unsupervised.attribute.*;
+import weka.filters.supervised.attribute.*;
+import weka.core.TechnicalInformation.*;
+import weka.attributeSelection.*;
+import weka.filters.*;
 import weka.core.*;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
-
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Random;
-import java.util.Vector;
+import meka.core.*;
+import java.util.*;
 
 /**
  * MCC.java - CC with Monte Carlo optimisation. 
@@ -37,12 +37,11 @@ import java.util.Vector;
  * There we used a faster implementation, full of ugly hacks, but it got broken when I updated CC.java.<br>
  * This version extends CC, and thus is a bit cleaner, but for some reason inference is quite slower than expected with high m_Iy.
  *
- * <br>
- * TODO Option for hold-out set, instead of training and testing on training data (internally).
+ * @TODO Option for hold-out set, instead of training and testing on training data (internally).
  *
  * @see meka.classifiers.multilabel.CC
  * @author Jesse Read
- * @version	April 2014
+ * @version	March 2015
  */
 public class MCC extends CC implements TechnicalInformationHandler { 
 
@@ -102,11 +101,11 @@ public class MCC extends CC implements TechnicalInformationHandler {
 		MLUtils.randomize(s,m_R);
 		if(getDebug()) System.out.println("s_[0] = "+Arrays.toString(s));
 
-		// Make CC
-		CC h = CCUtils.buildCC(s,D,m_Classifier);
-
 		// If we want to optimize the chain space ...
 		if (m_Is > 0) {
+
+			// Make CC
+			CC h = CCUtils.buildCC(s,D,m_Classifier);
 
 			if (getDebug()) System.out.println("Optimising s ... ("+m_Is+" iterations):");
 
