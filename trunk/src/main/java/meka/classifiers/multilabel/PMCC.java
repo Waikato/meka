@@ -93,7 +93,7 @@ public class PMCC extends MCC {
 	}
 
 	/** 
-	 * BuildCC - Build a CC of chain-order 's'. 
+	 * BuildCC - Build a CC of chain-order 's' on dataset 'D'. 
 	 */
 	protected CC buildCC(int s[], Instances D) throws Exception {
 
