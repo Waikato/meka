@@ -57,10 +57,9 @@ public abstract class CCUtils {
 	}
 	*/
 
-	/** 
+	/*
 	 * BuildCT - Given a base classifier 'g', build a new CT classifier on data D, given chain order 'chain'.
 	 * TODO: combine with above function
-	 */
 	public static CT buildCT(int chain[], Instances D, Classifier g) throws Exception {
 
 		// a new classifier chain
@@ -73,6 +72,7 @@ public abstract class CCUtils {
 		h.buildClassifier(new Instances(D));
 		return h;
 	}
+	*/
 
 	/*
 	 * Use this code to try ALL possible combinations
