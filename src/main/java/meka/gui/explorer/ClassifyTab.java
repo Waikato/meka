@@ -116,7 +116,7 @@ public class ClassifyTab
 			menu.addSeparator();
 
 			menuitem = new JMenuItem("Save model..");
-			menuitem.setEnabled(item instanceof MultiLabelDrawable);
+			menuitem.setEnabled(item != null);
 			menuitem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
