@@ -17,12 +17,11 @@
  * Copyright (C) 2012 University of Waikato, Hamilton, New Zealand
  */
 
-package meka.classifiers.multilabel;
+package meka.classifiers.multilabel.incremental;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import meka.classifiers.AbstractMekaClassifierTest;
-import meka.classifiers.multilabel.incremental.*;
 import weka.classifiers.Classifier;
 
 /**
