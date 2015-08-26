@@ -15,19 +15,17 @@
 
 /**
  * FileChooserBookmarksPanel.java
- * Copyright (C) 2014 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2014-2015 University of Waikato, Hamilton, New Zealand
  */
 package meka.gui.core;
 
-import java.io.File;
-
-import javax.swing.JFileChooser;
-
 import com.googlecode.jfilechooserbookmarks.AbstractBookmarksPanel;
 import com.googlecode.jfilechooserbookmarks.AbstractFactory;
-import com.googlecode.jfilechooserbookmarks.AbstractIconLoader;
 import com.googlecode.jfilechooserbookmarks.AbstractPropertiesHandler;
 import com.googlecode.jfilechooserbookmarks.DefaultFactory;
+import meka.core.Project;
+
+import javax.swing.JFileChooser;
 
 /**
  * Panel for bookmarking directories in a {@link JFileChooser}.
@@ -63,7 +61,7 @@ public class FileChooserBookmarksPanel
      */
     @Override
     protected String getFilename() {
-      return System.getProperty("user.home") + File.separator + ".meka" + File.separator + FILENAME;
+      return Project.addHome(FILENAME).getAbsolutePath();
     }
   }
   
