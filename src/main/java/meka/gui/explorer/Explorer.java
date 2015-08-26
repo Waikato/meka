@@ -15,7 +15,7 @@
 
 /**
  * Explorer.java
- * Copyright (C) 2012-2014 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2012-2015 University of Waikato, Hamilton, New Zealand
  */
 package meka.gui.explorer;
 
@@ -23,7 +23,10 @@ import meka.core.MLUtils;
 import meka.gui.core.FileChooserBookmarksPanel;
 import meka.gui.core.GUIHelper;
 import meka.gui.core.MekaPanel;
+import meka.gui.core.RecentFilesHandlerWithCommandline;
 import meka.gui.core.StatusBar;
+import meka.gui.events.RecentItemEvent;
+import meka.gui.events.RecentItemListener;
 import meka.gui.goe.GenericObjectEditor;
 import weka.core.Instances;
 import weka.core.converters.AbstractFileLoader;
@@ -55,6 +58,9 @@ public class Explorer
 	/** for serialization. */
 	private static final long serialVersionUID = 8958333625051395461L;
 
+  /** the file to store the recent files in. */
+  public final static String SESSION_FILE = "ExplorerSession.props";
+
 	/** the tabbed pane for the various panels. */
 	protected JTabbedPane m_TabbedPane;
 
@@ -70,6 +76,9 @@ public class Explorer
 	/** the "save" menu item. */
 	protected JMenuItem m_MenuItemFileSave;
 
+	/** the "load recent" submenu. */
+	protected JMenu m_MenuFileOpenRecent;
+
 	/** the "save as" menu item. */
 	protected JMenuItem m_MenuItemFileSaveAs;
 
@@ -84,6 +93,9 @@ public class Explorer
 
 	/** the "homepage" menu item. */
 	protected JMenuItem m_MenuItemFileHomepage;
+
+	/** the recent files handler. */
+	protected RecentFilesHandlerWithCommandline<JMenu> m_RecentFilesHandler;
 
 	/** data currently loaded. */
 	protected Instances m_Data;
@@ -175,7 +187,8 @@ public class Explorer
 	 */
 	public JMenuBar getMenuBar() {
 		JMenuBar	result;
-		JMenu			menu;
+		JMenu		menu;
+		JMenu		submenu;
 		JMenuItem	menuitem;
 
 		if (m_MenuBar == null) {
@@ -204,6 +217,24 @@ public class Explorer
 			});
 			menu.add(menuitem);
 			m_MenuItemFileOpen = menuitem;
+
+			// File/Recent files
+			submenu = new JMenu("Open recent");
+			menu.add(submenu);
+			m_RecentFilesHandler = new RecentFilesHandlerWithCommandline<JMenu>(SESSION_FILE, 5, submenu);
+			m_RecentFilesHandler.addRecentItemListener(new RecentItemListener<JMenu, RecentFilesHandlerWithCommandline.Setup>() {
+				@Override
+				public void recentItemAdded(RecentItemEvent<JMenu, RecentFilesHandlerWithCommandline.Setup> e) {
+					// ignored
+				}
+
+				@Override
+				public void recentItemSelected(RecentItemEvent<JMenu, RecentFilesHandlerWithCommandline.Setup> e) {
+					open(e.getItem().getFile(), (AbstractFileLoader) e.getItem().getHandler());
+					updateMenu();
+				}
+			});
+			m_MenuFileOpenRecent = submenu;
 
 			// File/Save
 			menuitem = new JMenuItem("Save", GUIHelper.getIcon("save.gif"));
@@ -373,6 +404,7 @@ public class Explorer
 			MLUtils.prepareData(data);
 			m_CurrentFile = file;
 			notifyTabsDataChanged(null, data);
+			m_RecentFilesHandler.addRecentItem(new RecentFilesHandlerWithCommandline.Setup(file, loader));
 		}
 		catch (Exception e) {
 			System.err.println("Failed to prepare data from '" + file + "':");
