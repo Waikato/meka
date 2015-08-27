@@ -24,12 +24,18 @@ package meka.core;
 import java.io.File;
 
 /**
- * .
+ * Helper class related to the project and it's "home" directory.
  *
  * @author fracpete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
 public class Project {
+
+	/** the windows directory. */
+	public final static String DIR_WINDOWS = "mekafiles";
+
+	/** the unix directory. */
+	public final static String DIR_UNIX = ".meka";
 
 	/**
 	 * Returns the "home" directory of Meka, where to store the config files.
@@ -37,7 +43,15 @@ public class Project {
 	 * @return			the directory
 	 */
 	public static File getHome() {
-		return new File(System.getProperty("user.home") + File.separator + ".meka");
+		String	dir;
+
+		dir = System.getProperty("user.home") + File.separator;
+		if (OS.isWindows())
+			dir += DIR_WINDOWS;
+		else
+			dir += DIR_UNIX;
+
+		return new File(dir);
 	}
 
 	/**
@@ -46,7 +60,7 @@ public class Project {
 	 * @param file		the file without path
 	 * @return			the expanded path
 	 */
-	public static File addHome(String file) {
+	public static File expandFile(String file) {
 		return new File(getHome().getAbsolutePath() + File.separator + file);
 	}
 }

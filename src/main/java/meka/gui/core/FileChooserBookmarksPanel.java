@@ -61,7 +61,7 @@ public class FileChooserBookmarksPanel
      */
     @Override
     protected String getFilename() {
-      return Project.addHome(FILENAME).getAbsolutePath();
+      return Project.expandFile(FILENAME).getAbsolutePath();
     }
   }
   

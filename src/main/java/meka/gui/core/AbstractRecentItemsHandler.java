@@ -115,7 +115,7 @@ public abstract class AbstractRecentItemsHandler<M, T>
 							+ " or " + JPopupMenu.class.getName()
 							+ ", provided: " + menu.getClass().getName());
 
-		m_PropertiesFile = Project.addHome(new File(propsFile).getName()).getAbsolutePath();
+		m_PropertiesFile = Project.expandFile(new File(propsFile).getName()).getAbsolutePath();
 		m_PropertyPrefix = propPrefix;
 		m_MaxCount       = maxCount;
 		m_Menu           = menu;
