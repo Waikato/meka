@@ -25,10 +25,15 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.Drawable;
+import meka.core.MultiLabelDrawable;
 import meka.core.MLUtils;
 import weka.core.RevisionUtils;
 
-public class BR extends MultilabelClassifier {
+import java.util.HashMap;
+import java.util.Map;
+
+public class BR extends MultilabelClassifier implements MultiLabelDrawable {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -5390512540469007904L;
@@ -91,6 +96,56 @@ public class BR extends MultilabelClassifier {
 
 		return y;
 	}
+
+	/**
+	 * Returns the type of graph representing
+	 * the object.
+	 *
+	 * @return the type of graph representing the object (label index as key)
+	 */
+	public Map<Integer,Integer> graphType() {
+		Map<Integer,Integer>	result;
+		int						i;
+
+		result = new HashMap<Integer,Integer>();
+
+		if (m_MultiClassifiers != null) {
+			for (i = 0; i < m_MultiClassifiers.length; i++) {
+				if (m_MultiClassifiers[i] instanceof Drawable) {
+					result.put(i, ((Drawable) m_MultiClassifiers[i]).graphType());
+				}
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Returns a string that describes a graph representing
+	 * the object. The string should be in XMLBIF ver.
+	 * 0.3 format if the graph is a BayesNet, otherwise
+	 * it should be in dotty format.
+	 *
+	 * @return the graph described by a string (label index as key)
+	 * @throws Exception if the graph can't be computed
+	 */
+	public Map<Integer,String> graph() throws Exception {
+		Map<Integer,String>		result;
+		int						i;
+
+		result = new HashMap<Integer,String>();
+
+		if (m_MultiClassifiers != null) {
+			for (i = 0; i < m_MultiClassifiers.length; i++) {
+				if (m_MultiClassifiers[i] instanceof Drawable) {
+					result.put(i, ((Drawable) m_MultiClassifiers[i]).graph());
+				}
+			}
+		}
+
+		return result;
+	}
+
 
 	@Override
 	public String getRevision() {

@@ -17,19 +17,24 @@ package meka.classifiers.multilabel;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Utils;
-import meka.core.MLUtils;
-import meka.core.PSUtils;
-import meka.core.LabelSet;
+import weka.core.Drawable;
 import weka.core.OptionHandler;
 import weka.core.RevisionUtils;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
+
+import meka.core.MultiLabelDrawable;
+import meka.core.MLUtils;
+import meka.core.PSUtils;
+import meka.core.LabelSet;
 
 /**
  * LC.java - The LC (Label Combination) aka LP (Laber Powerset) Method.
@@ -39,7 +44,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * @version June 2014
  * @author 	Jesse Read
  */
-public class LC extends MultilabelClassifier implements OptionHandler {
+public class LC extends MultilabelClassifier implements OptionHandler, MultiLabelDrawable {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -2726090581435923988L;
@@ -92,6 +97,49 @@ public class LC extends MultilabelClassifier implements OptionHandler {
 		y[(int)m_Classifier.classifyInstance(x_)] = 1.0;
 
 		return PSUtils.convertDistribution(y,L,m_InstancesTemplate);
+	}
+
+	/**
+	 * Returns the type of graph representing
+	 * the object.
+	 *
+	 * @return the type of graph representing the object (label index as key)
+	 */
+	public Map<Integer,Integer> graphType() {
+		Map<Integer,Integer>	result;
+
+		result = new HashMap<Integer,Integer>();
+
+		if (getClassifier() != null) {
+			if (getClassifier() instanceof Drawable) {
+				result.put(0, ((Drawable) getClassifier()).graphType());
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Returns a string that describes a graph representing
+	 * the object. The string should be in XMLBIF ver.
+	 * 0.3 format if the graph is a BayesNet, otherwise
+	 * it should be in dotty format.
+	 *
+	 * @return the graph described by a string (label index as key)
+	 * @throws Exception if the graph can't be computed
+	 */
+	public Map<Integer,String> graph() throws Exception {
+		Map<Integer,String>		result;
+
+		result = new HashMap<Integer,String>();
+
+		if (getClassifier() != null) {
+			if (getClassifier() instanceof Drawable) {
+				result.put(0, ((Drawable) getClassifier()).graph());
+			}
+		}
+
+		return result;
 	}
 
 	private String info = "";
