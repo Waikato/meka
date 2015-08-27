@@ -15,7 +15,7 @@
 
 /**
  * PropsUtils.java
- * Copyright (C) 2014 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2014-2015 University of Waikato, Hamilton, New Zealand
  */
 package meka.core;
 
@@ -31,12 +31,12 @@ import weka.core.Utils;
 
 /**
  * Utility class for props files.
- * 
+ *
  * @author  fracpete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
 public class PropsUtils {
-  
+
   /** whether to output some debug information. */
   public static boolean DEBUG = false;
 
@@ -47,7 +47,7 @@ public class PropsUtils {
    * properties location (WekaPackageManager.PROPERTIES_DIR) override default
    * settings. Properties defined in the current directory (optional) override
    * all these settings.
-   * 
+   *
    * @param props the location of the props file that should be loaded.
    *          e.g.: "weka/core/Utils.props".
    * @return the Properties
@@ -56,18 +56,18 @@ public class PropsUtils {
    */
   public static Properties read(String props) throws Exception {
     Properties	result;
-    
+
     result = Utils.readProperties(props);
 
     if (DEBUG)
       System.out.println("start<PropsUtils.read: " + props + ">\n" + toString(result, null) + "end<PropsUtils.read: " + props + ">\n");
-    
+
     return result;
   }
-  
+
   /**
    * Locates the properties file in the current classpath.
-   * 
+   *
    * @param props	the props file to locate
    * @return		the URLs where the props file was found
    */
@@ -86,22 +86,22 @@ public class PropsUtils {
     propsName = new File(props).getName();
     if (DEBUG)
       System.out.println("- propsName: " + propsName);
-    
+
     try {
       if (DEBUG)
-	System.out.println("1. system resources: ");
+        System.out.println("1. system resources: ");
       urls = ClassLoader.getSystemResources(props);
       while (urls.hasMoreElements()) {
-	url = urls.nextElement();
-	if (DEBUG)
-	  System.out.println("- " + url);
-	result.add(url);
+        url = urls.nextElement();
+        if (DEBUG)
+          System.out.println("- " + url);
+        result.add(url);
       }
     }
     catch (Exception e) {
       System.err.println("Failed to obtain systems resources (URLs) for: " + props);
     }
-    
+
     // home directory
     if (DEBUG)
       System.out.println("2. home dir: " + System.getProperty("user.home"));
@@ -112,17 +112,35 @@ public class PropsUtils {
     }
     if (propsFile.exists()) {
       try {
-	result.add(propsFile.toURL());
+        result.add(propsFile.toURL());
       }
       catch (Exception e) {
-	System.err.println("Failed to turn '" + propsFile + "' into URL:");
-	e.printStackTrace();
+        System.err.println("Failed to turn '" + propsFile + "' into URL:");
+        e.printStackTrace();
       }
     }
-    
+
+    // home directory
+    if (DEBUG)
+      System.out.println("3. meka home dir: " + Project.getHome());
+    propsFile = new File(Project.getHome() + File.separator + propsName);
+    if (DEBUG) {
+      System.out.println("- propsFile: " + propsFile);
+      System.out.println("- propsFile exists: " + propsFile.exists());
+    }
+    if (propsFile.exists()) {
+      try {
+        result.add(propsFile.toURL());
+      }
+      catch (Exception e) {
+        System.err.println("Failed to turn '" + propsFile + "' into URL:");
+        e.printStackTrace();
+      }
+    }
+
     // current directory
     if (DEBUG)
-      System.out.println("3. current dir: " + System.getProperty("user.dir"));
+      System.out.println("4. current dir: " + System.getProperty("user.dir"));
     propsFile = new File(System.getProperty("user.dir") + File.separator + propsName);
     if (DEBUG) {
       System.out.println("- propsFile: " + propsFile);
@@ -130,11 +148,11 @@ public class PropsUtils {
     }
     if (propsFile.exists()) {
       try {
-	result.add(propsFile.toURL());
+        result.add(propsFile.toURL());
       }
       catch (Exception e) {
-	System.err.println("Failed to turn '" + propsFile + "' into URL:");
-	e.printStackTrace();
+        System.err.println("Failed to turn '" + propsFile + "' into URL:");
+        e.printStackTrace();
       }
     }
 
@@ -209,7 +227,7 @@ public class PropsUtils {
     System.out.println("  " + PropsUtils.class.getName() + " find meka/gui/goe/MekaEditors.props");
     System.out.println();
   }
-  
+
   /**
    * Allows some basic operations on properties files:
    * <ul>
@@ -222,20 +240,20 @@ public class PropsUtils {
   public static void main(String[] args) throws Exception {
     if (args.length == 2) {
       if (args[0].toLowerCase().equals("read")) {
-	if (args[0].equals("READ"))
-	  DEBUG = true;
-	Properties props = read(args[1]);
-	System.out.println(toString(props, null));
+        if (args[0].equals("READ"))
+          DEBUG = true;
+        Properties props = read(args[1]);
+        System.out.println(toString(props, null));
       }
       else if (args[0].toLowerCase().equals("find")) {
-	if (args[0].equals("FIND"))
-	  DEBUG = true;
-	URL[] urls = find(args[1]);
-	for (URL url: urls)
-	  System.out.println(url);
+        if (args[0].equals("FIND"))
+          DEBUG = true;
+        URL[] urls = find(args[1]);
+        for (URL url: urls)
+          System.out.println(url);
       }
       else {
-	printUsage();
+        printUsage();
       }
     }
     else {
