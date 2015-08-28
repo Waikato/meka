@@ -546,7 +546,7 @@ public abstract class MLUtils {
 	/**
 	 * Delete attributes from an instance 'x' indexed by 'indicesToRemove[]'.
 	 * @param	x					instance
-	 * @param	indicesToRemove[]	array of attribute indices
+	 * @param	indicesToRemove		array of attribute indices
 	 * @return	the modified dataset
 	 */
 	public static final Instance deleteAttributesAt(Instance x, int indicesToRemove[]) {//, boolean keep) {
@@ -561,7 +561,7 @@ public abstract class MLUtils {
 	 * Delete all attributes from an instance 'x' <i>except</i> those indexed by 'indicesToRemove[]', up to the 'lim'-th attribute.
 	 * For example, lim = 10, indicesToRemove[] = {4,5}, keeps indices 4,5,10,11,12,...
 	 * @param	x					instance
-	 * @param	indicesToRemove[]	array of attribute indices
+	 * @param	indicesToRemove		array of attribute indices
 	 * @param	lim					excluding 
 	 * @return	the modified dataset
 	 */
@@ -572,7 +572,7 @@ public abstract class MLUtils {
 	/**
 	 * Delete attributes from a dataset 'D' indexed by 'indicesToRemove[]'.
 	 * @param	D					dataset
-	 * @param	indicesToRemove[]	array of attribute indices
+	 * @param	indicesToRemove  	array of attribute indices
 	 * @return	the modified dataset
 	 */
 	public static final Instances deleteAttributesAt(Instances D, int indicesToRemove[]) {//, boolean keep) {
@@ -587,7 +587,7 @@ public abstract class MLUtils {
 	 * Delete all attributes from a dataset 'D' <i>except</i> those indexed by 'indicesToRemove[]', up to the 'lim'-th attribute.
 	 * For example, lim = 10, indicesToRemove[] = {4,5}, keeps indices 4,5,10,11,12,...
 	 * @param	D					dataset
-	 * @param	indicesToRemove[]	array of attribute indices
+	 * @param	indicesToRemove  	array of attribute indices
 	 * @param	lim					excluding 
 	 * @return	the modified dataset
 	 */
