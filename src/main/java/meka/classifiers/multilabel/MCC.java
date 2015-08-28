@@ -37,7 +37,7 @@ import java.util.*;
  * There we used a faster implementation, full of ugly hacks, but it got broken when I updated CC.java.<br>
  * This version extends CC, and thus is a bit cleaner, but for some reason inference is quite slower than expected with high m_Iy.
  *
- * @TODO Option for hold-out set, instead of training and testing on training data (internally).
+ * TODO Option for hold-out set, instead of training and testing on training data (internally).
  *
  * @see meka.classifiers.multilabel.CC
  * @author Jesse Read
@@ -162,7 +162,7 @@ public class MCC extends CC implements TechnicalInformationHandler {
 				double y_[] = this.sampleForInstanceFast(t_,m_R); 	    // propose y' by sampling i.i.d.
 				//double y_[] = this.sampleForInstance(x,m_R); 	    // propose y' by sampling i.i.d.
 				//double p_[] = h.getConfidences();                   //
-				double w_  = A.product(this.getConfidences()); 		// rate y' as w'  --- @TODO allow for command-line option
+				double w_  = A.product(this.getConfidences()); 		// rate y' as w'  --- TODO allow for command-line option
 				//System.out.println("p("+Arrays.toString(y_)+") = "+Arrays.toString(p_)+", w="+w_);
 				if (w_ > w) { 										// accept ? 
 					if (getDebug()) System.out.println("y' = "+Arrays.toString(y_)+", :"+w_);
