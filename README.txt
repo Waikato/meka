@@ -2,15 +2,17 @@ See the Tutorial.pdf for detailed information on obtaining, using and extending 
 For a list of included methods and 'quick-start' command line examples, 
 	see: http://meka.sourceforge.net/methods.html
 
-Release Notes, Version 1.7.6
+Release Notes, Version 1.7.7
 ----------------------------
 
-This is a minor release, fixing a few minor issues. 
+This is a minor release, adding new features and fixing some bugs, including:
 
-	- Updateable classifiers are now moved to subfolders incremental/ and incremental/meta
-	- Updateable classifiers are now set with a sensible default classifier (HoeffdingTree), and BRUpdateable in the case of meta incremental classifiers
-	- Javadoc comments are cleaned up
-	- Some unused branches of weka/ and moa/ were removed
-	- Some overly stringent unit tests were changed
+	- Fixed a bug which caused Meka to crash when using RandomForest as a base classifier
+	- Can now visualize certain base classifiers, for example, J48. Just right-click 'Show Graphs' in the GUI results History
+	- Other improvements to the GUI such as 
+		- an Open Recent option
+		- a Save Model option to the GUI results History
+	- MCC classifier (and derivatives) now run faster in the case that no chain-search is made
+	- OS-specific Meka home directories
 	- Recent changes are reflected in the tutorial
 
