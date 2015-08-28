@@ -622,7 +622,7 @@ Note that \framework{\MOA} now also supports \framework{\MEKA} classifiers via a
 
 Semi-supervised classifiers implement \texttt{SemisupervisedClassifier} interface and must implement the method \texttt{setUnlabelledData(Instances)} which is called automatically by the \texttt{Evaluation} class prior to \texttt{buildClassifier(Instances)}. It is up to the classifier to decide what to do with the unlabelled instances. Currently, \framework{\MEKA} assumes that unlabelled instances are the test instances (e.g., supplied with the \texttt{-T} flag). It sets all labels to missing beforehand just in case. In the case of a separate set of unlabelled instances, a model can be built, given unlabelled instances with \texttt{-T}, and then saved/dumped into a file with the \texttt{-d <filename>} option, and loaded again (with the \texttt{-l} option) along with a \emph{different} set with \texttt{-T}. 
 
-\section{Miscellaneous}
+\subsection{Miscellaneous}
 
 The \texttt{.props} files have the following order: 
 \begin{enumerate}
