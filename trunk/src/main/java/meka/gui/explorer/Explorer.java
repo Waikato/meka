@@ -20,11 +20,7 @@
 package meka.gui.explorer;
 
 import meka.core.MLUtils;
-import meka.gui.core.FileChooserBookmarksPanel;
-import meka.gui.core.GUIHelper;
-import meka.gui.core.MekaPanel;
-import meka.gui.core.RecentFilesHandlerWithCommandline;
-import meka.gui.core.StatusBar;
+import meka.gui.core.*;
 import meka.gui.events.RecentItemEvent;
 import meka.gui.events.RecentItemListener;
 import meka.gui.goe.GenericObjectEditor;
@@ -633,9 +629,9 @@ public class Explorer
 	public static void main(String[] args) throws Exception {
 		GenericObjectEditor.registerAllEditors();
 		Explorer main = new Explorer();
-		JFrame frame = new JFrame();
+		MekaFrame frame = new MekaFrame();
 		frame.setTitle("MEKA Explorer");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(MekaFrame.EXIT_ON_CLOSE);
 		frame.setIconImage(GUIHelper.getLogoIcon().getImage());
 		frame.setLayout(new BorderLayout());
 		frame.add(main, BorderLayout.CENTER);
