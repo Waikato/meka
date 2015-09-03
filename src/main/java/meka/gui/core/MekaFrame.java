@@ -32,142 +32,146 @@ import java.awt.*;
  * @version $Revision: 11583 $
  */
 public class MekaFrame
-  extends JFrame {
+		extends JFrame {
 
-  /** for serialization. */
-  private static final long serialVersionUID = -4853427519044621963L;
+	/** for serialization. */
+	private static final long serialVersionUID = -4853427519044621963L;
 
-  /** the maximization fix listener. */
-  protected MaximizationFixWindowListener m_MaximizationFixWindowListener;
+	/** the maximization fix listener. */
+	protected MaximizationFixWindowListener m_MaximizationFixWindowListener;
 
-  /**
-   * Initializes the frame with no title.
-   */
-  public MekaFrame() {
-    this("");
-  }
+	/**
+	 * Initializes the frame with no title.
+	 */
+	public MekaFrame() {
+		this("");
+	}
 
-  /**
-   * Initializes the frame with the given title.
-   *
-   * @param title	the title of the frame
-   */
-  public MekaFrame(String title) {
-    super(title);
+	/**
+	 * Initializes the frame with the given title.
+	 *
+	 * @param title	the title of the frame
+	 */
+	public MekaFrame(String title) {
+		super(title);
 
-    performInitialization();
-  }
+		performInitialization();
+	}
 
-  /**
-   * Initializes the frame with no title.
-   *
-   * @param gc		the graphics configuration to use
-   */
-  public MekaFrame(GraphicsConfiguration gc) {
-    this("", gc);
-  }
+	/**
+	 * Initializes the frame with no title.
+	 *
+	 * @param gc		the graphics configuration to use
+	 */
+	public MekaFrame(GraphicsConfiguration gc) {
+		this("", gc);
+	}
 
-  /**
-   * Initializes the frame with the specified title.
-   *
-   * @param title	the title of the frame
-   * @param gc		the graphics configuration to use
-   */
-  public MekaFrame(String title, GraphicsConfiguration gc) {
-    super(title, gc);
+	/**
+	 * Initializes the frame with the specified title.
+	 *
+	 * @param title	the title of the frame
+	 * @param gc		the graphics configuration to use
+	 */
+	public MekaFrame(String title, GraphicsConfiguration gc) {
+		super(title, gc);
 
-    performInitialization();
-  }
+		performInitialization();
+	}
 
-  /**
-   * Contains all the initialization steps to perform.
-   */
-  protected void performInitialization() {
-    initialize();
-    initGUI();
-    finishInit();
-  }
+	/**
+	 * Contains all the initialization steps to perform.
+	 */
+	protected void performInitialization() {
+		initialize();
+		initGUI();
+		finishInit();
+	}
 
-  /**
-   * For initializing members.
-   */
-  protected void initialize() {
-    m_MaximizationFixWindowListener = new MaximizationFixWindowListener(this, OS.isLinux(), 200);
-  }
+	/**
+	 * For initializing members.
+	 */
+	protected void initialize() {
+		m_MaximizationFixWindowListener = new MaximizationFixWindowListener(
+				this,
+				GUIHelper.getProperties().getProperty("UseFrameMaximizationFix", "" + OS.isLinux()).equals("true"),
+				Integer.parseInt(GUIHelper.getProperties().getProperty("FrameMaximizationFixDelay", "200")));
+	}
 
-  /**
-   * For initializing the GUI.
-   */
-  protected void initGUI() {
-    if (GUIHelper.getLogoIcon() != null)
-      setIconImage(GUIHelper.getLogoIcon().getImage());
+	/**
+	 * For initializing the GUI.
+	 */
+	protected void initGUI() {
+		if (GUIHelper.getLogoIcon() != null)
+			setIconImage(GUIHelper.getLogoIcon().getImage());
 
-    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-    addWindowStateListener(m_MaximizationFixWindowListener);
-  }
+		addWindowStateListener(m_MaximizationFixWindowListener);
+	}
 
-  /**
-   * Updates the bounds of the window.
-   *
-   * @param x		the new x of the frame
-   * @param y		the new y of the frame
-   * @param width	the new width of the frame
-   * @param height	the new height of the frame
-   */
-  @Override
-  public void setBounds(int x, int y, int width, int height) {
-    m_MaximizationFixWindowListener.updateBounds(x, y, width, height);
-    super.setBounds(x, y, width, height);
-  }
+	/**
+	 * Updates the bounds of the window.
+	 *
+	 * @param x		the new x of the frame
+	 * @param y		the new y of the frame
+	 * @param width	the new width of the frame
+	 * @param height	the new height of the frame
+	 */
+	@Override
+	public void setBounds(int x, int y, int width, int height) {
+		if (m_MaximizationFixWindowListener != null)
+			m_MaximizationFixWindowListener.updateBounds(x, y, width, height);
+		super.setBounds(x, y, width, height);
+	}
 
-  /**
-   * finishes the initialization, by setting size/location.
-   */
-  protected void finishInit() {
-  }
+	/**
+	 * finishes the initialization, by setting size/location.
+	 */
+	protected void finishInit() {
+	}
 
-  /**
-   * Hook method just before the dialog is made visible.
-   */
-  protected void beforeShow() {
-  }
+	/**
+	 * Hook method just before the dialog is made visible.
+	 */
+	protected void beforeShow() {
+	}
 
-  /**
-   * Hook method just after the dialog was made visible.
-   */
-  protected void afterShow() {
-  }
+	/**
+	 * Hook method just after the dialog was made visible.
+	 */
+	protected void afterShow() {
+	}
 
-  /**
-   * Hook method just before the dialog is hidden.
-   */
-  protected void beforeHide() {
-  }
+	/**
+	 * Hook method just before the dialog is hidden.
+	 */
+	protected void beforeHide() {
+	}
 
-  /**
-   * Hook method just after the dialog was hidden.
-   */
-  protected void afterHide() {
-  }
+	/**
+	 * Hook method just after the dialog was hidden.
+	 */
+	protected void afterHide() {
+	}
 
-  /**
-   * closes/shows the dialog.
-   *
-   * @param value	if true then display the dialog, otherwise close it
-   */
-  @Override
-  public void setVisible(boolean value) {
-    if (value)
-      beforeShow();
-    else
-      beforeHide();
+	/**
+	 * closes/shows the dialog.
+	 *
+	 * @param value	if true then display the dialog, otherwise close it
+	 */
+	@Override
+	public void setVisible(boolean value) {
+		if (value)
+			beforeShow();
+		else
+			beforeHide();
 
-    super.setVisible(value);
+		super.setVisible(value);
 
-    if (value)
-      afterShow();
-    else
-      afterHide();
-  }
+		if (value)
+			afterShow();
+		else
+			afterHide();
+	}
 }
