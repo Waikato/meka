@@ -73,17 +73,27 @@ public class Result implements Serializable {
 
 	@Override
 	public String toString() {
+
+		if (info.containsKey("Type") && info.get("Type").equalsIgnoreCase("CV")) {
+			// TODO make this nicer
+			return "\n\n== Cross Validation Results\n\n" + MLUtils.hashMapToString(info);
+		}
+
 		String resultString = "";
 		if (info.containsKey("Verbosity")) { 
 			int V = MLUtils.getIntegerOption(info.get("Verbosity"),1);
 			if ( V > 4) {
+				resultString += "== Individual Errors\n\n";
 				// output everything
-				resultString = Result.getResultAsString(this,V-5);
+				resultString += Result.getResultAsString(this,V-5);
 			}
 
 		}
 		// output the stats in general
-		return resultString + MLUtils.hashMapToString(info) + "\n" + MLUtils.hashMapToString(output,3) + "\n" + MLUtils.hashMapToString(vals,3);
+		resultString += "== Evaluation Info\n\n" + MLUtils.hashMapToString(info);
+		resultString += "\n\n== Predictive Performance\n\n" + MLUtils.hashMapToString(output,3);
+		resultString += "\n\n== Additional Measurements\n\n" + MLUtils.hashMapToString(vals,3);
+		return resultString +"\n\n";
 	}
 
 	/**
