@@ -1,0 +1,10 @@
+# Parameters for the GUI.
+#
+# Author:  FracPete (fracpete at waikato dot ac dot nz)
+# Version: $Revision: 11598 $
+
+# Whether to use the frame maximization fix (affects only Linux) (true|false)
+UseFrameMaximizationFix=false
+
+# The delay in msec used by the frame maximization fix
+FrameMaximizationFixDelay=200

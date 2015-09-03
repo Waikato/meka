@@ -15,18 +15,17 @@
 
 /*
  * GUIHelper.java
- * Copyright (C) 2012 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2012-2015 University of Waikato, Hamilton, New Zealand
  */
 
 package meka.gui.core;
 
-import java.awt.Container;
-import java.awt.Dialog;
-import java.awt.Font;
-import java.awt.Frame;
-import java.net.URL;
+import weka.core.Utils;
 
-import javax.swing.ImageIcon;
+import javax.swing.*;
+import java.awt.*;
+import java.net.URL;
+import java.util.Properties;
 
 /**
  * A little helper class for GUI related stuff.
@@ -36,14 +35,20 @@ import javax.swing.ImageIcon;
  */
 public class GUIHelper {
 
+	/** the name of the props file. */
+	public final static String FILENAME = "GUIHelper.props";
+
 	/** the directory with the images. */
 	public final static String IMAGE_DIR = "meka/gui/images/";
-	
+
 	/** the empty icon name. */
 	public final static String EMPTY_ICON = "empty.gif";
 
 	/** the mnemonic character indicator. */
 	public final static char MNEMONIC_INDICATOR = '_';
+
+	/** the properties. */
+	protected static Properties m_Properties;
 
 	/**
 	 * Checks whether the image is available.
@@ -161,7 +166,7 @@ public class GUIHelper {
 
 	/**
 	 * Returns the system wide Monospaced font.
-	 * 
+	 *
 	 * @return		the font
 	 */
 	public static Font getMonospacedFont() {
@@ -195,40 +200,61 @@ public class GUIHelper {
 		return result;
 	}
 
-  /**
-   * Tries to determine the frame the container is part of.
-   *
-   * @param cont	the container to get the frame for
-   * @return		the parent frame if one exists or null if not
-   */
-  public static Frame getParentFrame(Container cont) {
-    return (Frame) getParent(cont, Frame.class);
-  }
+	/**
+	 * Tries to determine the frame the container is part of.
+	 *
+	 * @param cont	the container to get the frame for
+	 * @return		the parent frame if one exists or null if not
+	 */
+	public static Frame getParentFrame(Container cont) {
+		return (Frame) getParent(cont, Frame.class);
+	}
 
-  /**
-   * Tries to determine the dialog this panel is part of.
-   *
-   * @param cont	the container to get the dialog for
-   * @return		the parent dialog if one exists or null if not
-   */
-  public static Dialog getParentDialog(Container cont) {
-    return (Dialog) getParent(cont, Dialog.class);
-  }
+	/**
+	 * Tries to determine the dialog this panel is part of.
+	 *
+	 * @param cont	the container to get the dialog for
+	 * @return		the parent dialog if one exists or null if not
+	 */
+	public static Dialog getParentDialog(Container cont) {
+		return (Dialog) getParent(cont, Dialog.class);
+	}
 
-  /**
-   * Returns the mnemonic for this caption, preceded by an underscore "_".
-   *
-   * @param caption	the caption to extract
-   * @return		the extracted mnemonic, \0 if none available
-   * @see		#MNEMONIC_INDICATOR
-   */
-  public static char getMnemonic(String caption) {
-    int		pos;
+	/**
+	 * Returns the mnemonic for this caption, preceded by an underscore "_".
+	 *
+	 * @param caption	the caption to extract
+	 * @return		the extracted mnemonic, \0 if none available
+	 * @see		#MNEMONIC_INDICATOR
+	 */
+	public static char getMnemonic(String caption) {
+		int		pos;
 
-    pos = caption.indexOf(MNEMONIC_INDICATOR);
-    if ((pos > -1) && (pos < caption.length() - 1))
-      return caption.charAt(pos + 1);
-    else
-      return '\0';
-  }
+		pos = caption.indexOf(MNEMONIC_INDICATOR);
+		if ((pos > -1) && (pos < caption.length() - 1))
+			return caption.charAt(pos + 1);
+		else
+			return '\0';
+	}
+
+	/**
+	 * Initializes the properties if necessary.
+	 */
+	public static synchronized Properties getProperties() {
+		String      filename;
+
+		if (m_Properties == null) {
+			filename = "meka/gui/core/" + FILENAME;
+			try {
+				m_Properties = Utils.readProperties(filename);
+			}
+			catch (Exception e) {
+				System.err.println("Failed to read properties: " + filename);
+				e.printStackTrace();
+				m_Properties = new Properties();
+			}
+		}
+
+		return m_Properties;
+	}
 }
