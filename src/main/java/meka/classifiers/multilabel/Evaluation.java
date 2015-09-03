@@ -360,19 +360,19 @@ public class Evaluation {
 		Result result = testClassifier(h,D_test);
 		long after_test = System.currentTimeMillis();
 
-		result.setValue("N_train",D_train.numInstances());
-		result.setValue("N_test",D_test.numInstances());
-		result.setValue("LCard_train",MLUtils.labelCardinality(D_train));
-		result.setValue("LCard_test",MLUtils.labelCardinality(D_test));
+		result.setValue("Number of training instances",D_train.numInstances());
+		result.setValue("Number of test instances",D_test.numInstances());
+		result.setValue("Label cardinality (train set)",MLUtils.labelCardinality(D_train));
+		result.setValue("Label cardinality (test set)",MLUtils.labelCardinality(D_test));
 
-		result.setValue("Build_time",(after - before)/1000.0);
-		result.setValue("Test_time",(after_test - before_test)/1000.0);
-		result.setValue("Total_time",(after_test - before)/1000.0);
+		result.setValue("Build Time",(after - before)/1000.0);
+		result.setValue("Test Time",(after_test - before_test)/1000.0);
+		result.setValue("Total Time",(after_test - before)/1000.0);
 
-		result.setInfo("Classifier_name",h.getClass().getName());
-		result.setInfo("Classifier_ops",Arrays.toString(h.getOptions()));
-		result.setInfo("Classifier_info",h.toString());
-		result.setInfo("Dataset_name",MLUtils.getDatasetName(D_train));
+		result.setInfo("Classifier",h.getClass().getName());
+		result.setInfo("Options",Arrays.toString(h.getOptions()));
+		result.setInfo("Additional Info",h.toString());
+		result.setInfo("Dataset",MLUtils.getDatasetName(D_train));
 		//result.setInfo("Maxfreq_set",MLUtils.mostCommonCombination(D_train,result.L));
 
 		return result;

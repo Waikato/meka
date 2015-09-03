@@ -821,8 +821,8 @@ public abstract class MLUtils {
 	public static String hashMapToString(HashMap<?,?> map, int dp) {
 		StringBuilder sb = new StringBuilder();
 		for (Object k : map.keySet()) {
-			sb.append(Utils.padRight(k.toString(),20));
-			sb.append(" : ");
+			sb.append(Utils.padRight(k.toString(),31));
+			//sb.append(" : ");
 			if (dp < 0) {
 				sb.append(map.get(k));
 			}
