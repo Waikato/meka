@@ -84,32 +84,32 @@ public abstract class MLEvalUtils {
 
 		HashMap<String,Double> results = new LinkedHashMap<String,Double>();
 
-		results.put("N(test)"			,(double)N);
-		results.put("L"					,(double)L);
+		results.put("Number of test instances (N)"			,(double)N);
+		results.put("Number of labels (L)"					,(double)L);
 		results.put("Accuracy"			,Metrics.P_Accuracy(Y,Ypred));
-		//results.put("Jaccard index"		,Metrics.P_Accuracy(Y,Ypred));
+		results.put("Jaccard index"		,Metrics.P_Accuracy(Y,Ypred));
 		results.put("Hamming score"		,Metrics.P_Hamming(Y,Ypred));
 		results.put("Exact match"		,Metrics.P_ExactMatch(Y,Ypred));
 
 		if (V > 1) {
 
-			results.put("Jaccard dist"		,Metrics.L_JaccardDist(Y,Ypred));
+			results.put("Jaccard distance"	,Metrics.L_JaccardDist(Y,Ypred));
 			results.put("Hamming loss"		,Metrics.L_Hamming(Y,Ypred));
 			results.put("ZeroOne loss"		,Metrics.L_ZeroOne(Y,Ypred));
 			results.put("Harmonic score"	,Metrics.P_Harmonic(Y,Ypred));
 			results.put("One error"			,Metrics.L_OneError(Y,Rpred));
 			results.put("Rank loss"			,Metrics.L_RankLoss(Y,Rpred));
 			results.put("Avg precision"		,Metrics.P_AveragePrecision(Y,Rpred));
-			results.put("Log Loss (max L)"	,Metrics.L_LogLossL(Y,Rpred));
-			results.put("Log Loss (max D)"	,Metrics.L_LogLossD(Y,Rpred));
+			results.put("Log Loss (lim. L)"	,Metrics.L_LogLossL(Y,Rpred));
+			results.put("Log Loss (lim. D)"	,Metrics.L_LogLossD(Y,Rpred));
 			//if (V > 3) {
 			//	results.put("Precision"		    ,Metrics.P_Precision(Y,Ypred));
 			//	results.put("Recall"			,Metrics.P_Recall(Y,Ypred));
 			//}
-			results.put("F1 micro avg"				,Metrics.P_FmicroAvg(Y,Ypred));
-			results.put("F1 macro avg, by ex."		,Metrics.P_FmacroAvgD(Y,Ypred));
-			results.put("F1 macro avg, by lbl"		,Metrics.P_FmacroAvgL(Y,Ypred));
-			results.put("Percent no-labels"				,MLUtils.emptyVectors(Ypred));
+			results.put("F1 (micro averaged)"				,Metrics.P_FmicroAvg(Y,Ypred));
+			results.put("F1 (macro averaged by example)"	,Metrics.P_FmacroAvgD(Y,Ypred));
+			results.put("F1 (macro averaged by label)"		,Metrics.P_FmacroAvgL(Y,Ypred));
+			results.put("Empty labelvectors"				,MLUtils.emptyVectors(Ypred));
 
 			if (V > 2) {
 				for(int j = 0; j < L; j++) {
@@ -122,12 +122,12 @@ public abstract class MLEvalUtils {
 				}
 			}
 
-			results.put("LCard_pred"		,MLUtils.labelCardinality(Ypred));
+			results.put("Label cardinality (predicted)"		,MLUtils.labelCardinality(Ypred));
 			if (V > 3) {
 				// Label cardinality
-				results.put("LCard_diff"		,MLUtils.labelCardinality(Y)-MLUtils.labelCardinality(Ypred));
+				results.put("Label cardinality (difference)"		,MLUtils.labelCardinality(Y)-MLUtils.labelCardinality(Ypred));
 				for(int j = 0; j < L; j++) {
-					results.put("LCard_diff["+j+"]",MLUtils.labelCardinality(Y,j) - MLUtils.labelCardinality(Ypred,j));
+					results.put(" Y["+j+"]",MLUtils.labelCardinality(Y,j) - MLUtils.labelCardinality(Ypred,j));
 				}
 			}
 		}
