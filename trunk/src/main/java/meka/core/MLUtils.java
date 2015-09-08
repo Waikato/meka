@@ -822,12 +822,22 @@ public abstract class MLUtils {
 		StringBuilder sb = new StringBuilder();
 		for (Object k : map.keySet()) {
 			sb.append(Utils.padRight(k.toString(),31));
+			Object obj = map.get(k);
 			//sb.append(" : ");
 			if (dp < 0) {
-				sb.append(map.get(k));
+				sb.append(obj);
+			}
+			else if (obj instanceof Double) {
+				sb.append(Utils.doubleToString((Double)obj,5,dp));
+			}
+			else if (obj instanceof double[]) {
+				sb.append(A.toString((double[])obj,dp));
+			}
+			else if (obj instanceof int[]) {
+				sb.append(A.toString((int[])obj,dp+2));
 			}
 			else {
-				sb.append(Utils.doubleToString((Double)map.get(k),5,dp));
+				sb.append(obj);
 			}
 			sb.append('\n');
 		}

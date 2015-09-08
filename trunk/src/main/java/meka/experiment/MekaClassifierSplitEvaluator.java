@@ -346,9 +346,9 @@ public class MekaClassifierSplitEvaluator
 	 * @param name		the name of the metric to retrieve
 	 * @return			the value or missing value if not available
 	 */
-	protected Double getEvaluationMetric(HashMap<String,Double> values, String name) {
+	protected Double getEvaluationMetric(HashMap<String,Object> values, String name) {
 		if (values.containsKey(name))
-			return values.get(name);
+			return (double)values.get(name);
 		else
 			return Utils.missingValue();
 	}
@@ -378,7 +378,7 @@ public class MekaClassifierSplitEvaluator
 
 		// evaluate classifier
 	    Result res = Evaluation.evaluateModel((MultilabelClassifier) m_Classifier, train, test, "PCut1", "3");
-	    HashMap<String,Double> map = Result.getStats(res, "3");
+	    HashMap<String,Object> map = Result.getStats(res, "3");
 
 		m_result = res.toString();
 		int current = 0;

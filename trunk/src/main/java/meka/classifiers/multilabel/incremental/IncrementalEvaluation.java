@@ -209,7 +209,7 @@ public class IncrementalEvaluation {
 				n = 0;
 				for (String m : measures) {
 					System.out.print(" ");
-					System.out.print(Utils.doubleToString(results[w].output.get(m),12,4));
+					System.out.print(Utils.doubleToString((double)results[w].output.get(m),12,4));
 				} System.out.println("");
 			}
 

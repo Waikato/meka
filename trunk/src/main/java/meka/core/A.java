@@ -84,6 +84,16 @@ public abstract class A {
 		return sb.toString();
 	}
 
+	/** ToString - Return an int[] as a nice String. */
+	public static String toString(int v[], int w) {
+		StringBuilder sb = new StringBuilder("[ ");  
+		for(int k = 0; k < v.length; k++) {
+			sb.append(String.format("%"+w+"d ", v[k]));
+		}
+		sb.append("]");
+		return sb.toString();
+	}
+
 	// product
 	public static final double product(double v[]) {
 		double p = 1.0;
