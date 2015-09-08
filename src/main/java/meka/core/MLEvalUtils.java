@@ -52,7 +52,7 @@ public abstract class MLEvalUtils {
 	 * @param	t		a threshold string, e.g. "0.387"
 	 * @return	        the evaluation statistics
 	 */
-	public static HashMap<String,Double> getMLStats(double Rpred[][], int Y[][], String t, String vop) {
+	public static HashMap<String,Object> getMLStats(double Rpred[][], int Y[][], String t, String vop) {
 		double ts[] = ThresholdUtils.thresholdStringToArray(t,Y[0].length);
 		/*
 		if (t.startsWith("[")) {
@@ -73,7 +73,7 @@ public abstract class MLEvalUtils {
 	 * @param	t		a vector of thresholds, e.g. [0.1,0.1,0.1] or [0.1,0.5,0.4,0.001]
 	 * @return	    the evaluation statistics
 	 */
-	public static HashMap<String,Double> getMLStats(double Rpred[][], int Y[][], double t[], String vop) {
+	public static HashMap<String,Object> getMLStats(double Rpred[][], int Y[][], double t[], String vop) {
 
 		int N = Y.length; 
 		int L = Y[0].length;
@@ -82,7 +82,7 @@ public abstract class MLEvalUtils {
 
 		int Ypred[][] = ThresholdUtils.threshold(Rpred,t);
 
-		HashMap<String,Double> results = new LinkedHashMap<String,Double>();
+		HashMap<String,Object> results = new LinkedHashMap<String,Object>();
 
 		results.put("Number of test instances (N)"			,(double)N);
 		results.put("Number of labels (L)"					,(double)L);
@@ -109,25 +109,44 @@ public abstract class MLEvalUtils {
 			results.put("F1 (micro averaged)"				,Metrics.P_FmicroAvg(Y,Ypred));
 			results.put("F1 (macro averaged by example)"	,Metrics.P_FmacroAvgD(Y,Ypred));
 			results.put("F1 (macro averaged by label)"		,Metrics.P_FmacroAvgL(Y,Ypred));
-			results.put("Empty labelvectors"				,MLUtils.emptyVectors(Ypred));
 
 			if (V > 2) {
+				results.put("Label indices              "	,A.make_sequence(L));
+				double HL[] = new double[L];
+				double HA[] = new double[L];
+				double Pr[] = new double[L];
+				double Re[] = new double[L];
 				for(int j = 0; j < L; j++) {
-					results.put("Accuracy["+j+"]"	        ,Metrics.P_Hamming(Y,Ypred,j));
-					if (V > 3) {
-						results.put("Harmonic["+j+"]"	    ,Metrics.P_Harmonic(Y,Ypred,j));
-						results.put("Precision["+j+"]"	    ,Metrics.P_Precision(Y,Ypred,j));
-						results.put("Recall["+j+"]"			,Metrics.P_Recall(Y,Ypred,j));
-					}
+					HL[j] = Metrics.P_Hamming(Y,Ypred,j);
+					HA[j] = Metrics.P_Harmonic(Y,Ypred,j);
+					Pr[j] = Metrics.P_Precision(Y,Ypred,j);
+					Re[j] = Metrics.P_Recall(Y,Ypred,j);
+				}
+				results.put("Accuracy (per label)"	        ,HL);
+				if (V > 3) {
+					results.put("Harmonic (per label)"	    ,HA);
+					results.put("Precision (per label)"	    ,Pr);
+					results.put("Recall (per label)"		,Re);
 				}
 			}
 
-			results.put("Label cardinality (predicted)"		,MLUtils.labelCardinality(Ypred));
-			if (V > 3) {
-				// Label cardinality
-				results.put("Label cardinality (difference)"		,MLUtils.labelCardinality(Y)-MLUtils.labelCardinality(Ypred));
-				for(int j = 0; j < L; j++) {
-					results.put(" Y["+j+"]",MLUtils.labelCardinality(Y,j) - MLUtils.labelCardinality(Ypred,j));
+			if (V > 2) {
+				results.put("Empty labelvectors (predicted)"				,MLUtils.emptyVectors(Ypred));
+				results.put("Label cardinality (predicted)"		,MLUtils.labelCardinality(Ypred));
+				if (V > 3) {
+					// Label cardinality
+					results.put("Label cardinality (difference)"		,MLUtils.labelCardinality(Y)-MLUtils.labelCardinality(Ypred));
+					double diff_LC[] = new double[L];
+					double true_LC[] = new double[L];
+					double pred_LC[] = new double[L];
+					for(int j = 0; j < L; j++) {
+						diff_LC[j] = MLUtils.labelCardinality(Y,j) - MLUtils.labelCardinality(Ypred,j);
+						true_LC[j] = MLUtils.labelCardinality(Y,j);
+						pred_LC[j] = MLUtils.labelCardinality(Ypred,j);
+					}
+					results.put("avg. relevance (test set)"		,true_LC);
+					results.put("avg. relevance (predicted)     "		,pred_LC);
+					results.put("avg. relevance (difference)     "	,diff_LC);
 				}
 			}
 		}
@@ -140,7 +159,7 @@ public abstract class MLEvalUtils {
 	 * @param	Y	    corresponding true values
 	 * @return	        the evaluation statistics
 	 */
-	public static HashMap<String,Double> getMTStats(double Rpred[][], int Y[][], String vop) {
+	public static HashMap<String,Object> getMTStats(double Rpred[][], int Y[][], String vop) {
 
 		// just a question of rounding for now
 		int Ypred[][] = ThresholdUtils.round(Rpred);
@@ -149,7 +168,7 @@ public abstract class MLEvalUtils {
 		int L = Y[0].length;
 		int V = MLUtils.getIntegerOption(vop,1); // default 1
 
-		HashMap<String,Double> output = new LinkedHashMap<String,Double>();
+		HashMap<String,Object> output = new LinkedHashMap<String,Object>();
 		output.put("N(test)"            ,(double)N);
 		output.put("L"					,(double)L);
 		output.put("Hamming score"		,Metrics.P_Hamming(Y,Ypred));
@@ -178,12 +197,14 @@ public abstract class MLEvalUtils {
 		r.info = folds[0].info;
 		// for output ..
 		for(String metric : folds[0].output.keySet()) {
-			double values[] = new double[folds.length];
-			for(int i = 0; i < folds.length; i++) {
-				values[i] = folds[i].output.get(metric);
+			if (folds[0].output.get(metric) instanceof Double) {
+				double values[] = new double[folds.length];
+				for(int i = 0; i < folds.length; i++) {
+					values[i] = (double)folds[i].output.get(metric);
+				}
+				String avg_sd = Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3);
+				r.setInfo(metric,avg_sd);
 			}
-			String avg_sd = Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3);
-			r.setInfo(metric,avg_sd);
 		}
 		// and now for 'vals' ..
 		for(String metric : folds[0].vals.keySet()) {

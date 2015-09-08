@@ -46,7 +46,7 @@ public class Result implements Serializable {
 	// TODO, store in sparse fashion with either LabelSet or LabelVector
 	public ArrayList<int[]> actuals = null;
 
-	public HashMap<String,Double> output = new LinkedHashMap<String,Double>();
+	public HashMap<String,Object> output = new LinkedHashMap<String,Object>();
 	public HashMap<String,String> info = new LinkedHashMap<String,String>();
 	public HashMap<String,Double> vals = new LinkedHashMap<String,Double>();
 
@@ -218,7 +218,7 @@ public class Result implements Serializable {
 	 * Return the evaluation statistics given predictions and real values stored in r.
 	 * In the multi-label case, a Threshold category must exist, containing a string defining the type of threshold we want to use/calibrate.
 	 */
-	public static HashMap<String,Double> getStats(Result r, String vop) {
+	public static HashMap<String,Object> getStats(Result r, String vop) {
 		if (r.getInfo("Type").equalsIgnoreCase("MT"))
 			return MLEvalUtils.getMTStats(r.allPredictions(),r.allActuals(), vop);
 		else 
