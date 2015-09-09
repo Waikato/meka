@@ -142,10 +142,10 @@ public class EvaluationTests extends TestCase {
 		cc.setClassifier(new IBk());
 		h.setClassifier(cc);
 		try {
-			r1 = MLEvalUtils.averageResults(IncrementalEvaluation.evaluateModel(h,D));
-			r2 = MLEvalUtils.averageResults(IncrementalEvaluation.evaluateModel(h,D));
+			r1 = IncrementalEvaluation.evaluateModel(h,D)[0];
+			r2 = IncrementalEvaluation.evaluateModel(h,D)[0];
 		} catch(Exception e) {
-			System.err.println("");
+			System.err.println("FAILED TO GET r1, r2");
 			e.printStackTrace();
 		}
 		// Good @TODO
@@ -155,7 +155,8 @@ public class EvaluationTests extends TestCase {
 			System.out.println("r1 is null");
 		if (r2==null)
 			System.out.println("r2 is null");
-		assertTrue("Inc. Eval the same?", r1.info.get("Accuracy").equals(r2.info.get("Accuracy")));
+
+		assertTrue("Inc. Eval the same?", ((String)r1.output.get("Accuracy")).equals(((String)r2.output.get("Accuracy"))));
 		// test/train
 
 		// compare with non-ss

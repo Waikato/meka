@@ -48,7 +48,7 @@ public class Result implements Serializable {
 
 	public HashMap<String,Object> output = new LinkedHashMap<String,Object>();
 	public HashMap<String,String> info = new LinkedHashMap<String,String>();
-	public HashMap<String,Double> vals = new LinkedHashMap<String,Double>();
+	public HashMap<String,Object> vals = new LinkedHashMap<String,Object>();
 
 	public Result() {
 		predictions = new ArrayList<double[]>();
@@ -74,18 +74,20 @@ public class Result implements Serializable {
 	@Override
 	public String toString() {
 
+		/*
 		if (info.containsKey("Type") && info.get("Type").equalsIgnoreCase("CV")) {
 			// TODO make this nicer
 			return "\n\n== Cross Validation Results\n\n" + MLUtils.hashMapToString(info);
 		}
+		*/
 
 		String resultString = "";
-		if (info.containsKey("Verbosity")) { 
+		if (info.containsKey("Verbosity") && !info.get("Type").equalsIgnoreCase("CV")) { 
 			int V = MLUtils.getIntegerOption(info.get("Verbosity"),1);
 			if ( V > 4) {
 				resultString += "== Individual Errors\n\n";
 				// output everything
-				resultString += Result.getResultAsString(this,V-5);
+				resultString += Result.getResultAsString(this,V-5) + "\n\n";
 			}
 
 		}
@@ -170,11 +172,11 @@ public class Result implements Serializable {
 	/**
 	 * AddValue.
 	 * Add v to an existing metric value.
-	 */
 	public void addValue(String metric, double v) {
-		Double freq = vals.get(metric);
+		Double freq = (Double)vals.get(metric);
 		vals.put(metric,(freq == null) ? v : freq + v);
 	}
+	*/
 
 	/**
 	 * SetValue.
@@ -188,7 +190,7 @@ public class Result implements Serializable {
 	 * AddValue.
 	 * Retrieve the value for metric 'metric'
 	 */
-	public double getValue(String metric) {
+	public Object getValue(String metric) {
 		return vals.get(metric);
 	}
 

@@ -179,9 +179,12 @@ public abstract class MLEvalUtils {
 			output.put("ZeroOne loss"		,Metrics.L_ZeroOne(Y,Ypred));
 		}
 		if (V > 2) {
+			double HL[] = new double[L];
 			for(int j = 0; j < L; j++) {
-				output.put("Accuracy["+j+"]"				,Metrics.P_Hamming(Y,Ypred,j));
+				HL[j] = Metrics.P_Hamming(Y,Ypred,j);
 			}
+			output.put("Label indices              "	,A.make_sequence(L));
+			output.put("Accuracy (per label)"	        ,HL);
 		}
 		return output;
 	}
@@ -193,7 +196,7 @@ public abstract class MLEvalUtils {
 	 */
 	public static Result averageResults(Result folds[]) { 
 		Result r = new Result();
-		// for info ..
+		// info (should be the same across folds).
 		r.info = folds[0].info;
 		// for output ..
 		for(String metric : folds[0].output.keySet()) {
@@ -203,17 +206,42 @@ public abstract class MLEvalUtils {
 					values[i] = (double)folds[i].output.get(metric);
 				}
 				String avg_sd = Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3);
-				r.setInfo(metric,avg_sd);
+				r.output.put(metric,avg_sd);
 			}
+			else if (folds[0].output.get(metric) instanceof double[]) {
+				double avg[] = new double[((double[])folds[0].output.get(metric)).length];
+				for(int i = 0; i < folds.length; i++) {
+					for(int j = 0; j < avg.length; j++) {
+						avg[j] = avg[j] + ((double[])folds[i].output.get(metric))[j] * 1./folds.length;
+					}
+				}
+				r.output.put(metric,avg);
+			}
+			/*
+			else if (folds[0].output.get(metric) instanceof int[]) {
+				int avg[] = new int[((int[])folds[0].output.get(metric)).length];
+				for(int i = 0; i < folds.length; i++) {
+					for(int j = 0; j < avg.length; j++) {
+						avg[j] = avg[j] + ((int[])folds[i].output.get(metric))[j];
+					}
+				}
+				for(int j = 0; j < avg.length; j++) {
+					avg[j] = avg[j] / avg.length;
+				}
+				r.output.put(metric,avg);
+			}
+			*/
 		}
 		// and now for 'vals' ..
 		for(String metric : folds[0].vals.keySet()) {
-			double values[] = new double[folds.length];
-			for(int i = 0; i < folds.length; i++) {
-				values[i] = folds[i].vals.get(metric);
+			if (folds[0].vals.get(metric) instanceof Double) {
+				double values[] = new double[folds.length];
+				for(int i = 0; i < folds.length; i++) {
+					values[i] = (double)folds[i].vals.get(metric);
+				}
+				String avg_sd = Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3);
+				r.vals.put(metric,avg_sd);
 			}
-			String avg_sd = Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3);
-			r.setInfo(metric,avg_sd);
 		}
 		r.setInfo("Type","CV");
 		return r;

@@ -61,7 +61,7 @@ public class MiscMethodsTests extends TestCase {
 		RT rt = new RT();
 		rt.setClassifier(new Logistic());
 		Result r = EvaluationTests.cvEvaluateClassifier(rt);
-		assertTrue("RT Accuracy Correct", r.info.get("Accuracy").equals("0.5   +/- 0.04 ") );
+		assertTrue("RT Accuracy Correct", r.output.get("Accuracy").equals("0.5   +/- 0.04 ") );
 	}
 
 	public void testMULAN() {
@@ -73,22 +73,22 @@ public class MiscMethodsTests extends TestCase {
 		mulan.setClassifier(new SMO());
 		Result r;
 		r = EvaluationTests.cvEvaluateClassifier(mulan);
-		System.out.println("MULAN (RAkEL): "+r.info.get("Accuracy"));
-		assertTrue("MULAN (RAkEL) Accuracy Correct", r.info.get("Accuracy").startsWith("0.58") );
+		System.out.println("MULAN (RAkEL): "+r.output.get("Accuracy"));
+		assertTrue("MULAN (RAkEL) Accuracy Correct", ((String)r.output.get("Accuracy")).startsWith("0.58") );
 		// ... MLkNN
 		mulan.setMethod("MLkNN");
 		r = EvaluationTests.cvEvaluateClassifier(mulan);
-		System.out.println("MULAN (MLkNN): "+r.info.get("Accuracy"));
-		assertTrue("MULAN (MLkNN) Accuracy Correct", r.info.get("Accuracy").equals("0.561 +/- 0.035") );
+		System.out.println("MULAN (MLkNN): "+r.output.get("Accuracy"));
+		assertTrue("MULAN (MLkNN) Accuracy Correct", r.output.get("Accuracy").equals("0.561 +/- 0.035") );
 		// ... BR (and , vs MEKA's BR)
 		mulan.setMethod("BR");
 		r = EvaluationTests.cvEvaluateClassifier(mulan);
-		System.out.println("MULAN (BR): "+r.info.get("Accuracy"));
-		assertTrue("MULAN (BR) Accuracy Correct", r.info.get("Accuracy").equals("0.493 +/- 0.036") );
+		System.out.println("MULAN (BR): "+r.output.get("Accuracy"));
+		assertTrue("MULAN (BR) Accuracy Correct", r.output.get("Accuracy").equals("0.493 +/- 0.036") );
 		BR br = new BR();
 		br.setClassifier(new SMO());
 		Result r_other = EvaluationTests.cvEvaluateClassifier(br);
-		assertTrue("MULAN BR Equal to MEKA BR", r.info.get("Accuracy").equals(r_other.info.get("Accuracy")) );
+		assertTrue("MULAN BR Equal to MEKA BR", r.output.get("Accuracy").equals(r_other.output.get("Accuracy")) );
 	}
 
 }
