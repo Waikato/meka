@@ -84,8 +84,7 @@ public abstract class MLEvalUtils {
 
 		HashMap<String,Object> results = new LinkedHashMap<String,Object>();
 
-		results.put("Number of test instances (N)"			,(double)N);
-		results.put("Number of labels (L)"					,(double)L);
+		results.put("Number of test instances (N)"			,(int)N);
 		results.put("Accuracy"			,Metrics.P_Accuracy(Y,Ypred));
 		results.put("Jaccard index"		,Metrics.P_Accuracy(Y,Ypred));
 		results.put("Hamming score"		,Metrics.P_Hamming(Y,Ypred));
@@ -208,6 +207,15 @@ public abstract class MLEvalUtils {
 				String avg_sd = Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3);
 				r.output.put(metric,avg_sd);
 			}
+			else if (folds[0].output.get(metric) instanceof Integer) {
+				// TODO combine with previous clause
+				double values[] = new double[folds.length];
+				for(int i = 0; i < folds.length; i++) {
+					values[i] = (int)folds[i].output.get(metric);
+				}
+				String avg_sd = Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3);
+				r.output.put(metric,avg_sd);
+			}
 			else if (folds[0].output.get(metric) instanceof double[]) {
 				double avg[] = new double[((double[])folds[0].output.get(metric)).length];
 				for(int i = 0; i < folds.length; i++) {
@@ -243,6 +251,28 @@ public abstract class MLEvalUtils {
 				r.vals.put(metric,avg_sd);
 			}
 		}
+
+		if (r.getInfo("Type").equalsIgnoreCase("MLi")) {
+			// Also display across time ...
+			r.output.put("Window indices"	,A.make_sequence(folds.length));
+			for(String metric : folds[0].output.keySet()) {
+				if (folds[0].output.get(metric) instanceof Double) {
+					double values[] = new double[folds.length];
+					for(int i = 0; i < folds.length; i++) {
+						values[i] = (double)folds[i].output.get(metric);
+					}
+					r.output.put(""+metric+" per window",values);
+				}
+				else if (folds[0].output.get(metric) instanceof Integer) {
+					int values[] = new int[folds.length];
+					for(int i = 0; i < folds.length; i++) {
+						values[i] = (int)folds[i].output.get(metric);
+					}
+					r.output.put(""+metric+" per window",values);
+				}
+			}
+		}
+
 		r.setInfo("Type","CV");
 		return r;
 	}

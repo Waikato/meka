@@ -373,6 +373,7 @@ public class Evaluation {
 		result.setInfo("Options",Arrays.toString(h.getOptions()));
 		result.setInfo("Additional Info",h.toString());
 		result.setInfo("Dataset",MLUtils.getDatasetName(D_train));
+		result.setInfo("Number of labels (L)",String.valueOf(D_train.classIndex()));
 		//result.setInfo("Maxfreq_set",MLUtils.mostCommonCombination(D_train,result.L));
 
 		return result;
