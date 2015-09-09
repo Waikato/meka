@@ -95,7 +95,7 @@ public class IncrementalEvaluation {
 		return results[results.length-1];
 	}
 
-	private static String measures[] = new String[]{"Accuracy", "Exact match", "Hamming score", "Build_time", "Total_time"};
+	private static String measures[] = new String[]{"Accuracy", "Exact match", "Hamming score"};
 
 	/**
 	 * EvaluateModel - over 20 windows.
@@ -145,7 +145,7 @@ public class IncrementalEvaluation {
 		Arrays.fill(t,0.5);
 
 		int V = MLUtils.getIntegerOption(Vop,3);
-		if (V > 3) {
+		if (h.getDebug()) {
 			System.out.println("--------------------------------------------------------------------------------");
 			System.out.print("#"+Utils.padLeft("w",6)+" "+Utils.padLeft("n",6));
 			for (String m : measures) {
@@ -196,15 +196,15 @@ public class IncrementalEvaluation {
 			}
 
 			// calculate results
-			results[w].setInfo("Type","ML");
+			results[w].setInfo("Type","MLi");
 			results[w].setInfo("Threshold", Arrays.toString(t));
 			results[w].output = Result.getStats(results[w],Vop);
-			results[w].output.put("Test_time",(test_time)/1000.0);
-			results[w].output.put("Build_time",(train_time)/1000.0);
-			results[w].output.put("Total_time",(test_time+train_time)/1000.0);
+			results[w].vals.put("Test time",(test_time)/1000.0);
+			results[w].vals.put("Build time",(train_time)/1000.0);
+			results[w].vals.put("Total time",(test_time+train_time)/1000.0);
 
 			// Display results (to CLI)
-			if (V > 3) {
+			if (h.getDebug()) {
 				System.out.print("#"+Utils.doubleToString((double)w+1,6,0)+" "+Utils.doubleToString((double)n,6,0));
 				n = 0;
 				for (String m : measures) {
@@ -222,15 +222,15 @@ public class IncrementalEvaluation {
 			}
 		}
 
-		if (V > 3) {
+		if (h.getDebug()) {
 			System.out.println("--------------------------------------------------------------------------------");
 		}
 		Result avg = MLEvalUtils.averageResults(results);
 		// @todo put in earlier?
-		avg.setInfo("Classifier_name",h.getClass().getName());
-		avg.setInfo("Classifier_ops",Arrays.toString(h.getOptions()));
-		avg.setInfo("Classifier_info",h.toString());
-		avg.setInfo("Dataset_name",MLUtils.getDatasetName(D));
+		avg.setInfo("Classifier",h.getClass().getName());
+		avg.setInfo("Options",Arrays.toString(h.getOptions()));
+		avg.setInfo("Additional Info",h.toString());
+		avg.setInfo("Dataset",MLUtils.getDatasetName(D));
 
 		// @todo in the future, will want to return all results
 		//return results;

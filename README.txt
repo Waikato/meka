@@ -2,17 +2,15 @@ See the Tutorial.pdf for detailed information on obtaining, using and extending 
 For a list of included methods and 'quick-start' command line examples, 
 	see: http://meka.sourceforge.net/methods.html
 
-Release Notes, Version 1.7.7
+Release Notes, Version 1.7.8
 ----------------------------
 
-This is a minor release, adding new features and fixing some bugs, including:
+Improvements since the last version are os follows:
 
-	- Fixed a bug which caused Meka to crash when using RandomForest as a base classifier
-	- Can now visualize certain base classifiers, for example, J48. Just right-click 'Show Graphs' in the GUI results History
-	- Other improvements to the GUI such as 
-		- an Open Recent option
-		- a Save Model option to the GUI results History
-	- MCC classifier (and derivatives) now run faster in the case that no chain-search is made
-	- OS-specific Meka home directories
-	- Recent changes are reflected in the tutorial
+	* Evaluation output is improved
+   
+		Evaluation output has been improved, as much in the code, as the visual text output. 
+		Basically, objects like doubles[] can be stored, rather than just Strings and Doubles.
+		The improvement is overall, but in particular noticeable improvements to cross validation and incremental validation.
+		Incremental validation now also displays per-window metrics in the GUI in addition to those of the final window.
 
