@@ -163,8 +163,8 @@ public abstract class A {
 	}
 
 	/*
-	// add values 'v[]' to 'array[]'
-	public static int[] add(int array[], final int v[]) {
+	// append values 'v[]' to 'array[]'
+	public static int[] append(int array[], final int v[]) {
 		int n = array.length;
 		array = Arrays.copyOf(array,n+1);
 		array[n] = v;
