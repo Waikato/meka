@@ -5,15 +5,17 @@
     <property name="src" value="src/main/java"/>
     <property name="src-tests" value="src/test/java"/>
     <property name="src-latex" value="src/main/latex"/>
+    <property name="src-data" value="src/main/data"/>
     <property name="resources" value="src/main/resources"/>
     <property name="resources-tests" value="src/test/resources"/>
+    <property name="target" value="target"/>
     <property name="build" value="target/classes"/>
     <property name="build-tests" value="target/test-classes"/>
-    <property name="javadoc" value="doc/api"/>
+    <property name="javadoc" value="target/apidocs"/>
     <property name="target" value="target"/>
     <property name="lib" value="lib"/>
     <property name="all" value="."/>
-    <property name="scripts" value="scripts"/>
+    <property name="scripts" value="src/main/scripts"/>
     <property name="release" value="target"/>
     <property name="mainclass" value="meka.gui.explorer.Explorer"/>
     <property name="memory" value="512m"/>
@@ -29,7 +31,7 @@
     </path>
 
     <target name="clean" description="Removes the build directory, generated jars and temp files."> 
-        <delete dir="${build}" failonerror="false"/>
+        <delete dir="${target}" failonerror="false"/>
         <delete dir="${javadoc}"/>
         <delete>
           <fileset dir="${basedir}" includes="*.jar"/>
@@ -125,9 +127,11 @@
     </target>
 
     <target name="src-jar" description="Creates a source archive.">
-	<jar destfile="${target}/meka-src-${version}.jar">
+	<jar destfile="${target}/meka-${version}-sources.jar">
  		<zipfileset dir="${src}" prefix="src/main/java"/>
+ 		<zipfileset dir="${src-latex}" prefix="src/main/latex"/>
  		<zipfileset dir="${resources}" prefix="src/main/resources"/>
+ 		<zipfileset dir="${scripts}" prefix="src/main/scripts"/>
  		<zipfileset dir="${src-tests}" prefix="src/test/java"/>
  		<zipfileset dir="${resources-tests}" prefix="src/test/resources"/>
 		<fileset file="build.xml"/>
@@ -156,37 +160,38 @@
     </target>
 
     <target name="javadoc-jar" depends="javadoc" description="Creates an archive from the Javadoc.">
-      <zip destfile="${target}/meka-javadoc-${version}.zip" basedir="${javadoc}/"/>
+      <jar destfile="${target}/meka-${version}-javadoc.jar" basedir="${javadoc}/"/>
     </target>
 
     <target name="all" depends="jar, src-jar, javadoc-jar" description="Generates all jars."/>
 
     <target name="latex" depends="init" description="Generates the LaTeX documentation.">
       <!-- tutorial -->
-      <exec executable="pdflatex" dir="${src-latex}/tutorial">
+      <exec executable="pdflatex" dir="${src-latex}/Tutorial">
          <arg value="Tutorial.tex"/>
       </exec>
-      <exec executable="pdflatex" dir="${src-latex}/tutorial">
+      <exec executable="pdflatex" dir="${src-latex}/Tutorial">
          <arg value="Tutorial.tex"/>
       </exec>
       <copy todir="${target}" >
-          <fileset dir="${src-latex}/tutorial">
+          <fileset dir="${src-latex}/Tutorial">
             <include name="Tutorial.pdf"/>
           </fileset>
       </copy>
     </target>
 
-    <target name="release" depends="clean, all, tests, latex" description="Generates a release archive.">
+    <!--target name="release" depends="clean, all, tests, latex" description="Generates a release archive."-->
+    <target name="release" depends="clean, all, latex" description="Generates a release archive.">
       <delete file="${release}/meka-release-${version}.zip"/>
       <zip destfile="${release}/meka-release-${version}.zip">
         <zipfileset dir="${basedir}" includes="README.txt" prefix="meka-${version}"/>
         <zipfileset dir="${basedir}" includes="LICENSE.txt" prefix="meka-${version}"/>
         <zipfileset dir="${target}" includes="*.pdf" prefix="meka-${version}"/>
-        <zipfileset dir="${target}" includes="meka-src-${version}.jar" prefix="meka-${version}"/>
+        <zipfileset dir="${target}" includes="meka-${version}-sources.jar" prefix="meka-${version}"/>
         <zipfileset dir="${target}" includes="meka-${version}.jar" prefix="meka-${version}/lib"/>
         <zipfileset dir="${basedir}" includes="lib/*.jar" prefix="meka-${version}"/>
         <zipfileset dir="${basedir}" includes="lib/README.txt" prefix="meka-${version}"/>
-        <zipfileset dir="${basedir}" includes="data/*.*" prefix="meka-${version}"/>
+        <zipfileset dir="${src-data}" includes="*.*" prefix="meka-${version}/data"/>
         <zipfileset dir="${javadoc}" prefix="meka-${version}/api"/>
         <zipfileset dir="${scripts}" prefix="meka-${version}" filemode="755"/>
       </zip>
