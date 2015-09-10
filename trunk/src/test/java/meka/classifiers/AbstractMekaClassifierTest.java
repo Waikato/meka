@@ -14,8 +14,8 @@
  */
 
 /**
- * AbstractAdamsFilterTest.java
- * Copyright (C) 2012 University of Waikato, Hamilton, New Zealand
+ * AbstractMekaClassifierTest.java
+ * Copyright (C) 2015 University of Waikato, Hamilton, New Zealand
  */
 package meka.classifiers;
 
