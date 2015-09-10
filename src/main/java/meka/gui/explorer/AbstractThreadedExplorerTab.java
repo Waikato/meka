@@ -15,7 +15,7 @@
 
 /**
  * AbstractThreadedExplorerTab.java
- * Copyright (C) 2012 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2012-2015 University of Waikato, Hamilton, New Zealand
  */
 package meka.gui.explorer;
 
@@ -105,15 +105,6 @@ public abstract class AbstractThreadedExplorerTab
 	
 	/** the thread for running tasks. */
 	protected WorkerThread m_Task;
-	
-	/**
-	 * Initializes the tab.
-	 * 
-	 * @param owner the Explorer this tab belongs to
-	 */
-	public AbstractThreadedExplorerTab(Explorer owner) {
-		super(owner);
-	}
 
 	/**
 	 * Initializes the members.

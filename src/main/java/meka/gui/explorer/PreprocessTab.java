@@ -78,15 +78,6 @@ public class PreprocessTab
 
   /** the button for setting the class attributes. */
   protected JButton m_ButtonSetClassAttributes;
-  
-  /**
-   * Initializes the tab.
-   * 
-   * @param owner the Explorer this tab belongs to
-   */
-  public PreprocessTab(Explorer owner) {
-    super(owner);
-  }
 
   /**
    * Initializes the members.
