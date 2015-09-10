@@ -16,25 +16,21 @@
 package meka.classifiers.multilabel;
 
 import junit.framework.Test;
-import junit.framework.TestSuite;
 import junit.framework.TestCase;
-
-import meka.classifiers.AbstractMekaClassifierTest;
-import weka.classifiers.Classifier;
-import meka.classifiers.multilabel.meta.*;
-import meka.classifiers.multilabel.incremental.*;
+import junit.framework.TestSuite;
+import meka.classifiers.multilabel.incremental.CCUpdateable;
+import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
 import meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable;
-import meka.classifiers.multilabel.*;
-import weka.classifiers.functions.*;
-import weka.classifiers.lazy.*;
-import weka.core.converters.ConverterUtils.DataSource;
-import weka.core.Instances;
-import meka.core.Result;
-import meka.core.Metrics;
+import meka.classifiers.multilabel.meta.BaggingML;
 import meka.core.MLEvalUtils;
 import meka.core.MLUtils;
-
-import meka.gui.explorer.Explorer;
+import meka.core.Metrics;
+import meka.core.Result;
+import weka.classifiers.functions.Logistic;
+import weka.classifiers.functions.SMO;
+import weka.classifiers.lazy.IBk;
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
 
 /**
  * EvaluationTests. Run from the command line with:<p/>
@@ -76,7 +72,7 @@ public class EvaluationTests extends TestCase {
 
 	public void testRepeatable() {
 		// Load Music
-		Instances D = loadInstances("data/Music.arff");
+		Instances D = loadInstances("src/main/data/Music.arff");
 		Instances D_train = new Instances(D,0,400);
 		Instances D_test = new Instances(D,400,D.numInstances()-400);
 		// Train ECC
@@ -118,7 +114,7 @@ public class EvaluationTests extends TestCase {
 		}
 
 		// Load Music
-		Instances D = loadInstances("data/Music.arff");
+		Instances D = loadInstances("src/main/data/Music.arff");
 		D_train = new Instances(D,0,491);
 		D_test = new Instances(D,491,D.numInstances()-491);
 		// Eval
@@ -135,7 +131,7 @@ public class EvaluationTests extends TestCase {
 		// Batch
 		Result r1 = null, r2 = null;
 		// Load Data
-		Instances D = loadInstances("data/Music.arff");
+		Instances D = loadInstances("src/main/data/Music.arff");
 		// Train ECCUpdateable
 		BaggingMLUpdateable h = new BaggingMLUpdateable();
 		CCUpdateable cc = new CCUpdateable();
@@ -191,7 +187,7 @@ public class EvaluationTests extends TestCase {
 	public static Result cvEvaluateClassifier(MultilabelClassifier h, String top) {
 		Instances D = null;
 		try {
-			D = EvaluationTests.loadInstances("data/Music.arff");
+			D = EvaluationTests.loadInstances("src/main/data/Music.arff");
 			//h.buildClassifier(D); // <-- this line is pointless
 			Result folds[] = Evaluation.cvModel(h,D,5,top);
 			return MLEvalUtils.averageResults(folds);
