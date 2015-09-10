@@ -15,13 +15,12 @@
 
 package meka.classifiers.multilabel.meta;
 
-import java.util.Random;
-
-import weka.classifiers.AbstractClassifier;
 import meka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instances;
 import weka.core.Randomizable;
 import weka.core.RevisionUtils;
+
+import java.util.Random;
 
 /**
  * BaggingMLdup.java - A version of BaggingML where Instances are duplicated instead of assigned higher weighs.

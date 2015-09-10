@@ -15,16 +15,15 @@
 
 package meka.classifiers.multilabel.meta;
 
-import java.util.Enumeration;
-import java.util.Vector;
-
-import weka.classifiers.Classifier;
-import meka.classifiers.multilabel.MultilabelClassifier;
 import meka.classifiers.multilabel.CC;
-import weka.core.Randomizable;
+import meka.classifiers.multilabel.MultilabelClassifier;
 import weka.core.Instance;
 import weka.core.Option;
+import weka.core.Randomizable;
 import weka.core.Utils;
+
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * MultilabelMetaClassifier.java - For ensembles of multi-label methods.
@@ -89,12 +88,20 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier impl
 		m_NumIterations = n;
 	}
 
+	public String numIterationsTipText() {
+		return "The number of iterations to perform.";
+	}
+
 	public int getBagSizePercent() {
 		return m_BagSizePercent;
 	}
 
 	public void setBagSizePercent(int p) {
 		m_BagSizePercent = p;
+	}
+
+	public String bagSizePercentTipText() {
+		return "The size of the bag in percent (0-100).";
 	}
 
 	@Override
@@ -105,6 +112,10 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier impl
 	@Override
 	public int getSeed() {
 		return m_Seed;
+	}
+
+	public String seedTipText() {
+		return "The seed value for randomizing the data.";
 	}
 
 	@Override
@@ -129,15 +140,21 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier impl
 
 		tmpStr = Utils.getOption('S', options);
 		if (tmpStr.length() != 0) 
-			setSeed(Integer.parseInt(tmpStr)); 
+			setSeed(Integer.parseInt(tmpStr));
+		else
+		  setSeed(1);
 
 		tmpStr = Utils.getOption('I', options);
 		if (tmpStr.length() != 0) 
-			setNumIterations(Integer.parseInt(tmpStr)); 
+			setNumIterations(Integer.parseInt(tmpStr));
+		else
+		  setNumIterations(10);
 
 		tmpStr = Utils.getOption('P', options);
 		if (tmpStr.length() != 0) 
-			setBagSizePercent(Integer.parseInt(tmpStr)); 
+			setBagSizePercent(Integer.parseInt(tmpStr));
+		else
+		  setBagSizePercent(67);
 
 		super.setOptions(options);
 	}
@@ -148,11 +165,11 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier impl
 		String [] options = new String [superOptions.length + 6];
 		int current = 0;
 		options[current++] = "-S";
-		options[current++] = String.valueOf(m_Seed);
+		options[current++] = "" + getSeed();
 		options[current++] = "-I";
-		options[current++] = String.valueOf(m_NumIterations);
+		options[current++] = "" + getNumIterations();
 		options[current++] = "-P";
-		options[current++] = String.valueOf(m_BagSizePercent);
+		options[current++] = "" + getBagSizePercent();
 		System.arraycopy(superOptions, 0, options, current, superOptions.length);
 		return options;
 	}
