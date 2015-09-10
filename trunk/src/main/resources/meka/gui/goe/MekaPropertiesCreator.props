@@ -50,5 +50,5 @@ meka.gui.explorer.AbstractExplorerTab=\
   meka.gui.explorer
 
 # Explorer plugins for the Classify result history
-meka.gui.explorer.classify.AbstractResultHistoryPlugin=\
+meka.gui.explorer.classify.AbstractClassifyResultHistoryPlugin=\
   meka.gui.explorer.classify

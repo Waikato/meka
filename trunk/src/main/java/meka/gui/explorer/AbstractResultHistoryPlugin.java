@@ -18,16 +18,17 @@
  * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
 
-package meka.gui.explorer.classify;
+package meka.gui.explorer;
 
 import meka.gui.core.ResultHistoryList;
-import meka.gui.explorer.AbstractExplorerTab;
-import meka.gui.goe.GenericObjectEditor;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Ancestor for plugins that work .
@@ -166,27 +167,18 @@ public abstract class AbstractResultHistoryPlugin
 	}
 
 	/**
-	 * Returns all the available plugins.
-	 *
-	 * @return          the classnames of the plugins
-	 */
-	public static List<String> getPlugins() {
-		return GenericObjectEditor.getClassnames(AbstractResultHistoryPlugin.class.getName());
-	}
-
-	/**
 	 * Allows to customize the popup menu for the result history.
 	 *
+	 * @param tab the tab the result history belongs to
+	 * @param classnames the plugins (classnames) to add
 	 * @param history the list this popup menu is for
 	 * @param index the index of the select item from the history
 	 * @param menu the menu to customize
 	 */
-	public static void populateMenu(AbstractExplorerTab tab, ResultHistoryList history, int index, JPopupMenu menu) {
-		List<String>                        classnames;
+	public static void populateMenu(AbstractExplorerTab tab, List<String> classnames, ResultHistoryList history, int index, JPopupMenu menu) {
 		List<AbstractResultHistoryPlugin>   plugins;
 		AbstractResultHistoryPlugin         plugin;
 
-		classnames = getPlugins();
 		plugins    = new ArrayList<>();
 		for (String classname: classnames) {
 			try {
