@@ -96,14 +96,21 @@ public abstract class AbstractResultHistoryPlugin
 	}
 
 	/**
-	 * Comparison on the name.
+	 * Comparison on the group and name.
 	 *
 	 * @param o         the other plugin
 	 * @return          less than 0, equal to 0, greater than 0 if the name is less, equal or greater
+	 * @see             #getGroup()
 	 * @see             #getName()
 	 */
     public int compareTo(AbstractResultHistoryPlugin o) {
-	    return getName().compareTo(o.getName());
+	    int     result;
+
+	    result = getGroup().compareTo(o.getGroup());
+	    if (result == 0)
+		    result = getName().compareTo(o.getName());
+
+	    return result;
     }
 
 	/**
@@ -111,11 +118,19 @@ public abstract class AbstractResultHistoryPlugin
 	 *
 	 * @param o         the other object
 	 * @return          true if other object is a plugin with the same name
+	 * @see             #getGroup()
 	 * @see             #getName()
 	 */
 	public boolean equals(Object o) {
 		return (o instanceof AbstractResultHistoryPlugin) && (compareTo((AbstractResultHistoryPlugin) o) == 0);
 	}
+
+	/**
+	 * Returns the group of the plugin. Used for the grouping the menu items.
+	 *
+	 * @return          the group
+	 */
+	public abstract String getGroup();
 
 	/**
 	 * Returns the name of the plugin. Used for the menu item text.
@@ -178,6 +193,7 @@ public abstract class AbstractResultHistoryPlugin
 	public static void populateMenu(AbstractExplorerTab tab, List<String> classnames, ResultHistoryList history, int index, JPopupMenu menu) {
 		List<AbstractResultHistoryPlugin>   plugins;
 		AbstractResultHistoryPlugin         plugin;
+		String                              group;
 
 		plugins    = new ArrayList<>();
 		for (String classname: classnames) {
@@ -193,7 +209,14 @@ public abstract class AbstractResultHistoryPlugin
 		}
 		Collections.sort(plugins);
 
-		for (AbstractResultHistoryPlugin p: plugins)
+		group = null;
+		for (AbstractResultHistoryPlugin p: plugins) {
+			if (group != null) {
+				if (!group.equals(p.getGroup()))
+					menu.addSeparator();
+			}
 			p.customizePopupMenu(history, index, menu);
+			group = p.getGroup();
+		}
 	}
 }

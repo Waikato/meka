@@ -44,6 +44,15 @@ public class SaveModel
 	public final static String KEY_FILECHOOSER = "filechooser";
 
 	/**
+	 * Returns the group of the plugin. Used for the grouping the menu items.
+	 *
+	 * @return          the group
+	 */
+	public String getGroup() {
+		return "Model";
+	}
+
+	/**
 	 * Returns the name of the plugin. Used for the menu item text.
 	 *
 	 * @return          the name
