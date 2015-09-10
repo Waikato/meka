@@ -15,12 +15,16 @@
 
 /**
  * AbstractExplorerTab.java
- * Copyright (C) 2012 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2012-2015 University of Waikato, Hamilton, New Zealand
  */
 package meka.gui.explorer;
 
 import meka.gui.core.MekaPanel;
+import meka.gui.goe.GenericObjectEditor;
 import weka.core.Instances;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Ancestor for tabs in the Explorer.
@@ -39,17 +43,10 @@ public abstract class AbstractExplorerTab
 	
 	/** the current dataset. */
 	protected Instances m_Data;
-	
-	/**
-	 * Initializes the tab.
-	 * 
-	 * @param owner the Explorer this tab belongs to
-	 */
-	public AbstractExplorerTab(Explorer owner) {
-		super();
-		m_Owner = owner;
-	}
-	
+
+	/** the session object. */
+	protected transient HashMap<Class,HashMap<String,Object>> m_Session;
+
 	/**
 	 * Initializes the members.
 	 */
@@ -57,9 +54,19 @@ public abstract class AbstractExplorerTab
 	protected void initialize() {
 		super.initialize();
 		
-		m_Data = null;
+		m_Data    = null;
+		m_Session = null;
 	}
-	
+
+	/**
+	 * Sets the Explorer instance this tab belongs to.
+	 *
+	 * @param value the Explorer instance
+	 */
+	public void setOwner(Explorer value) {
+		m_Owner = value;
+	}
+
 	/**
 	 * Returns the Explorer instance this tab belongs to.
 	 * 
@@ -75,6 +82,17 @@ public abstract class AbstractExplorerTab
 	 * @return the title
 	 */
 	public abstract String getTitle();
+
+	/**
+	 * Returns the session object.
+	 *
+	 * @return the session, for storing temporary objects
+	 */
+	public synchronized HashMap<Class,HashMap<String,Object>> getSession() {
+		if (m_Session == null)
+			m_Session = new HashMap<>();
+		return m_Session;
+	}
 
 	/**
 	 * Returns whether data is currently present.
@@ -158,5 +176,14 @@ public abstract class AbstractExplorerTab
 	 */
 	public void finishBusy(String msg) {
 		m_Owner.getStatusBar().finishBusy(msg);
+	}
+
+	/**
+	 * Returns all the available tabs.
+	 *
+	 * @return          the classnames of the tabs
+	 */
+	public static List<String> getTabs() {
+		return GenericObjectEditor.getClassnames(AbstractExplorerTab.class.getName());
 	}
 }

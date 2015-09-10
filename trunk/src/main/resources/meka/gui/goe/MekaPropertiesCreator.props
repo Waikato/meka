@@ -44,3 +44,11 @@ weka.filters.Filter= \
 weka.filters.UnsupervisedFilter = \
  meka.filters.unsupervised.attribute, \
  meka.filters.unsupervised.instance
+
+# The Explorer tabs
+meka.gui.explorer.AbstractExplorerTab=\
+  meka.gui.explorer
+
+# Explorer plugins for the Classify result history
+meka.gui.explorer.classify.AbstractResultHistoryPlugin=\
+  meka.gui.explorer.classify

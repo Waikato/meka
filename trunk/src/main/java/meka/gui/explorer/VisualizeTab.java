@@ -15,13 +15,13 @@
 
 /**
  * VisualizeTab.java
- * Copyright (C) 2012 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2012-2015 University of Waikato, Hamilton, New Zealand
  */
 package meka.gui.explorer;
 
-import java.awt.BorderLayout;
-
 import weka.gui.visualize.MatrixPanel;
+
+import java.awt.*;
 
 /**
  * For visualizing the data.
@@ -37,15 +37,6 @@ public class VisualizeTab
 
   /** the panel for visualizing the data. */
   protected MatrixPanel m_PanelMatrix;
-  
-  /**
-   * Initializes the tab.
-   * 
-   * @param owner the Explorer this tab belongs to
-   */
-  public VisualizeTab(Explorer owner) {
-    super(owner);
-  }
 
   /**
    * Initializes the widgets.

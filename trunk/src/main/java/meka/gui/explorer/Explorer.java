@@ -119,13 +119,13 @@ public class Explorer
 		m_Data        = null;
 		m_CurrentFile = null;
 		m_MenuBar     = null;
-		m_Tabs        = new ArrayList<AbstractExplorerTab>();
+		m_Tabs        = new ArrayList<>();
 		m_FileChooser = new ConverterFileChooser(System.getProperty("user.home"));
 		m_PanelBookmarks = new FileChooserBookmarksPanel();
 		m_PanelBookmarks.setOwner(m_FileChooser);
 		m_PanelBookmarks.setBorder(BorderFactory.createEmptyBorder(2, 5, 0, 0));
 		m_FileChooser.setAccessory(m_PanelBookmarks);
-		m_Undo        = new ArrayList<File>();
+		m_Undo        = new ArrayList<>();
 	}
 
 	/**
@@ -133,17 +133,35 @@ public class Explorer
 	 */
 	@Override
 	protected void initGUI() {
+		java.util.List<String>  classnames;
+
 		super.initGUI();
 
 		m_TabbedPane = new JTabbedPane();
 		add(m_TabbedPane, BorderLayout.CENTER);
 
 		// tabs
-		m_Tabs.add(new PreprocessTab(this));
-		m_Tabs.add(new ClassifyTab(this));
-		m_Tabs.add(new VisualizeTab(this));
-		for (AbstractExplorerTab tab: m_Tabs)
+		m_Tabs.add(new PreprocessTab());
+		classnames = AbstractExplorerTab.getTabs();
+		for (String classname: classnames) {
+			try {
+				AbstractExplorerTab tab = (AbstractExplorerTab) Class.forName(classname).newInstance();
+				if (tab instanceof PreprocessTab)
+					continue;
+				if (tab instanceof VisualizeTab)
+					continue;
+				m_Tabs.add(tab);
+			}
+			catch (Exception e) {
+				System.err.println("Failed to instantiate Explorer tab: " + classname);
+				e.printStackTrace();
+			}
+		}
+		m_Tabs.add(new VisualizeTab());
+		for (AbstractExplorerTab tab: m_Tabs) {
+			tab.setOwner(this);
 			m_TabbedPane.addTab(tab.getTitle(), tab);
+		}
 
 		// status bar
 		m_StatusBar = new StatusBar();
