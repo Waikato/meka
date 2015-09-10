@@ -348,7 +348,7 @@ public class MekaClassifierSplitEvaluator
 	 */
 	protected Double getEvaluationMetric(HashMap<String,Object> values, String name) {
 		if (values.containsKey(name))
-			return (double)values.get(name);
+			return (Double)values.get(name);
 		else
 			return Utils.missingValue();
 	}

@@ -307,7 +307,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 			if (getDebug()) System.out.println("4. REFINING THE INITIAL SET WITH SOME OLD-FASHIONED INTERNAL EVAL");
 			// Build & evaluate the classifier with the latest partition
 			result_1 = testClassifier((MultilabelClassifier)m_Classifier,D_train,D_test,partition);
-			w = (double)result_1.output.get(i_ErrFn);
+			w = (Double)result_1.output.get(i_ErrFn);
 			if (getDebug()) System.out.println("@0 : "+SuperLabelUtils.toString(partition)+ "\t("+w+")");
 			for(int i = 0; i < m_Iv; i++) {
 				int partition_[][] = mutateCombinations(M.deep_copy(partition),rand);
@@ -315,7 +315,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 				trainClassifier(m_Classifier,D_train,partition);
 				// Evaluate on D_test
 				Result result_2 = testClassifier((MultilabelClassifier)m_Classifier,D_train,D_test,partition_);
-				double w_ = (double)result_2.output.get(i_ErrFn);
+				double w_ = (Double)result_2.output.get(i_ErrFn);
 				if (w_ > w) {
 					w = w_;
 					partition = partition_;
