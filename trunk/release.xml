@@ -87,7 +87,6 @@
               <classifier>sources</classifier>
               <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
               <outputDirectory>${project.build.directory}/sources</outputDirectory>
-              <!--includeGroupIds>${project.groupId}</includeGroupIds-->
             </configuration>
           </execution>
           <!-- get all test source jars -->
@@ -101,7 +100,6 @@
               <classifier>test-sources</classifier>
               <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
               <outputDirectory>${project.build.directory}/sources</outputDirectory>
-              <!--includeGroupIds>${project.groupId}</includeGroupIds-->
             </configuration>
           </execution>
         </executions>
