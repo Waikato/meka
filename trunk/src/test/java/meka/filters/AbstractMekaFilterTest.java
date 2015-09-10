@@ -19,11 +19,8 @@
  */
 package meka.filters;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import weka.core.converters.ConverterUtils;
 import weka.filters.AbstractFilterTest;
-
-import weka.core.Instances;
 
 /**
  * Abstract test for filters within the MEKA framework.
@@ -46,14 +43,18 @@ public abstract class AbstractMekaFilterTest
   public AbstractMekaFilterTest(String name) {
     super(name);
   }
-  
+
   /**
-   * Loads the dataset from disk.
-   * 
-   * @param file the dataset to load (e.g., "weka/filters/data/something.arff")
-   * @throws Exception if loading fails, e.g., file does not exit
+   * Called by JUnit before each test method. This implementation creates
+   * the default filter to test and loads a test set of Instances.
+   *
+   * @throws Exception if an error occurs reading the example instances.
    */
-  protected Instances loadData(String file) throws Exception {
-    return new Instances(new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(file))));
+  protected void setUp() throws Exception {
+    m_Filter             = getFilter();
+    m_Instances          = ConverterUtils.DataSource.read("FilterTest.arff");
+    m_OptionTester       = getOptionTester();
+    m_GOETester          = getGOETester();
+    m_FilteredClassifier = getFilteredClassifier();
   }
 }
