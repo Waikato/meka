@@ -27,7 +27,7 @@ import meka.core.MLUtils;
 import meka.core.Result;
 import meka.gui.core.GUIHelper;
 import meka.gui.core.ResultHistoryList;
-import meka.gui.explorer.classify.AbstractResultHistoryPlugin;
+import meka.gui.explorer.classify.AbstractClassifyResultHistoryPlugin;
 import meka.gui.goe.GenericObjectEditor;
 import weka.core.Instances;
 
@@ -74,7 +74,7 @@ public class ClassifyTab
 		@Override
 		public void customizePopupMenu(ResultHistoryList history, int index, JPopupMenu menu) {
 			menu.addSeparator();
-			AbstractResultHistoryPlugin.populateMenu(ClassifyTab.this, history, index, menu);
+			AbstractClassifyResultHistoryPlugin.populateMenu(ClassifyTab.this, history, index, menu);
 		}
 	}
 

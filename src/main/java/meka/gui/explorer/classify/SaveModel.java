@@ -37,7 +37,7 @@ import java.io.File;
  * @version $Revision$
  */
 public class SaveModel
-		extends AbstractResultHistoryPlugin {
+		extends AbstractClassifyResultHistoryPlugin {
 	private static final long serialVersionUID = -1152575716154907544L;
 
 	/** the key in the session for the filechooser. */

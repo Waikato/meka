@@ -43,7 +43,7 @@ import java.util.Map;
  * @version $Revision$
  */
 public class ShowGraphs
-		extends AbstractResultHistoryPlugin {
+		extends AbstractClassifyResultHistoryPlugin {
 	private static final long serialVersionUID = -1152575716154907544L;
 
 	/**
