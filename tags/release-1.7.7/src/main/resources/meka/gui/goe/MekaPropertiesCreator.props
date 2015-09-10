@@ -1,0 +1,46 @@
+# Customises the list of options given by the GenericObjectEditor
+# for various superclasses.
+#
+# Version: $Revision$
+
+# Packages with MultiLabelClassifier implementations
+meka.classifiers.multilabel.MultilabelClassifier=\
+ meka.classifiers.multilabel,\
+ meka.classifiers.multilabel.meta,\
+ meka.classifiers.multitarget,\
+ meka.classifiers.multitarget.meta,\
+ meka.classifiers.multilabel.incremental,\
+ meka.classifiers.multilabel.incremental.meta
+
+# Packages with MultiTargetClassifier implementations
+meka.classifiers.multitarget.MultiTargetClassifier=\
+ meka.classifiers.multitarget,\
+ meka.classifiers.multitarget.meta
+
+# Packages with SemisupervisedClassifier implementations
+meka.classifiers.multilabel.SemisupervisedClassifier=\
+ meka.classifiers.multilabel,\
+ meka.classifiers.multilabel.meta
+ 
+# Lists the Classifier-Packages that should be added to WEKA's
+# GenericObjectEditor
+weka.classifiers.Classifier=\
+ meka.classifiers.multilabel,\
+ meka.classifiers.multilabel.meta,\
+ meka.classifiers.multilabel.incremental,\
+ meka.classifiers.multilabel.incremental.meta,\
+ meka.classifiers.multitarget,\
+ meka.classifiers.multitarget.meta
+
+# Lists the Filters-Packages I want to choose from
+weka.filters.Filter= \
+ meka.filters.multilabel, \
+ meka.filters.supervised.attribute, \
+ meka.filters.supervised.instance, \
+ meka.filters.unsupervised.attribute, \
+ meka.filters.unsupervised.instance
+
+# Lists the UnsupervisedFilters-Packages I want to choose from
+weka.filters.UnsupervisedFilter = \
+ meka.filters.unsupervised.attribute, \
+ meka.filters.unsupervised.instance
