@@ -15,26 +15,14 @@
 
 package meka.classifiers.multilabel;
 
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
-import java.util.Vector;
-import java.util.Enumeration;
-
+import meka.core.A;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.Option;
-import meka.core.A;
-import weka.core.Randomizable;
-import weka.core.RevisionUtils;
-import weka.core.TechnicalInformation;
+import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
-import weka.core.Utils;
+
+import java.util.*;
 
 /**
  * CDN.java - Conditional Dependency Networks.
@@ -48,8 +36,8 @@ import weka.core.Utils;
 public class CDN extends MultilabelClassifier implements Randomizable, TechnicalInformationHandler {
 
 	/** for serialization. */
-  	private static final long serialVersionUID = -4571133392057899417L;
-  	
+	private static final long serialVersionUID = -4571133392057899417L;
+
 	protected Classifier h[] = null;
 	protected Random u = null;
 	protected Instances D_templates[];
@@ -59,8 +47,8 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
-	  	testCapabilities(D);
-	  	
+		testCapabilities(D);
+
 		int N = D.numInstances();
 		int L = D.classIndex();
 		h = new Classifier[L];
@@ -151,37 +139,45 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 	public int getSeed() {
 		return m_S;
 	}
-	
+
 	public String seedTipText() {
-	  return "The seed value for randomization.";
+		return "The seed value for randomization.";
 	}
 
-	/** 
+	/**
 	 * GetI - Get the number of iterations.
 	 */
 	public int getI() {
 		return I;
 	}
 
-	/** 
+	/**
 	 * SetI - Sets the number of iterations.
 	 */
 	public void setI(int i) {
 		I = i;
 	}
 
-	/** 
+	public String iTipText() {
+		return "The number of iterations.";
+	}
+
+	/**
 	 * GetIc - Get the number of collection iterations.
 	 */
 	public int getIc() {
 		return I_c;
 	}
 
-	/** 
+	/**
 	 * SetIc - Sets the number of collection iterations.
 	 */
 	public void setIc(int ic) {
 		I_c = ic;
+	}
+
+	public String icTipText() {
+		return "The number of collection iterations.";
 	}
 
 	@Override
@@ -190,10 +186,11 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 		Vector newVector = new Vector();
 		newVector.addElement(new Option("\tTotal Iterations.\n\tdefault: "+I, "I", 1, "-I <value>"));
 		newVector.addElement(new Option("\tCollection Iterations.\n\tdefault: "+I_c, "Ic", 1, "-Ic <value>"));
+		newVector.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
 
 		Enumeration enu = super.listOptions();
 
-		while (enu.hasMoreElements()) 
+		while (enu.hasMoreElements())
 			newVector.addElement(enu.nextElement());
 
 		return newVector.elements();
@@ -201,9 +198,25 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
+		String tmpStr;
 
-		I = (Utils.getOptionPos('I',options) >= 0) ? Integer.parseInt(Utils.getOption('I', options)) : I;
-		I_c = (Utils.getOptionPos("Ic",options) >= 0) ? Integer.parseInt(Utils.getOption("Ic", options)) : I_c;
+		tmpStr = Utils.getOption('I',options);
+		if (!tmpStr.isEmpty())
+			setI(Integer.parseInt(tmpStr));
+		else
+			setI(1000);
+
+		tmpStr = Utils.getOption("Ic",options);
+		if (!tmpStr.isEmpty())
+			setIc(Integer.parseInt(tmpStr));
+		else
+			setIc(100);
+
+		tmpStr = Utils.getOption('S', options);
+		if (!tmpStr.isEmpty())
+			setSeed(Integer.parseInt(tmpStr));
+		else
+			setSeed(0);
 
 		super.setOptions(options);
 	}
@@ -212,11 +225,14 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 	public String [] getOptions() {
 
 		ArrayList<String> result;
-	  	result = new ArrayList<String>(Arrays.asList(super.getOptions()));
-	  	result.add("-I");
-	  	result.add("" + I);
+		result = new ArrayList<String>();
+		result.add("-I");
+		result.add("" + getI());
 		result.add("-Ic");
-	  	result.add("" + I_c);
+		result.add("" + getIc());
+		result.add("-S");
+		result.add("" + getSeed());
+		result.addAll(Arrays.asList(super.getOptions()));
 		return result.toArray(new String[result.size()]);
 	}
 
@@ -226,15 +242,15 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 
 	/**
 	 * Description to display in the GUI.
-	 * 
+	 *
 	 * @return		the description
 	 */
 	@Override
 	public String globalInfo() {
-		return 
+		return
 				"A Conditional Dependency Network. "
-				+ "For more information see:\n"
-				+ getTechnicalInformation().toString();
+						+ "For more information see:\n"
+						+ getTechnicalInformation().toString();
 	}
 
 	@Override
@@ -252,7 +268,7 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 
 	@Override
 	public String getRevision() {
-	    return RevisionUtils.extract("$Revision: 9117 $");
+		return RevisionUtils.extract("$Revision: 9117 $");
 	}
 }
 
