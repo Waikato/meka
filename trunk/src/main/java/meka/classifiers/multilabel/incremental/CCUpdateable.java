@@ -157,7 +157,7 @@ public class CCUpdateable extends CC implements UpdateableClassifier {
 	  	
 		int L = D.classIndex();
 
-		int indices[] = getChain();
+		int indices[] = retrieveChain();
 		if (indices == null) {
 			indices = MLUtils.gen_indices(L);
 			MLUtils.randomize(indices,new Random(m_S));

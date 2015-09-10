@@ -19,19 +19,11 @@ import meka.classifiers.multilabel.cc.CNode;
 import meka.core.A;
 import meka.core.MLUtils;
 import meka.core.MultiLabelDrawable;
-import weka.core.Drawable;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.Randomizable;
-import weka.core.TechnicalInformation;
+import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * CC.java - The Classifier Chains Method. Like BR, but label outputs become new inputs for the next classifiers in the chain.
@@ -49,9 +41,12 @@ import java.util.Random;
 public class CC extends MultilabelClassifier
 		implements Randomizable, TechnicalInformationHandler, MultiLabelDrawable {
 
+	private static final long serialVersionUID = -4115294965331340629L;
+
 	protected CNode nodes[] = null;
 
 	protected int m_S = 0;
+
 	protected Random m_R = null;
 
 	protected int m_Chain[] = null;
@@ -60,7 +55,7 @@ public class CC extends MultilabelClassifier
 		m_Chain = Arrays.copyOf(chain,chain.length);
 	}
 
-	public int[] getChain() {
+	public int[] retrieveChain() {
 		return m_Chain;
 	}
 
@@ -71,7 +66,7 @@ public class CC extends MultilabelClassifier
 		int L = D.classIndex();
 		m_R = new Random(m_S);
 
-		int indices[] = getChain();
+		int indices[] = retrieveChain();
 		if (indices == null) {
 			indices = A.make_sequence(L);
 			MLUtils.randomize(indices,m_R);
@@ -227,13 +222,54 @@ public class CC extends MultilabelClassifier
 	}
 
 	@Override
+	public int getSeed() {
+		return m_S;
+	}
+
+	@Override
 	public void setSeed(int s) {
 		m_S = s;
 	}
 
+	public String seedTipText() {
+		return "The seed value for randomizing the data.";
+	}
+
 	@Override
-	public int getSeed() {
-		return m_S;
+	public Enumeration listOptions() {
+
+		Vector newVector = new Vector();
+		newVector.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
+
+		Enumeration enu = super.listOptions();
+
+		while (enu.hasMoreElements())
+			newVector.addElement(enu.nextElement());
+
+		return newVector.elements();
+	}
+
+	@Override
+	public void setOptions(String[] options) throws Exception {
+		String	tmpStr;
+
+		tmpStr = Utils.getOption('S', options);
+		if (tmpStr.length() > 0)
+			setSeed(Integer.parseInt(tmpStr));
+		else
+			setSeed(0);
+
+		super.setOptions(options);
+	}
+
+	@Override
+	public String [] getOptions() {
+		ArrayList<String> result;
+		result = new ArrayList<String>();
+		result.add("-S");
+		result.add("" + getSeed());
+		result.addAll(Arrays.asList(super.getOptions()));
+		return result.toArray(new String[result.size()]);
 	}
 
 	/**
