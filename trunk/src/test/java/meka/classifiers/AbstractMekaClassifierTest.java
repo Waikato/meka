@@ -32,6 +32,12 @@ import java.io.InputStreamReader;
 
 /**
  * Abstract test for classifiers within the MEKA framework.
+ * <br>
+ * The following system properties can be set:
+ * <ul>
+ *   <li>meka.test.debug [true|false] to set tester object debug flag</li>
+ *   <li>meka.test.silent [true|false] to set tester object silent flag</li>
+ * </ul>
  *
  * @author  fracpete (fracpete at waikato dot ac dot nz)
  * @version $Revision: 117 $
@@ -39,8 +45,11 @@ import java.io.InputStreamReader;
 public abstract class AbstractMekaClassifierTest
 		extends TestCase {
 
-	/** whether to run CheckClassifier in DEBUG mode */
-	public boolean DEBUG = false;
+	/** whether to run testers in DEBUG mode */
+	public boolean DEBUG = System.getProperty("meka.test.debug", "false").equals("true");
+
+	/** whether to run testers in SILENT mode */
+	public boolean SILENT = System.getProperty("meka.test.silent", "true").equals("true");
 
 	/**
 	 * Dummy class to expose protected methods.
@@ -99,7 +108,7 @@ public abstract class AbstractMekaClassifierTest
 		MekaCheckClassifier result;
 
 		result = new MekaCheckClassifier();
-		result.setSilent(true);
+		result.setSilent(SILENT);
 		result.setClassifier(m_Classifier);
 		result.setNumInstances(20);
 		result.setDebug(DEBUG);
@@ -120,7 +129,8 @@ public abstract class AbstractMekaClassifierTest
 		result = new CheckOptionHandler();
 		result.setOptionHandler((OptionHandler) getClassifier());
 		result.setUserOptions(new String[0]);
-		result.setSilent(true);
+		result.setSilent(SILENT);
+		result.setDebug(DEBUG);
 
 		return result;
 	}
@@ -137,7 +147,8 @@ public abstract class AbstractMekaClassifierTest
 
 		result = new CheckGOE();
 		result.setObject(getClassifier());
-		result.setSilent(true);
+		result.setSilent(SILENT);
+		result.setDebug(DEBUG);
 
 		return result;
 	}
