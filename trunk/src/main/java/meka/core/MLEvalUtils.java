@@ -202,7 +202,7 @@ public abstract class MLEvalUtils {
 			if (folds[0].output.get(metric) instanceof Double) {
 				double values[] = new double[folds.length];
 				for(int i = 0; i < folds.length; i++) {
-					values[i] = (double)folds[i].output.get(metric);
+					values[i] = (Double)folds[i].output.get(metric);
 				}
 				String avg_sd = Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3);
 				r.output.put(metric,avg_sd);
@@ -211,7 +211,7 @@ public abstract class MLEvalUtils {
 				// TODO combine with previous clause
 				double values[] = new double[folds.length];
 				for(int i = 0; i < folds.length; i++) {
-					values[i] = (int)folds[i].output.get(metric);
+					values[i] = (Integer)folds[i].output.get(metric);
 				}
 				String avg_sd = Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3);
 				r.output.put(metric,avg_sd);
@@ -245,7 +245,7 @@ public abstract class MLEvalUtils {
 			if (folds[0].vals.get(metric) instanceof Double) {
 				double values[] = new double[folds.length];
 				for(int i = 0; i < folds.length; i++) {
-					values[i] = (double)folds[i].vals.get(metric);
+					values[i] = (Double)folds[i].vals.get(metric);
 				}
 				String avg_sd = Utils.doubleToString(Utils.mean(values),5,3)+" +/- "+Utils.doubleToString(Math.sqrt(Utils.variance(values)),5,3);
 				r.vals.put(metric,avg_sd);
@@ -259,14 +259,14 @@ public abstract class MLEvalUtils {
 				if (folds[0].output.get(metric) instanceof Double) {
 					double values[] = new double[folds.length];
 					for(int i = 0; i < folds.length; i++) {
-						values[i] = (double)folds[i].output.get(metric);
+						values[i] = (Double)folds[i].output.get(metric);
 					}
 					r.output.put(""+metric+" per window",values);
 				}
 				else if (folds[0].output.get(metric) instanceof Integer) {
 					int values[] = new int[folds.length];
 					for(int i = 0; i < folds.length; i++) {
-						values[i] = (int)folds[i].output.get(metric);
+						values[i] = (Integer)folds[i].output.get(metric);
 					}
 					r.output.put(""+metric+" per window",values);
 				}
