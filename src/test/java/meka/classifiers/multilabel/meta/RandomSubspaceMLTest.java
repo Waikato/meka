@@ -53,13 +53,6 @@ public class RandomSubspaceMLTest
     return new RandomSubspaceML();
   }
 
-  /**
-   * FIXME no useful predictions returned. custom dataset?
-   */
-  @Override
-  public void testRegression() throws Exception {
-  }
-  
   public static Test suite() {
     return new TestSuite(RandomSubspaceMLTest.class);
   }

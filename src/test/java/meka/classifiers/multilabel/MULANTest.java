@@ -53,13 +53,6 @@ public class MULANTest
     return new MULAN();
   }
 
-  /**
-   * FIXME no useful predictions. custom dataset?
-   */
-  @Override
-  public void testRegression() throws Exception {
-  }
-
   public static Test suite() {
     return new TestSuite(MULANTest.class);
   }
