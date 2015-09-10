@@ -52,22 +52,22 @@ public class BRq extends MultilabelClassifier implements Randomizable, Technical
 
 	/**
 	 * Description to display in the GUI.
-	 * 
+	 *
 	 * @return		the description
 	 */
 	@Override
 	public String globalInfo() {
-		return 
+		return
 				"The Binary Relevance Method - Random Subspace ('quick') Version.\n"
-				+ "This version is able to downsample the number of instances across the binary models.\n"
-				+ "For more information see:\n"
-				+ getTechnicalInformation().toString();
+						+ "This version is able to downsample the number of instances across the binary models.\n"
+						+ "For more information see:\n"
+						+ getTechnicalInformation().toString();
 	}
 
 	@Override
 	public TechnicalInformation getTechnicalInformation() {
 		TechnicalInformation	result;
-		
+
 		result = new TechnicalInformation(Type.ARTICLE);
 		result.setValue(Field.AUTHOR, "Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank");
 		result.setValue(Field.TITLE, "Classifier Chains for Multi-label Classification");
@@ -76,13 +76,13 @@ public class BRq extends MultilabelClassifier implements Randomizable, Technical
 		result.setValue(Field.VOLUME, "85");
 		result.setValue(Field.NUMBER, "3");
 		result.setValue(Field.PAGES, "333-359");
-		
+
 		return result;
 	}
 
 	@Override
 	public void buildClassifier(Instances data) throws Exception {
-	  	testCapabilities(data);
+		testCapabilities(data);
 
 		int c = data.classIndex();
 
@@ -141,7 +141,7 @@ public class BRq extends MultilabelClassifier implements Randomizable, Technical
 		for (int i = 0; i < c; i++) {
 
 			//remove all except 'i'
-			FilteredInstances[i] = (Instance) instance.copy(); 
+			FilteredInstances[i] = (Instance) instance.copy();
 			FilteredInstances[i].setDataset(null);
 			for (int j = 0, offset = 0; j < c; j++) {
 				if (j == i) offset = 1;
@@ -157,7 +157,7 @@ public class BRq extends MultilabelClassifier implements Randomizable, Technical
 	@Override
 	public double[] distributionForInstance(Instance instance) throws Exception {
 
-		int c = instance.classIndex(); 
+		int c = instance.classIndex();
 
 		double result[] = new double[c];
 
@@ -171,56 +171,9 @@ public class BRq extends MultilabelClassifier implements Randomizable, Technical
 		return result;
 	}
 
-
 	public void setSeed(int s) {
 		m_S = s;
 		m_Random = new Random(m_S);
-	}
-
-	@Override
-	public Enumeration listOptions() {
-
-		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tSets the downsampling ratio\n\tdefault: "+m_DownSampleRatio+"\t(% of original)", "P", 1, "-P <value>"));
-		newVector.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
-
-		Enumeration enu = super.listOptions();
-
-		while (enu.hasMoreElements()) 
-			newVector.addElement(enu.nextElement());
-
-		return newVector.elements();
-	}
-
-	@Override
-	public void setOptions(String[] options) throws Exception {
-	  String	tmpStr;
-	  
-	  tmpStr = Utils.getOption('P', options);
-	  if (tmpStr.length() > 0)
-	    m_DownSampleRatio = Double.parseDouble(tmpStr);
-	  else
-	    m_DownSampleRatio = 0.75;
-	  
-	  tmpStr = Utils.getOption('S', options);
-	  if (tmpStr.length() > 0)
-	    m_S = Integer.parseInt(tmpStr);
-	  else
-	    m_S = 0;
-
-	  super.setOptions(options);
-	}
-
-	@Override
-	public String [] getOptions() {
-	  	ArrayList<String> result;
-	  	result = new ArrayList<String>(Arrays.asList(super.getOptions()));
-	  	result.add("-P");
-	  	result.add("" + m_DownSampleRatio);
-	  	result.add("-S");
-	  	result.add("" + m_S);
-		return result.toArray(new String[result.size()]);
-
 	}
 
 	public int getSeed() {
@@ -228,16 +181,73 @@ public class BRq extends MultilabelClassifier implements Randomizable, Technical
 	}
 
 	public String seedTipText() {
-	  return "The seed value for randomizing the data.";
+		return "The seed value for randomizing the data.";
+	}
+
+	public void setDownSampleRatio(double value) {
+		m_DownSampleRatio = value;
+	}
+
+	public double getDownSampleRatio() {
+		return m_DownSampleRatio;
+	}
+
+	public String downSampleRatioTipText() {
+		return "The down sample ratio.";
+	}
+
+	@Override
+	public Enumeration listOptions() {
+
+		Vector newVector = new Vector();
+		newVector.addElement(new Option("\tSets the downsampling ratio\n\tdefault: 0.75\n\t(% of original)", "P", 1, "-P <value>"));
+		newVector.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
+
+		Enumeration enu = super.listOptions();
+
+		while (enu.hasMoreElements())
+			newVector.addElement(enu.nextElement());
+
+		return newVector.elements();
+	}
+
+	@Override
+	public void setOptions(String[] options) throws Exception {
+		String	tmpStr;
+
+		tmpStr = Utils.getOption('P', options);
+		if (tmpStr.length() > 0)
+			setDownSampleRatio(Double.parseDouble(tmpStr));
+		else
+			setDownSampleRatio(0.75);
+
+		tmpStr = Utils.getOption('S', options);
+		if (tmpStr.length() > 0)
+			setSeed(Integer.parseInt(tmpStr));
+		else
+			setSeed(0);
+
+		super.setOptions(options);
+	}
+
+	@Override
+	public String [] getOptions() {
+		ArrayList<String> result;
+		result = new ArrayList<String>();
+		result.add("-P");
+		result.add("" + getDownSampleRatio());
+		result.add("-S");
+		result.add("" + getSeed());
+		result.addAll(Arrays.asList(super.getOptions()));
+		return result.toArray(new String[result.size()]);
 	}
 
 	@Override
 	public String getRevision() {
-	    return RevisionUtils.extract("$Revision: 9117 $");
+		return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
 	public static void main(String args[]) {
 		MultilabelClassifier.evaluation(new BRq(),args);
 	}
-
 }
