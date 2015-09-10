@@ -53,13 +53,6 @@ public class EnsembleMTTest
     return new EnsembleMT();
   }
 
-  /**
-   * FIXME no useful predictions returned. custom dataset?
-   */
-  @Override
-  public void testRegression() throws Exception {
-  }
-
   public static Test suite() {
     return new TestSuite(EnsembleMTTest.class);
   }

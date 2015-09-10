@@ -53,13 +53,6 @@ public class MBRTest
     return new MBR();
   }
 
-  /**
-   * FIXME no useful predictions returned. custom dataset?
-   */
-  @Override
-  public void testRegression() throws Exception {
-  }
-
   public static Test suite() {
     return new TestSuite(MBRTest.class);
   }

@@ -53,13 +53,6 @@ public class BaggingMTTest
     return new BaggingMT();
   }
 
-  /**
-   * FIXME no useful predictions returned. custom dataset?
-   */
-  @Override
-  public void testRegression() throws Exception {
-  }
-
   public static Test suite() {
     return new TestSuite(BaggingMTTest.class);
   }

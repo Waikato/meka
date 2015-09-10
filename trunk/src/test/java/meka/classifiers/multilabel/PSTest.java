@@ -53,13 +53,6 @@ public class PSTest
     return new PS();
   }
 
-  /**
-   * FIXME no useful predictions. custom dataset?
-   */
-  @Override
-  public void testRegression() throws Exception {
-  }
-
   public static Test suite() {
     return new TestSuite(PSTest.class);
   }
