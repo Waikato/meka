@@ -15,24 +15,17 @@
 
 package meka.classifiers.multilabel;
 
+import meka.core.MLUtils;
+import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
+import weka.core.*;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
+
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.Vector;
-
-import weka.classifiers.AbstractClassifier;
-import weka.classifiers.Classifier;
-import weka.core.Instance;
-import weka.core.Instances;
-import meka.core.MLUtils;
-import weka.core.Option;
-import weka.core.Randomizable;
-import weka.core.RevisionUtils;
-import weka.core.TechnicalInformation;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
-import weka.core.Utils;
 
 /**
  * The Classifier Chains  Method - Random Subspace ('quick') Version.
@@ -182,6 +175,10 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 		m_Random = new Random(m_S);
 	}
 
+	public String seedTipText() {
+		return "The seed value for randomization.";
+	}
+
 	/** Set the downsample ratio  */
 	public void setDownSampleRatio(double r) {
 		m_DownSampleRatio = r;
@@ -191,9 +188,9 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 	public double getDownSampleRatio() {
 		return m_DownSampleRatio;
 	}
-	
-	public String seedTipText() {
-	  return "The seed value for randomization.";
+
+	public String downSampleRatioTipText() {
+		return "The down sample ratio (0-1).";
 	}
 
 	@Override
@@ -201,6 +198,7 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 
 		Vector newVector = new Vector();
 		newVector.addElement(new Option("\tSets the downsampling ratio        \n\tdefault: "+m_DownSampleRatio+"\t(of original)", "P", 1, "-P <value>"));
+		newVector.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
 
 		Enumeration enu = super.listOptions();
 
@@ -217,6 +215,14 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 		tmpStr = Utils.getOption('P', options);
 		if (tmpStr.length() != 0) 
 			setDownSampleRatio(Double.parseDouble(tmpStr));
+		else
+		  setDownSampleRatio(0.75);
+
+		tmpStr = Utils.getOption('S', options);
+		if (tmpStr.length() > 0)
+			setSeed(Integer.parseInt(tmpStr));
+		else
+			setSeed(0);
 
 		super.setOptions(options);
 	}
