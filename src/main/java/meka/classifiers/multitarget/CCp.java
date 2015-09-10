@@ -157,7 +157,7 @@ public class CCp extends meka.classifiers.multilabel.CC implements MultiTargetCl
 	}
 
 	@Override
-	public int[] getChain() {
+	public int[] retrieveChain() {
 		return m_Chain;
 	}
 
@@ -167,7 +167,7 @@ public class CCp extends meka.classifiers.multilabel.CC implements MultiTargetCl
 	  	
 		int L = D.classIndex();
 
-		int indices[] = getChain();
+		int indices[] = retrieveChain();
 		if (indices == null) {
 			indices = MLUtils.gen_indices(L);
 			MLUtils.randomize(indices,new Random(m_S));
