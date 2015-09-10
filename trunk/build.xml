@@ -107,25 +107,6 @@
 	</jar>
     </target>
 
-    <target name="tests" depends="compile" description="Executes the tests.">
-     <java fork="yes" dir="."
-      classname="junit.textui.TestRunner"
-      taskname="junit" failonerror="true">
-		 <arg value="meka.MekaTests"/>
-    		<classpath>
-		      <fileset dir="${lib}">
-    		     <include name="*.jar"/>
-	    	  </fileset>
-		      <pathelement path="${build}"/>
-		      <pathelement path="${build-tests}"/>
-    		</classpath>
-         <jvmarg value="-Duser.timezone=Pacific/Auckland"/>
-   	 </java>
-     <delete>
-      	<fileset dir="${basedir}" includes="temp_Testdata_*.arff"/>
-     </delete>
-    </target>
-
     <target name="src-jar" description="Creates a source archive.">
 	<jar destfile="${target}/meka-${version}-sources.jar">
  		<zipfileset dir="${src}" prefix="src/main/java"/>
@@ -180,7 +161,7 @@
       </copy>
     </target>
 
-    <target name="release" depends="clean, all, tests, latex" description="Generates a release archive.">
+    <target name="release" depends="clean, all, latex" description="Generates a release archive.">
       <delete file="${release}/meka-release-${version}.zip"/>
       <zip destfile="${release}/meka-release-${version}.zip">
         <zipfileset dir="${basedir}" includes="README.txt" prefix="meka-${version}"/>
