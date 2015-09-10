@@ -47,6 +47,15 @@ public class ShowGraphs
 	private static final long serialVersionUID = -1152575716154907544L;
 
 	/**
+	 * Returns the group of the plugin. Used for the grouping the menu items.
+	 *
+	 * @return          the group
+	 */
+	public String getGroup() {
+		return "Graph";
+	}
+
+	/**
 	 * Returns the name of the plugin. Used for the menu item text.
 	 *
 	 * @return          the name
