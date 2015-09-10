@@ -15,33 +15,15 @@
 
 package meka.classifiers.multilabel;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Vector;
-
-import weka.core.Attribute;
-import weka.core.FastVector;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.Option;
-import weka.core.Randomizable;
-import weka.core.RevisionUtils;
-import weka.core.TechnicalInformation;
+import meka.core.MLUtils;
+import meka.core.PSUtils;
+import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
-import weka.core.Utils;
-import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.Remove;
 
-import meka.core.PSUtils;
-import meka.core.MLUtils;
-import meka.core.LabelSet;
+import java.util.Enumeration;
+import java.util.Random;
+import java.util.Vector;
 
 /**
  * PS.java - The Pruned Sets Method.
@@ -60,8 +42,6 @@ public class PS extends LC implements Randomizable, TechnicalInformationHandler 
 	
 	protected int m_P = 0; 
 	protected int m_N = 0;
-	protected String m_sP = String.valueOf(m_P);
-	protected String m_sN = String.valueOf(m_N);
 	protected int m_S = 1;
 
 	/**
@@ -117,6 +97,10 @@ public class PS extends LC implements Randomizable, TechnicalInformationHandler 
 		m_P = p;
 	}
 
+	public String pTipText() {
+		return "The pruning value P, defining an infrequent labelset as one which occurs less than P times in the data (P = 0 defaults to LC).";
+	}
+
 	/** 
 	 * GetN - Get the subsampling value N.
 	 */
@@ -131,6 +115,10 @@ public class PS extends LC implements Randomizable, TechnicalInformationHandler 
 		m_N = n;
 	}
 
+	public String nTipText() {
+		return "The subsampling value N, the (maximum) number of frequent labelsets to subsample from the infrequent labelsets.";
+	}
+
 	/** 
 	 * SetSeed - Use random P and N values (in this case P and N arguments determine a <i>range</i> of values to select from randomly, e.g., -P 1-5 selects P randomly in {1,2,3,4,5}.
 	 */
@@ -138,10 +126,6 @@ public class PS extends LC implements Randomizable, TechnicalInformationHandler 
 	public void setSeed(int s) {
 		// set random P / N values here (used by, e.g., EnsembleML)
 		m_S = s;
-		if (m_sP != null)
-			m_P = parseValue(m_sP);
-		if (m_sN != null)
-			m_N = parseValue(m_sN);
 		if (getDebug()) {
 			System.out.println("P = "+m_P);
 			System.out.println("N = "+m_N);
@@ -152,13 +136,18 @@ public class PS extends LC implements Randomizable, TechnicalInformationHandler 
 	public int getSeed() {
 		return m_S;
 	}
-	
+
+	public String seedTipText() {
+		return "The seed value for randomizing the data.";
+	}
+
 	@Override
 	public Enumeration listOptions() {
 
 		Vector newVector = new Vector();
 		newVector.addElement(new Option("\tSets the pruning value, defining an infrequent labelset as one which occurs <= P times in the data (P = 0 defaults to LC).\n\tdefault: "+m_P+"\t(LC)", "P", 1, "-P <value>"));
 		newVector.addElement(new Option("\tSets the (maximum) number of frequent labelsets to subsample from the infrequent labelsets.\n\tdefault: "+m_N+"\t(none)\n\tn\tN = n\n\t-n\tN = n, or 0 if LCard(D) >= 2\n\tn-m\tN = random(n,m)", "N", 1, "-N <value>"));
+		newVector.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
 
 		Enumeration enu = super.listOptions();
 
@@ -170,18 +159,25 @@ public class PS extends LC implements Randomizable, TechnicalInformationHandler 
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
+		String tmpStr;
 
-		m_sP = Utils.getOption('P', options);
-		if (m_sP.length() != 0)
-			setP(parseValue(m_sP));
+		tmpStr = Utils.getOption('P', options);
+		if (tmpStr.length() != 0)
+			setP(parseValue(tmpStr));
 		else
-			m_sP = String.valueOf(getP());
+			setP(parseValue("0"));
 
-		m_sN = Utils.getOption('N', options);
-		if (m_sN.length() != 0)
-			setN(parseValue(m_sN));
+		tmpStr = Utils.getOption('N', options);
+		if (tmpStr.length() != 0)
+			setN(parseValue(tmpStr));
 		else
-			m_sN = String.valueOf(m_N);
+			setN(parseValue("0"));
+
+		tmpStr = Utils.getOption('S', options);
+		if (tmpStr.length() > 0)
+			setSeed(Integer.parseInt(tmpStr));
+		else
+			setSeed(0);
 
 		super.setOptions(options);
 	}
@@ -214,7 +210,6 @@ public class PS extends LC implements Randomizable, TechnicalInformationHandler 
 				m_N = 0;
 			else 
 				m_N = Math.abs(m_N);
-			m_sN = String.valueOf(m_N);
 			System.err.println("N set to "+m_N);
 		}
 
