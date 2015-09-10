@@ -59,7 +59,7 @@ public class EvaluationTests extends TestCase {
 
 	public static Instances loadInstances(String fn) {
 		try {
-			Instances D = DataSource.read(fn);
+			Instances D = DataSource.read("src/test/resources/" + fn);
 			MLUtils.prepareData(D);
 			return D;
 		} catch(Exception e) {
@@ -72,7 +72,7 @@ public class EvaluationTests extends TestCase {
 
 	public void testRepeatable() {
 		// Load Music
-		Instances D = loadInstances("src/main/data/Music.arff");
+		Instances D = loadInstances("Music.arff");
 		Instances D_train = new Instances(D,0,400);
 		Instances D_test = new Instances(D,400,D.numInstances()-400);
 		// Train ECC
@@ -100,9 +100,9 @@ public class EvaluationTests extends TestCase {
 	public void testMulanFormat() {
 		Result r1 = null, r2 = null;
 		// Load Music-train
-		Instances D_train = loadInstances("src/test/resources/Music-train.arff");
+		Instances D_train = loadInstances("Music-train.arff");
 		// Load Music-test
-		Instances D_test = loadInstances("src/test/resources/Music-test.arff");
+		Instances D_test = loadInstances("Music-test.arff");
 		// Train CC
 		CC h = new CC();
 		h.setClassifier(new SMO());
@@ -114,7 +114,7 @@ public class EvaluationTests extends TestCase {
 		}
 
 		// Load Music
-		Instances D = loadInstances("src/main/data/Music.arff");
+		Instances D = loadInstances("Music.arff");
 		D_train = new Instances(D,0,491);
 		D_test = new Instances(D,491,D.numInstances()-491);
 		// Eval
@@ -131,7 +131,7 @@ public class EvaluationTests extends TestCase {
 		// Batch
 		Result r1 = null, r2 = null;
 		// Load Data
-		Instances D = loadInstances("src/main/data/Music.arff");
+		Instances D = loadInstances("Music.arff");
 		// Train ECCUpdateable
 		BaggingMLUpdateable h = new BaggingMLUpdateable();
 		CCUpdateable cc = new CCUpdateable();
@@ -187,7 +187,7 @@ public class EvaluationTests extends TestCase {
 	public static Result cvEvaluateClassifier(MultilabelClassifier h, String top) {
 		Instances D = null;
 		try {
-			D = EvaluationTests.loadInstances("src/main/data/Music.arff");
+			D = EvaluationTests.loadInstances("Music.arff");
 			//h.buildClassifier(D); // <-- this line is pointless
 			Result folds[] = Evaluation.cvModel(h,D,5,top);
 			return MLEvalUtils.averageResults(folds);
