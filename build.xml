@@ -180,8 +180,7 @@
       </copy>
     </target>
 
-    <!--target name="release" depends="clean, all, tests, latex" description="Generates a release archive."-->
-    <target name="release" depends="clean, all, latex" description="Generates a release archive.">
+    <target name="release" depends="clean, all, tests, latex" description="Generates a release archive.">
       <delete file="${release}/meka-release-${version}.zip"/>
       <zip destfile="${release}/meka-release-${version}.zip">
         <zipfileset dir="${basedir}" includes="README.txt" prefix="meka-${version}"/>
