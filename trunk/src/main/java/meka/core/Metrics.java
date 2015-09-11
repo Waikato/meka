@@ -17,6 +17,9 @@ package meka.core;
 
 import weka.core.*;
 import java.util.*;
+import weka.classifiers.evaluation.ThresholdCurve;
+import weka.classifiers.evaluation.NominalPrediction;
+import weka.classifiers.evaluation.Prediction;
 
 /**
  * Metrics.java - Evaluation Metrics. 
@@ -484,6 +487,45 @@ public abstract class Metrics {
 	   return i;
    }
 
+   /** Calculate AUPRC: Area Under the Precision-Recall curve. */
+   public static double P_macroAUPRC(int Y[][], double P[][]) {
+
+	   int L = Y[0].length;
+	   double AUC[] = new double[L];
+	   for(int j = 0; j < L; j++) {
+		   ThresholdCurve curve = new ThresholdCurve();
+		   Instances result = curve.getCurve(MLUtils.toWekaPredictions(M.getCol(Y,j),M.getCol(P,j)));
+		   AUC[j] = ThresholdCurve.getPRCArea(result);
+	   }
+	   return Utils.mean(AUC);
+   }
+
+   /** Calculate AUROC: Area Under the ROC curve. */
+   public static double P_macroAUROC(int Y[][], double P[][]) {
+
+	   int L = Y[0].length;
+	   double AUC[] = new double[L];
+	   for(int j = 0; j < L; j++) {
+		   ThresholdCurve curve = new ThresholdCurve();
+		   Instances result = curve.getCurve(MLUtils.toWekaPredictions(M.getCol(Y,j),M.getCol(P,j)));
+		   AUC[j] = ThresholdCurve.getROCArea(result);
+	   }
+	   return Utils.mean(AUC);
+   }
+
+   /** Get Data for Plotting PR and ROC curves. */
+   public static Instances[] curveData(int Y[][], double P[][]) {
+
+
+	   int L = Y[0].length;
+	   Instances curveData[] = new Instances[L];
+	   for(int j = 0; j < L; j++) {
+		   ThresholdCurve curve = new ThresholdCurve();
+		   curveData[j] = curve.getCurve(MLUtils.toWekaPredictions(M.getCol(Y,j),M.getCol(P,j)));
+	   }
+	   return curveData;
+   }
+
    /** Log Likelihood */
    public double P_LogLikelihood(int y[], double p[]) {
 	   int L = y.length;
@@ -574,6 +616,13 @@ public abstract class Metrics {
 	//	   {3,4,5},
 	//	   {6},
 	//	   {7}
+	   };
+	   double P[][] = new double[][] {
+		   // 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 
+		   {0,0.7,0.8,0.9,0,0,0,0,0,0.7,0,0,0,0,0},
+			   {0,0,0,0.6,0.7,0,0,0,0,0,0,0,0,0,0},
+			   {0,0,0,0,0,0,0.8,0,0,0,0,0,0.8,0,0},
+			   {0,0.7,0,0,0,0,0,0,0,0,0,0,0,0,0},
 	   };
 	   int Ypred[][] = new int[][] {
 		 // 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 

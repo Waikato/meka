@@ -20,6 +20,8 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Utils;
 import weka.core.converters.ConverterUtils.DataSource;
+import weka.classifiers.evaluation.NominalPrediction;
+import weka.classifiers.evaluation.Prediction;
 
 import java.io.*;
 import java.util.*;
@@ -154,6 +156,18 @@ public abstract class MLUtils {
 			y[j] = Integer.parseInt(s[j].trim());
 		}
 		return y;
+	}
+
+	/** 
+	 * Convert to Weka (multi-target) Predictions. 
+	 * Note: currently only multi-label.
+	 * */
+	public static ArrayList<Prediction> toWekaPredictions(int y[], double p[]) {
+		ArrayList<Prediction> predictions = new ArrayList<Prediction>();
+		for(int i = 0; i < y.length; i++) {
+			predictions.add(new NominalPrediction((double)y[i], new double[]{1.-p[i],p[i]}));
+		}
+		return predictions;
 	}
 
 	/**

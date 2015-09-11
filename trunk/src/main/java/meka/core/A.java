@@ -326,11 +326,14 @@ public abstract class A {
 		return u;
 	}
 
-	// @see also M.threshold(z,t)
+	/**
+	 * Convert an array of doubles to ints through a threshold.
+	 *	@see M.threshold
+	 */ 
 	public static final int[] toIntArray(double z[], double t) {
 		int u[] = new int[z.length];
 		for(int j = 0; j < z.length; j++) {
-			u[j] = (z[j] > t) ? 1 : 0;
+			u[j] = (z[j] >= t) ? 1 : 0;
 		}
 		return u;
 	}
