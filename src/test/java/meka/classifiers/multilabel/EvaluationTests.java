@@ -138,8 +138,8 @@ public class EvaluationTests extends TestCase {
 		cc.setClassifier(new IBk());
 		h.setClassifier(cc);
 		try {
-			r1 = IncrementalEvaluation.evaluateModel(h,D)[0];
-			r2 = IncrementalEvaluation.evaluateModel(h,D)[0];
+			r1 = IncrementalEvaluation.evaluateModel(h,D);
+			r2 = IncrementalEvaluation.evaluateModel(h,D);
 		} catch(Exception e) {
 			System.err.println("FAILED TO GET r1, r2");
 			e.printStackTrace();
