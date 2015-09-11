@@ -52,7 +52,7 @@ public class ShowGraphs
 	 * @return          the group
 	 */
 	public String getGroup() {
-		return "Graph";
+		return "Visualization";
 	}
 
 	/**
