@@ -101,13 +101,11 @@ public class SaveGraphs
 	 *
 	 * @param history   the current history
 	 * @param index     the selected history item
-	 * @param suffix    the suffix of the selected item
-	 * @param item      the selected item itself
 	 * @return          the listener
 	 */
 	@Override
-	public ActionListener getActionListener(final ResultHistoryList history, final int index, final String suffix, final Object item) {
-		final MultiLabelDrawable d = (MultiLabelDrawable) item;
+	public ActionListener getActionListener(final ResultHistoryList history, final int index) {
+		final MultiLabelDrawable d = (MultiLabelDrawable) history.getPayloadAt(index);
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

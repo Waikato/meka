@@ -99,12 +99,10 @@ public class SaveModel
 	 *
 	 * @param history   the current history
 	 * @param index     the selected history item
-	 * @param suffix    the suffix of the selected item
-	 * @param item      the selected item itself
 	 * @return          the listener
 	 */
 	@Override
-	public ActionListener getActionListener(final ResultHistoryList history, final int index, final String suffix, final Object item) {
+	public ActionListener getActionListener(final ResultHistoryList history, final int index) {
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -113,7 +111,7 @@ public class SaveModel
 					return;
 				File file = getFileChooser().getSelectedFile();
 				try {
-					SerializationHelper.write(file.getAbsolutePath(), item);
+					SerializationHelper.write(file.getAbsolutePath(), history.getPayloadAt(index));
 				}
 				catch (Exception ex) {
 					String msg = "Failed to write model to '" + file + "'!";
