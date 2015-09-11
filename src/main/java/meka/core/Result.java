@@ -188,6 +188,14 @@ public class Result implements Serializable {
 	*/
 
 	/**
+	 * Retrieve the measurement for metric 'metric'.
+	 */
+	public Object getMeasurement(String metric) {
+		return output.get(metric);
+	}
+
+
+	/**
 	 * SetValue.
 	 * Add an evaluation metric and a value for it.
 	 */
