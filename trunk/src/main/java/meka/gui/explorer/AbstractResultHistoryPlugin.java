@@ -142,11 +142,11 @@ public abstract class AbstractResultHistoryPlugin
 	/**
 	 * Checks whether the current item can be handled. Disables/enables the menu item.
 	 *
-	 * @param suffix    the suffix of the item
-	 * @param item      the item itself
+	 * @param history   the current history
+	 * @param index     the selected history item
 	 * @return          true if can be handled
 	 */
-	public abstract boolean handles(String suffix, Object item);
+	public abstract boolean handles(ResultHistoryList history, int index);
 
 	/**
 	 * Returns the action lister to use in the menu.
@@ -155,7 +155,7 @@ public abstract class AbstractResultHistoryPlugin
 	 * @param index     the selected history item
 	 * @return          the listener
 	 */
-	public abstract ActionListener getActionListener(final ResultHistoryList history, final int index);
+	public abstract ActionListener getActionListener(ResultHistoryList history, int index);
 
 	/**
 	 * Allows to customize the popup menu for the result history.
@@ -165,16 +165,11 @@ public abstract class AbstractResultHistoryPlugin
 	 * @param menu the menu to customize
 	 */
 	@Override
-	public void customizePopupMenu(final ResultHistoryList history, final int index, final JPopupMenu menu) {
+	public void customizePopupMenu(ResultHistoryList history, int index, JPopupMenu menu) {
 		JMenuItem           menuitem;
-		final String 		suffix;
-		final Object		item;
-
-		suffix = history.getSuffixAt(index);
-		item = history.getPayloadAt(index);
 
 		menuitem = new JMenuItem(getName());
-		menuitem.setEnabled(handles(suffix, item));
+		menuitem.setEnabled(handles(history, index));
 		menuitem.addActionListener(getActionListener(history, index));
 		menu.add(menuitem);
 	}

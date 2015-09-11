@@ -65,13 +65,13 @@ public class SaveModel
 	/**
 	 * Checks whether the current item can be handled. Disables/enables the menu item.
 	 *
-	 * @param suffix    the suffix of the item
-	 * @param item      the item itself
+	 * @param history   the current history
+	 * @param index     the selected history item
 	 * @return          true if can be handled
 	 */
 	@Override
-	public boolean handles(String suffix, Object item) {
-		return (item != null);
+	public boolean handles(ResultHistoryList history, int index) {
+		return (history.getPayloadAt(index) != null);
 	}
 
 	/**
