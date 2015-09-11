@@ -89,10 +89,7 @@ public class IncrementalEvaluation {
 		if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(D)+"\tL="+D.classIndex()+"");
 
 		Utils.checkForRemainingOptions(options);
-		Result results[] = evaluateModel(h,D,nWin,rLabeled,Top,Vop);
-		
-		// Return the final evaluation window.
-		return results[results.length-1];
+		return evaluateModelPrequentialBasic(h,D,nWin,rLabeled,Top,Vop);
 	}
 
 	private static String measures[] = new String[]{"Accuracy", "Exact match", "Hamming score"};
@@ -100,15 +97,21 @@ public class IncrementalEvaluation {
 	/**
 	 * EvaluateModel - over 20 windows.
 	 */
-	public static Result[] evaluateModel(MultilabelClassifier h, Instances D) throws Exception {
-		return evaluateModel(h,D,20,1.0,"PCut1","3");
+	public static Result evaluateModel(MultilabelClassifier h, Instances D) throws Exception {
+		return evaluateModelPrequentialBasic(h,D,20,1.0,"PCut1","3");
 	}
 
 	/**
-	 * EvaluateModel - Evaluate a multi-label data-stream model over a moving window.
+	 * EvaluateModelBatchWindow - Evaluate a multi-label data-stream model over windows.
+	 * @param	h	Multilabel Classifier
+	 * @param 	D	stream
+	 * @param	numWindows	number of windows
+	 * @param	rLabeled	labelled-ness (1.0 by default)
+	 * @param	Top	threshold option
+	 * @param	Vop	verbosity option
 	 * The window is sampled every N/numWindows instances, for a total of numWindows windows.
 	 */
-	public static Result[] evaluateModel(MultilabelClassifier h, Instances D, int numWindows, double rLabeled, String Top, String Vop) throws Exception {
+	public static Result[] evaluateModelBatchWindow(MultilabelClassifier h, Instances D, int numWindows, double rLabeled, String Top, String Vop) throws Exception {
 
 		if (h.getDebug())
 			System.out.println(":- Classifier -: "+h.getClass().getName()+": "+Arrays.toString(h.getOptions()));
@@ -169,8 +172,7 @@ public class IncrementalEvaluation {
 
 				Instance x = D.instance(i);
 				AbstractInstance x_ = (AbstractInstance)((AbstractInstance) x).copy(); 		// copy 
-				// (we can't clear the class values because certain classifiers need to know how well they're doing
-				// -- just trust that there's no cheating!)
+				// (we can't clear the class values because certain classifiers need to know how well they're doing -- just trust that there's no cheating!)
 				//for(int j = 0; j < L; j++)  
 				//	x_.setValue(j,0.0);
 				
@@ -236,6 +238,183 @@ public class IncrementalEvaluation {
 		//return results;
 		return new Result[]{avg};
 	}
+
+	/*
+	 * EvaluateModelPrequentialWindow - Evaluate a multi-label data-stream model over a moving window.
+	public static Result[] evaluateModelPrequentialWindow(MultilabelClassifier h, Instances D, int windowSize, double rLabeled) throws Exception {
+
+		if (h.getDebug())
+			System.out.println(":- Classifier -: "+h.getClass().getName()+": "+Arrays.toString(h.getOptions()));
+
+		int L = D.classIndex();
+
+		Result result = new Result();
+
+		long train_time = 0;
+		long test_time = 0;
+
+		double nth = 1. / rLabeled; // label every nth example
+		results.setInfo("Supervision",String.valueOf(rLabeled));
+
+		Instances D_init = new Instances(D,0,windowSize); 	// initial window
+
+		if (h.getDebug()) {
+			System.out.println("Training classifier on initial window (of size "+windowSize+") ...");
+		}
+
+		train_time = System.currentTimeMillis();
+		h.buildClassifier(D_init); 										// initial classifir
+		train_time = System.currentTimeMillis() - train_time;
+
+		D = new Instances(D,windowSize,D.numInstances()-windowSize); 	// the rest (after the initial window)
+
+		if (h.getDebug()) {
+			System.out.println("Proceeding to Test/Label/Update cycle on remaining ("+D.numInstances()+") instances ...");
+		}
+
+		for(int i = 0; i < D.numInstances(); i++) {
+
+			test_time = 0;
+			train_time = 0;
+
+			Instance x = D.instance(i);
+			AbstractInstance x_ = (AbstractInstance)((AbstractInstance) x).copy(); 		// copy 
+				
+			 * TEST
+			long before_test = System.currentTimeMillis();
+			double y[] = h.distributionForInstance(x_);
+			long after_test = System.currentTimeMillis();
+			test_time += (after_test-before_test); 
+			result.addResult(y,x);
+
+			 * LABEL BECOMES AVAILABLE ?
+			if ( rLabeled >= 0.5 ) {
+				x = MLUtils.setLabelsMissing(x,L);
+			}
+
+			 * UPDATE
+			 * (The classifier will have to decide if it wants to deal with unlabelled instances.)
+			long before = System.currentTimeMillis();
+			((UpdateableClassifier)h).updateClassifier(x);
+			long after = System.currentTimeMillis();
+			train_time += (after-before); 
+
+			// calculate results
+			result.output = Result.getStats(results[w],Vop);
+		}
+
+		result.setInfo("Classifier",h.getClass().getName());
+		result.setInfo("Options",Arrays.toString(h.getOptions()));
+		result.setInfo("Additional Info",h.toString());
+		result.setInfo("Dataset",MLUtils.getDatasetName(D));
+		result.setInfo("Type","MLi");
+		double t = 0.5;
+		try {
+			t = Double.parseDouble(Top);
+		} catch(Exception e) {
+			System.err.println("[WARNING] Only a single threshold can be chosen for this kind of evaluation; Using "+t);
+		}
+		result.setInfo("Threshold", t);
+
+		result.vals.put("Test time",(test_time)/1000.0);
+		result.vals.put("Build time",(train_time)/1000.0);
+		result.vals.put("Total time",(test_time+train_time)/1000.0);
+
+		return result;
+
+	}
+	*/
+
+	/**
+	 * Prequential Evaluation - Accuracy since the start of evaluation.
+	 */
+	public static Result evaluateModelPrequentialBasic(MultilabelClassifier h, Instances D, int windowSize, double rLabeled, String Top, String Vop) throws Exception {
+
+		if (h.getDebug())
+			System.out.println(":- Classifier -: "+h.getClass().getName()+": "+Arrays.toString(h.getOptions()));
+
+		int L = D.classIndex();
+
+		Result result = new Result();
+
+		long train_time = 0;
+		long test_time = 0;
+
+		double nth = 1. / rLabeled; // label every nth example
+		result.setInfo("Supervision",String.valueOf(rLabeled));
+
+		Instances D_init = new Instances(D,0,windowSize); 	// initial window
+
+		if (h.getDebug()) {
+			System.out.println("Training classifier on initial window (of size "+windowSize+") ...");
+		}
+
+		train_time = System.currentTimeMillis();
+		h.buildClassifier(D_init); 										// initial classifir
+		train_time = System.currentTimeMillis() - train_time;
+
+		D = new Instances(D,windowSize,D.numInstances()-windowSize); 	// the rest (after the initial window)
+
+		if (h.getDebug()) {
+			System.out.println("Proceeding to Test/Label/Update cycle on remaining ("+D.numInstances()+") instances ...");
+		}
+
+		for(int i = 0; i < D.numInstances(); i++) {
+
+			test_time = 0;
+			train_time = 0;
+
+			Instance x = D.instance(i);
+			AbstractInstance x_ = (AbstractInstance)((AbstractInstance) x).copy(); 		// copy 
+				
+			/*
+			 * TEST
+			 */
+			long before_test = System.currentTimeMillis();
+			double y[] = h.distributionForInstance(x_);
+			long after_test = System.currentTimeMillis();
+			test_time += (after_test-before_test); 
+			result.addResult(y,x);
+
+			/*
+			 * LABEL BECOMES AVAILABLE ?
+			 */
+			if ( rLabeled >= 0.5 ) {
+				x = MLUtils.setLabelsMissing(x,L);
+			}
+
+			/*
+			 * UPDATE
+			 * (The classifier will have to decide if it wants to deal with unlabelled instances.)
+			 */
+			long before = System.currentTimeMillis();
+			((UpdateableClassifier)h).updateClassifier(x);
+			long after = System.currentTimeMillis();
+			train_time += (after-before); 
+
+		}
+
+		result.setInfo("Classifier",h.getClass().getName());
+		result.setInfo("Options",Arrays.toString(h.getOptions()));
+		result.setInfo("Additional Info",h.toString());
+		result.setInfo("Dataset",MLUtils.getDatasetName(D));
+		result.setInfo("Type","MLi");
+		double t = 0.5;
+		try {
+			t = Double.parseDouble(Top);
+		} catch(Exception e) {
+			System.err.println("[WARNING] Only a single threshold can be chosen for this kind of evaluation; Using "+t);
+		}
+		result.setInfo("Threshold", String.valueOf(t));
+		result.output = Result.getStats(result,Vop);
+
+		result.vals.put("Test time",(test_time)/1000.0);
+		result.vals.put("Build time",(train_time)/1000.0);
+		result.vals.put("Total time",(test_time+train_time)/1000.0);
+
+		return result;
+	}
+
 
 	public static void printOptions(Enumeration e) {
 
