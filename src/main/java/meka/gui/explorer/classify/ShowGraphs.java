@@ -82,13 +82,11 @@ public class ShowGraphs
 	 *
 	 * @param history   the current history
 	 * @param index     the selected history item
-	 * @param suffix    the suffix of the selected item
-	 * @param item      the selected item itself
 	 * @return          the listener
 	 */
 	@Override
-	public ActionListener getActionListener(final ResultHistoryList history, final int index, final String suffix, final Object item) {
-		final MultiLabelDrawable d = (MultiLabelDrawable) item;
+	public ActionListener getActionListener(final ResultHistoryList history, final int index) {
+		final MultiLabelDrawable d = (MultiLabelDrawable) history.getPayloadAt(index);
 
 		return new ActionListener() {
 			@Override
@@ -106,7 +104,7 @@ public class ShowGraphs
 					ex.printStackTrace();
 					return;
 				}
-				JDialog dialog = new JDialog((Frame) null, suffix, false);
+				JDialog dialog = new JDialog((Frame) null, history.getSuffixAt(index), false);
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				JTabbedPane tabbed = new JTabbedPane();
 				dialog.getContentPane().setLayout(new BorderLayout());

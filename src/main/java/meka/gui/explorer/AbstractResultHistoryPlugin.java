@@ -153,11 +153,9 @@ public abstract class AbstractResultHistoryPlugin
 	 *
 	 * @param history   the current history
 	 * @param index     the selected history item
-	 * @param suffix    the suffix of the selected item
-	 * @param item      the selected item itself
 	 * @return          the listener
 	 */
-	public abstract ActionListener getActionListener(final ResultHistoryList history, final int index, final String suffix, final Object item);
+	public abstract ActionListener getActionListener(final ResultHistoryList history, final int index);
 
 	/**
 	 * Allows to customize the popup menu for the result history.
@@ -177,7 +175,7 @@ public abstract class AbstractResultHistoryPlugin
 
 		menuitem = new JMenuItem(getName());
 		menuitem.setEnabled(handles(suffix, item));
-		menuitem.addActionListener(getActionListener(history, index, suffix, item));
+		menuitem.addActionListener(getActionListener(history, index));
 		menu.add(menuitem);
 	}
 
