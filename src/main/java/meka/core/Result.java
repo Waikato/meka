@@ -114,11 +114,9 @@ public class Result implements Serializable {
 	}
 
 	/**
-	 * RowRanking - Retrive the prediction confidences for the i-th instance.
-	 * <br>
-	 * TODO rename to rowConfidence
+	 * RowConfidence - Retrive the prediction confidences for the i-th instance.
 	 */
-	public double[] rowRanking(int i) {
+	public double[] rowConfidence(int i) {
 		return predictions.get(i);
 	}
 
@@ -126,14 +124,25 @@ public class Result implements Serializable {
 	 * RowPrediction - Retrive the predicted values for the i-th instance according to threshold t.
 	 */
 	public int[] rowPrediction(int i, double t) {
-		return MLUtils.toIntArray(rowRanking(i),t);
+		return MLUtils.toIntArray(rowConfidence(i),t);
 	}
 
 	/**
 	 * RowPrediction - Retrive the predicted values for the i-th instance according to pre-calibrated/chosen threshold.
 	 */
 	public int[] rowPrediction(int i) {
-		return ThresholdUtils.threshold(rowRanking(i),info.get("Threshold"));
+		return ThresholdUtils.threshold(rowConfidence(i),info.get("Threshold"));
+	}
+
+	/**
+	 * ColConfidence - Retrive the prediction confidences for the j-th label (column).
+	 */
+	public double[] colConfidence(int j) {
+		double y[] = new double[predictions.size()];
+		for(int i = 0; i < predictions.size(); i++) {
+			y[i] = rowConfidence(i)[j];
+		}
+		return y;
 	}
 
 	/**
@@ -142,7 +151,7 @@ public class Result implements Serializable {
 	public double[][] allPredictions() {
 		double Y[][] = new double[predictions.size()][];
 		for(int i = 0; i < predictions.size(); i++) {
-			Y[i] = rowRanking(i);
+			Y[i] = rowConfidence(i);
 		}
 		return Y;
 	}
