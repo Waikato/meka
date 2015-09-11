@@ -132,11 +132,6 @@ public class Evaluation {
 				Result fold[] = Evaluation.cvModel(h,D_train,numFolds,top,voption);
 				r = MLEvalUtils.averageResults(fold);
 				System.out.println(r.toString());
-				//if (fname != null) {
-					//for(int i = 0; i < fold.length; i++) {
-						//Result.writeResultToFile(fold[i],fname+"."+i);
-					//}
-				//}
 			}
 			else {
 				// TRAIN-TEST SPLIT

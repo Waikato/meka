@@ -838,10 +838,7 @@ public abstract class MLUtils {
 			sb.append(Utils.padRight(k.toString(),31));
 			Object obj = map.get(k);
 			//sb.append(" : ");
-			if (dp < 0) {
-				sb.append(obj);
-			}
-			else if (obj instanceof Double) {
+			if (obj instanceof Double) {
 				sb.append(Utils.doubleToString((Double)obj,5,dp));
 			}
 			else if (obj instanceof double[]) {
@@ -850,8 +847,12 @@ public abstract class MLUtils {
 			else if (obj instanceof int[]) {
 				sb.append(A.toString((int[])obj,dp+2));
 			}
-			else {
+			else if (obj instanceof String) {
 				sb.append(obj);
+			}
+			else {
+				// don't append if we don't know what it is!
+				//sb.append(obj);
 			}
 			sb.append('\n');
 		}
