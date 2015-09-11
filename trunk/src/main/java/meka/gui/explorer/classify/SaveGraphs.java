@@ -51,7 +51,7 @@ public class SaveGraphs
 	 * @return          the group
 	 */
 	public String getGroup() {
-		return "Graph";
+		return "Visualization";
 	}
 
 	/**
