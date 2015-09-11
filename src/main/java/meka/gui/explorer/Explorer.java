@@ -88,7 +88,7 @@ public class Explorer
 	protected JMenuItem m_MenuItemEditData;
 
 	/** the "homepage" menu item. */
-	protected JMenuItem m_MenuItemFileHomepage;
+	protected JMenuItem m_MenuItemHelpHomepage;
 
 	/** the recent files handler. */
 	protected RecentFilesHandlerWithCommandline<JMenu> m_RecentFilesHandler;
@@ -347,7 +347,7 @@ public class Explorer
 				}
 			});
 			menu.add(menuitem);
-			m_MenuItemFileHomepage = menuitem;
+			m_MenuItemHelpHomepage = menuitem;
 
 			m_MenuBar = result;
 		}
@@ -373,7 +373,7 @@ public class Explorer
 		m_MenuItemEditUndo.setEnabled(canUndo());
 		m_MenuItemEditData.setEnabled(m_Data != null);
 		// Help
-		m_MenuItemFileHomepage.setEnabled(true);
+		m_MenuItemHelpHomepage.setEnabled(true);
 	}
 
 	/**
