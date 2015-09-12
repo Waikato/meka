@@ -14,7 +14,7 @@
  */
 
 /**
- * ShowROC.java
+ * ShowPrecisionRecall.java
  * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
 
@@ -23,12 +23,12 @@ package meka.gui.explorer.classify;
 import weka.classifiers.evaluation.ThresholdCurve;
 
 /**
- * Allows the user to display the ROC curves per label.
+ * Allows the user to display the precision recall curves per label.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
-public class ShowROC
+public class ShowPrecisionRecall
 		extends AbstractShowThresholdCurve {
 	private static final long serialVersionUID = -1152575716154907544L;
 
@@ -39,7 +39,7 @@ public class ShowROC
 	 */
 	@Override
 	public String getName() {
-		return "Show ROC";
+		return "Show Precision-Recall";
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class ShowROC
 	 * @return              the name of the column
 	 */
 	protected String getDefaultXColumn() {
-		return ThresholdCurve.FP_RATE_NAME;
+		return ThresholdCurve.RECALL_NAME;
 	}
 
 	/**
@@ -57,6 +57,6 @@ public class ShowROC
 	 * @return              the name of the column
 	 */
 	protected String getDefaultYColumn() {
-		return ThresholdCurve.TP_RATE_NAME;
+		return ThresholdCurve.PRECISION_NAME;
 	}
 }
