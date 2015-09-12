@@ -49,6 +49,7 @@ public class Result implements Serializable {
 	public HashMap<String,Object> output = new LinkedHashMap<String,Object>();
 	public HashMap<String,String> info = new LinkedHashMap<String,String>();
 	public HashMap<String,Object> vals = new LinkedHashMap<String,Object>();
+	public HashMap<String,String> model = new LinkedHashMap<String,String>();
 
 	public Result() {
 		predictions = new ArrayList<double[]>();
@@ -81,21 +82,24 @@ public class Result implements Serializable {
 		}
 		*/
 
-		String resultString = "";
+		StringBuilder resultString = new StringBuilder();
 		if (info.containsKey("Verbosity") && !info.get("Type").equalsIgnoreCase("CV")) { 
 			int V = MLUtils.getIntegerOption(info.get("Verbosity"),1);
 			if ( V > 4) {
-				resultString += "== Individual Errors\n\n";
+				resultString.append("== Individual Errors\n\n");
 				// output everything
-				resultString += Result.getResultAsString(this,V-5) + "\n\n";
+				resultString.append(Result.getResultAsString(this,V-5) + "\n\n");
 			}
 
 		}
 		// output the stats in general
-		resultString += "== Evaluation Info\n\n" + MLUtils.hashMapToString(info);
-		resultString += "\n\n== Predictive Performance\n\n" + MLUtils.hashMapToString(output,3);
-		resultString += "\n\n== Additional Measurements\n\n" + MLUtils.hashMapToString(vals,3);
-		return resultString +"\n\n";
+		if (model.size() > 0)
+			resultString.append("== Model info\n\n" + MLUtils.hashMapToString(model));
+		resultString.append("== Evaluation Info\n\n" + MLUtils.hashMapToString(info));
+		resultString.append("\n\n== Predictive Performance\n\n" + MLUtils.hashMapToString(output,3));
+		resultString.append("\n\n== Additional Measurements\n\n" + MLUtils.hashMapToString(vals,3));
+		resultString.append("\n\n");
+		return resultString.toString();
 	}
 
 	/**
@@ -124,14 +128,14 @@ public class Result implements Serializable {
 	 * RowPrediction - Retrive the predicted values for the i-th instance according to threshold t.
 	 */
 	public int[] rowPrediction(int i, double t) {
-		return MLUtils.toIntArray(rowConfidence(i),t);
+		return MLUtils.toIntArray(rowConfidence(i), t);
 	}
 
 	/**
 	 * RowPrediction - Retrive the predicted values for the i-th instance according to pre-calibrated/chosen threshold.
 	 */
 	public int[] rowPrediction(int i) {
-		return ThresholdUtils.threshold(rowConfidence(i),info.get("Threshold"));
+		return ThresholdUtils.threshold(rowConfidence(i), info.get("Threshold"));
 	}
 
 	/**
@@ -225,6 +229,20 @@ public class Result implements Serializable {
 	 */
 	public String getInfo(String cat) {
 		return info.get(cat);
+	}
+
+	/**
+	 * Set a model string.
+	 */
+	public void setModel(String key, String val) {
+		model.put(key, val);
+	}
+
+	/**
+	 * Get the model value.
+	 */
+	public String getModel(String key) {
+		return model.get(key);
 	}
 
 	// ********************************************************************************************************

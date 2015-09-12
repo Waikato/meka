@@ -367,7 +367,7 @@ public class Evaluation {
 
 		result.setValue("Build Time",(after - before)/1000.0);
 		result.setValue("Test Time",(after_test - before_test)/1000.0);
-		result.setValue("Total Time",(after_test - before)/1000.0);
+		result.setValue("Total Time", (after_test - before) / 1000.0);
 
 		result.setInfo("Classifier",h.getClass().getName());
 		result.setInfo("Options",Arrays.toString(h.getOptions()));
@@ -375,6 +375,10 @@ public class Evaluation {
 		result.setInfo("Dataset",MLUtils.getDatasetName(D_train));
 		result.setInfo("Number of labels (L)",String.valueOf(D_train.classIndex()));
 		//result.setInfo("Maxfreq_set",MLUtils.mostCommonCombination(D_train,result.L));
+
+		String model = h.getModel();
+		if (model.length() > 0)
+			result.setModel("Model",h.getModel());
 
 		return result;
 	}
