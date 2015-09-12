@@ -74,7 +74,7 @@ public class ArffViewerDefinition
 	protected void launch() {
 		MekaFrame frame = new MekaFrame();
 		ArffViewerMainPanel main = new ArffViewerMainPanel(frame);
-		frame.setTitle("Arff viewer");
+		frame.setTitle(getName());
 		frame.setDefaultCloseOperation(MekaFrame.DISPOSE_ON_CLOSE);
 		frame.setIconImage(GUIHelper.getLogoIcon().getImage());
 		frame.setLayout(new BorderLayout());
