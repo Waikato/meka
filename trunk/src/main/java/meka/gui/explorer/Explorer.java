@@ -20,6 +20,7 @@
 package meka.gui.explorer;
 
 import meka.core.MLUtils;
+import meka.core.Project;
 import meka.gui.core.*;
 import meka.gui.events.RecentItemEvent;
 import meka.gui.events.RecentItemListener;
@@ -645,6 +646,7 @@ public class Explorer
 	 * @param args ignored
 	 */
 	public static void main(String[] args) throws Exception {
+		Project.initialize();
 		GenericObjectEditor.registerAllEditors();
 		Explorer main = new Explorer();
 		MekaFrame frame = new MekaFrame();
