@@ -78,6 +78,7 @@ public abstract class AbstractShowThresholdCurve
 	 * @return              the name of the column
 	 */
 	protected abstract String getDefaultYColumn();
+
 	/**
 	 * Creates a panel displaying the ROC data.
 	 *
