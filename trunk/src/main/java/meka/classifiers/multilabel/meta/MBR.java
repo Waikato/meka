@@ -15,18 +15,12 @@
 
 package meka.classifiers.multilabel.meta;
 
-import weka.classifiers.AbstractClassifier;
 import meka.classifiers.multilabel.BR;
 import meka.classifiers.multilabel.MultilabelClassifier;
-import weka.core.Attribute;
-import weka.core.FastVector;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.RevisionUtils;
-import weka.core.TechnicalInformation;
+import weka.classifiers.AbstractClassifier;
+import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
 
 /**
  * MBR.java - Meta BR: BR stacked with feature outputs into another BR.
@@ -43,6 +37,11 @@ public class MBR extends MultilabelClassifier implements TechnicalInformationHan
 	protected BR m_BASE = null;
 	protected BR m_META = null;
 
+	public MBR() {
+		// default classifier for GUI
+		this.m_Classifier = new BR();
+	}
+
 	/**
 	 * Description to display in the GUI.
 	 * 
@@ -51,6 +50,11 @@ public class MBR extends MultilabelClassifier implements TechnicalInformationHan
 	@Override
 	public String globalInfo() {
 		return "BR stacked with feature outputs.\nFor more information see:\n" + getTechnicalInformation().toString();
+	}
+
+	@Override
+	protected String defaultClassifierString() {
+		return BR.class.getName();
 	}
 
 	@Override
