@@ -21,6 +21,9 @@
 package meka.gui.explorer.classify;
 
 import weka.classifiers.evaluation.ThresholdCurve;
+import weka.core.Instances;
+import weka.core.Utils;
+import weka.gui.visualize.ThresholdVisualizePanel;
 
 /**
  * Allows the user to display the precision recall curves per label.
@@ -58,5 +61,20 @@ public class ShowPrecisionRecall
 	 */
 	protected String getDefaultYColumn() {
 		return ThresholdCurve.PRECISION_NAME;
+	}
+
+	/**
+	 * Creates a panel displaying the ROC data.
+	 *
+	 * @param data          the threshold curve data
+	 * @param title         the title of the plot
+	 * @return              the panel
+	 * @throws Exception    if plot generation fails
+	 */
+	protected ThresholdVisualizePanel createPanel(Instances data, String title) throws Exception {
+		ThresholdVisualizePanel result = super.createPanel(data, title);
+		result.setROCString("PRC area: " + Utils.doubleToString(ThresholdCurve.getPRCArea(data), 3));
+		result.setUpComboBoxes(result.getInstances());
+		return result;
 	}
 }
