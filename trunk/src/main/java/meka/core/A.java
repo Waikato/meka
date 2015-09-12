@@ -272,6 +272,17 @@ public abstract class A {
 	}
 
 	/**
+	 * ToPrimitive - cast Double[] to double[].
+	 */
+	public static double[] toPrimitive(Double a[]) {
+		double b[] = new double[a.length];
+		for(int i = 0; i < a.length; i++) {
+			b[i] = a[i];
+		}
+		return b;
+	}
+
+	/**
 	 * ToPrimitive - cast List&lt;Integer&gt; to int[].
 	 */
 	public static int[] toPrimitive(List<Integer> list) {
