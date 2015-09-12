@@ -356,6 +356,29 @@ public class CC extends MultilabelClassifier
 		return result;
 	}
 
+	/**
+	 * Returns a string representation of the model.
+	 *
+	 * @return      the model
+	 */
+	public String getModel() {
+		StringBuilder   result;
+		int             i;
+
+		if (nodes == null)
+			return "No model built yet";
+
+		result = new StringBuilder();
+		for (i = 0; i < nodes.length; i++) {
+			if (i > 0)
+				result.append("\n\n");
+			result.append(getClass().getName() + ": Node #" + (i+1) + "\n\n");
+			result.append(nodes[i].getClassifier().toString());
+		}
+
+		return result.toString();
+	}
+
 	public static void main(String args[]) {
 		MultilabelClassifier.evaluation(new CC(),args);
 	}

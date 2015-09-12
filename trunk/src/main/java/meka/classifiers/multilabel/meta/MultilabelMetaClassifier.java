@@ -174,4 +174,31 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier impl
 		return options;
 	}
 
+	/**
+	 * Returns a string representation of the model.
+	 *
+	 * @return      the model
+	 */
+	public String getModel() {
+		StringBuilder   result;
+		int             i;
+		String          model;
+
+		if (m_Classifiers == null)
+			return getClass().getName() + ": No model built yet";
+
+		result = new StringBuilder();
+		for (i = 0; i < m_Classifiers.length; i++) {
+			if (i > 0)
+				result.append("\n\n");
+			result.append(getClass().getName() + ": Model #" + (i+1) + "\n\n");
+			model = m_Classifiers[i].getModel();
+			if (model.length() > 0)
+				result.append(model);
+			else
+				result.append("No model representation available");
+		}
+
+		return result.toString();
+	}
 }

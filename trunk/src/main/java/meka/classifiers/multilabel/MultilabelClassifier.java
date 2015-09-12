@@ -15,19 +15,12 @@
 
 package meka.classifiers.multilabel;
 
+import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
 import weka.classifiers.SingleClassifierEnhancer;
 import weka.classifiers.UpdateableClassifier;
 import weka.classifiers.trees.J48;
-import weka.core.Attribute;
-import weka.core.Utils;
-import weka.core.Capabilities;
+import weka.core.*;
 import weka.core.Capabilities.Capability;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.RevisionUtils;
-import weka.core.SerializedObject;
-import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
-import java.util.Arrays;
 
 /**
  *  MultilabelClassifier.java - A Multilabel Classifier.
@@ -66,6 +59,15 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 
 	@Override
 	public String toString() {
+		return "";
+	}
+
+	/**
+	 * Returns a string representation of the model.
+	 *
+	 * @return      the model
+	 */
+	public String getModel() {
 		return "";
 	}
 

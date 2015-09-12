@@ -848,7 +848,12 @@ public abstract class MLUtils {
 				sb.append(A.toString((int[])obj,dp+2));
 			}
 			else if (obj instanceof String) {
+				String s = (String) obj;
+				if (s.contains("\n"))
+					sb.append("\n");
 				sb.append(obj);
+				if (s.contains("\n"))
+					sb.append("\n");
 			}
 			else {
 				// don't append if we don't know what it is!
