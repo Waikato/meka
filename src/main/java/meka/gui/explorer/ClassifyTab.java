@@ -85,7 +85,7 @@ public class ClassifyTab
 	public final static String TYPE_TRAINTESTSPLIT = "Train/test split";
 
 	/** incremental batch train/test split. */
-	public final static String TYPE_INCREMENTAL    = "Incremental eval.";
+	public final static String TYPE_INCREMENTAL    = "Prequential (incremental)";
 
 	/** the GOE for the classifier. */
 	protected GenericObjectEditor m_GenericObjectEditor;

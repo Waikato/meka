@@ -17,6 +17,7 @@ package meka.classifiers.multilabel.incremental;
 
 import meka.core.MLEvalUtils;
 import meka.core.MLUtils;
+import meka.core.A;
 import meka.core.Result;
 import meka.core.ThresholdUtils;
 import weka.classifiers.UpdateableClassifier;
@@ -26,12 +27,13 @@ import meka.classifiers.multilabel.Evaluation;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Enumeration;
 
 /**
  * IncrementalEvaluation.java - For Evaluating Incremental (Updateable) Classifiers.
  * @author 		Jesse Read
- * @version 	Feb 2013
+ * @version 	September 2015
  */
 public class IncrementalEvaluation {
 
@@ -327,6 +329,13 @@ public class IncrementalEvaluation {
 
 	/**
 	 * Prequential Evaluation - Accuracy since the start of evaluation.
+	 * @param	h	Multilabel Classifier
+	 * @param 	D	stream
+	 * @param	windowSize	sampling frequency (of evaluation statistics)
+	 * @param	rLabeled	labelled-ness (1.0 by default)
+	 * @param	Top	threshold option
+	 * @param	Vop	verbosity option
+	 * The window is sampled every N/numWindows instances, for a total of numWindows windows.
 	 */
 	public static Result evaluateModelPrequentialBasic(MultilabelClassifier h, Instances D, int windowSize, double rLabeled, String Top, String Vop) throws Exception {
 
@@ -358,6 +367,20 @@ public class IncrementalEvaluation {
 		if (h.getDebug()) {
 			System.out.println("Proceeding to Test/Label/Update cycle on remaining ("+D.numInstances()+") instances ...");
 		}
+
+		result.setInfo("Classifier",h.getClass().getName());
+		result.setInfo("Options",Arrays.toString(h.getOptions()));
+		result.setInfo("Additional Info",h.toString());
+		result.setInfo("Dataset",MLUtils.getDatasetName(D));
+		result.setInfo("Type","MLi");
+		double t = 0.5;
+		try {
+			t = Double.parseDouble(Top);
+		} catch(Exception e) {
+			System.err.println("[WARNING] Only a single threshold can be chosen for this kind of evaluation; Using "+t);
+		}
+		result.setInfo("Threshold", String.valueOf(t));
+		ArrayList<Double> win_acc = new ArrayList<Double>();
 
 		for(int i = 0; i < D.numInstances(); i++) {
 
@@ -392,21 +415,18 @@ public class IncrementalEvaluation {
 			long after = System.currentTimeMillis();
 			train_time += (after-before); 
 
+			/*
+			 * RECORD MEASUREMENT
+			 */
+			if (i % windowSize == (windowSize-1)) {
+				result.output = Result.getStats(result,Vop);
+				win_acc.add((Double)result.output.get("Accuracy"));
+			}
+
 		}
 
-		result.setInfo("Classifier",h.getClass().getName());
-		result.setInfo("Options",Arrays.toString(h.getOptions()));
-		result.setInfo("Additional Info",h.toString());
-		result.setInfo("Dataset",MLUtils.getDatasetName(D));
-		result.setInfo("Type","MLi");
-		double t = 0.5;
-		try {
-			t = Double.parseDouble(Top);
-		} catch(Exception e) {
-			System.err.println("[WARNING] Only a single threshold can be chosen for this kind of evaluation; Using "+t);
-		}
-		result.setInfo("Threshold", String.valueOf(t));
 		result.output = Result.getStats(result,Vop);
+		result.output.put("Accuracy over time", A.toPrimitive((Double[]) win_acc.toArray(new Double[win_acc.size()])));
 
 		result.vals.put("Test time",(test_time)/1000.0);
 		result.vals.put("Build time",(train_time)/1000.0);
