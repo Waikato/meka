@@ -20,15 +20,18 @@
 package meka.classifiers;
 
 import junit.framework.TestCase;
+import meka.classifiers.multilabel.Evaluation;
+import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.core.MLUtils;
+import meka.core.Result;
 import weka.classifiers.CheckClassifier;
 import weka.classifiers.Classifier;
 import weka.core.CheckGOE;
 import weka.core.CheckOptionHandler;
 import weka.core.Instances;
 import weka.core.OptionHandler;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import weka.core.converters.ConverterUtils;
+import weka.test.Regression;
 
 /**
  * Abstract test for classifiers within the MEKA framework.
@@ -97,6 +100,7 @@ public abstract class AbstractMekaClassifierTest
 	 */
 	public AbstractMekaClassifierTest(String name) {
 		super(name);
+		System.setProperty("weka.test.Regression.root", "src/test/resources");
 	}
 
 	/**
@@ -288,12 +292,155 @@ public abstract class AbstractMekaClassifierTest
 	}
 
 	/**
+	 * Returns whether a regression test should be executed.
+	 *
+	 * @return      true if regression test
+	 */
+	protected boolean hasRegressionTest() {
+		return true;
+	}
+
+	/**
+	 * Returns the filenames of the datasets for the regression test (train).
+	 *
+	 * @return      the filenames
+	 */
+	protected String[] getRegressionTrainFiles() {
+		return new String[]{"Music-train.arff"};
+	}
+
+	/**
+	 * Returns the filenames of the datasets for the regression test (test).
+	 *
+	 * @return      the filenames
+	 */
+	protected String[] getRegressionTestFiles() {
+		return new String[]{"Music-test.arff"};
+	}
+
+	/**
+	 * Returns the data to use in the regression test.
+	 *
+	 * @param files     the files to load
+	 * @return          the data
+	 */
+	protected Instances[] getRegressionData(String[] files) {
+		Instances[]     result;
+		int             i;
+
+		result = new Instances[files.length];
+
+		for (i = 0; i < files.length; i++) {
+			try {
+				result[i] = loadData(files[i]);
+			} catch (Exception e) {
+				System.err.println("Failed to load data: " + files[i]);
+				e.printStackTrace();
+				return new Instances[0];
+			}
+			try {
+				MLUtils.prepareData(result[i]);
+			}
+			catch (Exception e) {
+				System.err.println("Failed to prepare data: " + files[i]);
+				e.printStackTrace();
+				return new Instances[0];
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Returns the setups for the regression tests.
+	 *
+	 * @return      the configured classifier(s)
+	 */
+	protected MultilabelClassifier[] getRegressionSetups() {
+		return new MultilabelClassifier[]{(MultilabelClassifier) getClassifier()};
+	}
+
+	/**
+	 * Turns the results from the regression test into a string.
+	 *
+	 * @param result        the result to process
+	 * @return              the generated string
+	 */
+	protected String postProcessRegressionResults(Result result) {
+		StringBuilder   processed;
+		String[]        lines;
+
+		processed = new StringBuilder();
+		lines     = result.toString().split("\n");
+		for (String line: lines) {
+			if (line.toLowerCase().contains("time"))
+				continue;
+			if (processed.length() > 0)
+				processed.append("\n");
+			processed.append(line);
+		}
+
+		return processed.toString();
+	}
+
+	/**
+	 * Performs a regression test, if enabled.
+	 *
+	 * @see         #hasRegressionTest()
+	 */
+	public void testRegression() {
+		Instances[]                 train;
+		Instances[]                 test;
+		MultilabelClassifier[]      setups;
+		int                         i;
+		Evaluation                  eval;
+		Result                      result;
+		Regression                  regression;
+		String                      diff;
+
+		if (!hasRegressionTest())
+			return;
+
+		train  = getRegressionData(getRegressionTrainFiles());
+		test   = getRegressionData(getRegressionTestFiles());
+		setups = getRegressionSetups();
+		assertEquals("number of train datasets and setups differ", setups.length, train.length);
+		assertEquals("number of test datasets and setups differ", setups.length, test.length);
+
+		regression = new Regression(getClassifier().getClass());
+		for (i = 0; i < setups.length; i++) {
+			try {
+				eval   = new Evaluation();
+				result = eval.evaluateModel(setups[i], train[i], test[i]);
+				regression.println(postProcessRegressionResults(result));
+			}
+			catch (Exception e) {
+				System.err.println("Failed to evaluate classifier #" + i);
+				e.printStackTrace();
+				fail("Failed to evaluate classifier #" + i + ": " + e);
+			}
+		}
+		try {
+			diff = regression.diff();
+			if (diff == null)
+				System.err.println("Warning: No reference available, creating.");
+			else if (!diff.equals(""))
+				fail("Regression test failed. Difference:\n" + diff);
+		}
+		catch (Exception ex) {
+			System.err.println("Problem during regression testing:");
+			ex.printStackTrace();
+			fail("Problem during regression testing.\n" + ex);
+		}
+	}
+
+	/**
 	 * Loads the dataset from disk.
 	 *
 	 * @param file the dataset to load (e.g., "weka/classifiers/data/something.arff")
 	 * @throws Exception if loading fails, e.g., file does not exit
 	 */
 	public static Instances loadData(String file) throws Exception {
-		return new Instances(new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(file))));
+		return ConverterUtils.DataSource.read(file);
 	}
 }

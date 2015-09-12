@@ -1,0 +1,19 @@
+== Evaluation Info
+
+Classifier                     meka.classifiers.multilabel.meta.SubsetMapper
+Options                        [-W, meka.classifiers.multilabel.BR, --, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
+Additional Info                
+Dataset                        Music
+Number of labels (L)           6
+
+
+== Predictive Performance
+
+
+
+== Additional Measurements
+
+Number of training instances   491
+Number of test instances       101
+Label cardinality (train set)  1.855
+Label cardinality (test set)   1.941
