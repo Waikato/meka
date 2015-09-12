@@ -78,6 +78,7 @@ public class GUIChooser
 		imagePanel.add(versionPanel, BorderLayout.SOUTH);
 
 		rightPanel = new JPanel(new BorderLayout());
+		rightPanel.setBorder(BorderFactory.createTitledBorder("Shortcuts"));
 		add(rightPanel, BorderLayout.EAST);
 
 		buttonsPanel = new JPanel(new GridLayout(0, 1));
