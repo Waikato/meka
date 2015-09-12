@@ -20,6 +20,7 @@
 
 package meka.gui.guichooser;
 
+import meka.core.Project;
 import meka.core.Version;
 import meka.gui.core.GUIHelper;
 import meka.gui.core.MekaFrame;
@@ -194,6 +195,7 @@ public class GUIChooser
 	 * @param args ignored
 	 */
 	public static void main(String[] args) throws Exception {
+		Project.initialize();
 		GenericObjectEditor.registerAllEditors();
 		GUIChooser main = new GUIChooser();
 		MekaFrame frame = new MekaFrame();

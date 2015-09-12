@@ -63,4 +63,15 @@ public class Project {
 	public static File expandFile(String file) {
 		return new File(getHome().getAbsolutePath() + File.separator + file);
 	}
+
+	/**
+	 * Makes sure that the project's home directory is present.
+	 *
+	 * @return          true if home directory present (or successfully created)
+	 */
+	public static boolean initialize() {
+		if (!getHome().exists())
+			return getHome().mkdirs();
+		return getHome().isDirectory();
+	}
 }
