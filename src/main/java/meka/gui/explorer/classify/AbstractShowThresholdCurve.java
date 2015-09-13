@@ -42,6 +42,7 @@ import java.awt.event.ActionListener;
 public abstract class AbstractShowThresholdCurve
 		extends AbstractClassifyResultHistoryPlugin {
 	private static final long serialVersionUID = -1152575716154907544L;
+	public static final String CURVE_DATA = "Curve Data";
 
 	/**
 	 * Returns the group of the plugin. Used for the grouping the menu items.
@@ -61,8 +62,14 @@ public abstract class AbstractShowThresholdCurve
 	 */
 	@Override
 	public boolean handles(ResultHistoryList history, int index) {
-		return (history.getPayloadAt(index) instanceof MultilabelClassifier)
+		boolean     result;
+
+		result = (history.getPayloadAt(index) instanceof MultilabelClassifier)
 				|| (history.getPayloadAt(index) instanceof MultiTargetClassifier);
+
+		result = result && (history.getResultAt(index).getMeasurement(CURVE_DATA) != null);
+
+		return result;
 	}
 
 	/**
@@ -123,7 +130,7 @@ public abstract class AbstractShowThresholdCurve
 				JTabbedPane tabbed = new JTabbedPane();
 				dialog.getContentPane().setLayout(new BorderLayout());
 				dialog.getContentPane().add(tabbed, BorderLayout.CENTER);
-				Instances[] curves = (Instances[]) result.getMeasurement("Curve Data");
+				Instances[] curves = (Instances[]) result.getMeasurement(CURVE_DATA);
 				for (int i = 0; i < curves.length; i++) {
 					try {
 						ThresholdVisualizePanel panel = createPanel(curves[i], "Label " + i);

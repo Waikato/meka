@@ -170,7 +170,8 @@ public abstract class AbstractResultHistoryPlugin
 
 		menuitem = new JMenuItem(getName());
 		menuitem.setEnabled(handles(history, index));
-		menuitem.addActionListener(getActionListener(history, index));
+		if (menuitem.isEnabled())
+			menuitem.addActionListener(getActionListener(history, index));
 		menu.add(menuitem);
 	}
 
