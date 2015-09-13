@@ -108,8 +108,8 @@ public abstract class MLEvalUtils {
 			results.put("F1 (micro averaged)"				,Metrics.P_FmicroAvg(Y,Ypred));
 			results.put("F1 (macro averaged by example)"	,Metrics.P_FmacroAvgD(Y,Ypred));
 			results.put("F1 (macro averaged by label)"		,Metrics.P_FmacroAvgL(Y,Ypred));
-			results.put("AUPRC (macro)"		                ,Metrics.P_macroAUPRC(Y,Rpred));
-			results.put("AUROC (macro)"		                ,Metrics.P_macroAUPRC(Y,Rpred));
+			results.put("AUPRC (macro averaged)"		    ,Metrics.P_macroAUPRC(Y,Rpred));
+			results.put("AUROC (macro averaged)"		    ,Metrics.P_macroAUROC(Y,Rpred));
 			// This will not be displayed to text output, rather as a graph
 			results.put("Curve Data"		                ,Metrics.curveData(Y,Rpred));
 
