@@ -73,7 +73,7 @@ public class SaveGraphs
 	 */
 	@Override
 	public boolean handles(ResultHistoryList history, int index) {
-		return (history.getPayloadAt(index) != null);
+		return (history.getPayloadAt(index) instanceof MultiLabelDrawable);
 	}
 
 	/**
