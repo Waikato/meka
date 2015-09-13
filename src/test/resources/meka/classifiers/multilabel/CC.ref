@@ -1,3 +1,436 @@
+== Model info
+
+Model                          
+meka.classifiers.multilabel.CC: Node #1
+
+J48 pruned tree
+------------------
+
+relaxing-clam- = 0
+|   quiet-still- = 0
+|   |   Std_Acc1298_Std_Mem40_MFCC_4 <= 0.269646
+|   |   |   sad-lonely- = 0
+|   |   |   |   Std_Acc1298_Std_Mem40_Flux <= 0.838488
+|   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_9 <= 0.074361
+|   |   |   |   |   |   Mean_Acc1298_Std_Mem40_Centroid <= 0.690793: 1 (6.0)
+|   |   |   |   |   |   Mean_Acc1298_Std_Mem40_Centroid > 0.690793: 0 (2.0)
+|   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_9 > 0.074361: 0 (11.0/1.0)
+|   |   |   |   Std_Acc1298_Std_Mem40_Flux > 0.838488
+|   |   |   |   |   happy-pleased- = 0
+|   |   |   |   |   |   angry-aggresive- = 0: 1 (15.0)
+|   |   |   |   |   |   angry-aggresive- = 1
+|   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_10 <= 0.275415
+|   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_7 <= 0.548407: 1 (21.0)
+|   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_7 > 0.548407
+|   |   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_5 <= 0.158935: 1 (15.0)
+|   |   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_5 > 0.158935
+|   |   |   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_1 <= 0.148521: 1 (6.0)
+|   |   |   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_1 > 0.148521
+|   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_3 <= 0.337191: 0 (5.0)
+|   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_3 > 0.337191
+|   |   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_7 <= 0.576703: 0 (4.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_7 > 0.576703: 1 (6.0)
+|   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_10 > 0.275415: 0 (4.0)
+|   |   |   |   |   happy-pleased- = 1
+|   |   |   |   |   |   angry-aggresive- = 0
+|   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_3 <= 0.061497: 0 (3.0)
+|   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_3 > 0.061497
+|   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_4 <= 0.227506: 1 (24.0/1.0)
+|   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_4 > 0.227506
+|   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_5 <= 0.333143: 1 (2.0)
+|   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_5 > 0.333143: 0 (5.0)
+|   |   |   |   |   |   angry-aggresive- = 1: 0 (3.0/1.0)
+|   |   |   sad-lonely- = 1
+|   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_9 <= 0.169612: 1 (6.0)
+|   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_9 > 0.169612: 0 (6.0)
+|   |   Std_Acc1298_Std_Mem40_MFCC_4 > 0.269646
+|   |   |   Std_Acc1298_Mean_Mem40_MFCC_12 <= 0.153605
+|   |   |   |   sad-lonely- = 0
+|   |   |   |   |   angry-aggresive- = 0
+|   |   |   |   |   |   happy-pleased- = 0: 1 (4.0)
+|   |   |   |   |   |   happy-pleased- = 1
+|   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_5 <= 0.373818
+|   |   |   |   |   |   |   |   BH_LowPeakBPM <= 0.428571: 1 (5.0)
+|   |   |   |   |   |   |   |   BH_LowPeakBPM > 0.428571: 0 (3.0/1.0)
+|   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_5 > 0.373818: 0 (5.0)
+|   |   |   |   |   angry-aggresive- = 1
+|   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_12 <= 0.063075: 1 (4.0)
+|   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_12 > 0.063075
+|   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_2 <= 0.551655
+|   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_10 <= 0.080722
+|   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_4 <= 0.546492: 1 (5.0)
+|   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_4 > 0.546492: 0 (3.0)
+|   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_10 > 0.080722
+|   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_9 <= 0.620555: 0 (40.0/1.0)
+|   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_9 > 0.620555
+|   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_Centroid <= 0.403173: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_Centroid > 0.403173: 0 (3.0)
+|   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_2 > 0.551655: 1 (6.0/1.0)
+|   |   |   |   sad-lonely- = 1: 0 (13.0)
+|   |   |   Std_Acc1298_Mean_Mem40_MFCC_12 > 0.153605: 1 (6.0)
+|   quiet-still- = 1: 0 (36.0)
+relaxing-clam- = 1
+|   quiet-still- = 0
+|   |   Mean_Acc1298_Std_Mem40_MFCC_0 <= 0.162305
+|   |   |   Mean_Acc1298_Std_Mem40_MFCC_10 <= 0.522475
+|   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_1 <= 0.679109
+|   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_5 <= 0.547988: 0 (15.0)
+|   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_5 > 0.547988: 1 (3.0/1.0)
+|   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_1 > 0.679109: 1 (2.0)
+|   |   |   Mean_Acc1298_Std_Mem40_MFCC_10 > 0.522475: 1 (4.0)
+|   |   Mean_Acc1298_Std_Mem40_MFCC_0 > 0.162305: 0 (102.0/2.0)
+|   quiet-still- = 1: 0 (86.0)
+
+Number of Leaves  : 	38
+
+Size of the tree : 	75
+
+
+meka.classifiers.multilabel.CC: Node #2
+
+J48 pruned tree
+------------------
+
+sad-lonely- = 0
+|   Std_Acc1298_Std_Mem40_MFCC_6 <= 0.166139: 0 (28.0)
+|   Std_Acc1298_Std_Mem40_MFCC_6 > 0.166139
+|   |   Std_Acc1298_Mean_Mem40_Centroid <= 0.25266
+|   |   |   Mean_Acc1298_Std_Mem40_MFCC_4 <= 0.132228: 0 (22.0/1.0)
+|   |   |   Mean_Acc1298_Std_Mem40_MFCC_4 > 0.132228
+|   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_7 <= 0.592051
+|   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_7 <= 0.11898
+|   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_6 <= 0.331344: 1 (8.0/1.0)
+|   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_6 > 0.331344
+|   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_Flux <= 0.093722
+|   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_Centroid <= 0.107156: 1 (6.0)
+|   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_Centroid > 0.107156: 0 (3.0)
+|   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_Flux > 0.093722
+|   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_6 <= 0.538092: 0 (31.0/1.0)
+|   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_6 > 0.538092
+|   |   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_12 <= 0.036421: 0 (7.0)
+|   |   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_12 > 0.036421
+|   |   |   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_3 <= 0.242453: 1 (9.0)
+|   |   |   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_3 > 0.242453: 0 (16.0/1.0)
+|   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_7 > 0.11898
+|   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_4 <= 0.253809
+|   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_0 <= 0.062231
+|   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_11 <= 0.297556: 1 (2.0)
+|   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_11 > 0.297556: 0 (7.0)
+|   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_0 > 0.062231
+|   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_10 <= 0.614998
+|   |   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_3 <= 0.2116: 1 (29.0)
+|   |   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_3 > 0.2116
+|   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_11 <= 0.340493: 0 (3.0)
+|   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_11 > 0.340493
+|   |   |   |   |   |   |   |   |   |   |   BH_LowPeakBPM <= 0.460317: 1 (19.0)
+|   |   |   |   |   |   |   |   |   |   |   BH_LowPeakBPM > 0.460317
+|   |   |   |   |   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_Flux <= 0.924863: 1 (6.0)
+|   |   |   |   |   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_Flux > 0.924863: 0 (4.0/1.0)
+|   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_10 > 0.614998: 0 (4.0/1.0)
+|   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_4 > 0.253809
+|   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_3 <= 0.248401
+|   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_10 <= 0.132623: 1 (2.0)
+|   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_10 > 0.132623: 0 (13.0)
+|   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_3 > 0.248401
+|   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_Flux <= 0.89655
+|   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_12 <= 0.332622
+|   |   |   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_3 <= 0.49192: 1 (22.0)
+|   |   |   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_3 > 0.49192
+|   |   |   |   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_10 <= 0.19325: 0 (3.0)
+|   |   |   |   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_10 > 0.19325: 1 (4.0)
+|   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_12 > 0.332622: 0 (5.0/1.0)
+|   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_Flux > 0.89655
+|   |   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_3 <= 0.270008: 1 (5.0)
+|   |   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_3 > 0.270008
+|   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_9 <= 0.693156
+|   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_11 <= 0.403208
+|   |   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_Rolloff <= 0.209865: 0 (8.0)
+|   |   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_Rolloff > 0.209865: 1 (4.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_11 > 0.403208: 1 (6.0)
+|   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_9 > 0.693156: 0 (9.0)
+|   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_7 > 0.592051
+|   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_3 <= 0.631842
+|   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_3 <= 0.335044
+|   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_Rolloff <= 0.488671: 1 (3.0)
+|   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_Rolloff > 0.488671: 0 (7.0)
+|   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_3 > 0.335044: 0 (25.0)
+|   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_3 > 0.631842: 1 (4.0/1.0)
+|   |   Std_Acc1298_Mean_Mem40_Centroid > 0.25266
+|   |   |   Std_Acc1298_Std_Mem40_Rolloff <= 0.442759: 0 (26.0)
+|   |   |   Std_Acc1298_Std_Mem40_Rolloff > 0.442759
+|   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_0 <= 0.353575: 1 (2.0)
+|   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_0 > 0.353575: 0 (3.0)
+sad-lonely- = 1: 0 (136.0/1.0)
+
+Number of Leaves  : 	36
+
+Size of the tree : 	71
+
+
+meka.classifiers.multilabel.CC: Node #3
+
+J48 pruned tree
+------------------
+
+Std_Acc1298_Mean_Mem40_MFCC_9 <= 0.133994
+|   Mean_Acc1298_Mean_Mem40_MFCC_1 <= 0.395248: 0 (119.0/1.0)
+|   Mean_Acc1298_Mean_Mem40_MFCC_1 > 0.395248
+|   |   BH_LowPeakAmp <= 0.074064: 1 (8.0/1.0)
+|   |   BH_LowPeakAmp > 0.074064: 0 (15.0)
+Std_Acc1298_Mean_Mem40_MFCC_9 > 0.133994
+|   Mean_Acc1298_Mean_Mem40_MFCC_0 <= 0.781942
+|   |   Std_Acc1298_Mean_Mem40_Flux <= 0.250969
+|   |   |   Mean_Acc1298_Std_Mem40_MFCC_7 <= 0.722905
+|   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_7 <= 0.113227
+|   |   |   |   |   sad-lonely- = 0
+|   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_1 <= 0.190671: 1 (2.0)
+|   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_1 > 0.190671: 0 (13.0)
+|   |   |   |   |   sad-lonely- = 1
+|   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_3 <= 0.50761: 1 (4.0)
+|   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_3 > 0.50761: 0 (2.0)
+|   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_7 > 0.113227
+|   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_1 <= 0.13054
+|   |   |   |   |   |   Mean_Acc1298_Std_Mem40_Flux <= 0.149318: 0 (9.0)
+|   |   |   |   |   |   Mean_Acc1298_Std_Mem40_Flux > 0.149318: 1 (4.0/1.0)
+|   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_1 > 0.13054
+|   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_8 <= 0.51942
+|   |   |   |   |   |   |   sad-lonely- = 0
+|   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_3 <= 0.109875
+|   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_1 <= 0.556963: 0 (7.0)
+|   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_1 > 0.556963: 1 (4.0/1.0)
+|   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_3 > 0.109875
+|   |   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_Rolloff <= 0.217376
+|   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_Centroid <= 0.446448: 1 (71.0/1.0)
+|   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_Centroid > 0.446448
+|   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_Centroid <= 0.482342: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_Centroid > 0.482342: 0 (2.0)
+|   |   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_Rolloff > 0.217376
+|   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_4 <= 0.449855: 0 (4.0)
+|   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_4 > 0.449855
+|   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_12 <= 0.307975: 1 (11.0)
+|   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_12 > 0.307975
+|   |   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_11 <= 0.376693
+|   |   |   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_4 <= 0.473936: 0 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_4 > 0.473936: 1 (10.0)
+|   |   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_11 > 0.376693: 0 (6.0)
+|   |   |   |   |   |   |   sad-lonely- = 1
+|   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_11 <= 0.155748: 0 (6.0)
+|   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_11 > 0.155748
+|   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_0 <= 0.538135
+|   |   |   |   |   |   |   |   |   |   BH_HighPeakBPM <= 0.345865
+|   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_6 <= 0.478592
+|   |   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_Rolloff <= 0.071004: 0 (4.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_Rolloff > 0.071004: 1 (4.0)
+|   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_6 > 0.478592: 1 (11.0)
+|   |   |   |   |   |   |   |   |   |   BH_HighPeakBPM > 0.345865
+|   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_11 <= 0.236975: 1 (4.0)
+|   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_11 > 0.236975
+|   |   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_12 <= 0.220469: 1 (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_12 > 0.220469: 0 (22.0/1.0)
+|   |   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_0 > 0.538135
+|   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_0 <= 0.133502
+|   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_Rolloff <= 0.163744: 1 (7.0)
+|   |   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_Rolloff > 0.163744: 0 (3.0)
+|   |   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_0 > 0.133502: 1 (29.0)
+|   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_8 > 0.51942: 1 (33.0)
+|   |   |   Mean_Acc1298_Std_Mem40_MFCC_7 > 0.722905
+|   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_2 <= 0.3223: 1 (2.0)
+|   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_2 > 0.3223: 0 (13.0)
+|   |   Std_Acc1298_Mean_Mem40_Flux > 0.250969
+|   |   |   Mean_Acc1298_Mean_Mem40_Centroid <= 0.190226
+|   |   |   |   Mean_Acc1298_Mean_Mem40_Centroid <= 0.098455: 0 (2.0)
+|   |   |   |   Mean_Acc1298_Mean_Mem40_Centroid > 0.098455: 1 (2.0)
+|   |   |   Mean_Acc1298_Mean_Mem40_Centroid > 0.190226: 0 (14.0)
+|   Mean_Acc1298_Mean_Mem40_MFCC_0 > 0.781942
+|   |   Std_Acc1298_Mean_Mem40_MFCC_8 <= 0.164558: 0 (33.0)
+|   |   Std_Acc1298_Mean_Mem40_MFCC_8 > 0.164558
+|   |   |   Mean_Acc1298_Mean_Mem40_MFCC_1 <= 0.374497: 1 (2.0)
+|   |   |   Mean_Acc1298_Mean_Mem40_MFCC_1 > 0.374497: 0 (2.0)
+
+Number of Leaves  : 	38
+
+Size of the tree : 	75
+
+
+meka.classifiers.multilabel.CC: Node #4
+
+J48 pruned tree
+------------------
+
+Mean_Acc1298_Mean_Mem40_Rolloff <= 0.140755
+|   Mean_Acc1298_Mean_Mem40_Flux <= 0.172533
+|   |   happy-pleased- = 0
+|   |   |   Std_Acc1298_Std_Mem40_MFCC_12 <= 0.064635: 0 (6.0)
+|   |   |   Std_Acc1298_Std_Mem40_MFCC_12 > 0.064635
+|   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_1 <= 0.45037
+|   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_5 <= 0.475707: 1 (4.0)
+|   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_5 > 0.475707: 0 (5.0)
+|   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_1 > 0.45037
+|   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_4 <= 0.146932
+|   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_0 <= 0.459437: 1 (3.0)
+|   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_0 > 0.459437: 0 (3.0)
+|   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_4 > 0.146932: 1 (97.0/4.0)
+|   |   happy-pleased- = 1
+|   |   |   Std_Acc1298_Mean_Mem40_MFCC_4 <= 0.393647: 0 (18.0)
+|   |   |   Std_Acc1298_Mean_Mem40_MFCC_4 > 0.393647: 1 (5.0)
+|   Mean_Acc1298_Mean_Mem40_Flux > 0.172533: 0 (27.0/1.0)
+Mean_Acc1298_Mean_Mem40_Rolloff > 0.140755
+|   Std_Acc1298_Std_Mem40_MFCC_0 <= 0.608306
+|   |   relaxing-clam- = 0: 0 (214.0)
+|   |   relaxing-clam- = 1
+|   |   |   happy-pleased- = 0
+|   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_12 <= 0.21998
+|   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_9 <= 0.378197
+|   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_5 <= 0.483131: 0 (5.0)
+|   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_5 > 0.483131: 1 (2.0)
+|   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_9 > 0.378197: 0 (32.0)
+|   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_12 > 0.21998
+|   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_2 <= 0.34292: 0 (2.0)
+|   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_2 > 0.34292: 1 (4.0)
+|   |   |   happy-pleased- = 1
+|   |   |   |   Std_Acc1298_Mean_Mem40_Rolloff <= 0.548333: 0 (40.0)
+|   |   |   |   Std_Acc1298_Mean_Mem40_Rolloff > 0.548333: 1 (3.0/1.0)
+|   Std_Acc1298_Std_Mem40_MFCC_0 > 0.608306
+|   |   happy-pleased- = 0
+|   |   |   angry-aggresive- = 0
+|   |   |   |   Mean_Acc1298_Mean_Mem40_Centroid <= 0.403173: 1 (7.0)
+|   |   |   |   Mean_Acc1298_Mean_Mem40_Centroid > 0.403173: 0 (5.0/1.0)
+|   |   |   angry-aggresive- = 1: 0 (2.0)
+|   |   happy-pleased- = 1: 0 (7.0)
+
+Number of Leaves  : 	21
+
+Size of the tree : 	41
+
+
+meka.classifiers.multilabel.CC: Node #5
+
+J48 pruned tree
+------------------
+
+Mean_Acc1298_Mean_Mem40_Rolloff <= 0.099545
+|   Std_Acc1298_Std_Mem40_MFCC_4 <= 0.139464: 0 (10.0)
+|   Std_Acc1298_Std_Mem40_MFCC_4 > 0.139464
+|   |   Std_Acc1298_Std_Mem40_Centroid <= 0.35407
+|   |   |   Std_Acc1298_Std_Mem40_MFCC_2 <= 0.439508
+|   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_8 <= 0.260476
+|   |   |   |   |   BH_LowPeakBPM <= 0.095238: 1 (5.0/1.0)
+|   |   |   |   |   BH_LowPeakBPM > 0.095238: 0 (20.0/1.0)
+|   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_8 > 0.260476: 1 (5.0)
+|   |   |   Std_Acc1298_Std_Mem40_MFCC_2 > 0.439508: 1 (10.0)
+|   |   Std_Acc1298_Std_Mem40_Centroid > 0.35407
+|   |   |   Std_Acc1298_Mean_Mem40_MFCC_11 <= 0.137354: 0 (4.0/1.0)
+|   |   |   Std_Acc1298_Mean_Mem40_MFCC_11 > 0.137354: 1 (60.0/2.0)
+Mean_Acc1298_Mean_Mem40_Rolloff > 0.099545
+|   Std_Acc1298_Mean_Mem40_MFCC_6 <= 0.156242
+|   |   Mean_Acc1298_Std_Mem40_MFCC_0 <= 0.047203
+|   |   |   Mean_Acc1298_Mean_Mem40_MFCC_1 <= 0.298469: 0 (11.0/1.0)
+|   |   |   Mean_Acc1298_Mean_Mem40_MFCC_1 > 0.298469: 1 (3.0)
+|   |   Mean_Acc1298_Std_Mem40_MFCC_0 > 0.047203: 0 (103.0)
+|   Std_Acc1298_Mean_Mem40_MFCC_6 > 0.156242
+|   |   BH_HighPeakBPM <= 0.406015
+|   |   |   BH_LowPeakBPM <= 0.301587
+|   |   |   |   Std_Acc1298_Std_Mem40_MFCC_9 <= 0.314687
+|   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_6 <= 0.625592
+|   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_4 <= 0.47271
+|   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_10 <= 0.462982: 0 (14.0)
+|   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_10 > 0.462982
+|   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_Centroid <= 0.308331: 0 (11.0/1.0)
+|   |   |   |   |   |   |   |   Std_Acc1298_Std_Mem40_Centroid > 0.308331
+|   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_10 <= 0.218912: 0 (5.0/1.0)
+|   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_10 > 0.218912: 1 (9.0)
+|   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_4 > 0.47271: 1 (7.0)
+|   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_6 > 0.625592: 0 (15.0)
+|   |   |   |   Std_Acc1298_Std_Mem40_MFCC_9 > 0.314687: 0 (39.0/1.0)
+|   |   |   BH_LowPeakBPM > 0.301587
+|   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_9 <= 0.171399: 0 (14.0/1.0)
+|   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_9 > 0.171399
+|   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_9 <= 0.421766
+|   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_8 <= 0.180628: 1 (16.0)
+|   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_8 > 0.180628
+|   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_10 <= 0.536043: 1 (3.0)
+|   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_10 > 0.536043: 0 (3.0)
+|   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_9 > 0.421766: 0 (6.0)
+|   |   BH_HighPeakBPM > 0.406015
+|   |   |   Std_Acc1298_Std_Mem40_MFCC_3 <= 0.412267
+|   |   |   |   BH_LowPeakAmp <= 0.056409
+|   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_5 <= 0.498845
+|   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_10 <= 0.578563
+|   |   |   |   |   |   |   BH_LowPeakAmp <= 0.008161: 1 (2.0)
+|   |   |   |   |   |   |   BH_LowPeakAmp > 0.008161
+|   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_Centroid <= 0.235264: 0 (31.0/1.0)
+|   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_Centroid > 0.235264: 1 (3.0/1.0)
+|   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_10 > 0.578563: 1 (5.0/1.0)
+|   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_5 > 0.498845: 1 (4.0)
+|   |   |   |   BH_LowPeakAmp > 0.056409: 0 (34.0/1.0)
+|   |   |   Std_Acc1298_Std_Mem40_MFCC_3 > 0.412267: 0 (39.0)
+
+Number of Leaves  : 	29
+
+Size of the tree : 	57
+
+
+meka.classifiers.multilabel.CC: Node #6
+
+J48 pruned tree
+------------------
+
+relaxing-clam- = 0
+|   happy-pleased- = 0
+|   |   sad-lonely- = 0
+|   |   |   Std_Acc1298_Std_Mem40_MFCC_12 <= 0.260854
+|   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_4 <= 0.505717: 1 (58.0)
+|   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_4 > 0.505717
+|   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_3 <= 0.455678
+|   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_Centroid <= 0.468649
+|   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_10 <= 0.195611
+|   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_1 <= 0.329791: 1 (27.0)
+|   |   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_1 > 0.329791
+|   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_4 <= 0.216868
+|   |   |   |   |   |   |   |   |   |   BH_LowPeakBPM <= 0.253968: 0 (5.0)
+|   |   |   |   |   |   |   |   |   |   BH_LowPeakBPM > 0.253968: 1 (5.0/1.0)
+|   |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_4 > 0.216868: 1 (8.0)
+|   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_10 > 0.195611: 0 (3.0)
+|   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_Centroid > 0.468649
+|   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_0 <= 0.60191: 1 (3.0)
+|   |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_0 > 0.60191
+|   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_12 <= 0.178333: 1 (3.0/1.0)
+|   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_12 > 0.178333: 0 (10.0)
+|   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_3 > 0.455678: 1 (29.0)
+|   |   |   Std_Acc1298_Std_Mem40_MFCC_12 > 0.260854
+|   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_3 <= 0.136837: 1 (3.0)
+|   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_3 > 0.136837: 0 (7.0)
+|   |   sad-lonely- = 1
+|   |   |   Mean_Acc1298_Std_Mem40_MFCC_0 <= 0.277107
+|   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_0 <= 0.859047: 0 (40.0/1.0)
+|   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_0 > 0.859047
+|   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_11 <= 0.332338: 1 (4.0)
+|   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_11 > 0.332338: 0 (4.0)
+|   |   |   Mean_Acc1298_Std_Mem40_MFCC_0 > 0.277107: 1 (7.0/1.0)
+|   happy-pleased- = 1
+|   |   Mean_Acc1298_Std_Mem40_MFCC_3 <= 0.366876
+|   |   |   Mean_Acc1298_Std_Mem40_MFCC_1 <= 0.07883
+|   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_9 <= 0.133994: 1 (3.0)
+|   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_9 > 0.133994: 0 (6.0)
+|   |   |   Mean_Acc1298_Std_Mem40_MFCC_1 > 0.07883: 0 (36.0)
+|   |   Mean_Acc1298_Std_Mem40_MFCC_3 > 0.366876
+|   |   |   Std_Acc1298_Mean_Mem40_MFCC_9 <= 0.196681
+|   |   |   |   BH_HighPeakBPM <= 0.721805: 0 (12.0/1.0)
+|   |   |   |   BH_HighPeakBPM > 0.721805: 1 (2.0)
+|   |   |   Std_Acc1298_Mean_Mem40_MFCC_9 > 0.196681: 1 (4.0)
+relaxing-clam- = 1
+|   Std_Acc1298_Mean_Mem40_MFCC_11 <= 0.164162
+|   |   Mean_Acc1298_Std_Mem40_MFCC_9 <= 0.604904
+|   |   |   Std_Acc1298_Std_Mem40_MFCC_12 <= 0.073632: 1 (2.0)
+|   |   |   Std_Acc1298_Std_Mem40_MFCC_12 > 0.073632: 0 (36.0)
+|   |   Mean_Acc1298_Std_Mem40_MFCC_9 > 0.604904: 1 (3.0)
+|   Std_Acc1298_Mean_Mem40_MFCC_11 > 0.164162: 0 (171.0)
+
+Number of Leaves  : 	26
+
+Size of the tree : 	51
+
+
 == Evaluation Info
 
 Classifier                     meka.classifiers.multilabel.CC
