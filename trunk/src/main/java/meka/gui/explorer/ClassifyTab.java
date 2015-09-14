@@ -260,14 +260,14 @@ public class ClassifyTab
 				@Override
 				public void run() {
 					MultilabelClassifier classifier;
-					Result[] results;
+					Result result;
 					startBusy("Cross-validating...");
 					try {
 						classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
 						//System.out.println("data.classIndex() "+data.classIndex());
-						results = Evaluation.cvModel(classifier, data, m_Folds, m_TOP, m_VOP);
+						result = Evaluation.cvModel(classifier, data, m_Folds, m_TOP, m_VOP);
 						addResultToHistory(
-								MLEvalUtils.averageResults(results),
+								result,
 								classifier,
 								classifier.getClass().getName().replace("meka.classifiers.", "")
 						);

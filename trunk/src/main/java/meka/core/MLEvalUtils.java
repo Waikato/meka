@@ -192,6 +192,33 @@ public abstract class MLEvalUtils {
 		return output;
 	}
 
+	public static Result combinePredictions(Result folds[]) { 
+		Result r = new Result();
+
+		// set info
+		r.info = folds[0].info;
+
+		// append all predictions and true values
+		for(int f = 0; f < folds.length; f++) {
+			r.predictions.addAll(folds[f].predictions);
+			r.actuals.addAll(folds[f].actuals);
+		}
+
+		r.vals = folds[0].vals;
+		// average all vals
+		for(String metric : folds[0].vals.keySet()) {
+			if (folds[0].vals.get(metric) instanceof Double) {
+				double values[] = new double[folds.length];
+				for(int i = 0; i < folds.length; i++) {
+					values[i] = (Double)folds[i].vals.get(metric);
+				}
+				r.vals.put(metric,Utils.mean(values));
+			}
+		}
+
+		return r;
+	}
+
 	/**
 	 * AverageResults - Create a Result with the average of an array of Results by taking the average +/- standand deviation.
 	 * @param	folds	array of Results (e.g., from CV-validation)

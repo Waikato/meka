@@ -83,14 +83,14 @@ public class Result implements Serializable {
 		*/
 
 		StringBuilder resultString = new StringBuilder();
-		if (info.containsKey("Verbosity") && !info.get("Type").equalsIgnoreCase("CV")) { 
+		if (info.containsKey("Verbosity")) {
 			int V = MLUtils.getIntegerOption(info.get("Verbosity"),1);
+
 			if ( V > 4) {
 				resultString.append("== Individual Errors\n\n");
 				// output everything
 				resultString.append(Result.getResultAsString(this,V-5) + "\n\n");
 			}
-
 		}
 		// output the stats in general
 		if (model.size() > 0)
@@ -98,6 +98,11 @@ public class Result implements Serializable {
 		resultString.append("== Evaluation Info\n\n" + MLUtils.hashMapToString(info));
 		resultString.append("\n\n== Predictive Performance\n\n" + MLUtils.hashMapToString(output,3));
 		resultString.append("\n\n== Additional Measurements\n\n" + MLUtils.hashMapToString(vals,3));
+
+		if (info.get("Type").endsWith("CV")) { 
+			resultString.append("// Note: In the case of cross-fold validation, the additional measurements are _averaged_ across folds.");
+		}
+
 		resultString.append("\n\n");
 		return resultString.toString();
 	}

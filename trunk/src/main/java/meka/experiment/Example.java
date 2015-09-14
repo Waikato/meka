@@ -29,6 +29,8 @@ import javax.swing.DefaultListModel;
 
 import meka.classifiers.multilabel.BCC;
 import meka.classifiers.multilabel.BR;
+import meka.classifiers.multilabel.PS;
+import meka.classifiers.multilabel.CC;
 import meka.gui.goe.GenericObjectEditor;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
@@ -102,7 +104,8 @@ public class Example {
 	    // classifiers
 	    exp.setPropertyArray(new Classifier[]{
 	    		new BR(), 
-	    		new BCC()
+	    		new CC(),
+				new PS()
 	    }); 
 	    
 	    // output
