@@ -29,6 +29,8 @@ import java.util.Vector;
  */
 public abstract class AbstractNeuralNet extends ProblemTransformationMethod  {
 
+	private static final long serialVersionUID = 5534606285449062819L;
+
 	/** number of hidden units */
 	protected int m_H = 10;
 
