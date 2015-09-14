@@ -20,6 +20,12 @@ Improvements since the last version are os follows:
 
 	* AUPRC and AUROC are added as evaluation metrics
 
+	* It is easier now to add functionality to result history objects. 
+	
+		The Classify tab now automatically discovers its result history plugins at runtime. 
+		These have to be derived from "meka.gui.explorer.classify.AbstractClassifyResultHistoryPlugin" and placed in the "meka.gui.explorer.classify" package. 
+		The current functionality (show graph, save graph and save model) are using this architecture
+
 	* The Explorer tabs are now plugins and get discovered dynamically at runtime. 
 	
 		This makes it easy for other people to add more tabs (i.e., meka packages), simply derived from
