@@ -27,6 +27,7 @@ import meka.classifiers.multilabel.Evaluation;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
@@ -380,7 +381,7 @@ public class IncrementalEvaluation {
 			System.err.println("[WARNING] Only a single threshold can be chosen for this kind of evaluation; Using "+t);
 		}
 		result.setInfo("Threshold", String.valueOf(t));
-		ArrayList<Double> win_acc = new ArrayList<Double>();
+		ArrayList<HashMap<String,Object>> samples = new ArrayList<HashMap<String,Object>>();
 
 		for(int i = 0; i < D.numInstances(); i++) {
 
@@ -419,14 +420,13 @@ public class IncrementalEvaluation {
 			 * RECORD MEASUREMENT
 			 */
 			if (i % windowSize == (windowSize-1)) {
-				result.output = Result.getStats(result,Vop);
-				win_acc.add((Double)result.output.get("Accuracy"));
+				samples.add(Result.getStats(result,Vop));
 			}
 
 		}
 
 		result.output = Result.getStats(result,Vop);
-		result.output.put("Accuracy over time", A.toPrimitive((Double[]) win_acc.toArray(new Double[win_acc.size()])));
+		result.output.put("Results sampled over time", samples);
 
 		result.vals.put("Test time",(test_time)/1000.0);
 		result.vals.put("Build time",(train_time)/1000.0);
