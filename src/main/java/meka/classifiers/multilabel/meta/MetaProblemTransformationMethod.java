@@ -16,7 +16,7 @@
 package meka.classifiers.multilabel.meta;
 
 import meka.classifiers.multilabel.CC;
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import weka.core.Instance;
 import weka.core.Option;
 import weka.core.Randomizable;
@@ -29,12 +29,12 @@ import java.util.Vector;
  * MultilabelMetaClassifier.java - For ensembles of multi-label methods.
  * @author Jesse Read (jmr30@cs.waikato.ac.nz)
  */
-public abstract class MultilabelMetaClassifier extends MultilabelClassifier implements Randomizable {
+public abstract class MetaProblemTransformationMethod extends ProblemTransformationMethod implements Randomizable {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -6604797895790690612L;
 	
-	protected MultilabelClassifier m_Classifiers[] = null;
+	protected ProblemTransformationMethod m_Classifiers[] = null;
 	protected int m_Seed = 1;
 	protected int m_NumIterations = 10;
 	protected int m_BagSizePercent = 67;
@@ -49,7 +49,7 @@ public abstract class MultilabelMetaClassifier extends MultilabelClassifier impl
 		return "For ensembles of multi-label methods.";
 	}
 
-	public MultilabelMetaClassifier() {
+	public MetaProblemTransformationMethod() {
 		// default classifier for GUI
 		this.m_Classifier = new CC();
 	}

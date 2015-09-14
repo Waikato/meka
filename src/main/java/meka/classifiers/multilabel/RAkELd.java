@@ -162,7 +162,7 @@ public class RAkELd extends RAkEL implements TechnicalInformationHandler {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new RAkELd(),args);
+		ProblemTransformationMethod.evaluation(new RAkELd(), args);
 	}
 
 }

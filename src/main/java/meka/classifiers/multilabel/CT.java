@@ -1,21 +1,15 @@
 package meka.classifiers.multilabel;
 
-import weka.classifiers.*;
-import meka.classifiers.multilabel.*;
 import meka.classifiers.multilabel.cc.CNode;
 import meka.classifiers.multilabel.cc.Trellis;
 import weka.core.*;
 import meka.core.A;
-import meka.core.F;
-import meka.core.MLUtils;
-import meka.core.CCUtils;
 import meka.core.StatUtils;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.core.TechnicalInformationHandler;
 import java.util.*;
-import java.io.Serializable;
 
 /**
  * CT - Classifier Trellis. 
@@ -258,6 +252,6 @@ public class CT extends MCC implements TechnicalInformationHandler {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new CT(),args);
+		ProblemTransformationMethod.evaluation(new CT(), args);
 	}
 }

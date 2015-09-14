@@ -16,7 +16,7 @@
 package meka.classifiers.multitarget;
 
 import meka.classifiers.multilabel.Evaluation;
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import meka.core.*;
 import meka.filters.multilabel.SuperNodeFilter;
 import weka.classifiers.Classifier;
@@ -31,13 +31,13 @@ import java.util.Vector;
 
 /**
  * SCC.java - Super Class Classifier (aka Super Node Classifier).
- * The output space is manipulated into super classes (based on label dependence), upon which a multi-target base classifier is applied. 
- * This is related to the RAkELd-type classifiers for multi-label classification. 
+ * The output space is manipulated into super classes (based on label dependence), upon which a multi-target base classifier is applied.
+ * This is related to the RAkELd-type classifiers for multi-label classification.
  *
- * @author 	Jesse Read 
+ * @author 	Jesse Read
  * @version	June 2012
  */
-public class SCC extends MultilabelClassifier implements Randomizable, MultiTargetClassifier, TechnicalInformationHandler {
+public class SCC extends ProblemTransformationMethod implements Randomizable, MultiTargetClassifier, TechnicalInformationHandler {
 
 	private SuperNodeFilter f = new SuperNodeFilter();
 
@@ -65,14 +65,14 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 
 	/**
 	 * Description to display in the GUI.
-	 * 
+	 *
 	 * @return		the description
 	 */
 	@Override
 	public String globalInfo() {
-		return 
+		return
 				"Super Class Classifier (SCC).\n"
-				+ "The output space is manipulated into super classes (based on label dependence; and pruning and nearest-subset-replacement like NSR), upon which a multi-target base classifier is applied.\n" 
+				+ "The output space is manipulated into super classes (based on label dependence; and pruning and nearest-subset-replacement like NSR), upon which a multi-target base classifier is applied.\n"
 				+ "For example, a super class based on two labels might take values in {[0,3],[0,0],[1,2]}.\n"
 				+ "For more information see:\n"
 				+ getTechnicalInformation().toString();
@@ -87,7 +87,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		result.setValue(Field.TITLE, "Multi-Dimensional Classification with Super-Classes");
 		result.setValue(Field.JOURNAL, "IEEE Transactions on Knowledge and Data Engineering");
 		result.setValue(Field.YEAR, "2013");
-		
+
 		return result;
 	}
 
@@ -101,7 +101,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 	 * @param	M			pariwise information \propto M[j][k]
 	 * @param	CRITICAL	a critical value to use
 	 *
-	 * CRITICAL = 2.706; 
+	 * CRITICAL = 2.706;
 	 * CRITICAL = 6.251;
 	 * @Note: For now, assume 3 DOF (multi-label classification)
 	 * @todo set CRITICAL into M, then this can be a generic function
@@ -111,7 +111,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		int L = M.length;
 
 		double S[][] = new double[L][L];			// sums
-		boolean T[][] = new boolean[L][L];			// together ? 
+		boolean T[][] = new boolean[L][L];			// together ?
 
 		double sumTogether = 0.0, sumApart = 0.0;
 
@@ -131,7 +131,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		// for each non-together pair ...
 		for(int j = 0; j < L; j++) {
 			for(int k = j+1; k < L; k++) {
-				if (T[j][k]) 
+				if (T[j][k])
 					sumTogether += (M[j][k] - CRITICAL);
 				else
 					sumApart += (M[j][k] - CRITICAL);
@@ -206,12 +206,12 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 
 		trainClassifier(m_Classifier,D_train,partition);
 
-		Result result = Evaluation.testClassifier((MultilabelClassifier)h, D_test);
+		Result result = Evaluation.testClassifier((ProblemTransformationMethod)h, D_test);
 
 		if (h instanceof MultiTargetClassifier || Evaluation.isMT(D_test)) {
 			result.setInfo("Type","MT");
 		}
-		else if (h instanceof MultilabelClassifier) {
+		else if (h instanceof ProblemTransformationMethod) {
 			result.setInfo("Threshold",MLEvalUtils.getThreshold(result.predictions,D_train,"PCut1"));
 			result.setInfo("Type","ML");
 		}
@@ -239,8 +239,8 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 
 		int N = D.numInstances();						// only for printouts
 		int U = MLUtils.numberOfUniqueCombinations(D);	// only for printouts
-		int L = D.classIndex(); 
-		rand = new Random(m_S); 
+		int L = D.classIndex();
+		rand = new Random(m_S);
 
 		if (!(m_Classifier instanceof MultiTargetClassifier)) {
 			throw new Exception("[Error] The base classifier must be multi-target capable, i.e., from meka.classifiers.multitarget.");
@@ -255,26 +255,26 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		// 1. BUILD BR or EBR
 		if (getDebug()) System.out.print("1. BUILD & Evaluate BR: ");
 		CR cr = new CR();
-		cr.setClassifier(((MultilabelClassifier)m_Classifier).getClassifier()); // assume PT
-		Result result_1 = Evaluation.evaluateModel((MultilabelClassifier)cr,D_train,D_test,"PCut1","5"); 
+		cr.setClassifier(((ProblemTransformationMethod)m_Classifier).getClassifier()); // assume PT
+		Result result_1 = Evaluation.evaluateModel((ProblemTransformationMethod)cr,D_train,D_test,"PCut1","5");
 		double acc1 = (Double)result_1.output.get(i_ErrFn);
 		if (getDebug()) System.out.println(" "+acc1);
 
-		int partition[][] = SuperLabelUtils.generatePartition(MLUtils.gen_indices(L),rand); 
+		int partition[][] = SuperLabelUtils.generatePartition(MLUtils.gen_indices(L),rand);
 
 		// 2. SELECT / MODIFY INDICES (using LEAD technique)
 		if (getDebug()) System.out.println("2. GET ERR-CHI-SQUARED MATRIX: ");
 		double MER[][] = StatUtils.condDepMatrix(D_test,result_1);
 		if (getDebug()) System.out.println(M.toString(MER));
 
-		/* 
+		/*
 		 * 3. SIMULATED ANNEALING
 		 * Always accept if best, progressively less likely accept otherwise.
 		 */
 		if (getDebug()) System.out.println("3. COMBINE NODES TO FIND THE BEST COMBINATION ACCORDING TO CHI");
 		double w = rating(partition,MER);
 		if (getDebug()) System.out.println("@0 : "+SuperLabelUtils.toString(partition)+ "\t("+w+")");
-		
+
 		for(int i = 0; i < m_I; i++) {
 			int partition_[][] = mutateCombinations(M.deep_copy(partition),rand);
 			double w_ = rating(partition_,MER); // this is really p_MER(partition_)
@@ -287,7 +287,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 			 else {
 				 // MAYBE ACCEPT
 				 double diff = Math.abs(w_-w);
-				 double p = (2.*(1. - sigma(diff*i/1000.))); 
+				 double p = (2.*(1. - sigma(diff*i/1000.)));
 				 if (p > rand.nextDouble()) {
 					 // OK, ACCEPT NOW
 					 if (getDebug()) System.out.println("@"+i+" : "+SuperLabelUtils.toString(partition_)+ "\t("+w_+")*");
@@ -306,7 +306,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		if (m_Iv > 0) {
 			if (getDebug()) System.out.println("4. REFINING THE INITIAL SET WITH SOME OLD-FASHIONED INTERNAL EVAL");
 			// Build & evaluate the classifier with the latest partition
-			result_1 = testClassifier((MultilabelClassifier)m_Classifier,D_train,D_test,partition);
+			result_1 = testClassifier((ProblemTransformationMethod)m_Classifier,D_train,D_test,partition);
 			w = (Double)result_1.output.get(i_ErrFn);
 			if (getDebug()) System.out.println("@0 : "+SuperLabelUtils.toString(partition)+ "\t("+w+")");
 			for(int i = 0; i < m_Iv; i++) {
@@ -314,7 +314,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 				// Build the classifier with the new combination
 				trainClassifier(m_Classifier,D_train,partition);
 				// Evaluate on D_test
-				Result result_2 = testClassifier((MultilabelClassifier)m_Classifier,D_train,D_test,partition_);
+				Result result_2 = testClassifier((ProblemTransformationMethod)m_Classifier,D_train,D_test,partition_);
 				double w_ = (Double)result_2.output.get(i_ErrFn);
 				if (w_ > w) {
 					w = w_;
@@ -348,7 +348,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 		// Get a classification y_ = h(x_)
 		double y_[] = null;
 		try {
-			y_ = ((MultilabelClassifier)m_Classifier).distributionForInstance(x_);
+			y_ = ((ProblemTransformationMethod)m_Classifier).distributionForInstance(x_);
 		} catch(Exception e) {
 			System.err.println("EXCEPTION !!! setting to "+Arrays.toString(y_));
 			return y;
@@ -416,7 +416,7 @@ public class SCC extends MultilabelClassifier implements Randomizable, MultiTarg
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new SCC(),args);
+		ProblemTransformationMethod.evaluation(new SCC(), args);
 	}
 
 	/**

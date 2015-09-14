@@ -16,7 +16,7 @@
 package meka.classifiers.multilabel.meta;
 
 import meka.classifiers.multilabel.BR;
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import weka.classifiers.AbstractClassifier;
 import weka.core.*;
 import weka.core.TechnicalInformation.Field;
@@ -29,7 +29,7 @@ import weka.core.TechnicalInformation.Type;
  * @version	June 2009
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
-public class MBR extends MultilabelClassifier implements TechnicalInformationHandler {
+public class MBR extends ProblemTransformationMethod implements TechnicalInformationHandler {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 865889198021748917L;
@@ -142,6 +142,6 @@ public class MBR extends MultilabelClassifier implements TechnicalInformationHan
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new MBR(),args);
+		ProblemTransformationMethod.evaluation(new MBR(), args);
 	}
 }

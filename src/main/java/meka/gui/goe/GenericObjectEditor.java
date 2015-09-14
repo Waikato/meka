@@ -19,12 +19,13 @@
  */
 package meka.gui.goe;
 
+import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.core.PropsUtils;
 import weka.core.OptionHandler;
 import weka.core.Utils;
-import weka.gui.PropertyDialog;
-import weka.gui.HierarchyPropertyParser;
 import weka.core.logging.Logger;
+import weka.gui.HierarchyPropertyParser;
+import weka.gui.PropertyDialog;
 import weka.gui.beans.PluginManager;
 
 import javax.swing.*;
@@ -33,8 +34,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyEditor;
 import java.util.Enumeration;
-import java.util.Properties;
 import java.util.Hashtable;
+import java.util.Properties;
 
 /**
  * An extended GOE to cater for the multi-label classifiers.
@@ -226,7 +227,7 @@ extends weka.gui.GenericObjectEditor {
     try {
       registerAllEditors();
       GenericObjectEditor ce = new GenericObjectEditor(true);
-      ce.setClassType(meka.classifiers.multilabel.MultilabelClassifier.class);
+      ce.setClassType(MultiLabelClassifier.class);
       Object initial = new meka.classifiers.multilabel.BR();
       if (args.length > 0){
 	ce.setClassType(Class.forName(args[0]));

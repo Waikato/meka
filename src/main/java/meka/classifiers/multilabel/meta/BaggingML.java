@@ -17,8 +17,7 @@ package meka.classifiers.multilabel.meta;
 
 import java.util.Random;
 
-import weka.classifiers.AbstractClassifier;
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Randomizable;
@@ -29,7 +28,7 @@ import weka.core.RevisionUtils;
  * @author Jesse Read (jmr30@cs.waikato.ac.nz)
  */
 
-public class BaggingML extends MultilabelMetaClassifier {
+public class BaggingML extends MetaProblemTransformationMethod {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -6208337124420497991L;
@@ -56,7 +55,7 @@ public class BaggingML extends MultilabelMetaClassifier {
 		if (getDebug()) System.out.print("-: Models: ");
 
 		train = new Instances(train);
-		m_Classifiers = MultilabelClassifier.makeCopies((MultilabelClassifier)m_Classifier, m_NumIterations);
+		m_Classifiers = ProblemTransformationMethod.makeCopies((ProblemTransformationMethod) m_Classifier, m_NumIterations);
 
 		for(int i = 0; i < m_NumIterations; i++) {
 			Random r = new Random(m_Seed+i);
@@ -87,7 +86,7 @@ public class BaggingML extends MultilabelMetaClassifier {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new BaggingML(),args);
+		ProblemTransformationMethod.evaluation(new BaggingML(), args);
 	}
 
 }

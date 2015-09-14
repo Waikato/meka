@@ -39,7 +39,7 @@ public class Evaluation {
 	 * @param	h		multi-label classifier
 	 * @param	options	command line options
 	 */
-	public static void runExperiment(MultilabelClassifier h, String options[]) throws Exception {
+	public static void runExperiment(MultiLabelClassifier h, String options[]) throws Exception {
 
 		// Help
 		if(Utils.getOptionPos('h',options) >= 0) {
@@ -109,7 +109,7 @@ public class Evaluation {
 		String lname = null;
 		if (Utils.getOptionPos('l',options) >= 0) {
 			lname = Utils.getOption('l',options);
-			h = (MultilabelClassifier)SerializationHelper.read(lname);
+			h = (MultiLabelClassifier)SerializationHelper.read(lname);
 			//Object o[] = SerializationHelper.readAll(lname);
 			//h = (MultilabelClassifier)o[0];
 		}
@@ -246,7 +246,7 @@ public class Evaluation {
 	 * @param	top    	Threshold OPtion (pertains to multi-label data only)
 	 * @return	Result	raw prediction data with evaluation statistics included.
 	 */
-	public static Result evaluateModel(MultilabelClassifier h, Instances D_train, Instances D_test, String top) throws Exception {
+	public static Result evaluateModel(MultiLabelClassifier h, Instances D_train, Instances D_test, String top) throws Exception {
 		return Evaluation.evaluateModel(h,D_train,D_test,top,"1");
 	}
 
@@ -259,12 +259,12 @@ public class Evaluation {
 	 * @param	vop    	Verbosity OPtion (which measures do we want to calculate/output)
 	 * @return	Result	raw prediction data with evaluation statistics included.
 	 */
-	public static Result evaluateModel(MultilabelClassifier h, Instances D_train, Instances D_test, String top, String vop) throws Exception {
+	public static Result evaluateModel(MultiLabelClassifier h, Instances D_train, Instances D_test, String top, String vop) throws Exception {
 		Result r = evaluateModel(h,D_train,D_test);
 		if (h instanceof MultiTargetClassifier || isMT(D_test)) {
 			r.setInfo("Type","MT");
 		}
-		else if (h instanceof MultilabelClassifier) {
+		else if (h instanceof MultiLabelClassifier) {
 			r.setInfo("Type","ML");
 			r.setInfo("Threshold",MLEvalUtils.getThreshold(r.predictions,D_train,top)); // <-- only relevant to ML (for now), but we'll put it in here in any case
 		}
@@ -281,12 +281,12 @@ public class Evaluation {
 	 * @param	vop    	Verbosity OPtion (which measures do we want to calculate/output)
 	 * @return	Result	raw prediction data with evaluation statistics included.
 	 */
-	public static Result evaluateModel(MultilabelClassifier h, Instances D_test, String tal, String vop) throws Exception {
+	public static Result evaluateModel(MultiLabelClassifier h, Instances D_test, String tal, String vop) throws Exception {
 		Result r = testClassifier(h,D_test);
 		if (h instanceof MultiTargetClassifier || isMT(D_test)) {
 			r.setInfo("Type","MT");
 		}
-		else if (h instanceof MultilabelClassifier) {
+		else if (h instanceof MultiLabelClassifier) {
 			r.setInfo("Type","ML");
 		}
 		r.setInfo("Threshold",tal);
@@ -303,7 +303,7 @@ public class Evaluation {
 	 * @param	top    	 Threshold OPtion (pertains to multi-label data only)
 	 * @return	Result	raw prediction data with evaluation statistics included.
 	 */
-	public static Result cvModel(MultilabelClassifier h, Instances D, int numFolds, String top) throws Exception {
+	public static Result cvModel(MultiLabelClassifier h, Instances D, int numFolds, String top) throws Exception {
 		return cvModel(h,D,numFolds,top,"1");
 	}
 
@@ -316,7 +316,7 @@ public class Evaluation {
 	 * @param	vop    	Verbosity OPtion (which measures do we want to calculate/output)
 	 * @return	Result	raw prediction data with evaluation statistics included.
 	 */
-	public static Result cvModel(MultilabelClassifier h, Instances D, int numFolds, String top, String vop) throws Exception {
+	public static Result cvModel(MultiLabelClassifier h, Instances D, int numFolds, String top, String vop) throws Exception {
 		Result r_[] = new Result[numFolds];
 		for(int i = 0; i < numFolds; i++) {
 			Instances D_train = D.trainCV(numFolds,i);
@@ -328,7 +328,7 @@ public class Evaluation {
 		if (h instanceof MultiTargetClassifier || isMT(D)) {
 			r.setInfo("Type","MT-CV");
 		}
-		else if (h instanceof MultilabelClassifier) {
+		else if (h instanceof MultiLabelClassifier) {
 			r.setInfo("Type","ML-CV");
 			try {
 				r.setInfo("Threshold",String.valueOf(Double.parseDouble(top)));
@@ -354,7 +354,7 @@ public class Evaluation {
 	 * @param	D_test 	test data
 	 * @return	raw prediction data (no evaluation yet)
 	 */
-	public static Result evaluateModel(MultilabelClassifier h, Instances D_train, Instances D_test) throws Exception {
+	public static Result evaluateModel(MultiLabelClassifier h, Instances D_train, Instances D_test) throws Exception {
 
 		long before = System.currentTimeMillis();
 		// Set test data as unlabelled data, if SemisupervisedClassifier
@@ -401,7 +401,7 @@ public class Evaluation {
 	 * @param	D_test 	test data
 	 * @return	Result	with raw prediction data ONLY
 	 */
-	public static Result testClassifier(MultilabelClassifier h, Instances D_test) throws Exception {
+	public static Result testClassifier(MultiLabelClassifier h, Instances D_test) throws Exception {
 
 		int L = D_test.classIndex();
 		Result result = new Result(D_test.numInstances(),L);

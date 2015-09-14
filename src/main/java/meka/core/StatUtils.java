@@ -17,7 +17,7 @@ package meka.core;
 
 import meka.classifiers.multilabel.BR;
 import meka.classifiers.multilabel.Evaluation;
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.MultiLabelClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.SMO;
 import weka.core.Instance;
@@ -801,7 +801,7 @@ public abstract class StatUtils {
 		Instances D_test = new Instances(D_r,D_train.numInstances(),D_r.numInstances()-D_train.numInstances());
 		BR br = new BR();
 		br.setClassifier(h);
-		Result result = Evaluation.evaluateModel((MultilabelClassifier)br,D_train,D_test,"PCut1","1"); 
+		Result result = Evaluation.evaluateModel((MultiLabelClassifier)br,D_train,D_test,"PCut1","1");
 		return LEAD2(D_test,result);
 	}
 
@@ -812,7 +812,7 @@ public abstract class StatUtils {
 		Instances D_test = new Instances(D_r,D_train.numInstances(),D_r.numInstances()-D_train.numInstances());
 		BR br = new BR();
 		br.setClassifier(h);
-		Result result = Evaluation.evaluateModel((MultilabelClassifier)br,D_train,D_test,"PCut1","1"); 
+		Result result = Evaluation.evaluateModel((MultiLabelClassifier)br,D_train,D_test,"PCut1","1");
 
 		return LEAD(D_test, result, MDType);
 	}

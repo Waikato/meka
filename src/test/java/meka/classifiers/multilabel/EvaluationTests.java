@@ -22,7 +22,6 @@ import meka.classifiers.multilabel.incremental.CCUpdateable;
 import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
 import meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable;
 import meka.classifiers.multilabel.meta.BaggingML;
-import meka.core.MLEvalUtils;
 import meka.core.MLUtils;
 import meka.core.Metrics;
 import meka.core.Result;
@@ -76,7 +75,7 @@ public class EvaluationTests extends TestCase {
 		Instances D_train = new Instances(D,0,400);
 		Instances D_test = new Instances(D,400,D.numInstances()-400);
 		// Train ECC
-		MultilabelClassifier h = makeECC();
+		MultiLabelClassifier h = makeECC();
 		// Eval
 		try {
 			Result r1 = Evaluation.evaluateModel(h, D_train, D_test, "PCut1");
@@ -87,7 +86,7 @@ public class EvaluationTests extends TestCase {
 		}
 	}
 
-	public MultilabelClassifier makeECC() {
+	public MultiLabelClassifier makeECC() {
 		BaggingML h = new BaggingML();
 		CC cc = new CC();
 		cc.setClassifier(new SMO());
@@ -178,11 +177,11 @@ public class EvaluationTests extends TestCase {
 		assertTrue("PCutL Thresholds OK?", r.info.get("Threshold").equals("[0.4, 0.4, 0.4, 0.4, 0.6, 0.6]") );
 	}
 
-	public static Result cvEvaluateClassifier(MultilabelClassifier h) {
+	public static Result cvEvaluateClassifier(MultiLabelClassifier h) {
 		return cvEvaluateClassifier(h,"0.5");
 	}
 
-	public static Result cvEvaluateClassifier(MultilabelClassifier h, String top) {
+	public static Result cvEvaluateClassifier(MultiLabelClassifier h, String top) {
 		Instances D = null;
 		try {
 			D = EvaluationTests.loadInstances("Music.arff");

@@ -35,7 +35,7 @@ import java.util.*;
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  * @version January 2009
  */
-public class BRq extends MultilabelClassifier implements Randomizable, TechnicalInformationHandler {
+public class BRq extends ProblemTransformationMethod implements Randomizable, TechnicalInformationHandler {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 398261703726763108L;
@@ -248,6 +248,6 @@ public class BRq extends MultilabelClassifier implements Randomizable, Technical
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new BRq(),args);
+		ProblemTransformationMethod.evaluation(new BRq(), args);
 	}
 }

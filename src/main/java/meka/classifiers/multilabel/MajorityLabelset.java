@@ -29,7 +29,7 @@ import weka.core.RevisionUtils;
  * @author 	Jesse Read (jesse@tsc.uc3m.es)
  * @version October 2011
  */
-public class MajorityLabelset extends MultilabelClassifier {
+public class MajorityLabelset extends ProblemTransformationMethod {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -5932291001079843869L;
@@ -88,7 +88,7 @@ public class MajorityLabelset extends MultilabelClassifier {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new MajorityLabelset(),args);
+		ProblemTransformationMethod.evaluation(new MajorityLabelset(), args);
 	}
 
 }

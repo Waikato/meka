@@ -231,7 +231,7 @@ public class PS extends LC implements Randomizable, TechnicalInformationHandler 
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new PS(),args);
+		ProblemTransformationMethod.evaluation(new PS(), args);
 	}
 
 }

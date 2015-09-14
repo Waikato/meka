@@ -18,11 +18,9 @@ package meka.classifiers.multilabel;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.Vector;
-import java.lang.reflect.Constructor;
 
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.lazy.IBLR_ML;
@@ -52,7 +50,7 @@ import weka.core.Utils;
  * @version	June 2014
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
-public class MULAN extends MultilabelClassifier {
+public class MULAN extends ProblemTransformationMethod {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 1720289364996202350L;
@@ -248,7 +246,7 @@ public class MULAN extends MultilabelClassifier {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new MULAN(),args);
+		ProblemTransformationMethod.evaluation(new MULAN(), args);
 	}
 
 }

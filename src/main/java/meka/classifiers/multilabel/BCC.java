@@ -233,6 +233,6 @@ public class BCC extends CC {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new BCC(),args);
+		ProblemTransformationMethod.evaluation(new BCC(), args);
 	}
 }

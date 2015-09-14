@@ -284,7 +284,7 @@ public class PMCC extends MCC {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new PMCC(),args);
+		ProblemTransformationMethod.evaluation(new PMCC(), args);
 	}
 
 }

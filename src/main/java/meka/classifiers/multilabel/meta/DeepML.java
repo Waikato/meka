@@ -15,7 +15,6 @@
 
 package meka.classifiers.multilabel.meta;
 
-import java.util.*;
 import Jama.Matrix;
 import rbms.RBM;
 import rbms.DBM;
@@ -23,14 +22,8 @@ import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import meka.core.*;
-import meka.classifiers.multilabel.CC;
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import meka.classifiers.multilabel.NN.*;
-import meka.classifiers.multilabel.meta.BaggingML;
-import weka.classifiers.functions.Logistic;
-
-import java.io.*;
-import weka.core.converters.*;
 
 /**
  * DeepML.java - Deep Multi-label Classification.
@@ -171,7 +164,7 @@ public class DeepML extends AbstractDeepNeuralNet implements Randomizable, Techn
 	}
 
 	public static void main(String args[]) throws Exception {
-		MultilabelClassifier.evaluation(new DeepML(),args);
+		ProblemTransformationMethod.evaluation(new DeepML(), args);
 	}
 
 }

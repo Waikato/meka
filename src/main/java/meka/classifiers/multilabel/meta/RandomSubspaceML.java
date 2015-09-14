@@ -15,14 +15,12 @@
 
 package meka.classifiers.multilabel.meta;
 
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.Vector;
 import java.util.Arrays;
 
-import weka.classifiers.AbstractClassifier;
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import meka.core.A;
 import meka.core.F;
 import meka.core.MLUtils;
@@ -51,7 +49,7 @@ import weka.core.Utils;
  */
 
 
-public class RandomSubspaceML extends MultilabelMetaClassifier implements TechnicalInformationHandler {
+public class RandomSubspaceML extends MetaProblemTransformationMethod implements TechnicalInformationHandler {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 3608541911971484299L;
@@ -71,7 +69,7 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 
 		if (getDebug()) System.out.println("-: Models: ");
 
-		m_Classifiers = MultilabelClassifier.makeCopies((MultilabelClassifier)m_Classifier, m_NumIterations);
+		m_Classifiers = ProblemTransformationMethod.makeCopies((ProblemTransformationMethod) m_Classifier, m_NumIterations);
 
 		Random r = new Random(m_Seed);
 
@@ -133,7 +131,7 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 			x_.setDataset(m_InstancesTemplates[i]);
 
 			// TODO, use generic voting scheme somewhere?
-			double d[] = ((MultilabelClassifier)m_Classifiers[i]).distributionForInstance(x_);
+			double d[] = ((ProblemTransformationMethod)m_Classifiers[i]).distributionForInstance(x_);
 			for(int j = 0; j < d.length; j++) {
 				p[j] += d[j];
 			}
@@ -177,7 +175,7 @@ public class RandomSubspaceML extends MultilabelMetaClassifier implements Techni
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new RandomSubspaceML(),args);
+		ProblemTransformationMethod.evaluation(new RandomSubspaceML(), args);
 	}
 
 	/**

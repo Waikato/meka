@@ -16,7 +16,7 @@
 package meka.classifiers.multilabel.meta;
 
 import meka.classifiers.multilabel.BR;
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import meka.core.MLUtils;
 import weka.core.*;
 import weka.core.TechnicalInformation.Field;
@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  */
-public class SubsetMapper extends MultilabelClassifier 
+public class SubsetMapper extends ProblemTransformationMethod
   implements TechnicalInformationHandler {
 
 	/** for serialization. */
@@ -134,7 +134,7 @@ public class SubsetMapper extends MultilabelClassifier
 	@Override
 	public double[] distributionForInstance(Instance TestInstance) throws Exception {
 
-		double r[] = ((MultilabelClassifier)m_Classifier).distributionForInstance(TestInstance);
+		double r[] = ((ProblemTransformationMethod)m_Classifier).distributionForInstance(TestInstance);
 
 		return nearestSubset(r);
 	}
@@ -161,7 +161,7 @@ public class SubsetMapper extends MultilabelClassifier
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new SubsetMapper(),args);
+		ProblemTransformationMethod.evaluation(new SubsetMapper(), args);
 	}
 
 }

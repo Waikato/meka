@@ -22,7 +22,7 @@
 package meka.experiment;
 
 import meka.classifiers.multilabel.Evaluation;
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.core.Result;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
@@ -377,7 +377,7 @@ public class MekaClassifierSplitEvaluator
 		m_Classifier = AbstractClassifier.makeCopy(m_Template);
 
 		// evaluate classifier
-	    Result res = Evaluation.evaluateModel((MultilabelClassifier) m_Classifier, train, test, "PCut1", "3");
+	    Result res = Evaluation.evaluateModel((MultiLabelClassifier) m_Classifier, train, test, "PCut1", "3");
 	    HashMap<String,Object> map = Result.getStats(res, "3");
 
 		m_result = res.toString();
@@ -490,11 +490,11 @@ public class MekaClassifierSplitEvaluator
 	 */
 	@Override
 	public void setClassifier(Classifier newClassifier) {
-		if (newClassifier instanceof MultilabelClassifier)
+		if (newClassifier instanceof MultiLabelClassifier)
 			super.setClassifier(newClassifier);
 		else
 			throw new IllegalArgumentException(
-					"Classifier must be a " + MultilabelClassifier.class.getName() 
+					"Classifier must be a " + MultiLabelClassifier.class.getName()
 					+ ", provided: " + newClassifier.getClass().getName());
 	}
 
@@ -506,7 +506,7 @@ public class MekaClassifierSplitEvaluator
 	 */
 	@Override
 	public String classifierTipText() {
-		return super.classifierTipText() + ", must be a " + MultilabelClassifier.class.getName();
+		return super.classifierTipText() + ", must be a " + MultiLabelClassifier.class.getName();
 	}
 
 	/**

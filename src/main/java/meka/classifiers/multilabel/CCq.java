@@ -34,7 +34,7 @@ import java.util.Vector;
  * @author Jesse Read (jesse@tsc.uc3m.es)
  * @version January 2009
  */
-public class CCq extends MultilabelClassifier implements Randomizable, TechnicalInformationHandler {
+public class CCq extends ProblemTransformationMethod implements Randomizable, TechnicalInformationHandler {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 7881602808389873411L;
@@ -265,6 +265,6 @@ public class CCq extends MultilabelClassifier implements Randomizable, Technical
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new CCq(),args);
+		ProblemTransformationMethod.evaluation(new CCq(), args);
 	}
 }

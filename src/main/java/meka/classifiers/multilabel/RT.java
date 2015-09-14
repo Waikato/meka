@@ -19,7 +19,6 @@ import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
-import meka.core.MLUtils;
 import weka.core.RevisionUtils;
 
 /**
@@ -29,7 +28,7 @@ import weka.core.RevisionUtils;
  * @author 	Jesse Read (jmr30@cs.waikato.ac.nz)
  * @version 2010
  */
-public class RT extends MultilabelClassifier {
+public class RT extends ProblemTransformationMethod {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 7348139531854838421L;
@@ -130,6 +129,6 @@ public class RT extends MultilabelClassifier {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new RT(),args);
+		ProblemTransformationMethod.evaluation(new RT(), args);
 	}
 }

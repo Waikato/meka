@@ -13,32 +13,24 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package meka.classifiers.multitarget;
+/**
+ * MultiLabelClassifier.java
+ * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ */
+
+package meka.classifiers.multilabel;
 
 import weka.classifiers.Classifier;
 import weka.core.OptionHandler;
 
 /**
- *  MultiTargetClassifier.java - A Multi-target Classifier.
- *  To implement this interface, it is also necessary to extend MultilabelClassifier.
- *  Implementing this interface only signals to the Evaluator that we are dealing with multi-target data, 
- *  and a different evaluation output is made. Training and classification is the same, using the 
- *  methods <i>buildClassifier(Instances)</i> and <i>distributionForInstance(Instance)</i>, except that
- *  the latter may return a vector of L*2 doubles instead of L. The extra values are probabalistic 
- *  information (i.e., the probability of class y[j] for the jth target is y[j*2]) that may be used by 
- *  ensemble classifiers.
+ * Interface for multi-label classifiers.
  *
- * 	@author 	Jesse Read (jesse@tsc.uc3m.es)
- * 	@version	January 2012
+ * @author FracPete (fracpete at waikato dot ac dot nz)
+ * @version $Revision$
  */
-
-public interface MultiTargetClassifier
+public interface MultiLabelClassifier
 		extends Classifier, OptionHandler {
-
-	/*
-	 * Everything is the same as MultilabelClassifier except for the Evaluation
-	 * ... but in the future I would like to add getProbabilities() or something here.
-	 */
 
 	/**
 	 * Set debugging mode.

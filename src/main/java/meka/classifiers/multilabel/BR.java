@@ -33,7 +33,7 @@ import weka.core.RevisionUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BR extends MultilabelClassifier implements MultiLabelDrawable {
+public class BR extends ProblemTransformationMethod implements MultiLabelDrawable {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -5390512540469007904L;
@@ -153,7 +153,7 @@ public class BR extends MultilabelClassifier implements MultiLabelDrawable {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new BR(),args);
+		ProblemTransformationMethod.evaluation(new BR(), args);
 	}
 
 }

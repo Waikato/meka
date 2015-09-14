@@ -38,7 +38,7 @@ import java.util.*;
  * @author	Jesse Read
  * @version December 2013
  */
-public class CC extends MultilabelClassifier
+public class CC extends ProblemTransformationMethod
 		implements Randomizable, TechnicalInformationHandler, MultiLabelDrawable {
 
 	private static final long serialVersionUID = -4115294965331340629L;
@@ -380,6 +380,6 @@ public class CC extends MultilabelClassifier
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new CC(),args);
+		ProblemTransformationMethod.evaluation(new CC(), args);
 	}
 }
