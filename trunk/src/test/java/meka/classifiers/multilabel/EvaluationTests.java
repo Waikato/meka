@@ -81,8 +81,6 @@ public class EvaluationTests extends TestCase {
 		try {
 			Result r1 = Evaluation.evaluateModel(h, D_train, D_test, "PCut1");
 			Result r2 = Evaluation.evaluateModel(h, D_train, D_test, "PCut1");
-			//System.out.println(""+r1.output.get("Accuracy"));
-			//System.out.println(""+r2.output.get("Accuracy"));
 			assertTrue("Experiments are Repeatable (with same result)", r1.output.get("Accuracy").equals(r2.output.get("Accuracy")));
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -176,21 +174,20 @@ public class EvaluationTests extends TestCase {
 		CC cc = new CC();
 		cc.setClassifier(new Logistic());
 		h.setClassifier(cc);
-		Result r = EvaluationTests.cvEvaluateClassifier(h,"PCutL");
+		Result r = EvaluationTests.cvEvaluateClassifier(h,"0.5");
 		assertTrue("PCutL Thresholds OK?", r.info.get("Threshold").equals("[0.4, 0.4, 0.4, 0.4, 0.6, 0.6]") );
 	}
 
 	public static Result cvEvaluateClassifier(MultilabelClassifier h) {
-		return cvEvaluateClassifier(h,"PCut1");
+		return cvEvaluateClassifier(h,"0.5");
 	}
 
 	public static Result cvEvaluateClassifier(MultilabelClassifier h, String top) {
 		Instances D = null;
 		try {
 			D = EvaluationTests.loadInstances("Music.arff");
-			//h.buildClassifier(D); // <-- this line is pointless
-			Result folds[] = Evaluation.cvModel(h,D,5,top);
-			return MLEvalUtils.averageResults(folds);
+			Result result = Evaluation.cvModel(h,D,5,top,"7");
+			return result;
 		} catch(Exception e) {
 			System.err.println("");
 			e.printStackTrace();
