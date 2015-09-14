@@ -220,9 +220,6 @@ java meka.classifiers.multilabel.BR -t data/Music.arff \
 
 The CLI is the most powerful way to work with \framework{\MEKA}, but the GUI is a good way to get started. Refer to \Sec{sec:running} on how to open the GUI. Once opened, you will see three tabs: \textsf{Preprocess}, \textsf{Classify}, \textsf{Visualize}. The following process will guide you through a simple experiment.
 
-%Again, to run \framework{\MEKA}'s GUI, simply type \texttt{ant run} from the X directory, or run either the \texttt{run.sh} (under Linux) or \texttt{run.bat} (under Microsoft windows) scripts in the \texttt{scripts/} folder. 
-
-
 
 \begin{enumerate}
 	\item Load a dataset file using \textsf{Open} from the file menu. %See \Sec{sec:data.gui} for information on preprocessing the datasets.
@@ -452,24 +449,31 @@ Instead of using subversion, you can simply use the source code that is part of 
 
 \subsection{Compiling}
 \label{compiling}
-\heading{Using \texttt{ant}}
-MEKA uses \textit{Apache ant}\footnote{\url{http://ant.apache.org/}} as build tool. You can compile MEKA as follows:
+\heading{Using \texttt{Maven}}
+MEKA uses \textit{Apache Maven}\footnote{\url{http://maven.apache.org/}} as build tool. You can compile MEKA as follows:
 \begin{lstlisting}
-ant clean compile jar
+mvn clean install
 \end{lstlisting}
-If you want to generate an archive containing all source code, pdfs and binary jars, then you can use the following command:
+If you want to generate an archive containing all source code, pdfs and binary jars, then you can use the following commands
+(make sure that the version in the \textit{release.xml} file matches the one in the \textit{pom.xml}):
 \begin{lstlisting}
-ant clean compile release
+mvn clean install
+mvn -f release.xml package
 \end{lstlisting}
 Please note, if you develop new algorithms, you should also create a unit test for it, to ensure that it is working properly. See section \ref{unittests} for more details.
 
 \heading{Using Eclipse}
-After obtaining the source code, you can use the Eclipse\footnote{\url{http://eclipse.org/}} template files that come with MEKA. You only need to rename two files, found in the same directory as the \texttt{build.xml} ant build script, as follows:
+After obtaining the source code, you can use the Eclipse\footnote{\url{http://eclipse.org/}} template files that come with MEKA. You only need to rename two files, found in the same directory as the \texttt{pom.xml} ant build script, as follows:
 \begin{itemize}
   \item \texttt{.classpath.default} $\rightarrow$ \texttt{.classpath}
   \item \texttt{.project.default} $\rightarrow$ \texttt{.project}
 \end{itemize}
 Then you can simply import MEKA as \textit{Existing Java Project}, pointing the import wizard to the directory containing the above mentioned files.
+
+\heading{Using IntelliJ IDEA}
+After obtaining the source code, you can simply import the project as a Maven project.
+Select \textit{File $\rightarrow$ New $\rightarrow$ Project from Existing Sources} from the main menu and point to
+the directory containing the \textit{pom.xml} file.
 
 \subsection{Unit tests}
 \label{unittests}
@@ -487,7 +491,7 @@ meka.filters.AbstractMekaFilterTest
 
 \noindent You can execute all the unit tests by calling the following class from the command-line:
 \begin{lstlisting}
-meka.MekaTests
+mvn test
 \end{lstlisting}
 
 \subsection{\label{sec:extending}Extending \framework{\MEKA}}%: Writing New Classifiers
@@ -502,7 +506,7 @@ The following is an example of a functioning (but extremely minimalistic) classi
 package meka.classifiers.multilabel;
 import weka.core.*;
 
-public class TestClassifier extends MultilabelClassifier {
+public class TestClassifier extends ProblemTransformationMethod {
 	
     public void buildClassifier(Instances D) throws Exception {
         testCapabilities(D);
@@ -521,7 +525,15 @@ public class TestClassifier extends MultilabelClassifier {
 \end{lstlisting}
 }
 
-This shows how easy it is to create a new classifier. However, for more useful examples see the source code of existing \framework{\MEKA} classifiers. The \texttt{testCapabilities(D)} line is optional but highly recommended. Note that the \texttt{distributionForInstance} method returns a \texttt{double[]} array exactly like in \framework{\WEKA}. However, whereas in \framework{\WEKA}, there is one value in the array for each possible value of the single target attribute, in \framework{\MEKA} this function returns an array of $C$ values, where $C$ is the \emph{number} of target attributes, and the $j$th value of the array is the \emph{value} corresponding to the $j$th target attribute.
+This shows how easy it is to create a new classifier. If it is not a \textit{problem transformation method}-based one,
+then use the appropriate WEKA superclass and implement the \textit{meka.classifiers.multilabel.MultiLabelClassifier}
+interface (\textit{ProblemTransformationMethod} implements this interface).
+For more useful examples see the source code of existing \framework{\MEKA} classifiers.
+The \texttt{testCapabilities(D)} line is optional but highly recommended. Note that the \texttt{distributionForInstance}
+method returns a \texttt{double[]} array exactly like in \framework{\WEKA}. However, whereas in \framework{\WEKA},
+there is one value in the array for each possible value of the single target attribute, in \framework{\MEKA} this
+function returns an array of $C$ values, where $C$ is the \emph{number} of target attributes, and the $j$th value of
+the array is the \emph{value} corresponding to the $j$th target attribute.
 
 \subsubsection{Building Classifiers}
 
