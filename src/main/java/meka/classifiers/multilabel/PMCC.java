@@ -36,8 +36,9 @@ import java.util.*;
  * @author Jesse Read
  * @version	Sep 2014
  */
-public class PMCC extends MCC { 
+public class PMCC extends MCC {
 
+	private static final long serialVersionUID = 1999206808758133267L;
 	protected int m_M = 10;
 	protected int m_O = 0;
 	protected double m_Beta = 0.03;

@@ -19,6 +19,8 @@ import java.util.*;
  */
 public class CT extends MCC implements TechnicalInformationHandler {
 
+	private static final long serialVersionUID = -5773951599734753129L;
+
 	protected int m_Width = -1;
 	protected int m_Connectivity = 1;
 

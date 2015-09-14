@@ -29,7 +29,8 @@ import java.util.*;
  * @author Jesse Read (jesse@tsc.uc3m.es)
  * @version	November 2012
  */
-public class PCC extends CC implements TechnicalInformationHandler{ // MT Capable
+public class PCC extends CC implements TechnicalInformationHandler{
+	private static final long serialVersionUID = -7669951968300150007L; // MT Capable
 
 	/**
 	 * Push - increment y[0] until = K[0], then reset and start with y[0], etc ...

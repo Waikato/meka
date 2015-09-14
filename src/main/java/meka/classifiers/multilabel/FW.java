@@ -26,6 +26,7 @@ import weka.core.*;
  */
 public class FW extends ProblemTransformationMethod {
 
+	private static final long serialVersionUID = -8259554419725274112L;
 	Classifier h[][] = null;
 	Attribute classAttribute = null;
 
