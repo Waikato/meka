@@ -15,9 +15,13 @@
 
 package meka.classifiers.multilabel.NN;
 
-import meka.classifiers.multilabel.*;
-import java.util.*;
-import weka.core.*;
+import weka.core.Option;
+import weka.core.Utils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * AbstractDeepNeuralNet.java - Extends AbstractNeuralNet with depth options. 
@@ -25,6 +29,8 @@ import weka.core.*;
  * @version December 2012
  */
 public abstract class AbstractDeepNeuralNet extends AbstractNeuralNet  {
+
+	private static final long serialVersionUID = 5416731163612885485L;
 
 	protected int m_N = 2;
 
