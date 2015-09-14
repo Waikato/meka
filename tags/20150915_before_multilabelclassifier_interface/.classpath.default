@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="lib" path="lib/junit.jar"/>
+	<classpathentry kind="lib" path="lib/moa.jar"/>
+	<classpathentry kind="lib" path="lib/mulan.jar"/>
+	<classpathentry kind="lib" path="lib/weka-tests.jar"/>
+	<classpathentry kind="lib" path="lib/weka.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/Jama.jar"/>
+	<classpathentry kind="lib" path="lib/jfilechooser-bookmarks.jar"/>
+	<classpathentry kind="lib" path="lib/mst.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

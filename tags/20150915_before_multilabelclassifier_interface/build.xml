@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<project name="meka" default="compile" basedir=".">
+
+    <!-- directories -->
+    <property name="src" value="src/main/java"/>
+    <property name="src-tests" value="src/test/java"/>
+    <property name="src-latex" value="src/main/latex"/>
+    <property name="src-data" value="src/main/data"/>
+    <property name="resources" value="src/main/resources"/>
+    <property name="resources-tests" value="src/test/resources"/>
+    <property name="target" value="target"/>
+    <property name="build" value="target/classes"/>
+    <property name="build-tests" value="target/test-classes"/>
+    <property name="javadoc" value="target/apidocs"/>
+    <property name="target" value="target"/>
+    <property name="lib" value="lib"/>
+    <property name="all" value="."/>
+    <property name="scripts" value="src/main/scripts"/>
+    <property name="release" value="target"/>
+    <property name="mainclass" value="meka.gui.explorer.Explorer"/>
+    <property name="memory" value="512m"/>
+
+    <property name="version" value="1.7.8-SNAPSHOT"/>
+
+    <!-- CLASSPATH -->
+    <path id="project.class.path">
+      <pathelement location="." />
+      <fileset dir="${lib}">
+         <include name="*.jar"/>
+      </fileset>
+    </path>
+
+    <target name="clean" description="Removes the build directory, generated jars and temp files."> 
+        <delete dir="${target}" failonerror="false"/>
+        <delete dir="${javadoc}"/>
+        <delete>
+          <fileset dir="${basedir}" includes="*.jar"/>
+          <fileset dir="${basedir}" includes="*.zip"/>
+        </delete>
+        <delete defaultexcludes="no">
+          <fileset dir="${basedir}" includes="**/*~" defaultexcludes="no"/>
+          <fileset dir="${basedir}" includes="**/.DS_Store" defaultexcludes="no"/>
+          <fileset dir="${basedir}" includes="hs_err_pid*"/>
+        </delete>
+        <delete>
+        	<fileset dir="${basedir}" includes="temp_Testdata_*.arff"/>
+        </delete>
+       <delete>
+        	<fileset dir="${src-latex}" includes="**/*.aux"/>
+        	<fileset dir="${src-latex}" includes="**/*.blg"/>
+        	<fileset dir="${src-latex}" includes="**/*.dvi"/>
+        	<fileset dir="${src-latex}" includes="**/*.out"/>
+         	<fileset dir="${src-latex}" includes="**/*.log"/>
+         	<fileset dir="${src-latex}" includes="**/*.pdf"/>
+        	<fileset dir="${src-latex}" includes="**/*.toc"/>
+       </delete>
+    </target>
+
+    <target name="init"> 
+        <mkdir dir="${build}"/>
+        <copy todir="${build}" >
+            <fileset dir="${resources}">
+              <include name="**/*.*"/>
+            </fileset>
+        </copy>
+        <mkdir dir="${build-tests}"/>
+        <copy todir="${build-tests}" >
+            <fileset dir="${resources-tests}">
+              <include name="**/*.*"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="compile" depends="init" description="Compiles the source code."> 
+      <javac srcdir="${src}" 
+             destdir="${build}" 
+             debug="true" 
+             debuglevel="lines,vars,source" 
+             classpathref="project.class.path"
+             source="1.7" target="1.7">
+      </javac>
+      <javac srcdir="${src-tests}" 
+	       destdir="${build-tests}" 
+	       debug="true" 
+	       debuglevel="lines,vars,source"
+	       source="1.7" target="1.7">
+		<classpath>
+	      <fileset dir="${lib}">
+    	     <include name="*.jar"/>
+	      </fileset>
+	      <pathelement path="${build}"/>
+		</classpath>
+      </javac>
+    </target>
+
+    <target name="jar" depends="compile">
+	<jar destfile="${target}/meka-${version}.jar"
+	     basedir="${build}/"
+		 includes="weka/** meka/** moa/** rbms/**">
+		<manifest>
+			<attribute name="Main-Class" value="meka.gui.explorer.Explorer"/>
+		</manifest>
+	</jar>
+	<jar destfile="${target}/meka-${version}-tests.jar"
+	     basedir="${build-tests}/"
+		 includes="weka/** meka/** moa/** rbms/**">
+	</jar>
+    </target>
+
+    <target name="src-jar" description="Creates a source archive.">
+	<jar destfile="${target}/meka-${version}-sources.jar">
+ 		<zipfileset dir="${src}" prefix="src/main/java"/>
+ 		<zipfileset dir="${src-latex}" prefix="src/main/latex"/>
+ 		<zipfileset dir="${resources}" prefix="src/main/resources"/>
+ 		<zipfileset dir="${scripts}" prefix="src/main/scripts"/>
+ 		<zipfileset dir="${src-tests}" prefix="src/test/java"/>
+ 		<zipfileset dir="${resources-tests}" prefix="src/test/resources"/>
+		<fileset file="build.xml"/>
+		<fileset file="LICENSE.txt"/>
+		<fileset file="README.txt"/>
+	</jar>
+    </target>
+
+    <target name="full-jar" description="Creates full archive.">
+       <jar destfile="${target}/meka-full-${version}.jar" basedir="${all}/"/>
+    </target>
+
+    <target name="javadoc" description="Generate Javadoc documentation.">
+        <javadoc
+           classpathref 	  = "project.class.path"
+           access           = "public"
+           defaultexcludes  = "yes"
+           excludepackagenames  = "weka, moa, rbms"
+           use              = "yes"
+           header           = "MEKA ${version}"
+           doctitle         = "MEKA - Multi-label Extension to weKA"
+           nodeprecatedlist = "yes"
+           sourcepath       = "${src}"
+           destdir          = "${javadoc}"
+           />
+    </target>
+
+    <target name="javadoc-jar" depends="javadoc" description="Creates an archive from the Javadoc.">
+      <jar destfile="${target}/meka-${version}-javadoc.jar" basedir="${javadoc}/"/>
+    </target>
+
+    <target name="all" depends="jar, src-jar, javadoc-jar" description="Generates all jars."/>
+
+    <target name="latex" depends="init" description="Generates the LaTeX documentation.">
+      <!-- tutorial -->
+      <exec executable="pdflatex" dir="${src-latex}/Tutorial">
+         <arg value="Tutorial.tex"/>
+      </exec>
+      <exec executable="pdflatex" dir="${src-latex}/Tutorial">
+         <arg value="Tutorial.tex"/>
+      </exec>
+      <copy todir="${target}" >
+          <fileset dir="${src-latex}/Tutorial">
+            <include name="Tutorial.pdf"/>
+          </fileset>
+      </copy>
+    </target>
+
+    <target name="release" depends="clean, all, latex" description="Generates a release archive.">
+      <delete file="${release}/meka-release-${version}.zip"/>
+      <zip destfile="${release}/meka-release-${version}.zip">
+        <zipfileset dir="${basedir}" includes="README.txt" prefix="meka-${version}"/>
+        <zipfileset dir="${basedir}" includes="LICENSE.txt" prefix="meka-${version}"/>
+        <zipfileset dir="${target}" includes="*.pdf" prefix="meka-${version}"/>
+        <zipfileset dir="${target}" includes="meka-${version}-sources.jar" prefix="meka-${version}"/>
+        <zipfileset dir="${target}" includes="meka-${version}.jar" prefix="meka-${version}/lib"/>
+        <zipfileset dir="${basedir}" includes="lib/*.jar" prefix="meka-${version}"/>
+        <zipfileset dir="${basedir}" includes="lib/README.txt" prefix="meka-${version}"/>
+        <zipfileset dir="${src-data}" includes="*.*" prefix="meka-${version}/data"/>
+        <zipfileset dir="${javadoc}" prefix="meka-${version}/api"/>
+        <zipfileset dir="${scripts}" prefix="meka-${version}" filemode="755"/>
+      </zip>
+    </target>
+
+    <target name="run" depends="compile" description="Starts the GUI.">
+      <java classname="${mainclass}" fork="true" maxmemory="${memory}">
+        <classpath>
+          <fileset dir="${lib}">
+            <include name="*.jar"/>
+          </fileset>
+          <pathelement path="${build}"/>
+        </classpath>
+      </java>
+    </target>
+</project>
