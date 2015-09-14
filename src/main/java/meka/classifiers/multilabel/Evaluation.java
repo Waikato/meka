@@ -129,14 +129,8 @@ public class Evaluation {
 				int numFolds = MLUtils.getIntegerOption(Utils.getOption('x',options),10); // default 10
 				// Check for remaining options
 				Utils.checkForRemainingOptions(options);
-				Result fold[] = Evaluation.cvModel(h,D_train,numFolds,top,voption);
-				r = MLEvalUtils.averageResults(fold);
+				r = Evaluation.cvModel(h,D_train,numFolds,top,voption);
 				System.out.println(r.toString());
-				//if (fname != null) {
-					//for(int i = 0; i < fold.length; i++) {
-						//Result.writeResultToFile(fold[i],fname+"."+i);
-					//}
-				//}
 			}
 			else {
 				// TRAIN-TEST SPLIT
@@ -303,33 +297,51 @@ public class Evaluation {
 
 	/**
 	 * CVModel - Split D into train/test folds, and then train and evaluate on each one.
-	 * @param	h		 a multi-dim. classifier
-	 * @param	D      	 data
-	 * @param	numFolds test data
+	 * @param	h		 a multi-output classifier
+	 * @param	D      	 test data Instances
+	 * @param	numFolds number of folds of CV
 	 * @param	top    	 Threshold OPtion (pertains to multi-label data only)
-	 * @return	an array of 'numFolds' Results
+	 * @return	Result	raw prediction data with evaluation statistics included.
 	 */
-	public static Result[] cvModel(MultilabelClassifier h, Instances D, int numFolds, String top) throws Exception {
+	public static Result cvModel(MultilabelClassifier h, Instances D, int numFolds, String top) throws Exception {
 		return cvModel(h,D,numFolds,top,"1");
 	}
 
 	/**
 	 * CVModel - Split D into train/test folds, and then train and evaluate on each one.
-	 * @param	h		 a multi-dim. classifier
-	 * @param	D      	 data
-	 * @param	numFolds test data
+	 * @param	h		 a multi-output classifier
+	 * @param	D      	 test data Instances
+	 * @param	numFolds number of folds of CV
 	 * @param	top    	 Threshold OPtion (pertains to multi-label data only)
 	 * @param	vop    	Verbosity OPtion (which measures do we want to calculate/output)
-	 * @return	an array of 'numFolds' Results
+	 * @return	Result	raw prediction data with evaluation statistics included.
 	 */
-	public static Result[] cvModel(MultilabelClassifier h, Instances D, int numFolds, String top, String vop) throws Exception {
-		Result r[] = new Result[numFolds];
+	public static Result cvModel(MultilabelClassifier h, Instances D, int numFolds, String top, String vop) throws Exception {
+		Result r_[] = new Result[numFolds];
 		for(int i = 0; i < numFolds; i++) {
 			Instances D_train = D.trainCV(numFolds,i);
 			Instances D_test = D.testCV(numFolds,i);
 			if (h.getDebug()) System.out.println(":- Fold ["+i+"/"+numFolds+"] -: "+MLUtils.getDatasetName(D)+"\tL="+D.classIndex()+"\tD(t:T)=("+D_train.numInstances()+":"+D_test.numInstances()+")\tLC(t:T)="+Utils.roundDouble(MLUtils.labelCardinality(D_train,D.classIndex()),2)+":"+Utils.roundDouble(MLUtils.labelCardinality(D_test,D.classIndex()),2)+")");
-			r[i] = evaluateModel(h, D_train, D_test, top, vop);
+			r_[i] = evaluateModel(h, D_train, D_test); // <-- should not run stats yet!
 		}
+		Result r = MLEvalUtils.combinePredictions(r_);
+		if (h instanceof MultiTargetClassifier || isMT(D)) {
+			r.setInfo("Type","MT-CV");
+		}
+		else if (h instanceof MultilabelClassifier) {
+			r.setInfo("Type","ML-CV");
+			try {
+				r.setInfo("Threshold",String.valueOf(Double.parseDouble(top)));
+			} catch(Exception e) {
+				System.err.println("[WARNING] Automatic threshold calibration not currently enabled for cross-fold validation, setting threshold = 0.5.\n");
+				r.setInfo("Threshold",String.valueOf(0.5));
+			}
+		}
+		r.setInfo("Verbosity",vop);
+		r.output = Result.getStats(r, vop);
+		// Need to reset this because of CV
+		r.setValue("Number of training instances",D.numInstances());
+		r.setValue("Number of test instances",D.numInstances());
 		return r;
 	}
 
