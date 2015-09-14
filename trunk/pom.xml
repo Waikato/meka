@@ -214,9 +214,9 @@
         </plugin>
 
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
+          <groupId>com.github.fracpete</groupId>
           <artifactId>latex-maven-plugin</artifactId>
-          <version>1.1</version>
+          <version>1.4.0</version>
           <executions>
             <execution>
               <phase>package</phase>
@@ -225,6 +225,9 @@
               </goals>
             </execution>
           </executions>
+          <configuration>
+            <forceBuild>true</forceBuild>
+          </configuration>
         </plugin>
 
         <plugin>
@@ -299,7 +302,7 @@
       </plugin>
 
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>com.github.fracpete</groupId>
         <artifactId>latex-maven-plugin</artifactId>
       </plugin>
 
