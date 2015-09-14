@@ -63,10 +63,10 @@ public abstract class AbstractNeuralNet extends MultilabelClassifier  {
 	public Enumeration listOptions() {
 
 		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tSets the number of hidden units\n\tdefault: "+getH()+"\t(off)", "H", 1, "-H <value>"));
+		newVector.addElement(new Option("\tSets the number of hidden units\n\tdefault: "+getH(), "H", 1, "-H <value>"));
 		newVector.addElement(new Option("\tSets the maximum number of epochs\n\tdefault: "+getE()+"\t(auto-cut-out)", "E", 1, "-E <value>"));
-		newVector.addElement(new Option("\tSets the learning rate (set between very small and 0.1)\n\tdefault: "+m_R, "r", 1, "-r <value>"));
-		newVector.addElement(new Option("\tSets the momentum (set between 0.1 and 0.9)\n\tdefault: "+m_M, "m", 1, "-m <value>"));
+		newVector.addElement(new Option("\tSets the learning rate (tyically somewhere between 'very small' and 0.1)\n\tdefault: "+m_R, "r", 1, "-r <value>"));
+		newVector.addElement(new Option("\tSets the momentum (typically somewhere between 0.1 and 0.9)\n\tdefault: "+m_M, "m", 1, "-m <value>"));
 
 		Enumeration enu = super.listOptions();
 
