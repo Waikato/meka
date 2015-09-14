@@ -17,20 +17,13 @@ package meka.classifiers.multilabel.meta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Random;
 import java.util.Vector;
 
-import weka.core.Attribute;
-import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import meka.core.MLUtils;
 import weka.core.Option;
-import weka.core.Randomizable;
 import weka.core.RevisionUtils;
 import weka.core.Utils;
 import weka.core.TechnicalInformation;
@@ -38,7 +31,7 @@ import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.core.TechnicalInformationHandler;
 import meka.classifiers.multilabel.CC;
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import meka.classifiers.multilabel.SemisupervisedClassifier;
 
 /**
@@ -54,7 +47,7 @@ import meka.classifiers.multilabel.SemisupervisedClassifier;
  * @version 2010
  * @author 	Jesse Read 
  */
-public class EM extends MultilabelClassifier implements SemisupervisedClassifier, TechnicalInformationHandler {
+public class EM extends ProblemTransformationMethod implements SemisupervisedClassifier, TechnicalInformationHandler {
 
 	protected int m_I = 10;
 	protected Instances D_ = null;
@@ -101,14 +94,14 @@ public class EM extends MultilabelClassifier implements SemisupervisedClassifier
 			if (getDebug())
 				System.out.print(".");
 			// expectation (classify + update weights)
-			updateWeights((MultilabelClassifier)m_Classifier, DA);
+			updateWeights((ProblemTransformationMethod)m_Classifier, DA);
 			// maximization of parameters (training)
 			m_Classifier.buildClassifier(DA);
 		}
 		System.out.println("]");
 	}
 
-	protected void updateWeights(MultilabelClassifier h, Instances D) throws Exception {
+	protected void updateWeights(ProblemTransformationMethod h, Instances D) throws Exception {
 		for(Instance x : D) {
 			double w = 1.0; // weight (product of probability)
 			double y[] = h.distributionForInstance(x);
@@ -185,7 +178,7 @@ public class EM extends MultilabelClassifier implements SemisupervisedClassifier
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new EM(),args);
+		ProblemTransformationMethod.evaluation(new EM(), args);
 	}
 
 }

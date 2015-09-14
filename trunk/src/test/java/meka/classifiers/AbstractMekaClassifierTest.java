@@ -21,7 +21,7 @@ package meka.classifiers;
 
 import junit.framework.TestCase;
 import meka.classifiers.multilabel.Evaluation;
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.core.MLUtils;
 import meka.core.Result;
 import weka.classifiers.CheckClassifier;
@@ -356,8 +356,8 @@ public abstract class AbstractMekaClassifierTest
 	 *
 	 * @return      the configured classifier(s)
 	 */
-	protected MultilabelClassifier[] getRegressionSetups() {
-		return new MultilabelClassifier[]{(MultilabelClassifier) getClassifier()};
+	protected MultiLabelClassifier[] getRegressionSetups() {
+		return new MultiLabelClassifier[]{(MultiLabelClassifier) getClassifier()};
 	}
 
 	/**
@@ -391,7 +391,7 @@ public abstract class AbstractMekaClassifierTest
 	public void testRegression() {
 		Instances[]                 train;
 		Instances[]                 test;
-		MultilabelClassifier[]      setups;
+		MultiLabelClassifier[]      setups;
 		int                         i;
 		Evaluation                  eval;
 		Result                      result;

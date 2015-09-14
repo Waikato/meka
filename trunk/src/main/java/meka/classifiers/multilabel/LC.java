@@ -15,26 +15,17 @@
 
 package meka.classifiers.multilabel;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.HashMap;
 import java.util.Map;
 
-import weka.core.Attribute;
-import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.Utils;
 import weka.core.Drawable;
 import weka.core.OptionHandler;
 import weka.core.RevisionUtils;
-import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.Remove;
 
 import meka.core.MultiLabelDrawable;
-import meka.core.MLUtils;
 import meka.core.PSUtils;
-import meka.core.LabelSet;
 
 /**
  * LC.java - The LC (Label Combination) aka LP (Laber Powerset) Method.
@@ -44,7 +35,7 @@ import meka.core.LabelSet;
  * @version June 2014
  * @author 	Jesse Read
  */
-public class LC extends MultilabelClassifier implements OptionHandler, MultiLabelDrawable {
+public class LC extends ProblemTransformationMethod implements OptionHandler, MultiLabelDrawable {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -2726090581435923988L;
@@ -154,7 +145,7 @@ public class LC extends MultilabelClassifier implements OptionHandler, MultiLabe
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new LC(),args);
+		ProblemTransformationMethod.evaluation(new LC(), args);
 	}
 
 }

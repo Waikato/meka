@@ -15,7 +15,7 @@
 
 package meka.classifiers.multitarget.meta;
 
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import meka.classifiers.multilabel.meta.BaggingML;
 import meka.classifiers.multitarget.CC;
 import meka.classifiers.multitarget.MultiTargetClassifier;
@@ -72,7 +72,7 @@ public class BaggingMT extends BaggingML implements MultiTargetClassifier {
 		double y[] = new double[L];
 
 		for(int m = 0; m < m_NumIterations; m++) {
-			double c[] = ((MultilabelClassifier)m_Classifiers[m]).distributionForInstance(x);
+			double c[] = ((ProblemTransformationMethod)m_Classifiers[m]).distributionForInstance(x);
 			// votes[j] = votes[j] + P(j|x)		@TODO: only if c.length > L
 			for(int j = 0; j < L; j++) {
 				Double w = votes[j].containsKey((int)c[j]) ? votes[j].get((int)c[j]) + c[j+L] : c[j+L];
@@ -94,7 +94,7 @@ public class BaggingMT extends BaggingML implements MultiTargetClassifier {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new BaggingMT(),args);
+		ProblemTransformationMethod.evaluation(new BaggingMT(), args);
 	}
 
 }

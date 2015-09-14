@@ -20,9 +20,8 @@
 package meka.gui.explorer;
 
 import meka.classifiers.multilabel.Evaluation;
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
-import meka.core.MLEvalUtils;
 import meka.core.MLUtils;
 import meka.core.Result;
 import meka.gui.core.GUIHelper;
@@ -137,7 +136,7 @@ public class ClassifyTab
 		super.initialize();
 
 		m_GenericObjectEditor = new GenericObjectEditor(true);
-		m_GenericObjectEditor.setClassType(MultilabelClassifier.class);
+		m_GenericObjectEditor.setClassType(MultiLabelClassifier.class);
 		m_GenericObjectEditor.setValue(new meka.classifiers.multilabel.BR());
 
 		m_Seed            = 1;
@@ -259,11 +258,11 @@ public class ClassifyTab
 			run = new Runnable() {
 				@Override
 				public void run() {
-					MultilabelClassifier classifier;
+					MultiLabelClassifier classifier;
 					Result result;
 					startBusy("Cross-validating...");
 					try {
-						classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
+						classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
 						//System.out.println("data.classIndex() "+data.classIndex());
 						result = Evaluation.cvModel(classifier, data, m_Folds, m_TOP, m_VOP);
 						addResultToHistory(
@@ -290,7 +289,7 @@ public class ClassifyTab
 			run = new Runnable() {
 				@Override
 				public void run() {
-					MultilabelClassifier classifier;
+					MultiLabelClassifier classifier;
 					Result result;
 					int trainSize;
 					Instances train;
@@ -308,7 +307,7 @@ public class ClassifyTab
 							test       = new Instances(m_TestInstances);
 							test.setClassIndex(data.classIndex());
 						}
-						classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
+						classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
 						//System.out.println("data.classIndex() "+train.classIndex());
 						result     = Evaluation.evaluateModel(classifier, train, test, m_TOP, m_VOP);
 						addResultToHistory(
@@ -335,11 +334,11 @@ public class ClassifyTab
 			run = new Runnable() {
 				@Override
 				public void run() {
-					MultilabelClassifier classifier;
+					MultiLabelClassifier classifier;
 					Result result;
 					startBusy("Incremental...");
 					try {
-						classifier = (MultilabelClassifier) m_GenericObjectEditor.getValue();
+						classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
 						//System.out.println("data.classIndex() "+data.classIndex());
 						result    = IncrementalEvaluation.evaluateModelPrequentialBasic(classifier, data, 20, 1., m_TOP, m_VOP);
 						addResultToHistory(

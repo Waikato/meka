@@ -17,8 +17,7 @@ package meka.classifiers.multilabel.meta;
 
 import java.util.Random;
 
-import weka.classifiers.AbstractClassifier;
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import weka.core.Instances;
 import weka.core.Randomizable;
 import weka.core.RevisionUtils;
@@ -28,7 +27,7 @@ import weka.core.RevisionUtils;
  * @author Jesse Read (jmr30@cs.waikato.ac.nz)
  */
 
-public class EnsembleML extends MultilabelMetaClassifier {
+public class EnsembleML extends MetaProblemTransformationMethod {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 835659467275068411L;
@@ -50,7 +49,7 @@ public class EnsembleML extends MultilabelMetaClassifier {
 		if (getDebug()) System.out.print("-: Models: ");
 
 		train = new Instances(train);
-		m_Classifiers = MultilabelClassifier.makeCopies((MultilabelClassifier)m_Classifier, m_NumIterations);
+		m_Classifiers = ProblemTransformationMethod.makeCopies((ProblemTransformationMethod) m_Classifier, m_NumIterations);
 		int sub_size = (train.numInstances()*m_BagSizePercent/100);
 		for(int i = 0; i < m_NumIterations; i++) {
 			if(getDebug()) System.out.print(""+i+" ");
@@ -69,7 +68,7 @@ public class EnsembleML extends MultilabelMetaClassifier {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new EnsembleML(),args);
+		ProblemTransformationMethod.evaluation(new EnsembleML(), args);
 	}
 
 }

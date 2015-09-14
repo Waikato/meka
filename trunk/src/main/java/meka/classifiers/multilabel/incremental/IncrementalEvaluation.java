@@ -17,12 +17,11 @@ package meka.classifiers.multilabel.incremental;
 
 import meka.core.MLEvalUtils;
 import meka.core.MLUtils;
-import meka.core.A;
 import meka.core.Result;
 import meka.core.ThresholdUtils;
 import weka.classifiers.UpdateableClassifier;
 import weka.core.*;
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.classifiers.multilabel.Evaluation;
 
 import java.io.IOException;
@@ -43,7 +42,7 @@ public class IncrementalEvaluation {
 	 * @param	h			a multi-label updateable classifier
 	 * @param	args		classifier + dataset options
 	 */
-	public static void runExperiment(MultilabelClassifier h, String args[]) {
+	public static void runExperiment(MultiLabelClassifier h, String args[]) {
 		try {
 			h.setOptions(args);
 			Result avg = IncrementalEvaluation.evaluateModel(h,args);
@@ -61,7 +60,7 @@ public class IncrementalEvaluation {
 	 * @param	options	dataset options (classifier options should already be set)
 	 * @return	The evaluation Result
 	 */
-	public static Result evaluateModel(MultilabelClassifier h, String options[]) throws Exception {
+	public static Result evaluateModel(MultiLabelClassifier h, String options[]) throws Exception {
 
 		// Load Instances, ...
 		Instances D = Evaluation.loadDataset(options);
@@ -100,7 +99,7 @@ public class IncrementalEvaluation {
 	/**
 	 * EvaluateModel - over 20 windows.
 	 */
-	public static Result evaluateModel(MultilabelClassifier h, Instances D) throws Exception {
+	public static Result evaluateModel(MultiLabelClassifier h, Instances D) throws Exception {
 		return evaluateModelPrequentialBasic(h,D,20,1.0,"PCut1","3");
 	}
 
@@ -114,7 +113,7 @@ public class IncrementalEvaluation {
 	 * @param	Vop	verbosity option
 	 * The window is sampled every N/numWindows instances, for a total of numWindows windows.
 	 */
-	public static Result[] evaluateModelBatchWindow(MultilabelClassifier h, Instances D, int numWindows, double rLabeled, String Top, String Vop) throws Exception {
+	public static Result[] evaluateModelBatchWindow(MultiLabelClassifier h, Instances D, int numWindows, double rLabeled, String Top, String Vop) throws Exception {
 
 		if (h.getDebug())
 			System.out.println(":- Classifier -: "+h.getClass().getName()+": "+Arrays.toString(h.getOptions()));
@@ -338,7 +337,7 @@ public class IncrementalEvaluation {
 	 * @param	Vop	verbosity option
 	 * The window is sampled every N/numWindows instances, for a total of numWindows windows.
 	 */
-	public static Result evaluateModelPrequentialBasic(MultilabelClassifier h, Instances D, int windowSize, double rLabeled, String Top, String Vop) throws Exception {
+	public static Result evaluateModelPrequentialBasic(MultiLabelClassifier h, Instances D, int windowSize, double rLabeled, String Top, String Vop) throws Exception {
 
 		if (h.getDebug())
 			System.out.println(":- Classifier -: "+h.getClass().getName()+": "+Arrays.toString(h.getOptions()));

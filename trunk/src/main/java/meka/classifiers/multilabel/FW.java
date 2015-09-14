@@ -16,11 +16,7 @@
 package meka.classifiers.multilabel;
 
 import weka.classifiers.*;
-import meka.classifiers.multilabel.*;
 import weka.core.*;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.*;
-import java.util.*;
 
 /**
  * FW.java Four-class pairWise classification. 
@@ -28,7 +24,7 @@ import java.util.*;
  * @version	October 2012
  * @author 	Jesse Read (jesse@tsc.uc3m.es)
  */
-public class FW extends MultilabelClassifier {
+public class FW extends ProblemTransformationMethod {
 
 	Classifier h[][] = null;
 	Attribute classAttribute = null;
@@ -123,7 +119,7 @@ public class FW extends MultilabelClassifier {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new FW(),args);
+		ProblemTransformationMethod.evaluation(new FW(), args);
 	}
 
 }

@@ -15,7 +15,7 @@
 
 package meka.classifiers.multilabel.meta;
 
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import weka.core.Instances;
 import weka.core.Randomizable;
 import weka.core.RevisionUtils;
@@ -27,7 +27,7 @@ import java.util.Random;
  * Duplicates Instances instead of assigning higher weights -- should work for methods that do not handle weights at all.
  * @author Jesse Read (jmr30@cs.waikato.ac.nz)
  */
-public class BaggingMLdup extends MultilabelMetaClassifier {
+public class BaggingMLdup extends MetaProblemTransformationMethod {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -5606278379913020097L;
@@ -51,7 +51,7 @@ public class BaggingMLdup extends MultilabelMetaClassifier {
 		if (getDebug()) System.out.print("-: Models: ");
 
 		//m_Classifiers = (MultilabelClassifier[]) AbstractClassifier.makeCopies(m_Classifier, m_NumIterations);
-		m_Classifiers = MultilabelClassifier.makeCopies((MultilabelClassifier)m_Classifier, m_NumIterations);
+		m_Classifiers = ProblemTransformationMethod.makeCopies((ProblemTransformationMethod) m_Classifier, m_NumIterations);
 
 		for(int i = 0; i < m_NumIterations; i++) {
 			Random r = new Random(m_Seed+i);
@@ -75,7 +75,7 @@ public class BaggingMLdup extends MultilabelMetaClassifier {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new BaggingMLdup(),args);
+		ProblemTransformationMethod.evaluation(new BaggingMLdup(), args);
 	}
 
 }

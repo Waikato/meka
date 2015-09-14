@@ -33,7 +33,7 @@ import java.util.*;
  * @author 	Jesse Read
  * @version	November 2012
  */
-public class CDN extends MultilabelClassifier implements Randomizable, TechnicalInformationHandler {
+public class CDN extends ProblemTransformationMethod implements Randomizable, TechnicalInformationHandler {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -4571133392057899417L;
@@ -237,7 +237,7 @@ public class CDN extends MultilabelClassifier implements Randomizable, Technical
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new CDN(),args);
+		ProblemTransformationMethod.evaluation(new CDN(), args);
 	}
 
 	/**

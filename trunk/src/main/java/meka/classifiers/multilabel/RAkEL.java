@@ -22,19 +22,16 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 import weka.classifiers.AbstractClassifier;
-import meka.classifiers.multilabel.MultilabelClassifier;
 import meka.core.PSUtils;
 import weka.core.Utils;
 import weka.core.Option;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.Randomizable;
 import weka.core.RevisionUtils;
 import weka.classifiers.Classifier;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
 
 import meka.core.SuperLabelUtils;
 import meka.core.MLUtils;
@@ -254,7 +251,7 @@ public class RAkEL extends PS {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new RAkEL(),args);
+		ProblemTransformationMethod.evaluation(new RAkEL(), args);
 	}
 
 }

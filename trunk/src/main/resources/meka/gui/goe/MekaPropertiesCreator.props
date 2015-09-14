@@ -4,7 +4,7 @@
 # Version: $Revision$
 
 # Packages with MultiLabelClassifier implementations
-meka.classifiers.multilabel.MultilabelClassifier=\
+meka.classifiers.multilabel.MultiLabelClassifier=\
  meka.classifiers.multilabel,\
  meka.classifiers.multilabel.meta,\
  meka.classifiers.multitarget,\

@@ -22,7 +22,6 @@ import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.core.TechnicalInformationHandler;
-import weka.core.Utils;
 
 /**
  * PSt.java -  Pruned Sets with a a threshold so as to be able to predict sets not seen in the training set.
@@ -83,7 +82,7 @@ public class PSt extends PS implements TechnicalInformationHandler {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new PSt(),args);
+		ProblemTransformationMethod.evaluation(new PSt(), args);
 	}
 
 }

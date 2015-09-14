@@ -11,8 +11,8 @@
 # version: $Revision$
 
 # classifiers
-meka.classifiers.multilabel.MultilabelClassifier=meka.gui.goe.GenericObjectEditor
-meka.classifiers.multilabel.MultilabelClassifier[]=meka.gui.goe.GenericObjectEditor
+meka.classifiers.multilabel.MultiLabelClassifier=meka.gui.goe.GenericObjectEditor
+meka.classifiers.multilabel.MultiLabelClassifier[]=meka.gui.goe.GenericObjectEditor
 meka.classifiers.multilabel.SemisupervisedClassifier=meka.gui.goe.GenericObjectEditor
 meka.classifiers.multilabel.SemisupervisedClassifier[]=meka.gui.goe.GenericObjectEditor
 meka.classifiers.multitarget.MultiTargetClassifier=meka.gui.goe.GenericObjectEditor

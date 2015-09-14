@@ -15,16 +15,19 @@
 
 package meka.classifiers.multilabel.NN;
 
-import meka.classifiers.multilabel.*;
-import java.util.*;
-import weka.core.*;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
+import weka.core.Option;
+import weka.core.Utils;
+
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * AbstractNeuralNet.java - Provides common options, constants, and other functions for NNs.
  * @author Jesse Read
  * @version December 2012
  */
-public abstract class AbstractNeuralNet extends MultilabelClassifier  {
+public abstract class AbstractNeuralNet extends ProblemTransformationMethod  {
 
 	/** number of hidden units */
 	protected int m_H = 10;

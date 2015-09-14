@@ -28,7 +28,9 @@ import weka.core.Capabilities.Capability;
  *  @version Jan 2015
  */
 
-public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
+public abstract class ProblemTransformationMethod
+		extends SingleClassifierEnhancer
+		implements MultiLabelClassifier {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 1713843369766127169L;
@@ -46,7 +48,7 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 		return "A multi-label classifier";
 	}
 
-	public MultilabelClassifier() {
+	public ProblemTransformationMethod() {
 		// default classifier for GUI
 		this.m_Classifier = new J48();
 	}
@@ -127,15 +129,15 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 	 * @return an array of classifiers.
 	 * @exception Exception if an error occurs
 	 */
-	public static MultilabelClassifier[] makeCopies(MultilabelClassifier model, int num) throws Exception {
+	public static ProblemTransformationMethod[] makeCopies(ProblemTransformationMethod model, int num) throws Exception {
 
 		if (model == null) {
 			throw new Exception("No model classifier set");
 		}
-		MultilabelClassifier classifiers[] = new MultilabelClassifier[num];
+		ProblemTransformationMethod classifiers[] = new ProblemTransformationMethod[num];
 		SerializedObject so = new SerializedObject(model);
 		for(int i = 0; i < classifiers.length; i++) {
-			classifiers[i] = (MultilabelClassifier) so.getObject();
+			classifiers[i] = (ProblemTransformationMethod) so.getObject();
 		}
 		return classifiers;
 	}
@@ -146,7 +148,7 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 	 * @param	h		A classifier
 	 * @param	args	Command-line options.
 	 */
-	public static void evaluation(MultilabelClassifier h, String args[]) {
+	public static void evaluation(ProblemTransformationMethod h, String args[]) {
 		runClassifier(h,args);
 	}
 
@@ -155,7 +157,7 @@ public abstract class MultilabelClassifier extends SingleClassifierEnhancer {
 	 * @param	h		A classifier
 	 * @param	args	Command-line options.
 	 */
-	public static void runClassifier(MultilabelClassifier h, String args[]) {
+	public static void runClassifier(ProblemTransformationMethod h, String args[]) {
 			if (h instanceof UpdateableClassifier) {
 				try {
 					IncrementalEvaluation.runExperiment(h,args);

@@ -72,7 +72,7 @@ public class HASEL extends RAkELd {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new HASEL(),args);
+		ProblemTransformationMethod.evaluation(new HASEL(), args);
 	}
 
 }

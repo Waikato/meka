@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import weka.classifiers.AbstractClassifier;
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import weka.core.Instance;
 import weka.core.Instances;
 import meka.core.MLUtils;
@@ -198,6 +198,6 @@ public class CCp extends meka.classifiers.multilabel.CC implements MultiTargetCl
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new CCp(),args);
+		ProblemTransformationMethod.evaluation(new CCp(), args);
 	}
 }

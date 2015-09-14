@@ -24,7 +24,7 @@ package meka.classifiers.multitarget;
  */
 import java.util.Arrays;
 
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import weka.core.Instance;
 import weka.classifiers.trees.J48;
 import weka.core.RevisionUtils;
@@ -71,6 +71,6 @@ public class BCC extends meka.classifiers.multilabel.BCC implements MultiTargetC
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new meka.classifiers.multitarget.BCC(),args);
+		ProblemTransformationMethod.evaluation(new meka.classifiers.multitarget.BCC(), args);
 	}
 }

@@ -25,7 +25,8 @@ import weka.core.Instances;
  * 	@version	January 2012
  */
 
-public interface SemisupervisedClassifier {
+public interface SemisupervisedClassifier
+		extends MultiLabelClassifier {
 
 	/**
 	 *  Set Unlabelled Data - provide unlabelled data prior to calling buildClassifier(Instances).

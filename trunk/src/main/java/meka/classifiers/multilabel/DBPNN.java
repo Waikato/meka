@@ -15,20 +15,20 @@
 
 package meka.classifiers.multilabel;
 
-import java.util.*;
 import Jama.Matrix;
-import rbms.RBM;
+import meka.classifiers.multilabel.NN.AbstractDeepNeuralNet;
+import meka.core.M;
+import meka.core.MLUtils;
 import rbms.DBM;
-import weka.core.*;
+import rbms.RBM;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import meka.core.*;
-import weka.classifiers.rules.*;
-import weka.classifiers.functions.*;
-import meka.classifiers.multilabel.NN.*;
-import meka.classifiers.multilabel.meta.DeepML;
-import meka.classifiers.multilabel.CC;
-import meka.classifiers.multilabel.meta.BaggingML;
+import weka.core.TechnicalInformationHandler;
+
+import java.util.Random;
 
 /**
  * DBPNN.java - Deep Back-Propagation Neural Network.
@@ -172,7 +172,7 @@ public class DBPNN extends AbstractDeepNeuralNet implements TechnicalInformation
 	}
 
 	public static void main(String args[]) throws Exception {
-		MultilabelClassifier.evaluation(new DBPNN(),args);
+		ProblemTransformationMethod.evaluation(new DBPNN(), args);
 	}
 
 }

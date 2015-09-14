@@ -15,7 +15,7 @@
 
 package meka.classifiers.multilabel.meta;
 
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import meka.core.MLUtils;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -55,7 +55,7 @@ public class CM extends EM {
 			if (getDebug())
 				System.out.print(".");
 			// classification
-			updateWeights((MultilabelClassifier)m_Classifier, DA);
+			updateWeights((ProblemTransformationMethod)m_Classifier, DA);
 			// maximization (of parameters)
 			m_Classifier.buildClassifier(DA);
 		}
@@ -63,7 +63,7 @@ public class CM extends EM {
 	}
 
 	@Override
-	protected void updateWeights(MultilabelClassifier h, Instances D) throws Exception {
+	protected void updateWeights(ProblemTransformationMethod h, Instances D) throws Exception {
 		for(Instance x : D) {
 			double y[] = h.distributionForInstance(x);
 			for(int j = 0; j < y.length; j++) {
@@ -78,7 +78,7 @@ public class CM extends EM {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new CM(),args);
+		ProblemTransformationMethod.evaluation(new CM(), args);
 	}
 
 }

@@ -23,7 +23,7 @@ package meka.classifiers.multitarget;
  * @author 	Jesse Read (jesse@tsc.uc3m.es)
  */
 import weka.classifiers.AbstractClassifier;
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.classifiers.trees.J48;
@@ -111,7 +111,7 @@ public class CR extends meka.classifiers.multilabel.BR implements MultiTargetCla
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new CR(),args);
+		ProblemTransformationMethod.evaluation(new CR(), args);
 	}
 
 }

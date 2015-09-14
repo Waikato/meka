@@ -24,20 +24,15 @@ import java.util.ArrayList;
 
 import meka.classifiers.multilabel.cc.CNode;
 import meka.classifiers.multilabel.cc.Trellis;
-import meka.classifiers.multilabel.CT;
-import weka.classifiers.AbstractClassifier;
-import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import meka.core.A;
 import meka.core.StatUtils;
-import weka.core.Randomizable;
 import weka.core.Option;
 import weka.core.RevisionUtils;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
 import weka.core.Utils;
 
 /**
@@ -206,7 +201,7 @@ public class CDT extends CDN {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new CDT(),args);
+		ProblemTransformationMethod.evaluation(new CDT(), args);
 	}
 
 	/**

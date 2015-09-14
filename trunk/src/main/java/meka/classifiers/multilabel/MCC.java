@@ -15,14 +15,7 @@
 
 package meka.classifiers.multilabel;
 
-import weka.classifiers.*;
-import weka.classifiers.functions.*;
-import meka.classifiers.multitarget.*;
-import weka.filters.unsupervised.attribute.*;
-import weka.filters.supervised.attribute.*;
 import weka.core.TechnicalInformation.*;
-import weka.attributeSelection.*;
-import weka.filters.*;
 import weka.core.*;
 import meka.core.*;
 import java.util.*;
@@ -264,7 +257,7 @@ public class MCC extends CC implements TechnicalInformationHandler {
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new MCC(),args);
+		ProblemTransformationMethod.evaluation(new MCC(), args);
 	}
 
 }

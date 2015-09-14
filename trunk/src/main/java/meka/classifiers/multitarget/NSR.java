@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-import meka.classifiers.multilabel.MultilabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import meka.core.PSUtils;
 
 import weka.core.Attribute;
@@ -233,7 +233,7 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 	}
 
 	public static void main(String args[]) {
-		MultilabelClassifier.evaluation(new meka.classifiers.multitarget.NSR(),args);
+		ProblemTransformationMethod.evaluation(new meka.classifiers.multitarget.NSR(), args);
 	}
 
 }

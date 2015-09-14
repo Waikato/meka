@@ -16,8 +16,7 @@
 package meka.classifiers.multilabel.incremental.meta;
 
 import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
-import meka.classifiers.multilabel.MultilabelClassifier;
-import meka.classifiers.multilabel.meta.BaggingML;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import meka.core.MLUtils;
 import moa.classifiers.core.driftdetection.ADWIN;
 import weka.classifiers.AbstractClassifier;
@@ -84,7 +83,7 @@ public class BaggingMLUpdateableADWIN extends BaggingMLUpdateable {
 						if (getDebug())
 							System.out.println("------- CHANGE DETECTED / Reset Model #"+index+" ------- ");
 						// reset this classifier
-						m_Classifiers[index] = (MultilabelClassifier)AbstractClassifier.makeCopy(m_Classifier);
+						m_Classifiers[index] = (ProblemTransformationMethod)AbstractClassifier.makeCopy(m_Classifier);
 						m_Classifiers[index].buildClassifier(new Instances(m_InstancesTemplate));
 						// ... and reset ADWIN
 						this.adwin = new ADWIN();

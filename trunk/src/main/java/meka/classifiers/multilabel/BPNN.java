@@ -305,6 +305,6 @@ public class BPNN extends AbstractNeuralNet {
 	}
 
 	public static void main(String args[]) throws Exception {
-		MultilabelClassifier.evaluation(new BPNN(),args);
+		ProblemTransformationMethod.evaluation(new BPNN(), args);
 	}
 }
