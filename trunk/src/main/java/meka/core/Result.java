@@ -99,7 +99,7 @@ public class Result implements Serializable {
 		resultString.append("\n\n== Predictive Performance\n\n" + MLUtils.hashMapToString(output,3));
 		resultString.append("\n\n== Additional Measurements\n\n" + MLUtils.hashMapToString(vals,3));
 
-		if (info.get("Type").endsWith("CV")) { 
+		if (info.containsKey("Type") && info.get("Type").endsWith("CV")) {
 			resultString.append("// Note: In the case of cross-fold validation, the additional measurements are _averaged_ across folds.");
 		}
 
