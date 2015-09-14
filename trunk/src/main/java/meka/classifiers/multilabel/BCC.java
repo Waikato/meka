@@ -44,6 +44,8 @@ import java.util.*;
  */
 public class BCC extends CC {
 
+	private static final long serialVersionUID = 585507197229071545L;
+
 	/**
 	 * Description to display in the GUI.
 	 * 

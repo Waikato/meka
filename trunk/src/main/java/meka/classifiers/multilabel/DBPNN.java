@@ -41,8 +41,9 @@ import java.util.Random;
  * @author Jesse Read
  * @version December 2012
  */
-public class DBPNN extends AbstractDeepNeuralNet implements TechnicalInformationHandler  { 
+public class DBPNN extends AbstractDeepNeuralNet implements TechnicalInformationHandler  {
 
+	private static final long serialVersionUID = 5007534249445210725L;
 	protected RBM dbm = null;
 	protected long rbm_time = 0;
 

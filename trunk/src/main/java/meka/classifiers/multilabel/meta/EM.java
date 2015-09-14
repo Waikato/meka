@@ -49,6 +49,7 @@ import meka.classifiers.multilabel.SemisupervisedClassifier;
  */
 public class EM extends ProblemTransformationMethod implements SemisupervisedClassifier, TechnicalInformationHandler {
 
+	private static final long serialVersionUID = 2622231824673975335L;
 	protected int m_I = 10;
 	protected Instances D_ = null;
 

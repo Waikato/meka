@@ -38,6 +38,7 @@ import meka.classifiers.multilabel.NN.*;
  */
 public class DeepML extends AbstractDeepNeuralNet implements Randomizable, TechnicalInformationHandler {
 
+	private static final long serialVersionUID = 3388606529764305098L;
 	protected RBM dbm = null;
 	protected long rbm_time = 0;
 

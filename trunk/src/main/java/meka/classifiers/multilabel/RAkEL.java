@@ -15,26 +15,16 @@
 
 package meka.classifiers.multilabel;
 
-import java.util.Random;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Vector;
-
-import weka.classifiers.AbstractClassifier;
+import meka.core.MLUtils;
 import meka.core.PSUtils;
-import weka.core.Utils;
-import weka.core.Option;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.RevisionUtils;
+import meka.core.SuperLabelUtils;
+import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
-import weka.core.TechnicalInformation;
+import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
-import meka.core.SuperLabelUtils;
-import meka.core.MLUtils;
+import java.util.*;
 
 /**
  * RAkEL.java - Draws M subsets of size k from the set of labels, and trains PS upon each one, then combines label votes from these PS classifiers to get a label-vector prediction. The original RAkEL by Tsoumakas et al. was a meta method, typically taking LC (aka LP) as a classifier; this implementation is more like a combination between RAkEL and PS, making it potentially very fast (recall that PS defaults to LC with 0 pruning).
@@ -243,6 +233,8 @@ public class RAkEL extends PS {
 
 	@Override
 	public String toString() {
+		if (kMap == null)
+			return "No model built yet";
 		StringBuilder s = new StringBuilder("{");
 		for(int k = 0; k < m_M; k++) {
 			s.append(Arrays.toString(kMap[k]));

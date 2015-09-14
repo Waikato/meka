@@ -40,6 +40,8 @@ import java.util.Random;
 
 public class BPNN extends AbstractNeuralNet {
 
+	private static final long serialVersionUID = -4568680054917021671L;
+
 	/** Weight Matrix */
 	public Matrix W[] = null;
 	protected Random r = null;

@@ -15,25 +15,15 @@
 
 package meka.classifiers.multilabel;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Random;
-import java.util.Enumeration;
-import java.util.Vector;
-import java.util.ArrayList;
-
 import meka.classifiers.multilabel.cc.CNode;
 import meka.classifiers.multilabel.cc.Trellis;
-import weka.core.Instance;
-import weka.core.Instances;
 import meka.core.A;
 import meka.core.StatUtils;
-import weka.core.Option;
-import weka.core.RevisionUtils;
-import weka.core.TechnicalInformation;
+import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.Utils;
+
+import java.util.*;
 
 /**
  * CDT.java - Conditional Dependency Trellis.
@@ -44,6 +34,8 @@ import weka.core.Utils;
  * @version	January 2014
  */
 public class CDT extends CDN {
+
+	private static final long serialVersionUID = -1237783546336254364L;
 
 	protected int m_Width = -1;
 	protected int m_Connectivity = 1;
