@@ -7,12 +7,21 @@ Release Notes, Version 1.7.8
 
 Improvements since the last version are os follows:
 
+	* MEKA now uses maven (instead of ant, as previously) for compilation. 0w00
+
+	* MEKA's build has been switched over from Apache Ant to Apache Maven. 
+
+		Mainly to make life easier with deploying artifacts to Maven Central automatically, (rather than by hand), 
+		and better execution of unit tests. 
+		This change affects people working with the source code.
+
 	* Evaluation output is improved
    
 		Evaluation output has been improved, as much in the code, as the visual text output. 
 		Basically, objects like doubles[] can be stored, rather than just Strings and Doubles.
 		The improvement is overall, but in particular noticeable improvements to cross validation and incremental validation.
 		Incremental validation now also displays per-window metrics in the GUI in addition to those of the final window.
+		Cross-fold evaluation now combines all predictions together and then evaluates it (rather than averaging the statistics afterwards).
 
 	* Incremental evaluation is now basic prequential (interleaved train then test) 
 
@@ -36,3 +45,10 @@ Improvements since the last version are os follows:
 		This is in preparation for a future Experimenter. It features dynamic discovery of menu items as well: 
 		they need to be derived from "meka.gui.guichooser.AbstractMenuItemDefinition" and placed in package "meka.gui.guichooser". 
 		If you want a "shortcut" button like the Explorer menu definition has, simply let the "isShortcutButton()" method return true.
+
+	* The MultilabelClassifier class is now (more appropriately) renamed ProblemTransformationMethod, and there is now a MultiLabelClassifier Interface.
+
+	* Tutorial updated to reflecct changes
+
+	* Minor bug fixes
+
