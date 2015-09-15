@@ -15,6 +15,10 @@ Improvements since the last version are os follows:
 		and better execution of unit tests. 
 		This change affects people working with the source code.
 
+	* The seed used to randomize a dataset is no longer passed on to Randomizeable classifiers -- they must used their own.
+
+		This means that the results of some Randomizeable classifier will be different now when a dataset is randomized.
+
 	* Evaluation output is improved
    
 		Evaluation output has been improved, as much in the code, as the visual text output. 
