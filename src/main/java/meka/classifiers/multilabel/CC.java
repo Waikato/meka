@@ -51,8 +51,41 @@ public class CC extends ProblemTransformationMethod
 
 	protected int m_Chain[] = null;
 
+	/**
+	 * Prepare a Chain. One of the following:<br>
+	 * - Use pre-set chain. If there is none, then <br>
+	 * - Use default chain (1,2,...,L). Unless a different random seed has been set, then <br>
+	 * - Use a random chain.
+	 * @param L		number of labels
+	 */
+	protected void prepareChain(int L) {
+
+		int indices[] = retrieveChain();
+
+		// if has not yet been manually chosen ...
+		if (indices == null) {
+
+			// create the standard order (1,2,...,L) ..
+			indices = A.make_sequence(L);
+
+			// and shuffle if m_S > 0
+			System.out.println(""+m_S);
+			if (m_S != 0) {
+				m_R = new Random(m_S);
+				A.shuffle(indices,m_R);
+			}
+		}
+
+		// set it
+		setChain(indices);
+
+		if(getDebug()) 
+			System.out.println("Chain s="+Arrays.toString(indices));
+	}
+
 	public void setChain(int chain[]) {
 		m_Chain = Arrays.copyOf(chain,chain.length);
+		System.out.println(""+Arrays.toString(m_Chain));
 	}
 
 	public int[] retrieveChain() {
@@ -64,16 +97,8 @@ public class CC extends ProblemTransformationMethod
 		testCapabilities(D);
 
 		int L = D.classIndex();
-		m_R = new Random(m_S);
 
-		int indices[] = retrieveChain();
-		if (indices == null) {
-			indices = A.make_sequence(L);
-			MLUtils.randomize(indices,m_R);
-			setChain(indices);
-			if(getDebug()) 
-				System.out.println("Chain s="+Arrays.toString(indices));
-		}
+		prepareChain(L);
 
 		/*
 		 * make a classifier node for each label, taking the parents of all previous nodes
