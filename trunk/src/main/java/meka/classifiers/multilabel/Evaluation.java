@@ -79,15 +79,15 @@ public class Evaluation {
 		}
 
 		// Randomize (Model) DEPRECATED
-		if (h instanceof Randomizable) {
+		//if (h instanceof Randomizable) {
 			/*
 			   THIS WILL BE DEPRECATED, METHODS SHOULD IMPLEMENT THEIR OWN OPTION FOR THE SEED (Or, maybe, just override this one)
 			   As it will be commented out, results could be a bit different (but not significantly so)
 			   */
 			//int method_seed = (Utils.getOptionPos('S',options) >= 0) ? Integer.parseInt(Utils.getOption('S',options)) : 1;
 			//System.out.println("set seed = "+method_seed);
-			((Randomizable)h).setSeed(seed);
-		}
+		//	((Randomizable)h).setSeed(seed);
+		//}
 
 		// Verbosity Option
 		String voption = "1";
