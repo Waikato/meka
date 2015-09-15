@@ -69,7 +69,6 @@ public class CC extends ProblemTransformationMethod
 			indices = A.make_sequence(L);
 
 			// and shuffle if m_S > 0
-			System.out.println(""+m_S);
 			if (m_S != 0) {
 				m_R = new Random(m_S);
 				A.shuffle(indices,m_R);
@@ -85,7 +84,6 @@ public class CC extends ProblemTransformationMethod
 
 	public void setChain(int chain[]) {
 		m_Chain = Arrays.copyOf(chain,chain.length);
-		System.out.println(""+Arrays.toString(m_Chain));
 	}
 
 	public int[] retrieveChain() {
