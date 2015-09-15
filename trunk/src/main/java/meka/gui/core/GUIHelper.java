@@ -24,6 +24,10 @@ import weka.core.Utils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Properties;
 
@@ -256,5 +260,113 @@ public class GUIHelper {
 		}
 
 		return m_Properties;
+	}
+
+	/**
+	 * Copies the given transferable to the system's clipboard.
+	 *
+	 * @param t		the transferable to copy
+	 */
+	public static void copyToClipboard(Transferable t) {
+		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(t, null);
+	}
+
+	/**
+	 * Copies the given string to the system's clipboard.
+	 *
+	 * @param s		the string to copy
+	 */
+	public static void copyToClipboard(String s) {
+		copyToClipboard(new TransferableString(s));
+	}
+
+	/**
+	 * Copies the given image to the system's clipboard.
+	 *
+	 * @param img		the image to copy
+	 */
+	public static void copyToClipboard(BufferedImage img) {
+		copyToClipboard(new TransferableImage(img));
+	}
+
+	/**
+	 * Checks whether the specified "flavor" can be obtained from the clipboard.
+	 *
+	 * @param flavor	the type of data to look for
+	 * @return		true if the data can be obtained, false if not available
+	 */
+	public static boolean canPasteFromClipboard(DataFlavor flavor) {
+		Clipboard clipboard;
+		boolean		result;
+
+		try {
+			clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			result    = clipboard.isDataFlavorAvailable(flavor);
+		}
+		catch (Exception e) {
+			result = false;
+		}
+
+		return result;
+	}
+
+	/**
+	 * Checks whether a string can be obtained from the clipboard.
+	 *
+	 * @return		true if string can be obtained, false if not available
+	 */
+	public static boolean canPasteStringFromClipboard() {
+		return canPasteFromClipboard(DataFlavor.stringFlavor);
+	}
+
+	/**
+	 * Obtains an object from the clipboard.
+	 *
+	 * @param flavor	the type of object to obtain
+	 * @return		the obtained object, null if not available
+	 */
+	public static Object pasteFromClipboard(DataFlavor flavor) {
+		Clipboard 		clipboard;
+		Object		result;
+		Transferable	content;
+
+		result = null;
+
+		try {
+			clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			content   = clipboard.getContents(null);
+			if ((content != null) && (content.isDataFlavorSupported(flavor)))
+				result = content.getTransferData(flavor);
+		}
+		catch (Exception e) {
+			result = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * Obtains a string from the clipboard.
+	 *
+	 * @return		the obtained string, null if not available
+	 */
+	public static String pasteStringFromClipboard() {
+		Clipboard 		clipboard;
+		String		result;
+		Transferable	content;
+
+		result = null;
+
+		try {
+			clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			content   = clipboard.getContents(null);
+			if ((content != null) && (content.isDataFlavorSupported(DataFlavor.stringFlavor)))
+				result = (String) content.getTransferData(DataFlavor.stringFlavor);
+		}
+		catch (Exception e) {
+			result = null;
+		}
+
+		return result;
 	}
 }
