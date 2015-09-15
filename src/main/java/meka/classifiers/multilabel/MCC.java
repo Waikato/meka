@@ -91,8 +91,9 @@ public class MCC extends CC implements TechnicalInformationHandler {
 		int d = D.numAttributes()-L;
 		m_R = new Random(m_S);
 
-		int s[] = MLUtils.gen_indices(L); 
-		MLUtils.randomize(s,m_R);
+		prepareChain(L);
+		int s[] = retrieveChain(); 
+
 		if(getDebug()) System.out.println("s_[0] = "+Arrays.toString(s));
 
 		// If we want to optimize the chain space ...
