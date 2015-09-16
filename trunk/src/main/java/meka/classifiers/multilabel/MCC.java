@@ -41,43 +41,21 @@ public class MCC extends CC implements TechnicalInformationHandler {
 	private static final long serialVersionUID = 5085402586815030939L;
 	protected int m_Is = 0;
 	protected int m_Iy = 10;
-	protected int m_Payoff = 0;
+	protected String m_Payoff = "Exact match";
 
 	/**
-	 * Likelihood - Return a default score of h evaluated on D.
-	 * sum ( p(y_i | x_i, h_s) )
-	 * TODO: use meka.core.Metrics
+	 * Payoff - Return a default score of h evaluated on D.
+	 * @param	h	a classifier
+	 * @param	D	a dataset
 	 */
-	public double likelihood(CC h, Instances D) throws Exception {
-		return likelihood(h,D,m_Payoff);
-	}
-
-	/**
-	 * Likelihood - Return a score of choice (payoff_fn) of h evaluated on D.
-	 * maximizing likelihood is the same as minimizing the error ..
-	 * TODO: use meka.core.Metrics
-	 * @return sum log P(Y|X;h) where h defines e.g., a particular chain order
-	 */
-	public double likelihood(CC h, Instances D, int payoff_fn) throws Exception {
-		int L = D.classIndex();
-		int N = D.numInstances();
-		double s = 1.; // <-- @note!
-		for(int i = 0; i < N; i++) {
-			Instance x = D.instance(i);
-			double y[] = MLUtils.toDoubleArray(x);			// y = [0 0 1 1]			<--- y_1,...,y_L
-			double p[] = h.probabilityForInstance(x,y);     // p = [0.9 0.9 0.2 0.1]    <--- p(y_1),...,p(y_L)
-
-			//s += Metrics.L_MAE(y,p);
-
-			if (payoff_fn == 5) 		// SUM OF SUM
-				s += A.sum(p);
-			else if (payoff_fn == 2) 	// SUM OF LOG OF PRODUCT 
-				s += Math.log(A.product(p));
-			else // (payoff_fn == 0) 	// SUM OF PRODUCT
-				s += A.product(p);
-
-		}
-		return s;
+	public double payoff(CC h, Instances D) throws Exception {
+		Result r = Evaluation.testClassifier(h,D);
+		// assume multi-label for now
+		r.setInfo("Type","ML");
+		r.setInfo("Threshold","0.5"); 
+		r.setInfo("Verbosity","7");
+		r.output = Result.getStats(r, "7");
+		return (Double)r.output.get(m_Payoff);
 	}
 
 	@Override
@@ -104,7 +82,7 @@ public class MCC extends CC implements TechnicalInformationHandler {
 
 			if (getDebug()) System.out.println("Optimising s ... ("+m_Is+" iterations):");
 
-			double w = likelihood(h,new Instances(D));
+			double w = payoff(h,new Instances(D));
 			if (getDebug()) System.out.println("h_{t="+0+"} := "+Arrays.toString(s)); //+"; w = "+w);
 
 			for(int t = 0; t < m_Is; t++) {
@@ -116,7 +94,7 @@ public class MCC extends CC implements TechnicalInformationHandler {
 				CC h_ = CCUtils.buildCC(s_,D,m_Classifier);
 
 				// rate h'
-				double w_ = likelihood(h_,new Instances(D));
+				double w_ = payoff(h_,new Instances(D));
 
 				// accept h' over h ? 
 				if (w_ > w) {
@@ -178,7 +156,7 @@ public class MCC extends CC implements TechnicalInformationHandler {
 		Vector newVector = new Vector();
 		newVector.addElement(new Option("\tSets the number of iterations in the chain space (training)\n\tdefault: "+m_Is, "Is", 1, "-Is <value>"));
 		newVector.addElement(new Option("\tSets the number of iterations in the path space (inference)\n\tdefault: "+m_Iy, "Iy", 1, "-Iy <value>"));
-		newVector.addElement(new Option("\tSets the type of payoff fn. to use (for I > 0) \n\tdefault: "+m_Payoff, "P", 1, "-P <value>"));
+		newVector.addElement(new Option("\tSets the payoff function. Should be one listed in normal evaluation output\n\tdefault: "+m_Payoff, "P", 1, "-P <value>"));
 
 		Enumeration enu = super.listOptions();
 
@@ -192,7 +170,7 @@ public class MCC extends CC implements TechnicalInformationHandler {
 	public void setOptions(String[] options) throws Exception {
 		m_Is = (Utils.getOptionPos("Is",options) >= 0) ? Integer.parseInt(Utils.getOption("Is", options)) : m_Is;
 		m_Iy = (Utils.getOptionPos("Iy",options) >= 0) ? Integer.parseInt(Utils.getOption("Iy", options)) : m_Iy;
-		m_Payoff = (Utils.getOptionPos('P',options) >= 0) ? Integer.parseInt(Utils.getOption('P', options)) : m_Payoff;
+		m_Payoff = (Utils.getOptionPos('P',options) >= 0) ? Utils.getOption('P', options) : m_Payoff;
 		super.setOptions(options);
 	}
 
@@ -207,7 +185,7 @@ public class MCC extends CC implements TechnicalInformationHandler {
 		options[current++] = "-Iy";
 		options[current++] = String.valueOf(m_Iy);
 		options[current++] = "-P";
-		options[current++] = String.valueOf(m_Payoff);
+		options[current++] = m_Payoff;
 		System.arraycopy(superOptions, 0, options, current, superOptions.length);
 		return options;
 	}
