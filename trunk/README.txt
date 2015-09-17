@@ -5,7 +5,7 @@ For a list of included methods and 'quick-start' command line examples,
 Release Notes, Version 1.7.8
 ----------------------------
 
-Improvements since the last version are os follows:
+Improvements since the last version are as follows:
 
 	* MEKA now uses maven (instead of ant, as previously) for compilation. 0w00
 
@@ -15,7 +15,7 @@ Improvements since the last version are os follows:
 		and better execution of unit tests. 
 		This change affects people working with the source code.
 
-	* The seed used to randomize a dataset is no longer passed on to Randomizeable classifiers -- they must used their own.
+	* The seed used to randomize a dataset is no longer passed on to Randomizeable classifiers -- they must use their own.
 
 		This means that the results of some Randomizeable classifier will be different now when a dataset is randomized.
 
@@ -44,7 +44,7 @@ Improvements since the last version are os follows:
 		This makes it easy for other people to add more tabs (i.e., meka packages), simply derived from
 		"meka.gui.explorer.AbstractExplorerTab" and placed in the "meka.gui.explorer" package.
 
-	* A GUIChooser closs is now available: meka.gui.guichooser.GUIChooser
+	* A GUIChooser class is now available: meka.gui.guichooser.GUIChooser
 		
 		This is in preparation for a future Experimenter. It features dynamic discovery of menu items as well: 
 		they need to be derived from "meka.gui.guichooser.AbstractMenuItemDefinition" and placed in package "meka.gui.guichooser". 
