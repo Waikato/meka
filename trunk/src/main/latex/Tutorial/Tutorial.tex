@@ -462,14 +462,6 @@ mvn -f release.xml package
 \end{lstlisting}
 Please note, if you develop new algorithms, you should also create a unit test for it, to ensure that it is working properly. See section \ref{unittests} for more details.
 
-\heading{Using Eclipse}
-After obtaining the source code, you can use the Eclipse\footnote{\url{http://eclipse.org/}} template files that come with MEKA. You only need to rename two files, found in the same directory as the \texttt{pom.xml} ant build script, as follows:
-\begin{itemize}
-  \item \texttt{.classpath.default} $\rightarrow$ \texttt{.classpath}
-  \item \texttt{.project.default} $\rightarrow$ \texttt{.project}
-\end{itemize}
-Then you can simply import MEKA as \textit{Existing Java Project}, pointing the import wizard to the directory containing the above mentioned files.
-
 \heading{Using IntelliJ IDEA}
 After obtaining the source code, you can simply import the project as a Maven project.
 Select \textit{File $\rightarrow$ New $\rightarrow$ Project from Existing Sources} from the main menu and point to
