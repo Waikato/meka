@@ -110,7 +110,7 @@ public class MCC extends CC implements TechnicalInformationHandler {
 		}
 		if (getDebug()) System.out.println("---");
 
-		this.setChain(s);
+		this.prepareChain(s);
 		super.buildClassifier(D);
 	}
 

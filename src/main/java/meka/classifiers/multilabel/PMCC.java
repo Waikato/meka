@@ -102,7 +102,7 @@ public class PMCC extends MCC {
 		CC h = new CC();
 
 		// build this chain
-		h.setChain(s);
+		h.prepareChain(s);
 		h.setClassifier(m_Classifier);
 		h.buildClassifier(new Instances(D));
 		return h;

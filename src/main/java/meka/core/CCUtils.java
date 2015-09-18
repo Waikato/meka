@@ -36,7 +36,7 @@ public abstract class CCUtils {
 		CC h = new CC();
 
 		// build this chain
-		h.setChain(chain);
+		h.prepareChain(chain);
 		h.setClassifier(g);
 		h.buildClassifier(new Instances(D));
 		return h;

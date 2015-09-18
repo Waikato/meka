@@ -124,8 +124,6 @@ public class CCp extends meka.classifiers.multilabel.CC implements MultiTargetCl
 
 	}
 
-	protected int m_S = 0;
-
 	/**
 	 * Description to display in the GUI.
 	 * 
@@ -140,40 +138,15 @@ public class CCp extends meka.classifiers.multilabel.CC implements MultiTargetCl
 	}
 
 	@Override
-	public void setSeed(int s) {
-		m_S = s;
-	}
-
-	@Override
-	public int getSeed() {
-		return m_S;
-	}
-
-	protected int m_Chain[] = null;
-
-	@Override
-	public void setChain(int chain[]) {
-		m_Chain = chain;
-	}
-
-	@Override
-	public int[] retrieveChain() {
-		return m_Chain;
-	}
-
-	@Override
 	public void buildClassifier(Instances D) throws Exception {
 	  	testCapabilities(D);
 	  	
 		int L = D.classIndex();
 
-		int indices[] = retrieveChain();
-		if (indices == null) {
-			indices = MLUtils.gen_indices(L);
-			MLUtils.randomize(indices,new Random(m_S));
-		}
+		prepareChain(L);
+
 		if(getDebug()) System.out.print(":- Chain (");
-		root = new meka.classifiers.multitarget.CCp.Link(indices,0,D);
+		root = new meka.classifiers.multitarget.CCp.Link(retrieveChain(),0,D);
 		if (getDebug()) System.out.println(" ) -:");
 	}
 
