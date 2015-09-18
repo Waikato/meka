@@ -359,7 +359,7 @@ public class Evaluation {
 		long before = System.currentTimeMillis();
 		// Set test data as unlabelled data, if SemisupervisedClassifier
 		if (h instanceof SemisupervisedClassifier) { 
-			((SemisupervisedClassifier)h).setUnlabelledData(MLUtils.setLabelsMissing(new Instances(D_test)));
+			((SemisupervisedClassifier)h).introduceUnlabelledData(MLUtils.setLabelsMissing(new Instances(D_test)));
 		}
 		// Train
 		h.buildClassifier(D_train);
