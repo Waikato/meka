@@ -305,10 +305,10 @@ public abstract class A {
 		return y;
 	}
 
-	// "1,2" -> [1,2]
-	//@see MLUtils.toIntArray(String s) 
-
-	/** Convert eg "12" to [1,2] */
+	/** 
+	 * Convert eg "12" to [1,2].
+	 * see also MLUtils.toIntArray(String s) <br>
+	 * */
 	public static final int[] toIntArray(String s) {
 		int[] array = new int[s.length()];
 		 
@@ -328,7 +328,10 @@ public abstract class A {
 		return u;
 	}
 
-	// @see also toIntArray(z,t)
+	/**
+	 * Convert an array of doubles to ints through a threshold.
+	 * see also toIntArray(z,t)
+	 */ 
 	public static final int[] toIntArray(double z[]) {
 		int u[] = new int[z.length];
 		for(int j = 0; j < z.length; j++) {
@@ -339,7 +342,7 @@ public abstract class A {
 
 	/**
 	 * Convert an array of doubles to ints through a threshold.
-	 *	@see M.threshold
+	 * see M.threshold
 	 */ 
 	public static final int[] toIntArray(double z[], double t) {
 		int u[] = new int[z.length];
