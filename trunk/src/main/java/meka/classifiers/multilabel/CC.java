@@ -60,30 +60,35 @@ public class CC extends ProblemTransformationMethod
 	 */
 	protected void prepareChain(int L) {
 
-		int indices[] = retrieveChain();
+		int chain[] = retrieveChain();
 
 		// if has not yet been manually chosen ...
-		if (indices == null) {
+		if (chain == null) {
 
 			// create the standard order (1,2,...,L) ..
-			indices = A.make_sequence(L);
+			chain = A.make_sequence(L);
 
 			// and shuffle if m_S > 0
 			if (m_S != 0) {
 				m_R = new Random(m_S);
-				A.shuffle(indices,m_R);
+				A.shuffle(chain,m_R);
 			}
 		}
 
 		// set it
-		setChain(indices);
+		prepareChain(chain);
 
-		if(getDebug()) 
-			System.out.println("Chain s="+Arrays.toString(indices));
 	}
 
-	public void setChain(int chain[]) {
+	/**
+	 * Prepare a Chain. Set the specified 'chain'.
+	 * It must contain all indices [0,...,L-1] (but in any order)
+	 * @param chain		a specified chain
+	 */
+	public void prepareChain(int chain[]) {
 		m_Chain = Arrays.copyOf(chain,chain.length);
+		if(getDebug()) 
+			System.out.println("Chain s="+Arrays.toString(m_Chain));
 	}
 
 	public int[] retrieveChain() {
