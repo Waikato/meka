@@ -29,7 +29,7 @@ import weka.core.RevisionUtils;
  * @author 	Jesse Read (jesse@tsc.uc3m.es)
  * @version October 2011
  */
-public class MajorityLabelset extends ProblemTransformationMethod {
+public class MajorityLabelset extends AbstractMultiLabelClassifier {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -5932291001079843869L;
@@ -82,13 +82,8 @@ public class MajorityLabelset extends ProblemTransformationMethod {
 		return prediction;
 	}
 
-	@Override
-	public String getRevision() {
-	    return RevisionUtils.extract("$Revision: 9117 $");
-	}
-
 	public static void main(String args[]) {
-		ProblemTransformationMethod.evaluation(new MajorityLabelset(), args);
+		AbstractMultiLabelClassifier.evaluation(new MajorityLabelset(), args);
 	}
 
 }
