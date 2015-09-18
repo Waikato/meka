@@ -19,10 +19,12 @@ import weka.core.Instances;
 
 /**
  *  SemisupervisedClassifier.java - An Interface for Multilabel Semisupervised Classifiers.
- *  This is an interface for multi-label semisupervised classificatation. For classifiers implementing this interface, the method setUnlabelledData(unlabeledInstances) will be called prior to buildClassifier(trainingInstances). Note that as of writing this comment, this is only the test data -- there is not yet any option for setting other unlabelled data -- although this is planned for future versions.
+ *  This is an interface for multi-label semisupervised classificatation, i.e., training on a partially labelled dataset. <br>
+ *  For classifiers implementing this interface, the method introduceUnlabelledData(unlabeledInstances) will be called prior to buildClassifier(trainingInstances). <br>
+ *  As of writing this comment, the unlabelled data comes only from the test data -- there is not yet any option for setting a seperate sete of unlabelled data (although this is planned for future versions).
  *
- * 	@author 	Jesse Read (jesse@tsc.uc3m.es)
- * 	@version	January 2012
+ * 	@author 	Jesse Read
+ * 	@version	September 2015
  */
 
 public interface SemisupervisedClassifier
@@ -32,5 +34,5 @@ public interface SemisupervisedClassifier
 	 *  Set Unlabelled Data - provide unlabelled data prior to calling buildClassifier(Instances).
 	 *  @param	unlabeledInstances	Instances for which the true class labels are not available for each instance.
 	 */
-	void setUnlabelledData(Instances unlabeledInstances);
+	void introduceUnlabelledData(Instances unlabeledInstances);
 }

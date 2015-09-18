@@ -65,7 +65,7 @@ public class EM extends ProblemTransformationMethod implements SemisupervisedCla
 	}
 
 	@Override
-	public void setUnlabelledData(Instances D) {
+	public void introduceUnlabelledData(Instances D) {
 		this.D_ = D;
 	}
 
@@ -125,6 +125,10 @@ public class EM extends ProblemTransformationMethod implements SemisupervisedCla
 
 	public int getIterations() {
 		return m_I;
+	}
+
+	public String iterationsTipText() {
+		return "The number of EM iterations to perform.";
 	}
 
 	@Override
