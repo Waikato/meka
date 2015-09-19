@@ -108,7 +108,7 @@ public class ClassifyTabOptions
 		m_ButtonFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (m_FileChooser.showOpenDialog(ClassifyTabOptions.this) != JFileChooser.APPROVE_OPTION)
+				if (m_FileChooser.showOpenDialog(ClassifyTabOptions.this) != ConverterFileChooser.APPROVE_OPTION)
 					return;
 				AbstractFileLoader loader = m_FileChooser.getLoader();
 				try {

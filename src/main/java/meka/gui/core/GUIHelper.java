@@ -386,16 +386,29 @@ public class GUIHelper {
 	/**
 	 * Returns the default frame dimensions for this class.
 	 *
+	 * @param cls the class to get the default dimensions for
 	 * @return the dimensions, default ones if not found
 	 * @see #getDefaultFrameDimensions()
 	 */
 	public static Dimension getDefaultFrameDimensions(Class cls) {
-		if (!getProperties().containsKey(cls.getName() + ".Width") || !getProperties().containsKey(cls.getName() + ".Height"))
-			return getDefaultFrameDimensions();
+		return getDefaultDimensions(cls.getName(), 800, 600);
+	}
+
+	/**
+	 * Returns the default dimensions for this prefix.
+	 *
+	 * @param prefix the prefix (+ .Height, .Width) to get the dimensions for
+	 * @param defaultWidth the default width
+	 * @param defaultHeight the default height
+	 * @return the dimensions, default ones if not found
+	 */
+	public static Dimension getDefaultDimensions(String prefix, int defaultWidth, int defaultHeight) {
+		if (!getProperties().containsKey(prefix + ".Width") || !getProperties().containsKey(prefix + ".Height"))
+			return new Dimension(defaultWidth, defaultHeight);
 
 		return new Dimension(
-				Integer.parseInt(getProperties().getProperty(cls.getName() + ".Width",  "800")),
-				Integer.parseInt(getProperties().getProperty(cls.getName() + ".Height", "600"))
+				Integer.parseInt(getProperties().getProperty(prefix + ".Width",  "" + defaultWidth)),
+				Integer.parseInt(getProperties().getProperty(prefix + ".Height", "" + defaultHeight))
 		);
 	}
 
@@ -422,6 +435,28 @@ public class GUIHelper {
 		bookmarks.setOwner(result);
 		bookmarks.setBorder(BorderFactory.createEmptyBorder(2, 5, 0, 0));
 		result.setAccessory(bookmarks);
+		result.setPreferredSize(getDefaultDimensions("FileChooser", 750, 500));
+
+
+		return result;
+	}
+
+	/**
+	 * Returns a new instance of a filechooser including the bookmarks panel.
+	 *
+	 * @return the file chooser
+	 */
+	public static JFileChooser newFileChooser() {
+		JFileChooser                result;
+		FileChooserBookmarksPanel   bookmarks;
+
+		result = new JFileChooser(System.getProperty("user.home"));
+		bookmarks = new FileChooserBookmarksPanel();
+		bookmarks.setOwner(result);
+		bookmarks.setBorder(BorderFactory.createEmptyBorder(2, 5, 0, 0));
+		result.setAccessory(bookmarks);
+		result.setPreferredSize(getDefaultDimensions("FileChooser", 750, 500));
+
 
 		return result;
 	}

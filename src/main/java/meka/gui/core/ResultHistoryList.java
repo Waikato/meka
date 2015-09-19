@@ -240,7 +240,7 @@ public class ResultHistoryList
 			}
 		});
 
-		m_FileChooser = new JFileChooser(System.getProperty("user.home"));
+		m_FileChooser = GUIHelper.newFileChooser();
 		ExtensionFileFilter filter = new ExtensionFileFilter("txt", "Meka results format (*.txt)");
 		m_FileChooser.addChoosableFileFilter(filter);
 		m_FileChooser.setFileFilter(filter);
