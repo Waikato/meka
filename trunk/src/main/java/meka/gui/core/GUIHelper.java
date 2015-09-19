@@ -446,18 +446,7 @@ public class GUIHelper {
 	 *
 	 * @return the file chooser
 	 */
-	public static JFileChooser newFileChooser() {
-		JFileChooser                result;
-		FileChooserBookmarksPanel   bookmarks;
-
-		result = new JFileChooser(System.getProperty("user.home"));
-		bookmarks = new FileChooserBookmarksPanel();
-		bookmarks.setOwner(result);
-		bookmarks.setBorder(BorderFactory.createEmptyBorder(2, 5, 0, 0));
-		result.setAccessory(bookmarks);
-		result.setPreferredSize(getDefaultDimensions("FileChooser", 750, 500));
-
-
-		return result;
+	public static MekaFileChooser newFileChooser() {
+		return new MekaFileChooser(System.getProperty("user.home"));
 	}
 }

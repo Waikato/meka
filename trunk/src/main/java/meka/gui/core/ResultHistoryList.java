@@ -203,7 +203,7 @@ public class ResultHistoryList
 	}
 	
 	/** the file chooser for saving the output. */
-	protected JFileChooser m_FileChooser;
+	protected MekaFileChooser m_FileChooser;
 
 	/** the popup menu customizer. */
 	protected ResultHistoryPopupMenuCustomizer m_PopupMenuCustomizer;
