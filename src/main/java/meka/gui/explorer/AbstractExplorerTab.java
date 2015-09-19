@@ -23,6 +23,7 @@ import meka.gui.core.MekaPanel;
 import meka.gui.goe.GenericObjectEditor;
 import weka.core.Instances;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.List;
 
@@ -82,6 +83,17 @@ public abstract class AbstractExplorerTab
 	 * @return the title
 	 */
 	public abstract String getTitle();
+
+	/**
+	 * Returns an optional menu to be added to the Explorer menu.
+	 * <br>
+	 * Default implementation returns null.
+	 *
+	 * @return the menu
+	 */
+	public JMenu getMenu() {
+		return null;
+	}
 
 	/**
 	 * Returns the session object.
