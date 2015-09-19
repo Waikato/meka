@@ -369,4 +369,41 @@ public class GUIHelper {
 
 		return result;
 	}
+
+	/**
+	 * Returns the default frame dimensions.
+	 *
+	 * @return the dimensions
+	 */
+	public static Dimension getDefaultFrameDimensions() {
+		return new Dimension(
+				Integer.parseInt(getProperties().getProperty("Default.Width",  "800")),
+				Integer.parseInt(getProperties().getProperty("Default.Height", "600"))
+		);
+	}
+
+	/**
+	 * Returns the default frame dimensions for this class.
+	 *
+	 * @return the dimensions, default ones if not found
+	 * @see #getDefaultFrameDimensions()
+	 */
+	public static Dimension getDefaultFrameDimensions(Class cls) {
+		if (!getProperties().containsKey(cls.getName() + ".Width") || !getProperties().containsKey(cls.getName() + ".Height"))
+			return getDefaultFrameDimensions();
+
+		return new Dimension(
+				Integer.parseInt(getProperties().getProperty(cls.getName() + ".Width",  "800")),
+				Integer.parseInt(getProperties().getProperty(cls.getName() + ".Height", "600"))
+		);
+	}
+
+	/**
+	 * Returns whether this application needs to be packed, rather than use a specific window size.
+	 *
+	 * @return true if to be packed
+	 */
+	public static boolean getPackFrame(Class cls) {
+		return getProperties().getProperty(cls.getName() + ".Pack",  "false").equals("true");
+	}
 }

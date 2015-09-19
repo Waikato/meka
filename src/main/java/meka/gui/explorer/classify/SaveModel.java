@@ -111,7 +111,7 @@ public class SaveModel
 					return;
 				File file = getFileChooser().getSelectedFile();
 				try {
-					SerializationHelper.write(file.getAbsolutePath(), history.getPayloadAt(index));
+					SerializationHelper.writeAll(file.getAbsolutePath(), (Object[]) history.getPayloadAt(index));
 				}
 				catch (Exception ex) {
 					String msg = "Failed to write model to '" + file + "'!";

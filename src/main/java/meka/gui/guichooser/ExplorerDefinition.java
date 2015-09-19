@@ -20,11 +20,8 @@
 
 package meka.gui.guichooser;
 
-import meka.gui.core.GUIHelper;
-import meka.gui.core.MekaFrame;
+import meka.gui.core.GUILauncher;
 import meka.gui.explorer.Explorer;
-
-import java.awt.*;
 
 /**
  * Launches the Explorer.
@@ -71,16 +68,12 @@ public class ExplorerDefinition
 	 */
 	@Override
 	protected void launch() {
-		Explorer main = new Explorer();
-		MekaFrame frame = new MekaFrame();
-		frame.setTitle("MEKA Explorer");
-		frame.setDefaultCloseOperation(MekaFrame.DISPOSE_ON_CLOSE);
-		frame.setIconImage(GUIHelper.getLogoIcon().getImage());
-		frame.setLayout(new BorderLayout());
-		frame.add(main, BorderLayout.CENTER);
-		frame.setJMenuBar(main.getMenuBar());
-		frame.setSize(800, 600);
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
+		try {
+			GUILauncher.launchFrame(Explorer.class, "MEKA Explorer", true);
+		}
+		catch (Exception e) {
+			System.err.println("Failed to launch Explorer!");
+			e.printStackTrace();
+		}
 	}
 }
