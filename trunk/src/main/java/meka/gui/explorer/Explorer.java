@@ -20,17 +20,14 @@
 package meka.gui.explorer;
 
 import meka.core.MLUtils;
-import meka.core.Project;
 import meka.gui.core.*;
 import meka.gui.events.RecentItemEvent;
 import meka.gui.events.RecentItemListener;
-import meka.gui.goe.GenericObjectEditor;
 import weka.core.Instances;
 import weka.core.converters.AbstractFileLoader;
 import weka.core.converters.AbstractFileSaver;
 import weka.core.converters.ConverterUtils;
 import weka.core.converters.SerializedInstancesLoader;
-import weka.gui.BrowserHelper;
 import weka.gui.ConverterFileChooser;
 import weka.gui.ViewerDialog;
 
@@ -50,7 +47,8 @@ import java.util.ArrayList;
  * @version $Revision$
  */
 public class Explorer
-	extends MekaPanel {
+	extends MekaPanel
+	implements MenuBarProvider, CommandLineArgsHandler {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 8958333625051395461L;
@@ -631,10 +629,13 @@ public class Explorer
 	}
 
 	/**
-	 * Opens the homepage in a browser.
+	 * Processes the commandline arguments.
+	 *
+	 * @param args the arguments
 	 */
-	public void openHomepage() {
-		BrowserHelper.openURL("http://meka.sourceforge.net/");
+	public void processCommandLineArgs(String[] args) {
+		if (args.length > 0)
+			open(new File(args[0]), ConverterUtils.getLoaderForFile(args[0]));
 	}
 
 	/**
@@ -643,20 +644,6 @@ public class Explorer
 	 * @param args ignored
 	 */
 	public static void main(String[] args) throws Exception {
-		Project.initialize();
-		GenericObjectEditor.registerAllEditors();
-		Explorer main = new Explorer();
-		MekaFrame frame = new MekaFrame();
-		frame.setTitle("MEKA Explorer");
-		frame.setDefaultCloseOperation(MekaFrame.EXIT_ON_CLOSE);
-		frame.setIconImage(GUIHelper.getLogoIcon().getImage());
-		frame.setLayout(new BorderLayout());
-		frame.add(main, BorderLayout.CENTER);
-		frame.setJMenuBar(main.getMenuBar());
-		frame.setSize(800, 600);
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
-		if (args.length > 0)
-			main.open(new File(args[0]), ConverterUtils.getLoaderForFile(args[0]));
+		GUILauncher.launchApplication(Explorer.class, "MEKA Explorer", true, args);
 	}
 }

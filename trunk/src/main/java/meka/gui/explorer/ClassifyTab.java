@@ -267,7 +267,7 @@ public class ClassifyTab
 						result = Evaluation.cvModel(classifier, data, m_Folds, m_TOP, m_VOP);
 						addResultToHistory(
 								result,
-								classifier,
+								new Object[]{classifier, new Instances(data, 0)},
 								classifier.getClass().getName().replace("meka.classifiers.", "")
 						);
 						finishBusy("");
@@ -306,13 +306,16 @@ public class ClassifyTab
 							MLUtils.prepareData(m_TestInstances);
 							test       = new Instances(m_TestInstances);
 							test.setClassIndex(data.classIndex());
+							String msg = train.equalHeadersMsg(test);
+							if (msg != null)
+								throw new IllegalArgumentException("Train and test set are not compatible:\n" + msg);
 						}
 						classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
 						//System.out.println("data.classIndex() "+train.classIndex());
 						result     = Evaluation.evaluateModel(classifier, train, test, m_TOP, m_VOP);
 						addResultToHistory(
 								result,
-								classifier,
+								new Object[]{classifier, new Instances(train, 0)},
 								classifier.getClass().getName().replace("meka.classifiers.", "")
 						);
 						finishBusy("");
@@ -343,7 +346,7 @@ public class ClassifyTab
 						result    = IncrementalEvaluation.evaluateModelPrequentialBasic(classifier, data, 20, 1., m_TOP, m_VOP);
 						addResultToHistory(
 								result,
-								classifier,
+								new Object[]{classifier, new Instances(data, 0)},
 								classifier.getClass().getName().replace("meka.classifiers.", "")
 						);
 						finishBusy("");

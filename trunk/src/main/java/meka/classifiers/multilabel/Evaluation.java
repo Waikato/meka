@@ -107,9 +107,13 @@ public class Evaluation {
 		}
 		// Load from file?
 		String lname = null;
+		Instances dataHeader = null;
 		if (Utils.getOptionPos('l',options) >= 0) {
 			lname = Utils.getOption('l',options);
-			h = (MultiLabelClassifier)SerializationHelper.read(lname);
+			Object[] data = SerializationHelper.readAll(lname);
+			h = (MultiLabelClassifier)data[0];
+			if (data.length > 1)
+				dataHeader = (Instances) data[1];
 			//Object o[] = SerializationHelper.readAll(lname);
 			//h = (MultilabelClassifier)o[0];
 		}
@@ -202,7 +206,8 @@ public class Evaluation {
 			//}
 			// Save model to file?
 			if (dname != null) {
-				SerializationHelper.write(dname, (Object)h); 
+				dataHeader = new Instances(D_train, 0);
+				SerializationHelper.writeAll(dname, new Object[]{h, dataHeader});
 			}
 
 		} catch(Exception e) {

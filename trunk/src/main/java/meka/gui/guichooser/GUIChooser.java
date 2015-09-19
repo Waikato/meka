@@ -20,12 +20,11 @@
 
 package meka.gui.guichooser;
 
-import meka.core.Project;
 import meka.core.Version;
 import meka.gui.core.GUIHelper;
-import meka.gui.core.MekaFrame;
+import meka.gui.core.GUILauncher;
 import meka.gui.core.MekaPanel;
-import meka.gui.goe.GenericObjectEditor;
+import meka.gui.core.MenuBarProvider;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,7 +41,8 @@ import java.util.HashMap;
  * @version $Revision$
  */
 public class GUIChooser
-  extends MekaPanel {
+    extends MekaPanel
+    implements MenuBarProvider {
 
 	private static final long serialVersionUID = 7629211225812516714L;
 	/** the menu bar. */
@@ -196,17 +196,6 @@ public class GUIChooser
 	 * @param args ignored
 	 */
 	public static void main(String[] args) throws Exception {
-		Project.initialize();
-		GenericObjectEditor.registerAllEditors();
-		GUIChooser main = new GUIChooser();
-		MekaFrame frame = new MekaFrame();
-		frame.setTitle("MEKA GUIChooser");
-		frame.setDefaultCloseOperation(MekaFrame.EXIT_ON_CLOSE);
-		frame.setIconImage(GUIHelper.getLogoIcon().getImage());
-		frame.setLayout(new BorderLayout());
-		frame.add(main, BorderLayout.CENTER);
-		frame.setJMenuBar(main.getMenuBar());
-		frame.pack();
-		frame.setVisible(true);
+		GUILauncher.launchApplication(GUIChooser.class, "MEKA GUIChooser", false, new String[0]);
 	}
 }

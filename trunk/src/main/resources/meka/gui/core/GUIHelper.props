@@ -8,3 +8,15 @@ UseFrameMaximizationFix=false
 
 # The delay in msec used by the frame maximization fix
 FrameMaximizationFixDelay=200
+
+# the default width/height for applications
+Default.Width=800
+Default.Height=600
+
+# the GUIChooser window
+meka.gui.guichooser.GUIChooser.Pack=true
+
+# the Explorer window
+meka.gui.explorer.Explorer.Width=800
+meka.gui.explorer.Explorer.Height=600
+meka.gui.explorer.Explorer.Pack=false
