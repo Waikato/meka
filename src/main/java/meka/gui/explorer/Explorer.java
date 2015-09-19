@@ -42,19 +42,19 @@ import java.util.ArrayList;
 
 /**
  * Explorer GUI for MEKA.
- * 
+ *
  * @author  fracpete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
 public class Explorer
-	extends MekaPanel
-	implements MenuBarProvider, CommandLineArgsHandler {
+		extends MekaPanel
+		implements MenuBarProvider, CommandLineArgsHandler {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 8958333625051395461L;
 
-  /** the file to store the recent files in. */
-  public final static String SESSION_FILE = "ExplorerSession.props";
+	/** the file to store the recent files in. */
+	public final static String SESSION_FILE = "ExplorerSession.props";
 
 	/** the tabbed pane for the various panels. */
 	protected JTabbedPane m_TabbedPane;
@@ -170,7 +170,7 @@ public class Explorer
 
 	/**
 	 * Notifies all the tabs that the data has changed.
-	 * 
+	 *
 	 * @param source not null if a tab triggered this call
 	 * @param data the new data to use
 	 */
@@ -185,7 +185,7 @@ public class Explorer
 
 	/**
 	 * Returns the menu bar to use.
-	 * 
+	 *
 	 * @return the menu bar
 	 */
 	public JMenuBar getMenuBar() {
@@ -349,7 +349,7 @@ public class Explorer
 
 	/**
 	 * Returns the status bar.
-	 * 
+	 *
 	 * @return		the status bar
 	 */
 	public StatusBar getStatusBar() {
@@ -376,7 +376,7 @@ public class Explorer
 
 	/**
 	 * Opens the specified file.
-	 * 
+	 *
 	 * @param file the file to open
 	 * @param loader the loader to use
 	 */
@@ -394,8 +394,8 @@ public class Explorer
 			System.err.println("Failed to load data from '" + file + "':");
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(
-					this, 
-					"Failed to load dataset from '" + file + "':\n" + e, 
+					this,
+					"Failed to load dataset from '" + file + "':\n" + e,
 					"Error loading",
 					JOptionPane.ERROR_MESSAGE);
 			return;
@@ -438,7 +438,7 @@ public class Explorer
 
 	/**
 	 * Saves the data to the specified file.
-	 * 
+	 *
 	 * @param file the file to save the data to
 	 * @param saver the saver to use, determines it automatically if null
 	 */
@@ -456,8 +456,8 @@ public class Explorer
 			System.err.println("Failed to save data to '" + file + "':");
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(
-					this, 
-					"Failed to save dataset to '" + file + "':\n" + e, 
+					this,
+					"Failed to save dataset to '" + file + "':\n" + e,
 					"Error saving",
 					JOptionPane.ERROR_MESSAGE);
 		}
@@ -529,7 +529,7 @@ public class Explorer
 
 	/**
 	 * Adds an undo point.
-	 * 
+	 *
 	 * @return	true if successfully added
 	 */
 	public boolean addUndoPoint() {
@@ -565,8 +565,8 @@ public class Explorer
 			System.err.println("Failed to save undo data to '" + tempFile + "':");
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(
-					this, 
-					"Failed to save undo data to '" + tempFile + "':\n" + e, 
+					this,
+					"Failed to save undo data to '" + tempFile + "':\n" + e,
 					"Error",
 					JOptionPane.ERROR_MESSAGE);
 		}
@@ -578,7 +578,7 @@ public class Explorer
 
 	/**
 	 * Returns whether any operations can be undone currently.
-	 * 
+	 *
 	 * @return		true undo is possible
 	 */
 	public boolean canUndo() {
@@ -633,7 +633,7 @@ public class Explorer
 
 	/**
 	 * Starts the GUI.
-	 * 
+	 *
 	 * @param args ignored
 	 */
 	public static void main(String[] args) throws Exception {
