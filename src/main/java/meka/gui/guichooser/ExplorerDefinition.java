@@ -55,6 +55,16 @@ public class ExplorerDefinition
 	}
 
 	/**
+	 * The name of the menu icon.
+	 *
+	 * @return      the file name, null if none
+	 */
+	@Override
+	public String getIconName() {
+		return "explorer.gif";
+	}
+
+	/**
 	 * Returns whether this menu item should also be listed as a shortcut button.
 	 *
 	 * @return          true if to use as button as well

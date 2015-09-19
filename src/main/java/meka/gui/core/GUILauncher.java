@@ -46,10 +46,27 @@ public class GUILauncher {
 	 */
 	public static MekaFrame launchFrame(Class panelCls, String title, boolean center) throws Exception {
 		JPanel panel = (JPanel) panelCls.newInstance();
+		return launchFrame(panel, title, center);
+	}
+
+	/**
+	 * Embeds the panel in a frame and displays.
+	 * Uses GUIHelper.props for determining window packing state/dimensions.
+	 *
+	 * @param panel the panel to place in the frame
+	 * @param title the title for the fraame
+	 * @param center whether to center the frame
+	 * @return the generated frame
+	 */
+	public static MekaFrame launchFrame(JPanel panel, String title, boolean center) {
 		MekaFrame result = new MekaFrame();
 		result.setTitle(title);
 		result.setDefaultCloseOperation(MekaFrame.DISPOSE_ON_CLOSE);
-		result.setIconImage(GUIHelper.getLogoIcon().getImage());
+		String icon = GUIHelper.getDefaultFrameIcon(panel.getClass());
+		if (icon != null)
+			result.setIconImage(GUIHelper.getIcon(icon).getImage());
+		else
+			result.setIconImage(GUIHelper.getLogoIcon().getImage());
 		result.setLayout(new BorderLayout());
 		result.add(panel, BorderLayout.CENTER);
 		if (panel instanceof MenuBarProvider)
@@ -82,7 +99,11 @@ public class GUILauncher {
 		MekaFrame result = new MekaFrame();
 		result.setTitle(title);
 		result.setDefaultCloseOperation(MekaFrame.EXIT_ON_CLOSE);
-		result.setIconImage(GUIHelper.getLogoIcon().getImage());
+		String icon = GUIHelper.getDefaultFrameIcon(panelCls);
+		if (icon != null)
+			result.setIconImage(GUIHelper.getIcon(icon).getImage());
+		else
+			result.setIconImage(GUIHelper.getLogoIcon().getImage());
 		result.setLayout(new BorderLayout());
 		result.add(panel, BorderLayout.CENTER);
 		if (panel instanceof MenuBarProvider)

@@ -62,6 +62,16 @@ public class SystemInfo
 	}
 
 	/**
+	 * The name of the menu icon.
+	 *
+	 * @return      the file name, null if none
+	 */
+	@Override
+	public String getIconName() {
+		return "systeminfo.png";
+	}
+
+	/**
 	 * Called by the menu items action listener.
 	 */
 	@Override

@@ -43,6 +43,9 @@ public abstract class AbstractMenuItemDefinition
 	/** "Program", the first menu. */
 	public final static String MENU_PROGRAM = "Program";
 
+	/** "Visualization" menu. */
+	public final static String MENU_VISUALIZATION = "Visualization";
+
 	/** "Tools" menu. */
 	public final static String MENU_TOOLS = "Tools";
 
