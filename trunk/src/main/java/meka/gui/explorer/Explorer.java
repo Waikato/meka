@@ -88,9 +88,6 @@ public class Explorer
 	/** the "redo" menu item. */
 	protected JMenuItem m_MenuItemEditData;
 
-	/** the "homepage" menu item. */
-	protected JMenuItem m_MenuItemHelpHomepage;
-
 	/** the recent files handler. */
 	protected RecentFilesHandlerWithCommandline<JMenu> m_RecentFilesHandler;
 
@@ -327,28 +324,12 @@ public class Explorer
 			menu.add(menuitem);
 			m_MenuItemEditData = menuitem;
 
-			// Help
-			menu = new JMenu("Help");
-			menu.setMnemonic('H');
-			menu.addChangeListener(new ChangeListener() {
-				@Override
-				public void stateChanged(ChangeEvent e) {
-					updateMenu();
-				}
-			});
-			result.add(menu);
-
-			// Help/Homepage
-			menuitem = new JMenuItem("Homepage", GUIHelper.getIcon("homepage.png"));
-			menuitem.setMnemonic('H');
-			menuitem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					openHomepage();
-				}
-			});
-			menu.add(menuitem);
-			m_MenuItemHelpHomepage = menuitem;
+			// additional tabs?
+			for (AbstractExplorerTab tab: m_Tabs) {
+				menu = tab.getMenu();
+				if (menu != null)
+					result.add(menu);
+			}
 
 			m_MenuBar = result;
 		}
@@ -367,14 +348,12 @@ public class Explorer
 
 		// File
 		m_MenuItemFileOpen.setEnabled(true);
-		m_MenuItemFileSave.setEnabled((m_CurrentFile != null) && (m_Data != null));
-		m_MenuItemFileSaveAs.setEnabled((m_Data != null));
+		m_MenuItemFileSave.setEnabled((getCurrentFile() != null) && (getCurrentData() != null));
+		m_MenuItemFileSaveAs.setEnabled((getCurrentData() != null));
 		m_MenuItemFileClose.setEnabled(true);
 		// Edit
 		m_MenuItemEditUndo.setEnabled(canUndo());
-		m_MenuItemEditData.setEnabled(m_Data != null);
-		// Help
-		m_MenuItemHelpHomepage.setEnabled(true);
+		m_MenuItemEditData.setEnabled(getCurrentData() != null);
 	}
 
 	/**
@@ -384,6 +363,24 @@ public class Explorer
 	 */
 	public StatusBar getStatusBar() {
 		return m_StatusBar;
+	}
+
+	/**
+	 * Returns the currently loaded data.
+	 *
+	 * @return      the data, null if none loaded
+	 */
+	public Instances getCurrentData() {
+		return m_Data;
+	}
+
+	/**
+	 * Returns the filename of the currently loaded data.
+	 *
+	 * @return      the filename, null if none available
+	 */
+	public File getCurrentFile() {
+		return m_CurrentFile;
 	}
 
 	/**
