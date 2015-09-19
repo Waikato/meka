@@ -80,7 +80,7 @@ public class ArffViewerDefinition
 		frame.setLayout(new BorderLayout());
 		frame.add(main, BorderLayout.CENTER);
 		frame.setJMenuBar(main.getMenu());
-		frame.setSize(800, 600);
+		frame.setSize(GUIHelper.getDefaultFrameDimensions(ArffViewerMainPanel.class));
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}

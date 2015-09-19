@@ -21,6 +21,13 @@ Default.Height=600
 meka.gui.guichooser.GUIChooser.Pack=true
 
 # the Explorer window
+meka.gui.explorer.Explorer.Icon=explorer.gif
 meka.gui.explorer.Explorer.Width=800
 meka.gui.explorer.Explorer.Height=600
 meka.gui.explorer.Explorer.Pack=false
+
+# the Arff viewer window
+weka.gui.arffviewer.ArffViewerMainPanel.Icon=report.gif
+weka.gui.arffviewer.ArffViewerMainPanel.Width=1024
+weka.gui.arffviewer.ArffViewerMainPanel.Height=768
+weka.gui.arffviewer.ArffViewerMainPanel.Pack=false

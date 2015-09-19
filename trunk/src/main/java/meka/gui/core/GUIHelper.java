@@ -395,6 +395,16 @@ public class GUIHelper {
 	}
 
 	/**
+	 * Returns the default icon name for this frame class.
+	 *
+	 * @param cls the class to get the default icon name for
+	 * @return the icon name, null if not found
+	 */
+	public static String getDefaultFrameIcon(Class cls) {
+		return getProperties().getProperty(cls.getName() + ".Icon");
+	}
+
+	/**
 	 * Returns the default dimensions for this prefix.
 	 *
 	 * @param prefix the prefix (+ .Height, .Width) to get the dimensions for
@@ -403,7 +413,7 @@ public class GUIHelper {
 	 * @return the dimensions, default ones if not found
 	 */
 	public static Dimension getDefaultDimensions(String prefix, int defaultWidth, int defaultHeight) {
-		if (!getProperties().containsKey(prefix + ".Width") || !getProperties().containsKey(prefix + ".Height"))
+		if ((getProperties().getProperty(prefix + ".Width") == null) || (getProperties().getProperty(prefix + ".Height") == null))
 			return new Dimension(defaultWidth, defaultHeight);
 
 		return new Dimension(
