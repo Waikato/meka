@@ -63,7 +63,7 @@ public class GUILauncher {
 		result.setTitle(title);
 		result.setDefaultCloseOperation(MekaFrame.DISPOSE_ON_CLOSE);
 		String icon = GUIHelper.getDefaultFrameIcon(panel.getClass());
-		if (icon != null)
+		if ((icon != null) && (GUIHelper.getIcon(icon) != null))
 			result.setIconImage(GUIHelper.getIcon(icon).getImage());
 		else
 			result.setIconImage(GUIHelper.getLogoIcon().getImage());
@@ -100,7 +100,7 @@ public class GUILauncher {
 		result.setTitle(title);
 		result.setDefaultCloseOperation(MekaFrame.EXIT_ON_CLOSE);
 		String icon = GUIHelper.getDefaultFrameIcon(panelCls);
-		if (icon != null)
+		if ((icon != null) && (GUIHelper.getIcon(icon) != null))
 			result.setIconImage(GUIHelper.getIcon(icon).getImage());
 		else
 			result.setIconImage(GUIHelper.getLogoIcon().getImage());
