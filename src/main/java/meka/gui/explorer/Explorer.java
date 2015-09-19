@@ -98,9 +98,6 @@ public class Explorer
 	/** the file chooser for loading/saving files. */
 	protected ConverterFileChooser m_FileChooser;
 
-	/** the bookmarks. */
-	protected FileChooserBookmarksPanel m_PanelBookmarks;
-
 	/** the undo list. */
 	protected ArrayList<File> m_Undo;
 
@@ -116,11 +113,7 @@ public class Explorer
 		m_CurrentFile = null;
 		m_MenuBar     = null;
 		m_Tabs        = new ArrayList<>();
-		m_FileChooser = new ConverterFileChooser(System.getProperty("user.home"));
-		m_PanelBookmarks = new FileChooserBookmarksPanel();
-		m_PanelBookmarks.setOwner(m_FileChooser);
-		m_PanelBookmarks.setBorder(BorderFactory.createEmptyBorder(2, 5, 0, 0));
-		m_FileChooser.setAccessory(m_PanelBookmarks);
+		m_FileChooser = GUIHelper.newConverterFileChooser();
 		m_Undo        = new ArrayList<>();
 	}
 

@@ -21,6 +21,7 @@
 package meka.gui.core;
 
 import weka.core.Utils;
+import weka.gui.ConverterFileChooser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -405,5 +406,23 @@ public class GUIHelper {
 	 */
 	public static boolean getPackFrame(Class cls) {
 		return getProperties().getProperty(cls.getName() + ".Pack",  "false").equals("true");
+	}
+
+	/**
+	 * Returns a new instance of a filechooser for datasets including the bookmarks panel.
+	 *
+	 * @return the file chooser
+	 */
+	public static ConverterFileChooser newConverterFileChooser() {
+		ConverterFileChooser        result;
+		FileChooserBookmarksPanel   bookmarks;
+
+		result = new ConverterFileChooser(System.getProperty("user.home"));
+		bookmarks = new FileChooserBookmarksPanel();
+		bookmarks.setOwner(result);
+		bookmarks.setBorder(BorderFactory.createEmptyBorder(2, 5, 0, 0));
+		result.setAccessory(bookmarks);
+
+		return result;
 	}
 }

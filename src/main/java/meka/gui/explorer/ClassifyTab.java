@@ -83,8 +83,11 @@ public class ClassifyTab
 	/** train/test split. */
 	public final static String TYPE_TRAINTESTSPLIT = "Train/test split";
 
+	/** supplied test set. */
+	public final static String TYPE_SUPPLIEDTESTSET = "Supplied test set";
+
 	/** incremental batch train/test split. */
-	public final static String TYPE_INCREMENTAL    = "Prequential (incremental)";
+	public final static String TYPE_INCREMENTAL = "Prequential (incremental)";
 
 	/** the GOE for the classifier. */
 	protected GenericObjectEditor m_GenericObjectEditor;
@@ -125,6 +128,9 @@ public class ClassifyTab
 	/** the number of folds. */
 	protected int m_Folds;
 
+	/** the panel with the options. */
+	protected ClassifyTabOptions m_ClassifyTabOptions;
+
 	/** the test Instances. */
 	protected Instances m_TestInstances;
 
@@ -139,13 +145,14 @@ public class ClassifyTab
 		m_GenericObjectEditor.setClassType(MultiLabelClassifier.class);
 		m_GenericObjectEditor.setValue(new meka.classifiers.multilabel.BR());
 
-		m_Seed            = 1;
-		m_SplitPercentage = 66.0;
-		m_Folds           = 10;
-		m_Randomize       = true;
-		m_TOP             = "PCut1";
-		m_VOP             = "3";
-		m_TestInstances   = null;
+		m_Seed               = 1;
+		m_SplitPercentage    = 66.0;
+		m_Folds              = 10;
+		m_Randomize          = true;
+		m_TOP                = "PCut1";
+		m_VOP                = "3";
+		m_TestInstances      = null;
+		m_ClassifyTabOptions = null;
 	}
 
 	/**
@@ -181,6 +188,7 @@ public class ClassifyTab
 		m_ComboBoxExperiment = new JComboBox(
 				new String[]{
 						TYPE_TRAINTESTSPLIT,
+						TYPE_SUPPLIEDTESTSET,
 						TYPE_CROSSVALIDATION,
 						TYPE_INCREMENTAL
 				});
@@ -254,54 +262,88 @@ public class ClassifyTab
 		type = m_ComboBoxExperiment.getSelectedItem().toString();
 		run  = null;
 
-		if (type.equals(TYPE_CROSSVALIDATION)) {
-			run = new Runnable() {
-				@Override
-				public void run() {
-					MultiLabelClassifier classifier;
-					Result result;
-					startBusy("Cross-validating...");
-					try {
-						classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
-						//System.out.println("data.classIndex() "+data.classIndex());
-						result = Evaluation.cvModel(classifier, data, m_Folds, m_TOP, m_VOP);
-						addResultToHistory(
-								result,
-								new Object[]{classifier, new Instances(data, 0)},
-								classifier.getClass().getName().replace("meka.classifiers.", "")
-						);
-						finishBusy("");
+		switch (type) {
+			case TYPE_CROSSVALIDATION:
+				run = new Runnable() {
+					@Override
+					public void run() {
+						MultiLabelClassifier classifier;
+						Result result;
+						startBusy("Cross-validating...");
+						try {
+							classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
+							//System.out.println("data.classIndex() "+data.classIndex());
+							result = Evaluation.cvModel(classifier, data, m_Folds, m_TOP, m_VOP);
+							addResultToHistory(
+									result,
+									new Object[]{classifier, new Instances(data, 0)},
+									classifier.getClass().getName().replace("meka.classifiers.", "")
+							);
+							finishBusy("");
+						}
+						catch (Exception e) {
+							System.err.println("Evaluation failed:");
+							e.printStackTrace();
+							finishBusy("Evaluation failed: " + e);
+							JOptionPane.showMessageDialog(
+									ClassifyTab.this,
+									"Evaluation failed (CV):\n" + e,
+									"Error",
+									JOptionPane.ERROR_MESSAGE);
+						}
 					}
-					catch (Exception e) {
-						System.err.println("Evaluation failed:");
-						e.printStackTrace();
-						finishBusy("Evaluation failed: " + e);
-						JOptionPane.showMessageDialog(
-								ClassifyTab.this,
-								"Evaluation failed (CV):\n" + e,
-								"Error",
-								JOptionPane.ERROR_MESSAGE);
-					}
-				}
-			};
-		}
-		else if (type.equals(TYPE_TRAINTESTSPLIT)) {
-			run = new Runnable() {
-				@Override
-				public void run() {
-					MultiLabelClassifier classifier;
-					Result result;
-					int trainSize;
-					Instances train;
-					Instances test;
-					startBusy("Train/test split...");
-					try {
-						if (m_TestInstances == null) {
+				};
+				break;
+
+			case TYPE_TRAINTESTSPLIT:
+				run = new Runnable() {
+					@Override
+					public void run() {
+						MultiLabelClassifier classifier;
+						Result result;
+						int trainSize;
+						Instances train;
+						Instances test;
+						startBusy("Train/test split...");
+						try {
 							trainSize  = (int) (data.numInstances() * m_SplitPercentage / 100.0);
 							train      = new Instances(data, 0, trainSize);
 							test       = new Instances(data, trainSize, data.numInstances() - trainSize);
+							classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
+							//System.out.println("data.classIndex() "+train.classIndex());
+							result     = Evaluation.evaluateModel(classifier, train, test, m_TOP, m_VOP);
+							addResultToHistory(
+									result,
+									new Object[]{classifier, new Instances(train, 0)},
+									classifier.getClass().getName().replace("meka.classifiers.", "")
+							);
+							finishBusy("");
 						}
-						else {
+						catch (Exception e) {
+							System.err.println("Evaluation failed (train/test split):");
+							e.printStackTrace();
+							finishBusy("Evaluation failed: " + e);
+							JOptionPane.showMessageDialog(
+									ClassifyTab.this,
+									"Evaluation failed:\n" + e,
+									"Error",
+									JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				};
+				break;
+
+			case TYPE_SUPPLIEDTESTSET:
+				run = new Runnable() {
+					@Override
+					public void run() {
+						MultiLabelClassifier classifier;
+						Result result;
+						int trainSize;
+						Instances train;
+						Instances test;
+						startBusy("Supplied test...");
+						try {
 							train      = new Instances(data);
 							MLUtils.prepareData(m_TestInstances);
 							test       = new Instances(m_TestInstances);
@@ -309,60 +351,64 @@ public class ClassifyTab
 							String msg = train.equalHeadersMsg(test);
 							if (msg != null)
 								throw new IllegalArgumentException("Train and test set are not compatible:\n" + msg);
+							classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
+							//System.out.println("data.classIndex() "+train.classIndex());
+							result     = Evaluation.evaluateModel(classifier, train, test, m_TOP, m_VOP);
+							addResultToHistory(
+									result,
+									new Object[]{classifier, new Instances(train, 0)},
+									classifier.getClass().getName().replace("meka.classifiers.", "")
+							);
+							finishBusy("");
 						}
-						classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
-						//System.out.println("data.classIndex() "+train.classIndex());
-						result     = Evaluation.evaluateModel(classifier, train, test, m_TOP, m_VOP);
-						addResultToHistory(
-								result,
-								new Object[]{classifier, new Instances(train, 0)},
-								classifier.getClass().getName().replace("meka.classifiers.", "")
-						);
-						finishBusy("");
+						catch (Exception e) {
+							System.err.println("Evaluation failed (train/test split):");
+							e.printStackTrace();
+							finishBusy("Evaluation failed: " + e);
+							JOptionPane.showMessageDialog(
+									ClassifyTab.this,
+									"Evaluation failed:\n" + e,
+									"Error",
+									JOptionPane.ERROR_MESSAGE);
+						}
 					}
-					catch (Exception e) {
-						System.err.println("Evaluation failed (train/test split):");
-						e.printStackTrace();
-						finishBusy("Evaluation failed: " + e);
-						JOptionPane.showMessageDialog(
-								ClassifyTab.this,
-								"Evaluation failed:\n" + e,
-								"Error",
-								JOptionPane.ERROR_MESSAGE);
+				};
+				break;
+
+			case TYPE_INCREMENTAL:
+				run = new Runnable() {
+					@Override
+					public void run() {
+						MultiLabelClassifier classifier;
+						Result result;
+						startBusy("Incremental...");
+						try {
+							classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
+							//System.out.println("data.classIndex() "+data.classIndex());
+							result    = IncrementalEvaluation.evaluateModelPrequentialBasic(classifier, data, 20, 1., m_TOP, m_VOP);
+							addResultToHistory(
+									result,
+									new Object[]{classifier, new Instances(data, 0)},
+									classifier.getClass().getName().replace("meka.classifiers.", "")
+							);
+							finishBusy("");
+						}
+						catch (Exception e) {
+							System.err.println("Evaluation failed (incremental splits):");
+							e.printStackTrace();
+							finishBusy("Evaluation failed: " + e);
+							JOptionPane.showMessageDialog(
+									ClassifyTab.this,
+									"Evaluation failed:\n" + e,
+									"Error",
+									JOptionPane.ERROR_MESSAGE);
+						}
 					}
-				}
-			};
-		}
-		else if (type.equals(TYPE_INCREMENTAL)) {
-			run = new Runnable() {
-				@Override
-				public void run() {
-					MultiLabelClassifier classifier;
-					Result result;
-					startBusy("Incremental...");
-					try {
-						classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
-						//System.out.println("data.classIndex() "+data.classIndex());
-						result    = IncrementalEvaluation.evaluateModelPrequentialBasic(classifier, data, 20, 1., m_TOP, m_VOP);
-						addResultToHistory(
-								result,
-								new Object[]{classifier, new Instances(data, 0)},
-								classifier.getClass().getName().replace("meka.classifiers.", "")
-						);
-						finishBusy("");
-					}
-					catch (Exception e) {
-						System.err.println("Evaluation failed (incremental splits):");
-						e.printStackTrace();
-						finishBusy("Evaluation failed: " + e);
-						JOptionPane.showMessageDialog(
-								ClassifyTab.this,
-								"Evaluation failed:\n" + e,
-								"Error",
-								JOptionPane.ERROR_MESSAGE);
-					}
-				}
-			};
+				};
+				break;
+
+			default:
+				throw new IllegalStateException("Unhandled evaluation type: " + type);
 		}
 
 		start(run);
@@ -382,10 +428,9 @@ public class ClassifyTab
 	 * Brings up the dialog with the classification options.
 	 */
 	protected void showOptions() {
-		final JDialog		dialog;
-		final ClassifyTabOptions 	panel;
-		final JButton		buttonOK;
-		final JButton		buttonCancel;
+		final JDialog   dialog;
+		final JButton	buttonOK;
+		final JButton	buttonCancel;
 		JPanel			panelButtons;
 
 		if (GUIHelper.getParentDialog(this) != null)
@@ -394,28 +439,30 @@ public class ClassifyTab
 			dialog = new JDialog(GUIHelper.getParentFrame(this), true);
 		dialog.setTitle("Options");
 		dialog.getContentPane().setLayout(new BorderLayout());
-		panel = new ClassifyTabOptions();
-		panel.setSeed(m_Seed);
-		panel.setFolds(m_Folds);
-		panel.setSplitPercentage(m_SplitPercentage);
-		panel.setTOP(m_TOP);
-		panel.setVOP(m_VOP);
-		panel.setRandomize(m_Randomize);
-		panel.setTestFile(null);
-		dialog.getContentPane().add(panel, BorderLayout.CENTER);
+		if (m_ClassifyTabOptions == null) {
+			m_ClassifyTabOptions = new ClassifyTabOptions();
+			m_ClassifyTabOptions.setSeed(m_Seed);
+			m_ClassifyTabOptions.setFolds(m_Folds);
+			m_ClassifyTabOptions.setSplitPercentage(m_SplitPercentage);
+			m_ClassifyTabOptions.setTOP(m_TOP);
+			m_ClassifyTabOptions.setVOP(m_VOP);
+			m_ClassifyTabOptions.setRandomize(m_Randomize);
+			m_ClassifyTabOptions.setTestFile(null);
+		}
+		dialog.getContentPane().add(m_ClassifyTabOptions, BorderLayout.CENTER);
 		panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		dialog.getContentPane().add(panelButtons, BorderLayout.SOUTH);
 		buttonOK = new JButton("OK");
 		buttonOK.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				m_Seed            = panel.getSeed();
-				m_SplitPercentage = panel.getSplitPercentage();
-				m_Folds           = panel.getFolds();
-				m_TOP             = panel.getTOP();
-				m_VOP             = panel.getVOP();
-				m_Randomize 	  = panel.getRandomize();
-				m_TestInstances   = panel.getTestFile();
+				m_Seed            = m_ClassifyTabOptions.getSeed();
+				m_SplitPercentage = m_ClassifyTabOptions.getSplitPercentage();
+				m_Folds           = m_ClassifyTabOptions.getFolds();
+				m_TOP             = m_ClassifyTabOptions.getTOP();
+				m_VOP             = m_ClassifyTabOptions.getVOP();
+				m_Randomize 	  = m_ClassifyTabOptions.getRandomize();
+				m_TestInstances   = m_ClassifyTabOptions.getTestFile();
 				dialog.setVisible(false);
 				dialog.dispose();
 			}
