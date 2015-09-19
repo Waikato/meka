@@ -78,12 +78,6 @@ public class ExplorerDefinition
 	 */
 	@Override
 	protected void launch() {
-		try {
-			GUILauncher.launchFrame(Explorer.class, "MEKA Explorer", true);
-		}
-		catch (Exception e) {
-			System.err.println("Failed to launch Explorer!");
-			e.printStackTrace();
-		}
+		GUILauncher.launchFrame(new Explorer(), "MEKA Explorer", true);
 	}
 }
