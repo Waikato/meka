@@ -9,6 +9,10 @@ UseFrameMaximizationFix=false
 # The delay in msec used by the frame maximization fix
 FrameMaximizationFixDelay=200
 
+# the default sizes for the file choosers
+FileChooser.Width=750
+FileChooser.Height=500
+
 # the default width/height for applications
 Default.Width=800
 Default.Height=600
