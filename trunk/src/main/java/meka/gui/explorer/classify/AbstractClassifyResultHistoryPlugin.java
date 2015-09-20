@@ -24,8 +24,11 @@ import meka.gui.core.ResultHistoryList;
 import meka.gui.explorer.AbstractExplorerTab;
 import meka.gui.explorer.AbstractResultHistoryPlugin;
 import meka.gui.goe.GenericObjectEditor;
+import weka.classifiers.Classifier;
+import weka.core.Instances;
 
 import javax.swing.*;
+import java.lang.reflect.Array;
 import java.util.List;
 
 /**
@@ -38,6 +41,44 @@ public abstract class AbstractClassifyResultHistoryPlugin
 		extends AbstractResultHistoryPlugin {
 
 	private static final long serialVersionUID = 7408923951811192736L;
+
+	/**
+	 * Returns the classifier from the history list.
+	 *
+	 * @param history       the history
+	 * @param index         the index in the history
+	 * @return              the classifier
+	 */
+	public Classifier getClassifier(ResultHistoryList history, int index) {
+		Object  payload;
+
+		payload = history.getPayloadAt(index);
+		if (payload.getClass().isArray()) {
+			return (Classifier) Array.get(payload, 0);
+		}
+		else {
+			return (Classifier) payload;
+		}
+	}
+
+	/**
+	 * Returns the dataset header from the history list.
+	 *
+	 * @param history       the history
+	 * @param index         the index in the history
+	 * @return              the instances, null if not available
+	 */
+	public Instances getHeader(ResultHistoryList history, int index) {
+		Object  payload;
+
+		payload = history.getPayloadAt(index);
+		if (payload.getClass().isArray()) {
+			return (Instances) Array.get(payload, 1);
+		}
+		else {
+			return null;
+		}
+	}
 
 	/**
 	 * Returns all the available plugins.

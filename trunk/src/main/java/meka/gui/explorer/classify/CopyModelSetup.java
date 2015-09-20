@@ -65,7 +65,7 @@ public class CopyModelSetup
 	 */
 	@Override
 	public boolean handles(ResultHistoryList history, int index) {
-		return (history.getPayloadAt(index) != null);
+		return (getClassifier(history, index) != null);
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class CopyModelSetup
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String cmdline = Utils.toCommandLine(history.getPayloadAt(index));
+				String cmdline = Utils.toCommandLine(getClassifier(history, index));
 				GUIHelper.copyToClipboard(cmdline);
 			}
 		};
