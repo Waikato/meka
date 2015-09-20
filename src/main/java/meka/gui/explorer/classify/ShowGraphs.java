@@ -74,7 +74,7 @@ public class ShowGraphs
 	 */
 	@Override
 	public boolean handles(ResultHistoryList history, int index) {
-		return (history.getPayloadAt(index) instanceof MultiLabelDrawable);
+		return (getClassifier(history, index) instanceof MultiLabelDrawable);
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class ShowGraphs
 	 */
 	@Override
 	public ActionListener getActionListener(final ResultHistoryList history, final int index) {
-		final MultiLabelDrawable d = (MultiLabelDrawable) history.getPayloadAt(index);
+		final MultiLabelDrawable d = (MultiLabelDrawable) getClassifier(history, index);
 
 		return new ActionListener() {
 			@Override

@@ -64,8 +64,8 @@ public abstract class AbstractShowThresholdCurve
 	public boolean handles(ResultHistoryList history, int index) {
 		boolean     result;
 
-		result = (history.getPayloadAt(index) instanceof MultiLabelClassifier)
-				|| (history.getPayloadAt(index) instanceof MultiTargetClassifier);
+		result = (getClassifier(history, index) instanceof MultiLabelClassifier)
+				|| (getClassifier(history, index) instanceof MultiTargetClassifier);
 
 		result = result && (history.getResultAt(index).getMeasurement(CURVE_DATA) != null);
 
