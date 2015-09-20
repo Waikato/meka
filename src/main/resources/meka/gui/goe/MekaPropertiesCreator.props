@@ -56,3 +56,7 @@ meka.gui.explorer.classify.AbstractClassifyResultHistoryPlugin=\
 # the menu items of the GUIChooser
 meka.gui.guichooser.AbstractMenuItemDefinition=\
   meka.gui.guichooser
+
+# the renderers of the model viewer
+meka.gui.modelviewer.renderers.AbstractObjectRenderer=\
+  meka.gui.modelviewer.renderers
