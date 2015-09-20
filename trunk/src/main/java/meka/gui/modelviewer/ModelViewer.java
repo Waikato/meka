@@ -20,11 +20,10 @@
 
 package meka.gui.modelviewer;
 
-import com.googlecode.jfilechooserbookmarks.gui.BaseScrollPane;
-import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.gui.core.*;
 import meka.gui.events.RecentItemEvent;
 import meka.gui.events.RecentItemListener;
+import meka.gui.modelviewer.renderers.AbstractObjectRenderer;
 import weka.core.SerializationHelper;
 import weka.gui.ExtensionFileFilter;
 
@@ -224,7 +223,9 @@ public class ModelViewer
 	 * @param file the model file to load
 	 */
 	public void open(File file) {
-		Object[]        data;
+		Object[]                                    data;
+		java.util.List<AbstractObjectRenderer>      renderers;
+		JPanel                                      panel;
 
 		m_TabbedPane.removeAll();
 		try {
@@ -234,12 +235,12 @@ public class ModelViewer
 					continue;
 				JTextArea text = new JTextArea(20, 40);
 				text.setFont(GUIHelper.getMonospacedFont());
-				// TODO : handler class hierarchy
-				if (obj instanceof MultiLabelClassifier)
-					text.setText(((MultiLabelClassifier) obj).getModel());
-				else
-					text.setText("" + obj);
-				m_TabbedPane.addTab(obj.getClass().getName(), new BaseScrollPane(text));
+				renderers = AbstractObjectRenderer.getRenderer(obj);
+				if (renderers.size() == 0)
+					continue;
+				panel = new JPanel(new BorderLayout());
+				renderers.get(0).render(obj, panel);
+				m_TabbedPane.addTab(obj.getClass().getName(), panel);
 			}
 			m_RecentFilesHandler.addRecentItem(file);
 			m_LabelFile.setText(file.getAbsolutePath());
