@@ -90,9 +90,9 @@ public class ROC
 		File file = m_FileChooser.getSelectedFile();
 
 		// create plot
-		Instances result;
+		Instances data;
 		try {
-			result = m_FileChooser.getLoader().getDataSet();
+			data = m_FileChooser.getLoader().getDataSet();
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(
@@ -103,21 +103,25 @@ public class ROC
 			e.printStackTrace();
 			return;
 		}
-		result.setClassIndex(result.numAttributes() - 1);
+		data.setClassIndex(data.numAttributes() - 1);
 		ThresholdVisualizePanel vmc = new ThresholdVisualizePanel();
 		vmc.setROCString("(Area under ROC = " +
-				Utils.doubleToString(ThresholdCurve.getROCArea(result), 4) + ")");
-		vmc.setName(result.relationName());
-		PlotData2D tempd = new PlotData2D(result);
-		tempd.setPlotName(result.relationName());
-		tempd.addInstanceNumberAttribute();
+				Utils.doubleToString(ThresholdCurve.getROCArea(data), 4) + ")");
+		vmc.setName(data.relationName());
+		PlotData2D tempd = new PlotData2D(data);
+		tempd.setPlotName(data.relationName());
+		tempd.m_displayAllPoints = true;
 		// specify which points are connected
-		boolean[] cp = new boolean[result.numInstances()];
+		boolean[] cp = new boolean[data.numInstances()];
 		for (int n = 1; n < cp.length; n++)
 			cp[n] = true;
 		try {
 			tempd.setConnectPoints(cp);
 			vmc.addPlot(tempd);
+			if (data.attribute(ThresholdCurve.FP_RATE_NAME) != null)
+				vmc.setXIndex(data.attribute(ThresholdCurve.FP_RATE_NAME).index());
+			if (data.attribute(ThresholdCurve.TP_RATE_NAME) != null)
+				vmc.setYIndex(data.attribute(ThresholdCurve.TP_RATE_NAME).index());
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(
@@ -130,6 +134,7 @@ public class ROC
 		}
 
 		MekaFrame frame = new MekaFrame();
+		frame.setTitle(getName());
 		frame.setDefaultCloseOperation(MekaFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout());
 		frame.getContentPane().add(vmc);
