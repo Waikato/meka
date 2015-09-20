@@ -220,6 +220,15 @@ public class GenericObjectEditor
 	}
 
 	/**
+	 * Returns the class of values that can be edited.
+	 *
+	 * @return a value of type 'Class'
+	 */
+	public Class getClassType() {
+		return m_ClassType;
+	}
+
+	/**
 	 * For testing only.
 	 *
 	 * @param args	ignored

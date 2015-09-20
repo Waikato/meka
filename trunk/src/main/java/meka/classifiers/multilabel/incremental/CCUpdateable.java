@@ -15,16 +15,17 @@
 
 package meka.classifiers.multilabel.incremental;
 
-import java.util.Arrays;
-import java.util.Random;
-
+import meka.classifiers.multilabel.CC;
+import meka.classifiers.multilabel.IncrementalMultiLabelClassifier;
+import meka.core.MLUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.UpdateableClassifier;
 import weka.classifiers.trees.HoeffdingTree;
 import weka.core.Instance;
 import weka.core.Instances;
-import meka.core.MLUtils;
-import meka.classifiers.multilabel.CC;
+
+import java.util.Arrays;
+import java.util.Random;
 
 /**
  * CCUpdateable.java - Updateable version of CC.
@@ -34,7 +35,7 @@ import meka.classifiers.multilabel.CC;
  * @author 		Jesse Read
  * @version 	September, 2011
  */
-public class CCUpdateable extends CC implements UpdateableClassifier {
+public class CCUpdateable extends CC implements IncrementalMultiLabelClassifier {
 
 	/** for serialization. */
   	private static final long serialVersionUID = 2856976982562474367L;

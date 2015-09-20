@@ -15,20 +15,21 @@
 
 package meka.classifiers.multilabel.incremental;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Vector;
-
+import meka.classifiers.multilabel.IncrementalMultiLabelClassifier;
+import meka.classifiers.multilabel.PS;
+import meka.core.LabelSet;
+import meka.core.MLUtils;
+import meka.core.PSUtils;
 import weka.classifiers.UpdateableClassifier;
 import weka.classifiers.trees.HoeffdingTree;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Option;
 import weka.core.Utils;
-import meka.core.MLUtils;
-import meka.core.PSUtils;
-import meka.core.LabelSet;
-import meka.classifiers.multilabel.PS;
+
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Vector;
 
 /**
  * PSUpdateable.java - Pruned Sets Updateable.
@@ -39,7 +40,7 @@ import meka.classifiers.multilabel.PS;
  * @author 		Jesse Read
  * @version 	September, 2011
  */
-public class PSUpdateable extends PS implements UpdateableClassifier {
+public class PSUpdateable extends PS implements IncrementalMultiLabelClassifier {
 
 	/** for serialization. */
   	private static final long serialVersionUID = -3909203248118831224L;

@@ -21,7 +21,12 @@ meka.classifiers.multitarget.MultiTargetClassifier=\
 meka.classifiers.multilabel.SemisupervisedClassifier=\
  meka.classifiers.multilabel,\
  meka.classifiers.multilabel.meta
- 
+
+# Packages with incremenal MultiLabelClassifier implementations
+meka.classifiers.multilabel.IncrementalMultiLabelClassifier=\
+ meka.classifiers.multilabel.incremental,\
+ meka.classifiers.multilabel.incremental.meta
+
 # Lists the Classifier-Packages that should be added to WEKA's
 # GenericObjectEditor
 weka.classifiers.Classifier=\

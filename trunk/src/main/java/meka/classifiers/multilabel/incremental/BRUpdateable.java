@@ -15,11 +15,12 @@
 
 package meka.classifiers.multilabel.incremental;
 
-import weka.classifiers.UpdateableClassifier;
-import weka.core.Instance;
-import weka.classifiers.trees.HoeffdingTree;
-import meka.core.MLUtils;
 import meka.classifiers.multilabel.BR;
+import meka.classifiers.multilabel.IncrementalMultiLabelClassifier;
+import meka.core.MLUtils;
+import weka.classifiers.UpdateableClassifier;
+import weka.classifiers.trees.HoeffdingTree;
+import weka.core.Instance;
 
 /**
  * BRUpdateable.java - Updateable BR.
@@ -28,7 +29,7 @@ import meka.classifiers.multilabel.BR;
  * @author 		Jesse Read
  * @version 	September, 2011
  */
-public class BRUpdateable extends BR implements UpdateableClassifier {
+public class BRUpdateable extends BR implements IncrementalMultiLabelClassifier {
 
 	/** for serialization. */
   	private static final long serialVersionUID = 6705611077773512052L;
