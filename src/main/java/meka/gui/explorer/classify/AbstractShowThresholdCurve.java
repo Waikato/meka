@@ -87,6 +87,20 @@ public abstract class AbstractShowThresholdCurve
 	protected abstract String getDefaultYColumn();
 
 	/**
+	 * Sets the combobox indices.
+	 *
+	 * @param data          the threshold curve data
+	 * @param panel         the panel
+	 * @throws Exception    if setting of indices fails
+	 */
+	protected void setComboBoxIndices(Instances data, ThresholdVisualizePanel panel) throws Exception {
+		if (data.attribute(getDefaultXColumn()) != null)
+			panel.setXIndex(data.attribute(getDefaultXColumn()).index());
+		if (data.attribute(getDefaultYColumn()) != null)
+			panel.setYIndex(data.attribute(getDefaultYColumn()).index());
+	}
+
+	/**
 	 * Creates a panel displaying the ROC data.
 	 *
 	 * @param data          the threshold curve data
@@ -104,10 +118,7 @@ public abstract class AbstractShowThresholdCurve
 			connectPoints[cp] = true;
 		plot.setConnectPoints(connectPoints);
 		result.addPlot(plot);
-		if (data.attribute(getDefaultXColumn()) != null)
-			result.setXIndex(data.attribute(getDefaultXColumn()).index());
-		if (data.attribute(getDefaultYColumn()) != null)
-			result.setYIndex(data.attribute(getDefaultYColumn()).index());
+		setComboBoxIndices(data, result);
 		return result;
 	}
 
