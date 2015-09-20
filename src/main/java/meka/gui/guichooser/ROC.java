@@ -14,7 +14,7 @@
  */
 
 /**
- * SystemInfo.java
+ * ROC.java
  * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
 
