@@ -15,24 +15,18 @@
 
 package meka.classifiers.multilabel.meta;
 
+import meka.classifiers.multilabel.CC;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
+import meka.classifiers.multilabel.SemisupervisedClassifier;
+import meka.core.MLUtils;
+import weka.core.*;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Vector;
-
-import weka.core.Instance;
-import weka.core.Instances;
-import meka.core.MLUtils;
-import weka.core.Option;
-import weka.core.RevisionUtils;
-import weka.core.Utils;
-import weka.core.TechnicalInformation;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
-import meka.classifiers.multilabel.CC;
-import meka.classifiers.multilabel.ProblemTransformationMethod;
-import meka.classifiers.multilabel.SemisupervisedClassifier;
 
 /**
  * EM.java - Expectation Maximization using any multi-label classifier.
@@ -155,9 +149,10 @@ public class EM extends ProblemTransformationMethod implements SemisupervisedCla
 	@Override
 	public String [] getOptions() {
 	  	ArrayList<String> result;
-	  	result = new ArrayList<String>(Arrays.asList(super.getOptions()));
+	  	result = new ArrayList<String>();
 	  	result.add("-I");
 	  	result.add(String.valueOf(m_I));
+	  	result.addAll(Arrays.asList(super.getOptions()));
 		return result.toArray(new String[result.size()]);
 	}
 
