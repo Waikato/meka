@@ -75,6 +75,7 @@ public class ShowPrecisionRecall
 		ThresholdVisualizePanel result = super.createPanel(data, title);
 		result.setROCString("PRC area: " + Utils.doubleToString(ThresholdCurve.getPRCArea(data), 3));
 		result.setUpComboBoxes(result.getInstances());
+		setComboBoxIndices(data, result);
 		return result;
 	}
 }
