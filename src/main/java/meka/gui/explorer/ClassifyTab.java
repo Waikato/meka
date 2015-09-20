@@ -20,6 +20,7 @@
 package meka.gui.explorer;
 
 import meka.classifiers.multilabel.Evaluation;
+import meka.classifiers.multilabel.IncrementalMultiLabelClassifier;
 import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
 import meka.core.MLUtils;
@@ -89,6 +90,9 @@ public class ClassifyTab
 	/** incremental batch train/test split. */
 	public final static String TYPE_INCREMENTAL = "Prequential (incremental)";
 
+	/** the panel for the GOE. */
+	protected JPanel m_PanelGOE;
+
 	/** the GOE for the classifier. */
 	protected GenericObjectEditor m_GenericObjectEditor;
 
@@ -134,6 +138,12 @@ public class ClassifyTab
 	/** the test Instances. */
 	protected Instances m_TestInstances;
 
+	/** the last non-incremental classifier in use. */
+	protected MultiLabelClassifier m_LastNonIncrementalClassifier;
+
+	/** the last incremental classifier in use. */
+	protected IncrementalMultiLabelClassifier m_LastIncrementalClassifier;
+
 	/**
 	 * Initializes the members.
 	 */
@@ -141,9 +151,12 @@ public class ClassifyTab
 	protected void initialize() {
 		super.initialize();
 
+		m_LastNonIncrementalClassifier = new meka.classifiers.multilabel.BR();
+		m_LastIncrementalClassifier    = new meka.classifiers.multilabel.incremental.BRUpdateable();
+
 		m_GenericObjectEditor = new GenericObjectEditor(true);
 		m_GenericObjectEditor.setClassType(MultiLabelClassifier.class);
-		m_GenericObjectEditor.setValue(new meka.classifiers.multilabel.BR());
+		m_GenericObjectEditor.setValue(m_LastNonIncrementalClassifier);
 
 		m_Seed               = 1;
 		m_SplitPercentage    = 66.0;
@@ -167,10 +180,9 @@ public class ClassifyTab
 
 		super.initGUI();
 
-		panel = new JPanel(new BorderLayout());
-		panel.setBorder(BorderFactory.createTitledBorder("Classifier"));
-		panel.add(m_GenericObjectEditor.getCustomPanel(), BorderLayout.CENTER);
-		add(panel, BorderLayout.NORTH);
+		m_PanelGOE = new JPanel(new BorderLayout());
+		m_PanelGOE.setBorder(BorderFactory.createTitledBorder("Classifier"));
+		add(m_PanelGOE, BorderLayout.NORTH);
 
 		panelSplit = new JPanel(new BorderLayout());
 		add(panelSplit, BorderLayout.CENTER);
@@ -192,6 +204,12 @@ public class ClassifyTab
 						TYPE_CROSSVALIDATION,
 						TYPE_INCREMENTAL
 				});
+		m_ComboBoxExperiment.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateGOE();
+			}
+		});
 		m_ComboBoxExperiment.setSelectedIndex(0);
 		panel.add(m_ComboBoxExperiment);
 		m_ButtonOptions = new JButton("...");
@@ -243,6 +261,46 @@ public class ClassifyTab
 		panel.add(new JScrollPane(m_TextAreaResults), BorderLayout.CENTER);
 		panel.setBorder(BorderFactory.createTitledBorder("Result"));
 		panelSplit.add(panel, BorderLayout.CENTER);
+	}
+
+	/**
+	 * Updates the GOE for the classifier.
+	 */
+	protected void updateGOE() {
+		String  type;
+
+		type = m_ComboBoxExperiment.getSelectedItem().toString();
+		switch (type) {
+			case TYPE_CROSSVALIDATION:
+			case TYPE_SUPPLIEDTESTSET:
+			case TYPE_TRAINTESTSPLIT:
+				if (m_GenericObjectEditor.getClassType() == IncrementalMultiLabelClassifier.class) {
+					m_LastIncrementalClassifier = (IncrementalMultiLabelClassifier) m_GenericObjectEditor.getValue();
+					m_GenericObjectEditor = new GenericObjectEditor(true);
+					m_GenericObjectEditor.setClassType(MultiLabelClassifier.class);
+					m_GenericObjectEditor.setValue(m_LastNonIncrementalClassifier);
+				}
+				break;
+
+			case TYPE_INCREMENTAL:
+				if (m_GenericObjectEditor.getClassType() != IncrementalMultiLabelClassifier.class) {
+					m_LastNonIncrementalClassifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
+					m_GenericObjectEditor = new GenericObjectEditor(true);
+					m_GenericObjectEditor.setClassType(IncrementalMultiLabelClassifier.class);
+					m_GenericObjectEditor.setValue(m_LastIncrementalClassifier);
+				}
+				break;
+
+			default:
+				throw new IllegalStateException("Unhandled evaluation type: " + type);
+		}
+
+		m_PanelGOE.removeAll();
+		m_PanelGOE.add(m_GenericObjectEditor.getCustomPanel(), BorderLayout.CENTER);
+
+		invalidate();
+		revalidate();
+		repaint();
 	}
 
 	/**

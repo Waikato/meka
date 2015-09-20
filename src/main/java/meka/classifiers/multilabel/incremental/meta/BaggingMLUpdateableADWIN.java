@@ -33,6 +33,7 @@ import weka.core.Utils;
 
 public class BaggingMLUpdateableADWIN extends BaggingMLUpdateable {
 
+	private static final long serialVersionUID = 8515198118749028799L;
 	protected ADWIN adwin = null;
 	protected double accuracies[];
 

@@ -15,9 +15,9 @@
 
 package meka.classifiers.multilabel.incremental;
 
-import weka.classifiers.UpdateableClassifier;
-import weka.core.Instance;
+import meka.classifiers.multilabel.IncrementalMultiLabelClassifier;
 import meka.classifiers.multilabel.MajorityLabelset;
+import weka.core.Instance;
 
 /**
  * MajorityLabelsetUpdateable.java - Updateable version of MajorityLabelset.
@@ -25,7 +25,7 @@ import meka.classifiers.multilabel.MajorityLabelset;
  * @author 		Jesse Read
  * @version 	September 2011
  */
-public class MajorityLabelsetUpdateable extends MajorityLabelset implements UpdateableClassifier {
+public class MajorityLabelsetUpdateable extends MajorityLabelset implements IncrementalMultiLabelClassifier {
 
 	/** for serialization. */
   	private static final long serialVersionUID = -6454034593889787500L;

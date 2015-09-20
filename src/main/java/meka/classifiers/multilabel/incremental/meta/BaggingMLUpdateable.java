@@ -15,19 +15,19 @@
 
 package meka.classifiers.multilabel.incremental.meta;
 
-import weka.core.*;
-import meka.core.*;
-import weka.classifiers.*;
-import weka.classifiers.meta.*;
-import meka.classifiers.multilabel.*;
-import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
+import meka.classifiers.multilabel.IncrementalMultiLabelClassifier;
 import meka.classifiers.multilabel.incremental.BRUpdateable;
+import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
 import meka.classifiers.multilabel.meta.EnsembleML;
-import java.util.*;
+import weka.classifiers.UpdateableClassifier;
+import weka.core.Instance;
+import weka.core.Instances;
 import weka.core.TechnicalInformation;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 import weka.core.TechnicalInformationHandler;
+
+import java.util.Random;
 
 /**
  * BaggingMLUpdatable.java - Using the OzaBag scheme (see OzaBag.java from MOA)).
@@ -36,8 +36,9 @@ import weka.core.TechnicalInformationHandler;
  * @author 		Jesse Read
  */
 
-public class BaggingMLUpdateable extends EnsembleML implements UpdateableClassifier, TechnicalInformationHandler {
+public class BaggingMLUpdateable extends EnsembleML implements IncrementalMultiLabelClassifier, TechnicalInformationHandler {
 
+	private static final long serialVersionUID = 4978269895923479962L;
 	protected Random random = null;
 
 	/**

@@ -15,10 +15,11 @@
 
 package meka.classifiers.multilabel.incremental;
 
+import meka.classifiers.multilabel.IncrementalMultiLabelClassifier;
+import meka.classifiers.multilabel.RT;
 import weka.classifiers.UpdateableClassifier;
 import weka.classifiers.trees.HoeffdingTree;
 import weka.core.Instance;
-import meka.classifiers.multilabel.RT;
 
 /**
  * RTUpdateable.java - Updateable RT.
@@ -27,7 +28,7 @@ import meka.classifiers.multilabel.RT;
  * @author 	Jesse Read
  * @version October, 2011
  */
-public class RTUpdateable extends RT implements UpdateableClassifier {
+public class RTUpdateable extends RT implements IncrementalMultiLabelClassifier {
 
 	/** for serialization. */
   	private static final long serialVersionUID = 3766003607269541755L;
