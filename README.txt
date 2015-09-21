@@ -52,7 +52,11 @@ Improvements since the last version are as follows:
 
 	* The MultilabelClassifier class is now (more appropriately) renamed ProblemTransformationMethod, and there is now a MultiLabelClassifier Interface.
 
-	* Tutorial updated to reflecct changes
+	* Tool tips and get/set options thoroughly elabourated throughout classifiers, and respective javadoc comments cleaned up
 
-	* Minor bug fixes
+	* Tutorial updated to reflect changes
+
+	* Minor bug fixes, e.g.,
+
+		- bug fixed in PSt when empty labelset appears
 
