@@ -228,9 +228,10 @@ public class BCC extends CC {
 	@Override
 	public String [] getOptions() {
 		ArrayList<String> result;
-	  	result = new ArrayList<String>(Arrays.asList(super.getOptions()));
+	  	result = new ArrayList<String>(); //(Arrays.asList(super.getOptions()));
 	  	result.add("-X");
 	  	result.add(m_DependencyType);
+		result.addAll(Arrays.asList(super.getOptions()));
 		return result.toArray(new String[result.size()]);
 	}
 

@@ -200,6 +200,10 @@ public class MCC extends CC implements TechnicalInformationHandler {
 		return m_Iy;
 	}
 
+	public String tipInferenceIterations() {
+		return "The number of iterations to search the output space at test time.";
+	}
+
 	/** Set the iterations of s (chain order) */
 	public void setChainIterations(int is) {
 		m_Is = is;
@@ -208,6 +212,24 @@ public class MCC extends CC implements TechnicalInformationHandler {
 	/** Get the iterations of s (chain order) */
 	public int getChainIterations() {
 		return m_Is;
+	}
+
+	public String tipChainIterations() {
+		return "The number of iterations to search the chain space at train time.";
+	}
+
+	/** Set the payoff function */
+	public void setPayoff(String p) {
+		m_Payoff = p;
+	}
+
+	/** Get the payoff function */
+	public String getPayoff() {
+		return m_Payoff;
+	}
+
+	public String tipPayoff() {
+		return "Sets the payoff function. Any of those listed in regular evaluation output will do (e.g., 'Exact match').";
 	}
 
 	@Override
