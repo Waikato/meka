@@ -13,19 +13,17 @@ import java.util.*;
 
 /**
  * CT - Classifier Trellis. 
- * CC in a trellis structure (rather than a cascaded chain). You set the width and type/connectivity of the trellis, and optionally change the payoff function which guides the placement of nodes (labels) within the trellis.
+ * CC in a trellis structure (rather than a cascaded chain). You set the width and type/connectivity/density of the trellis, and optionally change the dependency heuristic which guides the placement of nodes (labels) within the trellis.
  * @author	Jesse Read
- * @version April 2014
+ * @version September 2015
  */
 public class CT extends MCC implements TechnicalInformationHandler {
 
 	private static final long serialVersionUID = -5773951599734753129L;
 
 	protected int m_Width = -1;
-	protected int m_Connectivity = 1;
-
-	// @TODO: use MCC's P instead
-	protected String m_DependencyPayoff = "Ibf";
+	protected int m_Density = 1;
+	protected String m_DependencyMetric = "Ibf";
 
 	Trellis trel = null;
 
@@ -63,7 +61,7 @@ public class CT extends MCC implements TechnicalInformationHandler {
 
 		A.shuffle(indices, m_R);
 
-		trel = new Trellis(indices, m_Width, m_Connectivity);
+		trel = new Trellis(indices, m_Width, m_Density);
 
 		long start = System.currentTimeMillis();
 
@@ -71,13 +69,13 @@ public class CT extends MCC implements TechnicalInformationHandler {
 		 * If specified, try and reorder the nodes in the trellis (i.e., get a superior structure)
 		 */
 		if (m_Is > 0) {
-			double I[][] =  StatUtils.margDepMatrix(D,m_DependencyPayoff);
+			double I[][] =  StatUtils.margDepMatrix(D,m_DependencyMetric);
 
 			/*
 			 * Get dependency Matrix
 			 */
 			if (getDebug()) 
-				System.out.println("Got "+m_DependencyPayoff+"-type Matrix in "+((System.currentTimeMillis() - start)/1000.0)+"s");
+				System.out.println("Got "+m_DependencyMetric+"-type Matrix in "+((System.currentTimeMillis() - start)/1000.0)+"s");
 
 			// ORDER THE TRELLIS ACCORDING TO THE DEPENDENCY MATRIX
 			trel = orderTrellis(trel,I,m_R);
@@ -169,17 +167,21 @@ public class CT extends MCC implements TechnicalInformationHandler {
 	}
 
 	/** 
-	 * GetI - Get the neighbourhood type (number of neighbours for each node).
+	 * GetDensity - Get the neighbourhood density (number of neighbours for each node).
 	 */
-	public int getType() {
-		return m_Connectivity;
+	public int getDensity() {
+		return m_Density;
 	}
 
 	/** 
-	 * SetI - Sets the neighbourhood type (number of neighbours for each node).
+	 * SetDensity - Sets the neighbourhood density (number of neighbours for each node).
 	 */
-	public void setType(int c) {
-		m_Connectivity = c;
+	public void setDensity(int c) {
+		m_Density = c;
+	}
+
+	public String densityTipText() {
+		return "Determines the neighbourhood density (the number of neighbours for each node in the trellis).";
 	}
 
 	/** 
@@ -195,6 +197,29 @@ public class CT extends MCC implements TechnicalInformationHandler {
 	public void setWidth(int h) {
 		m_Width = h;
 	}
+
+	public String widthTipText() {
+		return "Determines the width of the trellis (use -1 for a square trellis, i.e., width of sqrt(number of labels)).";
+	}
+
+	/** 
+	 * GetDependency - Get the type of depependency to use in rearranging the trellis (None by default)
+	 */
+	public String getDependencyMetric() {
+		return m_DependencyMetric;
+	}
+
+	/** 
+	 * SetDependency - Sets the type of depependency to use in rearranging the trellis (None by default)
+	 */
+	public void setDependencyMetric(String m) {
+		m_DependencyMetric = m;
+	}
+
+	public String dependencyMetricTipText() {
+		return "The dependency heuristic to use in rearranging the trellis (None by default).";
+	}
+
 
 	@Override
 	public TechnicalInformation getTechnicalInformation() {
@@ -215,8 +240,8 @@ public class CT extends MCC implements TechnicalInformationHandler {
 
 		Vector newVector = new Vector();
 		newVector.addElement(new Option("\tThe width of the trellis.\n\tdefault: "+m_Width+" (sqrt[number of labels])", "H", 1, "-H <value>"));
-		newVector.addElement(new Option("\tThe density/type of the trellis.\n\tdefault: "+m_Connectivity+"\n\trange: 0-3 (0=BR)", "L", 1, "-L <value>"));
-		newVector.addElement(new Option("\tThe dependency payoff function.\n\tdefault: "+m_DependencyPayoff+"\n\t", "X", 1, "-X <value>"));
+		newVector.addElement(new Option("\tThe density/type of the trellis.\n\tdefault: "+m_Density+"\n\trange: 0-3 (0=BR)", "L", 1, "-L <value>"));
+		newVector.addElement(new Option("\tThe dependency payoff function.\n\tdefault: "+m_DependencyMetric+"\n\t", "X", 1, "-X <value>"));
 
 		Enumeration enu = super.listOptions();
 
@@ -231,10 +256,10 @@ public class CT extends MCC implements TechnicalInformationHandler {
 
 		m_Width = (Utils.getOptionPos('H',options) >= 0) ? Integer.parseInt(Utils.getOption('H', options)) : m_Width;
 		if (getDebug()) System.out.println("Width set as: "+m_Width);
-		m_Connectivity = (Utils.getOptionPos('L',options) >= 0) ? Integer.parseInt(Utils.getOption('L', options)) : m_Connectivity;
-		if (getDebug()) System.out.println("Trellis Type: "+m_Connectivity);
-		m_DependencyPayoff = (Utils.getOptionPos('X',options) >= 0) ? Utils.getOption('X', options) : m_DependencyPayoff;
-		if (getDebug()) System.out.println("Dependency Type: "+m_DependencyPayoff);
+		m_Density = (Utils.getOptionPos('L',options) >= 0) ? Integer.parseInt(Utils.getOption('L', options)) : m_Density;
+		if (getDebug()) System.out.println("Trellis Type: "+m_Density);
+		m_DependencyMetric = (Utils.getOptionPos('X',options) >= 0) ? Utils.getOption('X', options) : m_DependencyMetric;
+		if (getDebug()) System.out.println("Dependency Type: "+m_DependencyMetric);
 
 		super.setOptions(options);
 	}
@@ -243,13 +268,14 @@ public class CT extends MCC implements TechnicalInformationHandler {
 	public String [] getOptions() {
 
 		ArrayList<String> result;
-	  	result = new ArrayList<String>(Arrays.asList(super.getOptions()));
+	  	result = new ArrayList<String>(); //Arrays.asList(super.getOptions()));
 	  	result.add("-H");
 	  	result.add("" + m_Width);
 		result.add("-L");
-	  	result.add("" + m_Connectivity);
+	  	result.add("" + m_Density);
 		result.add("-X");
-	  	result.add("" + m_DependencyPayoff);
+	  	result.add("" + m_DependencyMetric);
+		result.addAll(Arrays.asList(super.getOptions()));
 		return result.toArray(new String[result.size()]);
 	}
 

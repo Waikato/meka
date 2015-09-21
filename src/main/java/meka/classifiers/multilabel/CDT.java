@@ -38,8 +38,8 @@ public class CDT extends CDN {
 	private static final long serialVersionUID = -1237783546336254364L;
 
 	protected int m_Width = -1;
-	protected int m_Connectivity = 1;
-	protected String m_DependencyPayoff = "_";
+	protected int m_Density = 1;
+	protected String m_DependencyMetric = "None";
 
 	Trellis trel = null;
 
@@ -63,13 +63,13 @@ public class CDT extends CDN {
 			System.out.println("Make Trellis of width "+m_Width);
 		int indices[] = A.make_sequence(L);
 		A.shuffle(indices, new Random(getSeed()));
-		trel = new Trellis(indices, m_Width, m_Connectivity);
+		trel = new Trellis(indices, m_Width, m_Density);
 		if (getDebug())
 			System.out.println("==>\n"+trel.toString());
 
-		/* NEW  - ORDER THE TRELLIS */
-		if (!m_DependencyPayoff.equals("_"))
-			trel = CT.orderTrellis(trel,StatUtils.margDepMatrix(D,m_DependencyPayoff),u);
+		/* Rearrange the Trellis */
+		if (!m_DependencyMetric.equals("None"))
+			trel = CT.orderTrellis(trel,StatUtils.margDepMatrix(D,m_DependencyMetric),u);
 
 		/*
 		 * Build Trellis
@@ -129,8 +129,8 @@ public class CDT extends CDN {
 
 		Vector newVector = new Vector();
 		newVector.addElement(new Option("\tThe width of the trellis.\n\tdefault: "+m_Width, "H", 1, "-H <value>"));
-		newVector.addElement(new Option("\tThe density/type of the trellis.\n\tdefault: "+m_Connectivity+"\n\trange: 0-3 (0=BR)", "L", 1, "-L <value>"));
-		newVector.addElement(new Option("\tThe dependency payoff function.\n\tdefault: "+m_DependencyPayoff+"(random)\n\t", "X", 1, "-X <value>"));
+		newVector.addElement(new Option("\tThe density/connectivity of the trellis.\n\tdefault: "+m_Density+"\n\trange: 0-3 (0=BR)", "L", 1, "-L <value>"));
+		newVector.addElement(new Option("\tThe dependency payoff function.\n\tdefault: "+m_DependencyMetric+"(random)\n\t", "X", 1, "-X <value>"));
 
 		Enumeration enu = super.listOptions();
 
@@ -144,8 +144,8 @@ public class CDT extends CDN {
 	public void setOptions(String[] options) throws Exception {
 
 		m_Width = (Utils.getOptionPos('H',options) >= 0) ? Integer.parseInt(Utils.getOption('H', options)) : m_Width;
-		m_Connectivity = (Utils.getOptionPos('L',options) >= 0) ? Integer.parseInt(Utils.getOption('L', options)) : m_Connectivity;
-		m_DependencyPayoff = (Utils.getOptionPos('X',options) >= 0) ? Utils.getOption('X', options) : m_DependencyPayoff;
+		m_Density = (Utils.getOptionPos('L',options) >= 0) ? Integer.parseInt(Utils.getOption('L', options)) : m_Density;
+		m_DependencyMetric = (Utils.getOptionPos('X',options) >= 0) ? Utils.getOption('X', options) : m_DependencyMetric;
 
 		super.setOptions(options);
 	}
@@ -154,28 +154,33 @@ public class CDT extends CDN {
 	public String [] getOptions() {
 
 		ArrayList<String> result;
-	  	result = new ArrayList<String>(Arrays.asList(super.getOptions()));
+	  	result = new ArrayList<String>(); //Arrays.asList(super.getOptions()));
 	  	result.add("-H");
 	  	result.add("" + m_Width);
 		result.add("-L");
-	  	result.add("" + m_Connectivity);
+	  	result.add("" + m_Density);
 		result.add("-P");
-	  	result.add("" + m_DependencyPayoff);
+	  	result.add("" + m_DependencyMetric);
+		result.addAll(Arrays.asList(super.getOptions()));
 		return result.toArray(new String[result.size()]);
 	}
 
 	/** 
-	 * GetI - Get the neighbourhood type (number of neighbours for each node).
+	 * GetDensity - Get the neighbourhood density (number of neighbours for each node).
 	 */
-	public int getType() {
-		return m_Connectivity;
+	public int getDensity() {
+		return m_Density;
 	}
 
 	/** 
-	 * SetI - Sets the neighbourhood type (number of neighbours for each node).
+	 * SetDensity - Sets the neighbourhood density (number of neighbours for each node).
 	 */
-	public void setType(int c) {
-		m_Connectivity = c;
+	public void setDensity(int c) {
+		m_Density = c;
+	}
+
+	public String densityTipText() {
+		return "Determines the neighbourhood density (the number of neighbours for each node in the trellis).";
 	}
 
 	/** 
@@ -190,6 +195,28 @@ public class CDT extends CDN {
 	 */
 	public void setWidth(int h) {
 		m_Width = h;
+	}
+
+	public String widthTipText() {
+		return "Determines the width of the trellis (use -1 for a square trellis, i.e., width of sqrt(number of labels)).";
+	}
+
+	/** 
+	 * GetDependency - Get the type of depependency to use in rearranging the trellis (None by default)
+	 */
+	public String getDependencyMetric() {
+		return m_DependencyMetric;
+	}
+
+	/** 
+	 * SetDependency - Sets the type of depependency to use in rearranging the trellis (None by default)
+	 */
+	public void setDependencyMetric(String m) {
+		m_DependencyMetric = m;
+	}
+
+	public String dependencyMetricTipText() {
+		return "The dependency heuristic to use in rearranging the trellis (None by default).";
 	}
 
 	public static void main(String args[]) {
