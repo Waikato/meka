@@ -81,11 +81,11 @@ public class BPNN extends AbstractNeuralNet {
 	}
 
 	/**
-	 * SetWeights - Initialize a BPNN with (pre-trained) weight matrices W (which also determines X dimensions).
+	 * Preset Weights - Initialize a BPNN with (pre-trained) weight matrices W (which also determines X dimensions).
 	 * @param	W	pre-trained weight matrix (should include bias weights, assume W[-1]-1 hidden units in penultimate layer not including bias])
 	 * @param	L	the number of labels (for making the final matrix)
 	 */
-	public void setWeights(Matrix W[], int L) throws Exception {
+	public void presetWeights(Matrix W[], int L) throws Exception {
 
 		r = new Random(0);
 

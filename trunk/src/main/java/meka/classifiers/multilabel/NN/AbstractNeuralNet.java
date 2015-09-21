@@ -21,6 +21,8 @@ import weka.core.Utils;
 
 import java.util.Enumeration;
 import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * AbstractNeuralNet.java - Provides common options, constants, and other functions for NNs.
@@ -51,12 +53,44 @@ public abstract class AbstractNeuralNet extends ProblemTransformationMethod  {
 		return m_H;
 	}
 
+	public String hTipText() {
+		return "Number of hidden units.";
+	}
+
 	public void setE(int n) { 
 		m_E = n;
 	}
 
 	public int getE() { 
 		return m_E;
+	}
+
+	public String eTipText() {
+		return "Number of epochs.";
+	}
+
+	public void setLearningRate(double r) { 
+		m_R = r;
+	}
+
+	public double getLearningRate() { 
+		return m_H;
+	}
+
+	public String learningRateTipText() {
+		return "Learning Rate.";
+	}
+
+	public void setMomentum(double m) { 
+		m_M = m;
+	}
+
+	public double getMomentum() { 
+		return m_M;
+	}
+
+	public String momentumTipText() {
+		return "Momentum.";
 	}
 
 	@Override
@@ -101,21 +135,18 @@ public abstract class AbstractNeuralNet extends ProblemTransformationMethod  {
 
 	@Override
 	public String [] getOptions() {
-
-		String [] superOptions = super.getOptions();
-		String [] options = new String [superOptions.length + 8];
-		int current = 0;
-		options[current++] = "-H";
-		options[current++] = String.valueOf(getH());
-		options[current++] = "-E";
-		options[current++] = String.valueOf(getE());
-		options[current++] = "-r";
-		options[current++] = String.valueOf(m_R);
-		options[current++] = "-m";
-		options[current++] = String.valueOf(m_M);
-		System.arraycopy(superOptions, 0, options, current, superOptions.length);
-		return options;
-
+		ArrayList<String> result;
+	  	result = new ArrayList<String>(); //Arrays.asList(super.getOptions()));
+	  	result.add("-H");
+	  	result.add(String.valueOf(m_H));
+		result.add("-E");
+	  	result.add(String.valueOf(m_E));
+		result.add("-r");
+	  	result.add(String.valueOf(m_R));
+		result.add("-m");
+	  	result.add(String.valueOf(m_M));
+		result.addAll(Arrays.asList(super.getOptions()));
+		return result.toArray(new String[result.size()]);
 	}
 
 }

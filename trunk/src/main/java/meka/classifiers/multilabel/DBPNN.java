@@ -93,16 +93,16 @@ public class DBPNN extends AbstractDeepNeuralNet implements TechnicalInformation
 		// Back propagate with batch size of 1 to fine tune the DBM into a supervised DBN
 		if (m_Classifier instanceof BPNN) {
 			if (getDebug())
-				System.out.println("You have chosen to use BPNN (very good!)");
+				System.out.println("You have chosen to use BPNN (good!)");
 		}
 		else {
-			System.err.println("[Warning] Was expecting BPNN as the base classifier (will set it now, with default parameters) ...");
+			System.err.println("[WARNING] Was expecting BPNN as the base classifier (will set it now, with default parameters) ...");
 			m_Classifier = new BPNN();
 		}
 
 		int i_Y = W.length-1; 																		// the final W
 		W[i_Y] = RBM.makeW(W[i_Y].getRowDimension()-1,W[i_Y].getColumnDimension()-1,new Random(1)); 	// 
-		((BPNN)m_Classifier).setWeights(W,L); // this W will be modified
+		((BPNN)m_Classifier).presetWeights(W,L); // this W will be modified
 		((BPNN)m_Classifier).train(X_,Y_);    // could also have called buildClassifier(D)
 
 		/*
