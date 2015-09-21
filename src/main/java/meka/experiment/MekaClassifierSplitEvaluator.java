@@ -383,6 +383,7 @@ public class MekaClassifierSplitEvaluator
 		m_result = res.toString();
 		int current = 0;
 		
+		/*
 		result[current++] = res.getValue("N_train");
 		result[current++] = res.getValue("N_test");
 		result[current++] = res.getValue("LCard_train");
@@ -390,10 +391,12 @@ public class MekaClassifierSplitEvaluator
 		result[current++] = res.getValue("Build_time");
 		result[current++] = res.getValue("Test_time");
 		result[current++] = res.getValue("Total_time");
+		*/
 
 		result[current++] = getEvaluationMetric(map, "Accuracy");
 		result[current++] = getEvaluationMetric(map, "Hamming score");
 		result[current++] = getEvaluationMetric(map, "Exact match");
+		/*
 		result[current++] = getEvaluationMetric(map, "Jaccard dist");
 		result[current++] = getEvaluationMetric(map, "Hamming loss");
 		result[current++] = getEvaluationMetric(map, "ZeroOne loss");
@@ -412,6 +415,7 @@ public class MekaClassifierSplitEvaluator
 			result[current++] = getEvaluationMetric(map, "Accuracy[" + i + "]");
 			result[current++] = getEvaluationMetric(map, "Harmonic[" + i + "]");
 		}
+		*/
 
 		// sizes
 		if (getNoSizeDetermination()) {
