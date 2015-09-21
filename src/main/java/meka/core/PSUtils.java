@@ -330,7 +330,8 @@ public abstract class PSUtils {
 		double y[] = new double[L];
 
 		for(int k = 0; k < p.length; k++) {                                                              
-			int d[] = MLUtils.toIntArray(iTemplate.classAttribute().value(k)); 		   // e.g. d = [1,3,5]    p[k] = 0.5
+			String d_string = iTemplate.classAttribute().value(k);   // e.g. d_string = "[1,3,5]"
+			int d[] = MLUtils.toIntArray(d_string); 		         // e.g.        d = [1,3,5]    p[k] = 0.5
 			for(int j : d) {
 				y[j] += p[k];                                                         // e.g., y[0] += d[0] * p[k] = 1 * 0.5 = 0.5
 			}

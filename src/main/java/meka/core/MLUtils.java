@@ -146,6 +146,8 @@ public abstract class MLUtils {
 	/** ToIntArray - Return an int[] from a String, e.g., "[0,1,2,0]" to [0,1,2,3]. */
 	public static final int[] toIntArray(String s) {
 		s = new String(s.trim());
+		if (s.length() <= 2) // i.e., if "s = []"
+			return new int[]{};
 		return toIntArray((s.substring(1,s.length()-1)).split(","));
 	}
 
