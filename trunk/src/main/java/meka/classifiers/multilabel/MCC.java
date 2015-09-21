@@ -200,7 +200,7 @@ public class MCC extends CC implements TechnicalInformationHandler {
 		return m_Iy;
 	}
 
-	public String tipInferenceIterations() {
+	public String inferenceIterationsTipText() {
 		return "The number of iterations to search the output space at test time.";
 	}
 
@@ -214,7 +214,7 @@ public class MCC extends CC implements TechnicalInformationHandler {
 		return m_Is;
 	}
 
-	public String tipChainIterations() {
+	public String chainIterationsTipText() {
 		return "The number of iterations to search the chain space at train time.";
 	}
 
@@ -228,7 +228,7 @@ public class MCC extends CC implements TechnicalInformationHandler {
 		return m_Payoff;
 	}
 
-	public String tipPayoff() {
+	public String payoffTipText() {
 		return "Sets the payoff function. Any of those listed in regular evaluation output will do (e.g., 'Exact match').";
 	}
 
