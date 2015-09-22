@@ -259,14 +259,44 @@ public class PMCC extends MCC {
 	public String [] getOptions() {
 
 		ArrayList<String> result;
-	  	result = new ArrayList<String>(Arrays.asList(super.getOptions()));
+	  	//result = new ArrayList<String>(Arrays.asList(super.getOptions()));
+		result = new ArrayList<String>();
 	  	result.add("-M");
 	  	result.add("" + m_M);
 		result.add("-O");
 	  	result.add("" + m_O);
 		result.add("-B");
 	  	result.add("" + m_Beta);
+		result.addAll(Arrays.asList(super.getOptions()));
 		return result.toArray(new String[result.size()]);
+	}
+
+	/** Set the temperature factor  */
+	public void setB(double t) {
+		m_Beta = t;
+	}
+
+	/** Get the temperature factor */
+	public double getB() {
+		return m_Beta;
+	}
+
+	public String bTipText() {
+		return "Sets the temperature switch.";
+	}
+
+	/** Set the temperature switch  */
+	public void setO(int t) {
+		m_O = t;
+	}
+
+	/** Get the temperature switch */
+	public int getO() {
+		return m_O;
+	}
+
+	public String oTipText() {
+		return "Sets the temperature factor.";
 	}
 
 	/** Set the population size */
@@ -277,6 +307,10 @@ public class PMCC extends MCC {
 	/** Get the population size */
 	public int getM() {
 		return m_M;
+	}
+
+	public String mTipText() {
+		return "Sets the population size.";
 	}
 
 	@Override
