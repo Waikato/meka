@@ -177,17 +177,17 @@ public class MCC extends CC implements TechnicalInformationHandler {
 	@Override
 	public String [] getOptions() {
 
-		String [] superOptions = super.getOptions();
-		String [] options = new String [superOptions.length + 6];
-		int current = 0;
-		options[current++] = "-Is";
-		options[current++] = String.valueOf(m_Is);
-		options[current++] = "-Iy";
-		options[current++] = String.valueOf(m_Iy);
-		options[current++] = "-P";
-		options[current++] = m_Payoff;
-		System.arraycopy(superOptions, 0, options, current, superOptions.length);
-		return options;
+		ArrayList<String> result;
+	  	//result = new ArrayList<String>(Arrays.asList(super.getOptions()));
+		result = new ArrayList<String>();
+	  	result.add("-Is");
+	  	result.add(String.valueOf(m_Is));
+		result.add("-Iy");
+	  	result.add(String.valueOf(m_Iy));
+		result.add("-P");
+	  	result.add(m_Payoff);
+		result.addAll(Arrays.asList(super.getOptions()));
+		return result.toArray(new String[result.size()]);
 	}
 
 	/** Set the inference iterations */
