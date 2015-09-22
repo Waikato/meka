@@ -18,6 +18,7 @@ package meka.classifiers.multilabel.NN;
 import meka.classifiers.multilabel.ProblemTransformationMethod;
 import weka.core.Option;
 import weka.core.Utils;
+import weka.core.Randomizable;
 
 import java.util.Enumeration;
 import java.util.Vector;
@@ -29,7 +30,7 @@ import java.util.Arrays;
  * @author Jesse Read
  * @version December 2012
  */
-public abstract class AbstractNeuralNet extends ProblemTransformationMethod  {
+public abstract class AbstractNeuralNet extends ProblemTransformationMethod implements Randomizable {
 
 	private static final long serialVersionUID = 5534606285449062819L;
 
@@ -44,6 +45,9 @@ public abstract class AbstractNeuralNet extends ProblemTransformationMethod  {
 
 	/** momentum  */
 	protected double m_M = 0.1;
+
+	/** random seed */
+	protected int m_Seed = 0;
 
 	public void setH(int h) { 
 		m_H = h;
@@ -91,6 +95,20 @@ public abstract class AbstractNeuralNet extends ProblemTransformationMethod  {
 
 	public String momentumTipText() {
 		return "Momentum.";
+	}
+
+	@Override
+	public int getSeed() {
+		return m_Seed;
+	}
+
+	@Override
+	public void setSeed(int s) {
+		m_Seed = s;
+	}
+
+	public String seedTipText() {
+		return "The seed value for randomizing the data.";
 	}
 
 	@Override
