@@ -36,7 +36,7 @@ import meka.classifiers.multilabel.NN.*;
  * @author Jesse Read 
  * @version December 2012
  */
-public class DeepML extends AbstractDeepNeuralNet implements Randomizable, TechnicalInformationHandler {
+public class DeepML extends AbstractDeepNeuralNet implements TechnicalInformationHandler {
 
 	private static final long serialVersionUID = 3388606529764305098L;
 	protected RBM dbm = null;
@@ -125,18 +125,6 @@ public class DeepML extends AbstractDeepNeuralNet implements Randomizable, Techn
 	@Override
 	public String toString() {
 		return super.toString() + ", RBM-Build_Time="+rbm_time;
-	}
-
-	protected int m_Seed = 0;
-
-	@Override
-	public int getSeed() {
-		return m_Seed;
-	}
-
-	@Override
-	public void setSeed(int s) {
-		m_Seed = s;
 	}
 
 	/* 
