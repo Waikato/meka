@@ -43,7 +43,6 @@ public class RAkEL extends PS {
 	protected Instances m_InstancesTemplates[] = null; 
 	int m_K = 3;
 	int m_M = 10;
-	int m_S = 0;
 	protected int kMap[][] = null;
 
 	/**
@@ -134,6 +133,10 @@ public class RAkEL extends PS {
 		m_K = k;
 	}
 
+	public String kTipText() {
+		return "The number of labels in each subset (must be at least 1 and less than the number of labels) ";
+	}
+
 	/** 
 	 * GetM - Get the M parameter (number of subsets).
 	 */
@@ -148,14 +151,8 @@ public class RAkEL extends PS {
 		m_M = M;
 	}
 
-	@Override
-	public void setSeed(int s) {
-		m_S = s;
-	}
-
-	@Override
-	public int getSeed() {
-		return m_S;
+	public String mTipText() {
+		return "The number of subsets (to run in ensemble)";
 	}
 
 	@Override
@@ -221,13 +218,12 @@ public class RAkEL extends PS {
 	@Override
 	public String [] getOptions() {
 		ArrayList<String> result;
-	  	result = new ArrayList<String>(Arrays.asList(super.getOptions()));
+	  	result = new ArrayList<String>(); 
 	  	result.add("-k");
-	  	result.add("" + m_K);
+	  	result.add(String.valueOf(m_K));
 		result.add("-M");
-	  	result.add("" + m_M);
-		//result.add("-S");
-	  	//result.add("" + m_S);
+	  	result.add(String.valueOf(m_M));
+		result.addAll(Arrays.asList(super.getOptions()));
 		return result.toArray(new String[result.size()]);
 	}
 

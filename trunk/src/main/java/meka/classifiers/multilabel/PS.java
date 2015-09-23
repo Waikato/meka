@@ -42,7 +42,7 @@ public class PS extends LC implements Randomizable, TechnicalInformationHandler 
 	
 	protected int m_P = 0; 
 	protected int m_N = 0;
-	protected int m_S = 1;
+	protected int m_S = 0;
 
 	/**
 	 * Description to display in the GUI.
