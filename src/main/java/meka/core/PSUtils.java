@@ -530,7 +530,14 @@ public abstract class PSUtils {
 	}
 
 	public static Instance[] PSTransformation(Instance x, int L, HashMap<LabelSet,Integer> map, int n) {
-		LabelSet y = new LabelSet(MLUtils.toSparseIntArray(x,L));
+
+		int y_[] = MLUtils.toSparseIntArray(x,L);
+		if (y_.length <= 0)
+			// there can be no transformation if there are no labels!
+			return new Instance[0];
+
+		LabelSet y = new LabelSet(y_);
+
 		if (map.get(y) != null) {
 			Instance x_subsets[] = new Instance[1];
 			x_subsets[0] = convertInstance(x,L,x.dataset());
