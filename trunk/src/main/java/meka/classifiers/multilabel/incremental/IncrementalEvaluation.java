@@ -419,7 +419,11 @@ public class IncrementalEvaluation {
 			 * RECORD MEASUREMENT
 			 */
 			if (i % windowSize == (windowSize-1)) {
-				samples.add(Result.getStats(result,Vop));
+				Result r_sample = Result.getStats(result,Vop);
+				r_sample.output.put("Test time",(test_time)/1000.0);
+				r_sample.output.put("Build time",(train_time)/1000.0);
+				r_sample.output.put("Total time",(test_time+train_time)/1000.0);
+				samples.add(r_sample);
 				System.out.println("Sample (#"+samples.size()+") of performance at "+i+"/"+D.numInstances()+" instances.");
 			}
 
@@ -443,14 +447,14 @@ public class IncrementalEvaluation {
 		text.append("\n\nEvaluation Options:\n\n");
 		text.append("-t\n");
 		text.append("\tSpecify the dataset (required)\n");
-		text.append("-B <number of windows>\n");
-		text.append("\tSets the number of windows (batches) for evalutation; default: 20.\n");
+		text.append("-x <number of windows>\n");
+		text.append("\tSets the number of samples to take (at evenly space intervals); default: 10.\n");
 		text.append("-semisupervised <ratio labelled>\n");
 		text.append("\tSets the ratio of labelled instances; default: 1.0.\n");
 		text.append("-threshold <threshold>\n");
-		text.append("\tSets the type of thresholding; where 'PCut1' automatically calibrates a threshold (the default); 'PCutL' automatically calibrates one threshold for each label; and any double number, e.g. '0.5', specifies that threshold.\n");
+		text.append("\tSets the threshold to use.\n");
 		text.append("-verbosity <verbosity level>\n");
-		text.append("\tSpecify more/less evaluation.\n");
+		text.append("\tSpecify more/less evaluation output.\n");
 		// Multilabel Options
 		text.append("\n\nClassifier Options:\n\n");
 		while (e.hasMoreElements()) {
