@@ -58,6 +58,7 @@ public class BPNN extends AbstractNeuralNet {
 
 		double X_[][] = MLUtils.getXfromD(D);
 		double Y_[][] = MLUtils.getYfromD(D);
+		r = new Random(m_Seed);
 
 		if (this.W == null) {
 			if (getDebug())
