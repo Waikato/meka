@@ -61,7 +61,8 @@ public class DBPNN extends AbstractDeepNeuralNet implements TechnicalInformation
 		// Build an RBM
 		if (getDebug()) System.out.println("Build RBM(s) ... ");
 
-		dbm = new DBM(this.getOptions());
+		String ops[] = this.getOptions();
+		dbm = new DBM(ops);
 		dbm.setE(m_E);
 		((DBM)dbm).setH(m_H, m_N);
 

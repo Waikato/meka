@@ -156,11 +156,11 @@ public class CDT extends CDN {
 		ArrayList<String> result;
 	  	result = new ArrayList<String>(); //Arrays.asList(super.getOptions()));
 	  	result.add("-H");
-	  	result.add("" + m_Width);
+	  	result.add(String.valueOf(m_Width));
 		result.add("-L");
-	  	result.add("" + m_Density);
+	  	result.add(String.valueOf(m_Density));
 		result.add("-P");
-	  	result.add("" + m_DependencyMetric);
+	  	result.add(m_DependencyMetric);
 		result.addAll(Arrays.asList(super.getOptions()));
 		return result.toArray(new String[result.size()]);
 	}
