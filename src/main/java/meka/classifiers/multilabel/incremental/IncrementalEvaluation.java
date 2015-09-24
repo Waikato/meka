@@ -420,6 +420,7 @@ public class IncrementalEvaluation {
 			 */
 			if (i % windowSize == (windowSize-1)) {
 				samples.add(Result.getStats(result,Vop));
+				System.out.println("Sampling performance at "+i+"/"+D.numInstances()+" instances.");
 			}
 
 		}
