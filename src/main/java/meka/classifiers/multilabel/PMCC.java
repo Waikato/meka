@@ -272,17 +272,17 @@ public class PMCC extends MCC {
 	}
 
 	/** Set the temperature factor  */
-	public void setB(double t) {
+	public void setBeta(double t) {
 		m_Beta = t;
 	}
 
 	/** Get the temperature factor */
-	public double getB() {
+	public double getBeta() {
 		return m_Beta;
 	}
 
-	public String bTipText() {
-		return "Sets the temperature switch.";
+	public String betaTipText() {
+		return "Sets the temperature factor.";
 	}
 
 	/** Set the temperature switch  */
@@ -296,7 +296,7 @@ public class PMCC extends MCC {
 	}
 
 	public String oTipText() {
-		return "Sets the temperature factor.";
+		return "Sets the temperature switch.";
 	}
 
 	/** Set the population size */
