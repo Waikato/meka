@@ -384,9 +384,6 @@ public class IncrementalEvaluation {
 
 		for(int i = 0; i < D.numInstances(); i++) {
 
-			test_time = 0;
-			train_time = 0;
-
 			Instance x = D.instance(i);
 			AbstractInstance x_ = (AbstractInstance)((AbstractInstance) x).copy(); 		// copy 
 				
@@ -419,11 +416,11 @@ public class IncrementalEvaluation {
 			 * RECORD MEASUREMENT
 			 */
 			if (i % windowSize == (windowSize-1)) {
-				Result r_sample = Result.getStats(result,Vop);
-				r_sample.output.put("Test time",(test_time)/1000.0);
-				r_sample.output.put("Build time",(train_time)/1000.0);
-				r_sample.output.put("Total time",(test_time+train_time)/1000.0);
-				samples.add(r_sample);
+				HashMap<String,Object> eval_sample = Result.getStats(result,Vop);
+				eval_sample.put("Test time",(test_time)/1000.0);
+				eval_sample.put("Build time",(train_time)/1000.0);
+				eval_sample.put("Total time",(test_time+train_time)/1000.0);
+				samples.add(eval_sample);
 				System.out.println("Sample (#"+samples.size()+") of performance at "+i+"/"+D.numInstances()+" instances.");
 			}
 
