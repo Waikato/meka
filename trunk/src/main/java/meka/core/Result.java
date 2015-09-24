@@ -16,6 +16,9 @@
 package meka.core;
 
 import weka.core.Instance;
+import weka.core.DenseInstance;
+import weka.core.Instances;
+import weka.core.Attribute;
 import weka.core.Utils;
 
 import java.io.BufferedWriter;
@@ -284,6 +287,38 @@ public class Result implements Serializable {
 		outer.write(result.toString());
 		outer.close();
 	} 
+
+	/**
+	 * Convert a list of Results into an Instances.
+	 * @param results An ArrayList of Results
+	 * @return	Instances
+	 */
+	public static Instances getResultsAsInstances(ArrayList<HashMap<String,Object>> results) {
+
+		HashMap<String,Object> o_master = results.get(0);
+		ArrayList<Attribute> attInfo = new ArrayList<Attribute>();
+		for (String key : o_master.keySet())  {
+			if (o_master.get(key) instanceof Double) {
+				//System.out.println("key="+key);
+				attInfo.add(new Attribute(key));
+			}
+		}
+
+		Instances resultInstances = new Instances("Results",attInfo,results.size());
+
+		for (HashMap<String,Object> o : results) {
+			Instance rx = new DenseInstance(attInfo.size());
+			for (Attribute att : attInfo) {
+				String name = att.name();
+				rx.setValue(att,(double)o.get(name));
+			}
+			resultInstances.add(rx);
+		}
+
+		//System.out.println(""+resultInstances);
+		return resultInstances;
+
+	}
 
 	/**
 	 * GetResultAsString - print out each prediction in a Result (to a certain number of decimal points) along with its true labelset.
