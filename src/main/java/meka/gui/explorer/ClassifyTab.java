@@ -443,7 +443,7 @@ public class ClassifyTab
 						try {
 							classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
 							//System.out.println("data.classIndex() "+data.classIndex());
-							result    = IncrementalEvaluation.evaluateModelPrequentialBasic(classifier, data, (data.numInstances()/m_Folds+1), 1., m_TOP, m_VOP);
+							result    = IncrementalEvaluation.evaluateModelPrequentialBasic(classifier, data, (data.numInstances()/(m_Folds+1)), 1., m_TOP, m_VOP);
 							addResultToHistory(
 									result,
 									new Object[]{classifier, new Instances(data, 0)},
