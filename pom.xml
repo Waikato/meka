@@ -326,6 +326,7 @@
         <configuration>
           <executable>java</executable>
           <arguments>
+            <argument>-Xmx2g</argument>
             <argument>-classpath</argument>
             <classpath/>
             <argument>meka.gui.guichooser.GUIChooser</argument>
