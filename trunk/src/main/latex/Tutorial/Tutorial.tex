@@ -7,8 +7,24 @@
 \newcommand{\MOA}{Moa}
 \newcommand{\WEKA}{Weka}
 \newcommand{\MULAN}{Mulan}
-\def\version{{\tt 1.7.7}}
+\def\version{{\tt 2.0.0}}
 \usepackage{listings}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+	tabsize=2,
+	backgroundcolor=\color{white},   % choose the background color
+	basicstyle=\footnotesize,        % size of fonts used for the code
+	breaklines=true,                 % automatic line breaking only at whitespace
+	captionpos=b,                    % sets the caption-position to bottom
+	commentstyle=\color{mygreen},    % comment style
+	escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+	keywordstyle=\color{blue},       % keyword style
+	stringstyle=\color{mymauve},     % string literal style
+}
 \usepackage{courier}
 \lstset{basicstyle=\small\ttfamily,breaklines=true,frame=L,xleftmargin=\parindent}
 %\lstset{framextopmargin=50pt,frame=bottomline}
@@ -156,55 +172,9 @@ A suitable dataset is the only requirement to begin running experiments with \fr
 
 With the exception of the different use of the \texttt{-c} flag (see the previous section), many of \framework{\WEKA}'s command line options for evaluation work identically in \framework{\MEKA} too. You can obtain a list of them by running any classifier with the \texttt{-h} flag, for example: \texttt{java meka.classifiers.multilabel.BR -h} displays the following:
 	 
-{\small
-\begin{lstlisting}
-Evaluation Options:
-
--h
-        Output help information.
--t <name of training file>
-        Sets training file.
--T <name of test file>
-        Sets test file.
--x <number of folds>
-        Do cross-validation with this many folds.
--R
-        Randomise the dataset (done after a range is removed, but before the train/test split).
--split-percentage <percentage>
-        Sets the percentage for the train/test set split, e.g., 66.
--split-number <number>
-        Sets the number of training examples, e.g., 800
--i
-        Invert the specified train/test split.
--s <random number seed>
-        Sets random number seed (use with -R, for different CV or train/test splits).
--threshold <threshold>
-        Sets the type of thresholding; where
-                'PCut1' automatically calibrates a threshold (the default);
-                'PCutL' automatically calibrates one threshold for each label;
-                any number, e.g. '0.5', specifies that threshold.
--C <number of classes/labels>
-        Sets the number of target attributes (classes/labels) to expect (indexed from the beginning).
--d <classifier_file>
-        Specify a file to dump classifier into.
--l <classifier_file>
-        Specify a file to load classifier from.
--verbosity <verbosity level>
-        Specify more/less evaluation output
-
-
-Classifier Options:
-
--W
-        Full name of base classifier.
-        (default: weka.classifiers.trees.J48)
--output-debug-info
-	If set, classifier is run in debug mode and
-	may output additional info to the console
---do-not-check-capabilities
-	If set, classifier capabilities are not checked before classifier is built
-	(use with caution).
-\end{lstlisting}
+{
+\tiny
+\lstinputlisting{help.txt}
 }
 
 The only required options are \texttt{-t} to specify the dataset, and \texttt{-C} to specify the number of target attributes (which is typically included within the dataset, as explained in the previous section).  
@@ -254,29 +224,7 @@ The CLI is the most powerful way to work with \framework{\MEKA}, but the GUI is 
 Running a BR classifier with Naive Bayes on the \textit{Music} data will output the following:
 
 {\small
-\begin{lstlisting}
-Classifier_name      : meka.classifiers.multilabel.BR
-Classifier_ops       : [-W, weka.classifiers.bayes.NaiveBayes]
-Classifier_info      : 
-Dataset_name         : Music
-Type                 : ML
-Threshold            : 0.9974578524138343
-Verbosity            : 1
-
-N(test)              : 237
-L                    : 6    
-Accuracy             : 0.436
-Hamming score        : 0.745
-Exact match          : 0.215
-
-N_train              : 355
-N_test               : 237
-LCard_train          : 1.789
-LCard_test           : 1.992
-Build_time           : 0.157
-Test_time            : 0.113
-Total_time           : 0.27 
-\end{lstlisting}
+\lstinputlisting{eval.txt}
 }
 
 The results of the experiment in \Fig{screen:split} are shown in \Fig{screen:result}.
@@ -534,7 +482,7 @@ the array is the \emph{value} corresponding to the $j$th target attribute.
 
 \subsubsection{Building Classifiers}
 
-In the \texttt{buildClassifier(Instances)} method, you build your classifier. Here is where you can take advantage of all of \framework{WEKA}'s libraries. You can use any \WEKA classifier to your needs. The \texttt{m\_Classifier} variable is already available for this, which \textit{already contains} the \framework{WEKA} classifier you specify on the command line. You can simply do:
+In the \texttt{buildClassifier(Instances)} method, you build your classifier. Here is where you can take advantage of all of \framework{\WEKA}'s libraries. You can use any \framework{\WEKA} classifier to your needs. The \texttt{m\_Classifier} variable is already available for this, which \textit{already contains} the \framework{\WEKA} classifier you specify on the command line. You can simply do:
 {
 \lstset{basicstyle=\small\ttfamily,breaklines=true,language=java,frame=L,xleftmargin=\parindent}
 \begin{lstlisting}

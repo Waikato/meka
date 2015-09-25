@@ -1,0 +1,21 @@
+Classifier_name      : meka.classifiers.multilabel.BR
+Classifier_ops       : [-W, weka.classifiers.bayes.NaiveBayes]
+Classifier_info      : 
+Dataset_name         : Music
+Type                 : ML
+Threshold            : 0.9974578524138343
+Verbosity            : 1
+
+N(test)              : 237
+L                    : 6    
+Accuracy             : 0.436
+Hamming score        : 0.745
+Exact match          : 0.215
+
+N_train              : 355
+N_test               : 237
+LCard_train          : 1.789
+LCard_test           : 1.992
+Build_time           : 0.157
+Test_time            : 0.113
+Total_time           : 0.27 
