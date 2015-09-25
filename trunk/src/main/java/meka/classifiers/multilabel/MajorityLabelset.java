@@ -20,16 +20,17 @@ import java.util.HashMap;
 import weka.core.Instance;
 import weka.core.Instances;
 import meka.core.MLUtils;
+import meka.classifiers.multitarget.MultiTargetClassifier;
 import weka.core.RevisionUtils;
 
 /**
  * MajorityLabelset.java - The most simplest multi-label classifier. 
- * Predicts the most common labelset from the training data for <i>all</i> test instances.
+ * <p>Predicts the most common labelset from the training data for <i>all</i> test instances.</p>
  * 
- * @author 	Jesse Read (jesse@tsc.uc3m.es)
- * @version October 2011
+ * @author 	Jesse Read
+ * @version September 2015
  */
-public class MajorityLabelset extends AbstractMultiLabelClassifier {
+public class MajorityLabelset extends AbstractMultiLabelClassifier implements MultiTargetClassifier {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -5932291001079843869L;
