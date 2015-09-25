@@ -407,6 +407,11 @@ public class CC extends ProblemTransformationMethod
 		return result.toString();
 	}
 
+	@Override
+	public String toString() {
+		return Arrays.toString(retrieveChain());
+	}
+
 	public static void main(String args[]) {
 		ProblemTransformationMethod.evaluation(new CC(), args);
 	}

@@ -203,21 +203,21 @@ public class CT extends MCC implements TechnicalInformationHandler {
 	}
 
 	/** 
-	 * GetDependency - Get the type of depependency to use in rearranging the trellis (None by default)
+	 * GetDependency - Get the type of depependency to use in rearranging the trellis
 	 */
 	public String getDependencyMetric() {
 		return m_DependencyMetric;
 	}
 
 	/** 
-	 * SetDependency - Sets the type of depependency to use in rearranging the trellis (None by default)
+	 * SetDependency - Sets the type of depependency to use in rearranging the trellis
 	 */
 	public void setDependencyMetric(String m) {
 		m_DependencyMetric = m;
 	}
 
 	public String dependencyMetricTipText() {
-		return "The dependency heuristic to use in rearranging the trellis (None by default).";
+		return "The dependency heuristic to use in rearranging the trellis (applicable if chain iterations > 0).";
 	}
 
 
