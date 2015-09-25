@@ -22,6 +22,7 @@ import meka.core.ThresholdUtils;
 import weka.classifiers.UpdateableClassifier;
 import weka.core.*;
 import meka.classifiers.multilabel.MultiLabelClassifier;
+import meka.classifiers.multitarget.MultiTargetClassifier;
 import meka.classifiers.multilabel.Evaluation;
 
 import java.io.IOException;
@@ -372,14 +373,20 @@ public class IncrementalEvaluation {
 		result.setInfo("Options",Arrays.toString(h.getOptions()));
 		result.setInfo("Additional Info",h.toString());
 		result.setInfo("Dataset",MLUtils.getDatasetName(D));
-		result.setInfo("Type","MLi");
-		double t = 0.5;
-		try {
-			t = Double.parseDouble(Top);
-		} catch(Exception e) {
-			System.err.println("[WARNING] Only a single threshold can be chosen for this kind of evaluation; Using "+t);
+		result.setInfo("Verbosity",Vop);
+		if (h instanceof MultiTargetClassifier || Evaluation.isMT(D)) {
+			result.setInfo("Type","MT");
 		}
-		result.setInfo("Threshold", String.valueOf(t));
+		else {
+			result.setInfo("Type","ML");
+			double t = 0.5;
+			try {
+				t = Double.parseDouble(Top);
+			} catch(Exception e) {
+				System.err.println("[WARNING] Only a single threshold can be chosen for this kind of evaluation; Using "+t);
+			}
+			result.setInfo("Threshold", String.valueOf(t));
+		}
 		ArrayList<HashMap<String,Object>> samples = new ArrayList<HashMap<String,Object>>();
 
 		for(int i = 0; i < D.numInstances(); i++) {
