@@ -154,9 +154,9 @@ public class MCC extends CC implements TechnicalInformationHandler {
 	public Enumeration listOptions() {
 
 		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tSets the number of iterations in the chain space (training)\n\tdefault: "+m_Is, "Is", 1, "-Is <value>"));
-		newVector.addElement(new Option("\tSets the number of iterations in the path space (inference)\n\tdefault: "+m_Iy, "Iy", 1, "-Iy <value>"));
-		newVector.addElement(new Option("\tSets the payoff function. Should be one listed in normal evaluation output\n\tdefault: "+m_Payoff, "P", 1, "-P <value>"));
+		newVector.addElement(new Option("\t"+chainIterationsTipText()+"\n\tdefault: "+m_Is, "Is", 1, "-Is <value>"));
+		newVector.addElement(new Option("\t"+inferenceIterationsTipText()+"\n\tdefault: "+m_Iy, "Iy", 1, "-Iy <value>"));
+		newVector.addElement(new Option("\t"+payoffTipText()+"\n\tdefault: "+m_Payoff, "P", 1, "-P <value>"));
 
 		Enumeration enu = super.listOptions();
 
@@ -191,12 +191,12 @@ public class MCC extends CC implements TechnicalInformationHandler {
 	}
 
 	/** Set the inference iterations */
-	public void setInferenceInterations(int iy) {
+	public void setInferenceIterations(int iy) {
 		m_Iy = iy;
 	}
 
 	/** Get the inference iterations */
-	public int getInferenceInterations() {
+	public int getInferenceIterations() {
 		return m_Iy;
 	}
 
