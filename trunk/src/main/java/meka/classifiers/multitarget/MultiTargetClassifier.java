@@ -19,26 +19,31 @@ import weka.classifiers.Classifier;
 import weka.core.OptionHandler;
 
 /**
- *  MultiTargetClassifier.java - A Multi-target Classifier.
- *  To implement this interface, it is also necessary to extend MultilabelClassifier.
- *  Implementing this interface only signals to the Evaluator that we are dealing with multi-target data, 
- *  and a different evaluation output is made. Training and classification is the same, using the 
+ *  MultiTargetClassifier.java - A Multi-Target (i.e., Multi-Output / Multi-Dimensional) Classifier.
+ *  Implementing this interface signals to the Evaluation that we are dealing with multi-target data, 
+ *  and a different evaluation output is given. Training and classification is the same, using the 
  *  methods <i>buildClassifier(Instances)</i> and <i>distributionForInstance(Instance)</i>, except that
- *  the latter may return a vector of L*2 doubles instead of L. The extra values are probabalistic 
- *  information (i.e., the probability of class y[j] for the jth target is y[j*2]) that may be used by 
- *  ensemble classifiers.
+ *  the latter only returns the argmax value (i.e., what is to be considered the predicted value). 
+ *  <br>
+ *  <br>
+ *  At the moment it is also possible to extend the <code>double[]</code> from <code>distributionForInstance</code> 
+ *  to a vector of <code>L*2</code> doubles instead of <code>L</code> which contain the max.
+ *  In other words, <code>k</code> in position <code>j</code> and <code>p(y[j]=k)</code> in position <code>j+L</code>.
+ *  <br>
+ *  In the future we will make use of <code>double[] distributionForInstance(Instance,int)</code> instead.
  *
- * 	@author 	Jesse Read (jesse@tsc.uc3m.es)
- * 	@version	January 2012
+ * 	@author 	Jesse Read
+ * 	@version	January 2015
  */
 
-public interface MultiTargetClassifier
-		extends Classifier, OptionHandler {
+public interface MultiTargetClassifier extends Classifier, OptionHandler {
 
 	/*
-	 * Everything is the same as MultilabelClassifier except for the Evaluation
-	 * ... but in the future I would like to add getProbabilities() or something here.
+	 * TODO Returns the distribution of the k-th value, for each label.
+	 *
+	 * @return      the multi-target distribution
 	 */
+	//public double[] distributionForInstance(Instance x, int k);
 
 	/**
 	 * Set debugging mode.
@@ -68,4 +73,5 @@ public interface MultiTargetClassifier
 	 * @return      the model
 	 */
 	public String getModel();
+
 }
