@@ -143,9 +143,9 @@ public class CDT extends CDN {
 	@Override
 	public void setOptions(String[] options) throws Exception {
 
-		m_Width = (Utils.getOptionPos('H',options) >= 0) ? Integer.parseInt(Utils.getOption('H', options)) : m_Width;
-		m_Density = (Utils.getOptionPos('L',options) >= 0) ? Integer.parseInt(Utils.getOption('L', options)) : m_Density;
-		m_DependencyMetric = (Utils.getOptionPos('X',options) >= 0) ? Utils.getOption('X', options) : m_DependencyMetric;
+		m_Width = (Utils.getOptionPos('H',options) >= 0) ? Integer.parseInt(Utils.getOption('H', options)) : -1;
+		m_Density = (Utils.getOptionPos('L',options) >= 0) ? Integer.parseInt(Utils.getOption('L', options)) : 1;
+		m_DependencyMetric = (Utils.getOptionPos('X',options) >= 0) ? Utils.getOption('X', options) : "None";
 
 		super.setOptions(options);
 	}
@@ -159,7 +159,7 @@ public class CDT extends CDN {
 	  	result.add(String.valueOf(m_Width));
 		result.add("-L");
 	  	result.add(String.valueOf(m_Density));
-		result.add("-P");
+		result.add("-X");
 	  	result.add(m_DependencyMetric);
 		result.addAll(Arrays.asList(super.getOptions()));
 		return result.toArray(new String[result.size()]);

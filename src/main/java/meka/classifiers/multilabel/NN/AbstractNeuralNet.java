@@ -139,14 +139,18 @@ public abstract class AbstractNeuralNet extends ProblemTransformationMethod impl
 		if(Utils.getOptionPos('H',options) >= 0) {
 			setH(Integer.parseInt(Utils.getOption('H', options)));
 		}
+		else
+			setH(10);
 
 		if(Utils.getOptionPos('E',options) >= 0) {
 			setE(Integer.parseInt(Utils.getOption('E', options)));
 		}
+		else
+			setE(1000);
 
-		m_R = (Utils.getOptionPos('r',options) >= 0) ? Double.parseDouble(Utils.getOption('r', options)) : m_R;
+		m_R = (Utils.getOptionPos('r',options) >= 0) ? Double.parseDouble(Utils.getOption('r', options)) : 0.1;
 
-		m_M = (Utils.getOptionPos('m',options) >= 0) ? Double.parseDouble(Utils.getOption('m', options)) : m_M;
+		m_M = (Utils.getOptionPos('m',options) >= 0) ? Double.parseDouble(Utils.getOption('m', options)) : 0.1;
 
 		super.setOptions(options);
 	}
@@ -154,7 +158,7 @@ public abstract class AbstractNeuralNet extends ProblemTransformationMethod impl
 	@Override
 	public String [] getOptions() {
 		ArrayList<String> result;
-	  	result = new ArrayList<String>(); //Arrays.asList(super.getOptions()));
+	  	result = new ArrayList<String>();
 	  	result.add("-H");
 	  	result.add(String.valueOf(m_H));
 		result.add("-E");
