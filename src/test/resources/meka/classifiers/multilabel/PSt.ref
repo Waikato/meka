@@ -1,7 +1,7 @@
 == Evaluation Info
 
 Classifier                     meka.classifiers.multilabel.PSt
-Options                        [-P, 0, -N, 0, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
+Options                        [-P, 0, -N, 0, -S, 0, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
 Additional Info                
 Dataset                        Music
 Number of labels (L)           6

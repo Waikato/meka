@@ -15,25 +15,16 @@
 
 package meka.classifiers.multilabel.meta;
 
-import java.util.Enumeration;
-import java.util.Random;
-import java.util.Vector;
-import java.util.Arrays;
-
 import meka.classifiers.multilabel.ProblemTransformationMethod;
 import meka.core.A;
 import meka.core.F;
 import meka.core.MLUtils;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.Option;
-import weka.core.Randomizable;
-import weka.core.RevisionUtils;
-import weka.core.TechnicalInformation;
+import meka.core.OptionUtils;
+import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
-import weka.core.Utils;
+
+import java.util.*;
 
 /**
  * RandomSubspaceML.java - Subsample the attribute space and instance space randomly for each ensemble member. 
@@ -142,36 +133,24 @@ public class RandomSubspaceML extends MetaProblemTransformationMethod implements
 
 	@Override
 	public Enumeration listOptions() {
-		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tSize of attribute space, as a percentage of total attribute space size (must be between 1 and 100, default: "+m_AttSizePercent+")", "A", 1, "-A <size percentage>"));
-		Enumeration enu = super.listOptions();
-		while (enu.hasMoreElements()) {
-			newVector.addElement(enu.nextElement());
-		}
-		return newVector.elements();
+		Vector result = new Vector();
+		result.addElement(new Option("\tSize of attribute space, as a percentage of total attribute space size (must be between 1 and 100, default: 50)", "A", 1, "-A <size percentage>"));
+		OptionUtils.add(result, super.listOptions());
+		return OptionUtils.toEnumeration(result);
 	}
 
 	@Override
     public void setOptions(String[] options) throws Exception {
-
-        String tmpStr;
-
-        tmpStr = Utils.getOption('A', options);
-        if (tmpStr.length() != 0)
-            setAttSizePercent(Integer.parseInt(tmpStr));
-
+		setAttSizePercent(OptionUtils.parse(options, 'A', 50));
         super.setOptions(options);
     }
 
 	@Override
 	public String [] getOptions() {
-		String [] superOptions = super.getOptions();
-		String [] options = new String [superOptions.length + 2];
-		int current = 0;
-		options[current++] = "-A";
-		options[current++] = String.valueOf(m_AttSizePercent);
-		System.arraycopy(superOptions, 0, options, current, superOptions.length);
-		return options;
+		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, 'A', getAttSizePercent());
+		OptionUtils.add(result, super.getOptions());
+		return OptionUtils.toArray(result);
 	}
 
 	public static void main(String args[]) {

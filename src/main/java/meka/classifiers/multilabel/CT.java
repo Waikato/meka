@@ -2,6 +2,7 @@ package meka.classifiers.multilabel;
 
 import meka.classifiers.multilabel.cc.CNode;
 import meka.classifiers.multilabel.cc.Trellis;
+import meka.core.OptionUtils;
 import weka.core.*;
 import meka.core.A;
 import meka.core.StatUtils;
@@ -237,46 +238,30 @@ public class CT extends MCC implements TechnicalInformationHandler {
 
 	@Override
 	public Enumeration listOptions() {
-
-		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tThe width of the trellis.\n\tdefault: "+m_Width+" (sqrt[number of labels])", "H", 1, "-H <value>"));
-		newVector.addElement(new Option("\tThe density/type of the trellis.\n\tdefault: "+m_Density+"\n\trange: 0-3 (0=BR)", "L", 1, "-L <value>"));
-		newVector.addElement(new Option("\tThe dependency payoff function.\n\tdefault: "+m_DependencyMetric+"\n\t", "X", 1, "-X <value>"));
-
-		Enumeration enu = super.listOptions();
-
-		while (enu.hasMoreElements()) 
-			newVector.addElement(enu.nextElement());
-
-		return newVector.elements();
+		Vector result = new Vector();
+		result.addElement(new Option("\tThe width of the trellis.\n\tdefault: -1 (sqrt[number of labels])", "H", 1, "-H <value>"));
+		result.addElement(new Option("\tThe density/type of the trellis.\n\tdefault: 1\n\trange: 0-3 (0=BR)", "L", 1, "-L <value>"));
+		result.addElement(new Option("\tThe dependency payoff function.\n\tdefault: Ibf\n\t", "X", 1, "-X <value>"));
+		OptionUtils.add(result, super.listOptions());
+		return OptionUtils.toEnumeration(result);
 	}
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
-
-		m_Width = (Utils.getOptionPos('H',options) >= 0) ? Integer.parseInt(Utils.getOption('H', options)) : m_Width;
-		if (getDebug()) System.out.println("Width set as: "+m_Width);
-		m_Density = (Utils.getOptionPos('L',options) >= 0) ? Integer.parseInt(Utils.getOption('L', options)) : m_Density;
-		if (getDebug()) System.out.println("Trellis Type: "+m_Density);
-		m_DependencyMetric = (Utils.getOptionPos('X',options) >= 0) ? Utils.getOption('X', options) : m_DependencyMetric;
-		if (getDebug()) System.out.println("Dependency Type: "+m_DependencyMetric);
-
+		setWidth(OptionUtils.parse(options, 'H', -1));
+		setDensity(OptionUtils.parse(options, 'L', 1));
+		setDependencyMetric(OptionUtils.parse(options, 'X', "Ibf"));
 		super.setOptions(options);
 	}
 
 	@Override
 	public String [] getOptions() {
-
-		ArrayList<String> result;
-	  	result = new ArrayList<String>(); //Arrays.asList(super.getOptions()));
-	  	result.add("-H");
-	  	result.add("" + m_Width);
-		result.add("-L");
-	  	result.add("" + m_Density);
-		result.add("-X");
-	  	result.add("" + m_DependencyMetric);
-		result.addAll(Arrays.asList(super.getOptions()));
-		return result.toArray(new String[result.size()]);
+		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, 'H', getWidth());
+		OptionUtils.add(result, 'L', getDensity());
+		OptionUtils.add(result, 'X', getDependencyMetric());
+		OptionUtils.add(result, super.getOptions());
+		return OptionUtils.toArray(result);
 	}
 
 	public static void main(String args[]) {

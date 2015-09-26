@@ -1,7 +1,7 @@
 == Evaluation Info
 
 Classifier                     meka.classifiers.multilabel.RAkELd
-Options                        [-k, 3, -M, 2, -P, 0, -N, 0, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
+Options                        [-k, 3, -M, 2, -P, 0, -N, 0, -S, 0, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
 Additional Info                {[1, 2, 4][0, 3, 5]}
 Dataset                        Music
 Number of labels (L)           6

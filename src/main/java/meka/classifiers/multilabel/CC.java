@@ -17,8 +17,8 @@ package meka.classifiers.multilabel;
 
 import meka.classifiers.multilabel.cc.CNode;
 import meka.core.A;
-import meka.core.MLUtils;
 import meka.core.MultiLabelDrawable;
+import meka.core.OptionUtils;
 import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
@@ -265,39 +265,24 @@ public class CC extends ProblemTransformationMethod
 
 	@Override
 	public Enumeration listOptions() {
-
-		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
-
-		Enumeration enu = super.listOptions();
-
-		while (enu.hasMoreElements())
-			newVector.addElement(enu.nextElement());
-
-		return newVector.elements();
+		Vector result = new Vector();
+		result.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
+		OptionUtils.add(result, super.listOptions());
+		return OptionUtils.toEnumeration(result);
 	}
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
-		String	tmpStr;
-
-		tmpStr = Utils.getOption('S', options);
-		if (tmpStr.length() > 0)
-			setSeed(Integer.parseInt(tmpStr));
-		else
-			setSeed(0);
-
+		setSeed(OptionUtils.parse(options, 'S', 0));
 		super.setOptions(options);
 	}
 
 	@Override
 	public String [] getOptions() {
-		ArrayList<String> result;
-		result = new ArrayList<String>();
-		result.add("-S");
-		result.add("" + getSeed());
-		result.addAll(Arrays.asList(super.getOptions()));
-		return result.toArray(new String[result.size()]);
+		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, 'S', getSeed());
+		OptionUtils.add(result, super.getOptions());
+		return OptionUtils.toArray(result);
 	}
 
 	/**

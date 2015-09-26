@@ -152,42 +152,30 @@ public class MCC extends CC implements TechnicalInformationHandler {
 
 	@Override
 	public Enumeration listOptions() {
-
-		Vector newVector = new Vector();
-		newVector.addElement(new Option("\t"+chainIterationsTipText()+"\n\tdefault: "+m_Is, "Is", 1, "-Is <value>"));
-		newVector.addElement(new Option("\t"+inferenceIterationsTipText()+"\n\tdefault: "+m_Iy, "Iy", 1, "-Iy <value>"));
-		newVector.addElement(new Option("\t"+payoffTipText()+"\n\tdefault: "+m_Payoff, "P", 1, "-P <value>"));
-
-		Enumeration enu = super.listOptions();
-
-		while (enu.hasMoreElements()) 
-			newVector.addElement(enu.nextElement());
-
-		return newVector.elements();
+		Vector result = new Vector();
+		result.addElement(new Option("\t"+chainIterationsTipText()+"\n\tdefault: 0", "Is", 1, "-Is <value>"));
+		result.addElement(new Option("\t"+inferenceIterationsTipText()+"\n\tdefault: 10", "Iy", 1, "-Iy <value>"));
+		result.addElement(new Option("\t"+payoffTipText()+"\n\tdefault: Exact match", "P", 1, "-P <value>"));
+		OptionUtils.add(result, super.listOptions());
+		return OptionUtils.toEnumeration(result);
 	}
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
-		m_Is = (Utils.getOptionPos("Is",options) >= 0) ? Integer.parseInt(Utils.getOption("Is", options)) : m_Is;
-		m_Iy = (Utils.getOptionPos("Iy",options) >= 0) ? Integer.parseInt(Utils.getOption("Iy", options)) : m_Iy;
-		m_Payoff = (Utils.getOptionPos('P',options) >= 0) ? Utils.getOption('P', options) : m_Payoff;
+		setChainIterations(OptionUtils.parse(options, "Is", 0));
+		setInferenceIterations(OptionUtils.parse(options, "Iy", 10));
+		setPayoff(OptionUtils.parse(options, 'P', "Exact match"));
 		super.setOptions(options);
 	}
 
 	@Override
 	public String [] getOptions() {
-
-		ArrayList<String> result;
-	  	//result = new ArrayList<String>(Arrays.asList(super.getOptions()));
-		result = new ArrayList<String>();
-	  	result.add("-Is");
-	  	result.add(String.valueOf(m_Is));
-		result.add("-Iy");
-	  	result.add(String.valueOf(m_Iy));
-		result.add("-P");
-	  	result.add(m_Payoff);
-		result.addAll(Arrays.asList(super.getOptions()));
-		return result.toArray(new String[result.size()]);
+		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, "Is", getChainIterations());
+		OptionUtils.add(result, "Iy", getInferenceIterations());
+		OptionUtils.add(result, 'P', getPayoff());
+		OptionUtils.add(result, super.getOptions());
+		return OptionUtils.toArray(result);
 	}
 
 	/** Set the inference iterations */

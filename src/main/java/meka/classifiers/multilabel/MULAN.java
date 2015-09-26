@@ -15,13 +15,9 @@
 
 package meka.classifiers.multilabel;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.util.Enumeration;
-import java.util.Random;
-import java.util.Vector;
-
+import meka.core.F;
+import meka.core.MLUtils;
+import meka.core.OptionUtils;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.lazy.IBLR_ML;
 import mulan.classifier.lazy.MLkNN;
@@ -30,17 +26,19 @@ import mulan.classifier.meta.HierarchyBuilder;
 import mulan.classifier.meta.RAkEL;
 import mulan.classifier.neural.BPMLL;
 import mulan.classifier.transformation.BinaryRelevance;
-import mulan.classifier.transformation.ClassifierChain;
 import mulan.classifier.transformation.CalibratedLabelRanking;
+import mulan.classifier.transformation.ClassifierChain;
 import mulan.classifier.transformation.LabelPowerset;
 import mulan.data.MultiLabelInstances;
 import weka.core.Instance;
 import weka.core.Instances;
-import meka.core.MLUtils;
-import meka.core.F;
 import weka.core.Option;
 import weka.core.RevisionUtils;
-import weka.core.Utils;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.*;
 
 /**
  * MULAN.java - A wrapper for MULAN classifiers <a href=http://mulan.sourceforge.net>MULAN</a>. 
@@ -87,41 +85,30 @@ public class MULAN extends ProblemTransformationMethod {
 		return m_MethodString;
 	}
 
-	@Override
-	public Enumeration listOptions() {
-
-		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tMethod Name\n\t "+MethodSelection+"", "S", 1, "-S <value>"));
-
-		Enumeration enu = super.listOptions();
-
-		while (enu.hasMoreElements()) 
-			newVector.addElement(enu.nextElement());
-
-		return newVector.elements();
-	}
-
-	@Override
-	public void setOptions(String[] options) throws Exception {
-
-		setMethod(Utils.getOption('S', options));
-		super.setOptions(options);
-	}
-
 	public String methodTipText() {
 		return "Any of "+MethodSelection+". If you wish to add more, you will have to add code to the buildClassifier(Instances) function in MULAN.java";
 	}
 
 	@Override
-	public String [] getOptions() {
+	public Enumeration listOptions() {
+		Vector result = new Vector();
+		result.addElement(new Option("\tMethod Name\n\tdefault: RAkEL1", "S", 1, "-S <value>"));
+		OptionUtils.add(result, super.listOptions());
+		return OptionUtils.toEnumeration(result);
+	}
 
-		String [] superOptions = super.getOptions();
-		String [] options = new String [superOptions.length + 2];
-		int current = 0;
-		options[current++] = "-S";
-		options[current++] =  getMethod();
-		System.arraycopy(superOptions, 0, options, current, superOptions.length);
-		return options;
+	@Override
+	public void setOptions(String[] options) throws Exception {
+		setMethod(OptionUtils.parse(options, 'S', "RAkEL1"));
+		super.setOptions(options);
+	}
+
+	@Override
+	public String [] getOptions() {
+		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, 'S', getMethod());
+		OptionUtils.add(result, super.getOptions());
+		return OptionUtils.toArray(result);
 
 	}
 

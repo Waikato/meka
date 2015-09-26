@@ -16,16 +16,14 @@
 package meka.classifiers.multilabel;
 
 import meka.core.MLUtils;
+import meka.core.OptionUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Random;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * The Classifier Chains  Method - Random Subspace ('quick') Version.
@@ -195,48 +193,27 @@ public class CCq extends ProblemTransformationMethod implements Randomizable, Te
 
 	@Override
 	public Enumeration listOptions() {
-
-		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tSets the downsampling ratio        \n\tdefault: "+m_DownSampleRatio+"\t(of original)", "P", 1, "-P <value>"));
-		newVector.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
-
-		Enumeration enu = super.listOptions();
-
-		while (enu.hasMoreElements()) 
-			newVector.addElement(enu.nextElement());
-
-		return newVector.elements();
+		Vector result = new Vector();
+		result.addElement(new Option("\tSets the downsampling ratio        \n\tdefault: 0.75\t(of original)", "P", 1, "-P <value>"));
+		result.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
+		OptionUtils.add(result, super.listOptions());
+		return OptionUtils.toEnumeration(result);
 	}
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
-
-		String tmpStr; 
-		tmpStr = Utils.getOption('P', options);
-		if (tmpStr.length() != 0) 
-			setDownSampleRatio(Double.parseDouble(tmpStr));
-		else
-		  setDownSampleRatio(0.75);
-
-		tmpStr = Utils.getOption('S', options);
-		if (tmpStr.length() > 0)
-			setSeed(Integer.parseInt(tmpStr));
-		else
-			setSeed(0);
-
+		setDownSampleRatio(OptionUtils.parse(options, 'P', 0.75));
+		setSeed(OptionUtils.parse(options, 'S', 0));
 		super.setOptions(options);
 	}
 
 	@Override
 	public String [] getOptions() {
-
-		String [] superOptions = super.getOptions();
-		String [] options = new String [superOptions.length + 2];
-		int current = 0;
-		options[current++] = "-P";
-		options[current++] = "" + m_DownSampleRatio;
-		System.arraycopy(superOptions, 0, options, current, superOptions.length);
-		return options;
+		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, 'P', getDownSampleRatio());
+		OptionUtils.add(result, 'S', getSeed());
+		OptionUtils.add(result, super.getOptions());
+		return OptionUtils.toArray(result);
 
 	}
 

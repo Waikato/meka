@@ -18,6 +18,7 @@ package meka.classifiers.multilabel;
 import meka.classifiers.multilabel.cc.CNode;
 import meka.core.A;
 import meka.core.M;
+import meka.core.OptionUtils;
 import meka.core.StatUtils;
 import mst.Edge;
 import mst.EdgeWeightedGraph;
@@ -203,36 +204,38 @@ public class BCC extends CC {
 	
 	String m_DependencyType = "Ibf";
 
+	public void setDependencyType(String value) {
+		m_DependencyType = value;
+	}
+
+	public String getDependencyType() {
+		return m_DependencyType;
+	}
+
+	public String dependencyTypeTipText() {
+		return "XXX";
+	}
+
 	@Override
 	public Enumeration listOptions() {
-
-		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tThe way to measure dependencies.\n\tdefault: "+m_DependencyType+" (frequencies only)", "X", 1, "-X <value>"));
-
-		Enumeration enu = super.listOptions();
-
-		while (enu.hasMoreElements()) 
-			newVector.addElement(enu.nextElement());
-
-		return newVector.elements();
+		Vector result = new Vector();
+		result.addElement(new Option("\tThe way to measure dependencies.\n\tdefault: "+m_DependencyType+" (frequencies only)", "X", 1, "-X <value>"));
+		OptionUtils.add(result, super.listOptions());
+		return OptionUtils.toEnumeration(result);
 	}
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
-
-		m_DependencyType = (Utils.getOptionPos('X',options) >= 0) ? Utils.getOption('X', options) : m_DependencyType;
-
+		setDependencyType(OptionUtils.parse(options, 'X', "Ibf"));
 		super.setOptions(options);
 	}
 
 	@Override
 	public String [] getOptions() {
-		ArrayList<String> result;
-	  	result = new ArrayList<String>(); //(Arrays.asList(super.getOptions()));
-	  	result.add("-X");
-	  	result.add(m_DependencyType);
-		result.addAll(Arrays.asList(super.getOptions()));
-		return result.toArray(new String[result.size()]);
+		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, 'X', getDependencyType());
+		OptionUtils.add(result, super.getOptions());
+		return OptionUtils.toArray(result);
 	}
 
 	public static void main(String args[]) {

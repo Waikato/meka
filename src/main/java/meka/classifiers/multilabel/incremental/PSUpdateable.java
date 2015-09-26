@@ -19,17 +19,15 @@ import meka.classifiers.multilabel.IncrementalMultiLabelClassifier;
 import meka.classifiers.multilabel.PS;
 import meka.core.LabelSet;
 import meka.core.MLUtils;
+import meka.core.OptionUtils;
 import meka.core.PSUtils;
 import weka.classifiers.UpdateableClassifier;
 import weka.classifiers.trees.HoeffdingTree;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Option;
-import weka.core.Utils;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * PSUpdateable.java - Pruned Sets Updateable.
@@ -78,14 +76,14 @@ public class PSUpdateable extends PS implements IncrementalMultiLabelClassifier 
 		L = D.classIndex();
 		m_Counter = D.numInstances();
 
-		if (m_Counter > m_Limit)  {
+		if (m_Counter > getLimit())  {
 			// build
 			if (getDebug()) System.out.println("init build @ "+D.numInstances());
 			combinations = PSUtils.countCombinationsSparse(D,L);
 			MLUtils.pruneCountHashMap(combinations,m_P);
 			// { NEW (we don't want more than m_Support classes!)
 			int p = m_P;
-			while(combinations.size() > m_Support) {
+			while(combinations.size() > getSupport()) {
 				//System.out.println("double prune!");
 				m_P++;
 				MLUtils.pruneCountHashMap(combinations,m_P);
@@ -106,20 +104,20 @@ public class PSUpdateable extends PS implements IncrementalMultiLabelClassifier 
 	@Override
 	public void updateClassifier(Instance x) throws Exception {
 
-		if (m_Counter < m_Limit) {
+		if (m_Counter < getLimit()) {
 
 			// store example
 			batch.add(x);
 			mlu.updateClassifier(x);
 			// build when we're ready
-			if (++m_Counter >= m_Limit) {
+			if (++m_Counter >= getLimit()) {
 				// bulid PS
 				combinations = PSUtils.countCombinationsSparse(batch,L);
 				//combinations.prune(m_P);
 				MLUtils.pruneCountHashMap(combinations,m_P);
 				// { NEW (we don't want more than m_Support classes!) -- note, the while loop is a slow way to do this
 				int p = m_P;
-				while(combinations.size() > m_Support) {
+				while(combinations.size() > getSupport()) {
 					m_P++;
 					MLUtils.pruneCountHashMap(combinations,m_P);
 				}
@@ -143,7 +141,7 @@ public class PSUpdateable extends PS implements IncrementalMultiLabelClassifier 
 	@Override
 	public double[] distributionForInstance(Instance x) throws Exception {
 		int L = x.classIndex();
-		if (m_Counter < m_Limit) {
+		if (m_Counter < getLimit()) {
 			// return most common combination
 			return mlu.distributionForInstance(x);
 		}
@@ -155,54 +153,54 @@ public class PSUpdateable extends PS implements IncrementalMultiLabelClassifier 
 
 	@Override
 	public String [] getOptions() {
-
-		String [] superOptions = super.getOptions();
-		String [] options = new String [superOptions.length + 4];
-		int current = 0;
-		options[current++] = "-I";
-		options[current++] = "" + m_Limit;
-		options[current++] = "-S";
-		options[current++] = "" + m_Support;
-		System.arraycopy(superOptions, 0, options, current, superOptions.length);
-		return options;
-
+		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, 'I', getLimit());
+		OptionUtils.add(result, 'S', getSupport());
+		OptionUtils.add(result, super.getOptions());
+		return OptionUtils.toArray(result);
 	}
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
-
-		try {
-			m_Limit = Integer.parseInt(Utils.getOption('I', options));
-		} catch(Exception e) {
-			if(getDebug()) System.err.println("Using default m_Limit = "+m_Limit);
-		}
-
-		try {
-			m_Support = Integer.parseInt(Utils.getOption('S', options));
-		} catch(Exception e) {
-			if(getDebug()) System.err.println("Using default m_Support = "+m_Support);
-		}
-
+		setLimit(OptionUtils.parse(options, 'I', 1000));
+		setSupport(OptionUtils.parse(options, 'S', 10));
 		super.setOptions(options);
 	}
 
 	@Override
 	public Enumeration listOptions() {
+		Vector result = new Vector();
+		result.addElement(new Option("\tSets the buffer size        \n\tdefault: 1000", "I", 1, "-I <value>"));
+		result.addElement(new Option("\tSets the max. num. of combs.\n\tdefault: 10", "S", 1, "-S <value>"));
+		OptionUtils.add(result, super.listOptions());
+		return OptionUtils.toEnumeration(result);
+	}
 
-		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tSets the buffer size        \n\tdefault: "+m_Limit+"", "I", 1, "-I <value>"));
-		newVector.addElement(new Option("\tSets the max. num. of combs.\n\tdefault: "+m_Support+"", "S", 1, "-S <value>"));
+	public int getLimit() {
+		return m_Limit;
+	}
 
-		Enumeration enu = super.listOptions();
+	public void setLimit(int m_Limit) {
+		this.m_Limit = m_Limit;
+	}
 
-		while (enu.hasMoreElements()) 
-			newVector.addElement(enu.nextElement());
+	public String limitTipText() {
+		return "XXX.";
+	}
 
-		return newVector.elements();
+	public int getSupport() {
+		return m_Support;
+	}
+
+	public void setSupport(int m_Support) {
+		this.m_Support = m_Support;
+	}
+
+	public String supportTipText() {
+		return "XXX.";
 	}
 
 	public static void main(String args[]) {
 		IncrementalEvaluation.runExperiment(new PSUpdateable(),args);
 	}
-
 }

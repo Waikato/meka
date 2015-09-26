@@ -17,12 +17,14 @@ package meka.classifiers.multilabel.meta;
 
 import meka.classifiers.multilabel.CC;
 import meka.classifiers.multilabel.ProblemTransformationMethod;
+import meka.core.OptionUtils;
 import weka.core.Instance;
 import weka.core.Option;
 import weka.core.Randomizable;
-import weka.core.Utils;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -120,58 +122,30 @@ public abstract class MetaProblemTransformationMethod extends ProblemTransformat
 
 	@Override
 	public Enumeration listOptions() {
-		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tSets the number of models (default "+m_NumIterations+")", "I", 1, "-I <num>"));
-		newVector.addElement(new Option("\tSize of each bag, as a percentage of total training size (default "+m_BagSizePercent+")", "P", 1, "-P <size percentage>"));
-		newVector.addElement(new Option("\tRandom number seed for sampling (default "+m_Seed+")", "S", 1, "-S <seed>"));
-
-		Enumeration enu = super.listOptions();
-		while (enu.hasMoreElements()) {
-			newVector.addElement(enu.nextElement());
-		}
-
-		return newVector.elements();
+		Vector result = new Vector();
+		result.addElement(new Option("\tSets the number of models (default 10)", "I", 1, "-I <num>"));
+		result.addElement(new Option("\tSize of each bag, as a percentage of total training size (default 67)", "P", 1, "-P <size percentage>"));
+		result.addElement(new Option("\tRandom number seed for sampling (default 1)", "S", 1, "-S <seed>"));
+		OptionUtils.add(result, super.listOptions());
+		return OptionUtils.toEnumeration(result);
 	}
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
-
-		String tmpStr; 
-
-		tmpStr = Utils.getOption('S', options);
-		if (tmpStr.length() != 0) 
-			setSeed(Integer.parseInt(tmpStr));
-		else
-		  setSeed(1);
-
-		tmpStr = Utils.getOption('I', options);
-		if (tmpStr.length() != 0) 
-			setNumIterations(Integer.parseInt(tmpStr));
-		else
-		  setNumIterations(10);
-
-		tmpStr = Utils.getOption('P', options);
-		if (tmpStr.length() != 0) 
-			setBagSizePercent(Integer.parseInt(tmpStr));
-		else
-		  setBagSizePercent(67);
-
+		setSeed(OptionUtils.parse(options, 'S', 1));
+		setNumIterations(OptionUtils.parse(options, 'I', 10));
+		setBagSizePercent(OptionUtils.parse(options, 'P', 67));
 		super.setOptions(options);
 	}
 
 	@Override
 	public String [] getOptions() {
-		String [] superOptions = super.getOptions();
-		String [] options = new String [superOptions.length + 6];
-		int current = 0;
-		options[current++] = "-S";
-		options[current++] = "" + getSeed();
-		options[current++] = "-I";
-		options[current++] = "" + getNumIterations();
-		options[current++] = "-P";
-		options[current++] = "" + getBagSizePercent();
-		System.arraycopy(superOptions, 0, options, current, superOptions.length);
-		return options;
+		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, 'S', getSeed());
+		OptionUtils.add(result, 'I', getNumIterations());
+		OptionUtils.add(result, 'P', getBagSizePercent());
+		OptionUtils.add(result, super.getOptions());
+		return OptionUtils.toArray(result);
 	}
 
 	/**

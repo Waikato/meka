@@ -16,18 +16,11 @@
 package meka.classifiers.multilabel;
 
 import junit.framework.Test;
-import junit.framework.TestSuite;
 import junit.framework.TestCase;
-
-import meka.classifiers.AbstractMekaClassifierTest;
-import weka.classifiers.Classifier;
-import meka.classifiers.multilabel.meta.*;
-import weka.classifiers.functions.SMO;
-import weka.core.converters.ConverterUtils.DataSource;
+import junit.framework.TestSuite;
+import meka.classifiers.multilabel.meta.EnsembleML;
 import meka.core.Result;
-import meka.core.MLEvalUtils;
-
-import meka.gui.explorer.Explorer;
+import weka.classifiers.functions.SMO;
 
 /**
  * EvaluationTests. Run from the command line with:<p/>
@@ -86,7 +79,7 @@ public class CCMethodsTests extends TestCase {
 		PMCC h = new PMCC();
 		h.setM(10);
 		h.setChainIterations(50);
-		h.setInferenceInterations(20);
+		h.setInferenceIterations(20);
 		SMO smo = new SMO();
 		smo.setBuildLogisticModels(true);
 		h.setClassifier(smo);
@@ -112,7 +105,7 @@ public class CCMethodsTests extends TestCase {
 		SMO smo = new SMO();
 		smo.setBuildLogisticModels(true);
 		h.setClassifier(smo);
-		h.setInferenceInterations(10);
+		h.setInferenceIterations(10);
 		h.setChainIterations(10);
 		Result r = EvaluationTests.cvEvaluateClassifier(h);
 		//System.out.println("CT ACC: "+r.output.get("Accuracy"));
