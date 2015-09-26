@@ -100,11 +100,12 @@ public class Result implements Serializable {
 			resultString.append("== Model info\n\n" + MLUtils.hashMapToString(model));
 		resultString.append("== Evaluation Info\n\n" + MLUtils.hashMapToString(info));
 		resultString.append("\n\n== Predictive Performance\n\n" + MLUtils.hashMapToString(output,3));
-		resultString.append("\n\n== Additional Measurements\n\n" + MLUtils.hashMapToString(vals,3));
-
+		String note = "";
 		if (info.containsKey("Type") && info.get("Type").endsWith("CV")) {
-			resultString.append("// Note: In the case of cross-fold validation, the additional measurements are _averaged_ across folds.");
+			note = " (averaged across folds)";
 		}
+		resultString.append("\n\n== Additional Measurements"+note+"\n\n" + MLUtils.hashMapToString(vals,3));
+
 
 		resultString.append("\n\n");
 		return resultString.toString();
@@ -264,7 +265,7 @@ public class Result implements Serializable {
 	 * In the multi-label case, a Threshold category must exist, containing a string defining the type of threshold we want to use/calibrate.
 	 */
 	public static HashMap<String,Object> getStats(Result r, String vop) {
-		if (r.getInfo("Type").equalsIgnoreCase("MT"))
+		if (r.getInfo("Type").startsWith("MT"))
 			return MLEvalUtils.getMTStats(r.allPredictions(),r.allActuals(), vop);
 		else 
 			return MLEvalUtils.getMLStats(r.allPredictions(), r.allActuals(), r.getInfo("Threshold"), vop);
