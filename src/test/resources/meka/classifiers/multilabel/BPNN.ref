@@ -1,8 +1,8 @@
 == Evaluation Info
 
-Classifier                     meka.classifiers.multilabel.RAkELd
-Options                        [-k, 3, -M, 2, -P, 0, -N, 0, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
-Additional Info                {[1, 2, 4][0, 3, 5]}
+Classifier                     meka.classifiers.multilabel.BPNN
+Options                        [-H, 10, -E, 100, -r, 0.1, -m, 0.1, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
+Additional Info                h=10, E=100
 Dataset                        Music
 Number of labels (L)           6
 

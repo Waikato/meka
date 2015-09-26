@@ -1,7 +1,7 @@
 == Evaluation Info
 
 Classifier                     meka.classifiers.multilabel.DBPNN
-Options                        [-H, 10, -E, 1000, -r, 0.1, -m, 0.1, -W, meka.classifiers.multilabel.BPNN, --, -H, 10, -E, 100, -r, 0.1, -m, 0.1, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2, -N, 2]
+Options                        [-N, 2, -H, 10, -E, 1000, -r, 0.1, -m, 0.1, -W, meka.classifiers.multilabel.BPNN, --, -H, 10, -E, 100, -r, 0.1, -m, 0.1, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
 Additional Info                h=10, E=1000
 Dataset                        Music
 Number of labels (L)           6

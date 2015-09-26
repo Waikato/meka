@@ -440,7 +440,7 @@ Size of the tree : 	55
 == Evaluation Info
 
 Classifier                     meka.classifiers.multilabel.CT
-Options                        [-Is, 0, -Iy, 10, -P, 0, -S, 0, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2, -H, 2, -L, 1, -X, Ibf]
+Options                        [-H, 2, -L, 1, -X, Ibf, -Is, 0, -Iy, 10, -P, Exact match, -S, 0, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
 Additional Info                0.0
 Dataset                        Music
 Number of labels (L)           6
