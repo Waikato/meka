@@ -23,10 +23,10 @@ package meka.core;
 import weka.core.Option;
 import weka.core.Utils;
 
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
+import java.io.File;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.util.*;
 
 /**
  * Helper class for option parsing.
@@ -187,6 +187,106 @@ public class OptionUtils {
 	}
 
 	/**
+	 * Parses a File option, uses default if option is missing.
+	 *
+	 * @param options       the option array to use
+	 * @param option        the option to look for in the options array (no leading dash)
+	 * @param defValue      the default value
+	 * @return              the parsed value (or default value if option not present)
+	 * @throws Exception    if parsing of value fails
+	 */
+	public static File parse(String[] options, char option, File defValue) throws Exception {
+		return parse(options, "" + option, defValue);
+	}
+
+	/**
+	 * Parses a File option, uses default if option is missing.
+	 *
+	 * @param options       the option array to use
+	 * @param option        the option to look for in the options array (no leading dash)
+	 * @param defValue      the default value
+	 * @return              the parsed value (or default value if option not present)
+	 * @throws Exception    if parsing of value fails
+	 */
+	public static File parse(String[] options, String option, File defValue) throws Exception {
+		String value = Utils.getOption(option, options);
+		if (value.isEmpty())
+			return defValue;
+		else
+			return new File(value);
+	}
+
+	/**
+	 * Parses an array option, returns all the occurrences of the option as a string array.
+	 *
+	 * @param options       the option array to use
+	 * @param option        the option to look for in the options array (no leading dash)
+	 * @return              the parsed value (or default value if option not present)
+	 * @throws Exception    if parsing of value fails
+	 */
+	public static String[] parse(String[] options, char option) throws Exception {
+		return parse(options, "" + option);
+	}
+
+	/**
+	 * Parses an array option, returns all the occurrences of the option as a string array.
+	 *
+	 * @param options       the option array to use
+	 * @param option        the option to look for in the options array (no leading dash)
+	 * @return              the parsed value (or default value if option not present)
+	 * @throws Exception    if parsing of value fails
+	 */
+	public static String[] parse(String[] options, String option) throws Exception {
+		List<String> result = new ArrayList<>();
+		while (Utils.getOptionPos(option, options) > -1)
+			result.add(Utils.getOption(option, options));
+		return result.toArray(new String[result.size()]);
+	}
+
+	/**
+	 * Parses an array option, returns all the occurrences of the option as a string array.
+	 *
+	 * @param options       the option array to use
+	 * @param option        the option to look for in the options array (no leading dash)
+	 * @return              the parsed value (or default value if option not present)
+	 * @param cls           the class type to use (requires a constructor that takes a string)
+	 * @throws Exception    if parsing of value fails
+	 */
+	public static <T> T[] parse(String[] options, char option, Class<T> cls) throws Exception {
+		return parse(options, "" + option, cls);
+	}
+
+	/**
+	 * Parses an array option, returns all the occurrences of the option as a string array.
+	 *
+	 * @param options       the option array to use
+	 * @param option        the option to look for in the options array (no leading dash)
+	 * @return              the parsed value (or default value if option not present)
+	 * @param cls           the class type to use (requires a constructor that takes a string)
+	 * @throws Exception    if parsing of value fails
+	 */
+	public static <T> T[] parse(String[] options, String option, Class<T> cls) throws Exception {
+		Constructor constr = cls.getConstructor(String.class);
+		if (constr == null)
+			throw new IllegalArgumentException("Class '" + cls.getName() + "' does not have a constructor that takes a String!");
+		// gather all options
+		List<String> list = new ArrayList<>();
+		while (Utils.getOptionPos(option, options) > -1)
+			list.add(Utils.getOption(option, options));
+		// convert to type
+		Object result = Array.newInstance(cls, list.size());
+		for (int i = 0; i < list.size(); i++) {
+			try {
+				Array.set(result, i, constr.newInstance(Utils.getOption(option, options)));
+			}
+			catch (Exception e) {
+				System.err.println("Failed to instantiate class '" + cls.getName() + "' with string value: " + list.get(i));
+			}
+		}
+		return (T[]) result;
+	}
+
+	/**
 	 * Adds the int value to the options.
 	 *
 	 * @param options   the current list of options to extend
@@ -194,8 +294,7 @@ public class OptionUtils {
 	 * @param value     the current value
 	 */
 	public static void add(List<String> options, char option, int value) {
-		options.add("-" + option);
-		options.add("" + value);
+		add(options, "" + option, value);
 	}
 
 	/**
@@ -218,8 +317,7 @@ public class OptionUtils {
 	 * @param value     the current value
 	 */
 	public static void add(List<String> options, char option, long value) {
-		options.add("-" + option);
-		options.add("" + value);
+		add(options, "" + option, value);
 	}
 
 	/**
@@ -242,8 +340,7 @@ public class OptionUtils {
 	 * @param value     the current value
 	 */
 	public static void add(List<String> options, char option, float value) {
-		options.add("-" + option);
-		options.add("" + value);
+		add(options, "" + option, value);
 	}
 
 	/**
@@ -266,8 +363,7 @@ public class OptionUtils {
 	 * @param value     the current value
 	 */
 	public static void add(List<String> options, char option, double value) {
-		options.add("-" + option);
-		options.add("" + value);
+		add(options, "" + option, value);
 	}
 
 	/**
@@ -290,8 +386,7 @@ public class OptionUtils {
 	 * @param value     the current value
 	 */
 	public static void add(List<String> options, char option, String value) {
-		options.add("-" + option);
-		options.add("" + value);
+		add(options, "" + option, value);
 	}
 
 	/**
@@ -304,6 +399,79 @@ public class OptionUtils {
 	public static void add(List<String> options, String option, String value) {
 		options.add("-" + option);
 		options.add("" + value);
+	}
+
+	/**
+	 * Adds the boolean flag (if true) to the options.
+	 *
+	 * @param options   the current list of options to extend
+	 * @param option    the option (without the leading dash)
+	 * @param value     the current value
+	 */
+	public static void add(List<String> options, char option, boolean value) {
+		add(options, "" + option, value);
+	}
+
+	/**
+	 * Adds the boolean flag (if true) to the options.
+	 *
+	 * @param options   the current list of options to extend
+	 * @param option    the option (without the leading dash)
+	 * @param value     the current value
+	 */
+	public static void add(List<String> options, String option, boolean value) {
+		if (value)
+			options.add("-" + option);
+	}
+
+	/**
+	 * Adds the File value to the options.
+	 *
+	 * @param options   the current list of options to extend
+	 * @param option    the option (without the leading dash)
+	 * @param value     the current value
+	 */
+	public static void add(List<String> options, char option, File value) {
+		add(options, "" + option, value);
+	}
+
+	/**
+	 * Adds the File value to the options.
+	 *
+	 * @param options   the current list of options to extend
+	 * @param option    the option (without the leading dash)
+	 * @param value     the current value
+	 */
+	public static void add(List<String> options, String option, File value) {
+		options.add("-" + option);
+		options.add("" + value);
+	}
+
+	/**
+	 * Adds the array to the options.
+	 *
+	 * @param options   the current list of options to extend
+	 * @param option    the option (without the leading dash)
+	 * @param value     the current value
+	 */
+	public static void add(List<String> options, char option, Object value) {
+		add(options, "" + option, value);
+	}
+
+	/**
+	 * Adds the array to the options.
+	 *
+	 * @param options   the current list of options to extend
+	 * @param option    the option (without the leading dash)
+	 * @param value     the current value
+	 */
+	public static void add(List<String> options, String option, Object value) {
+		if (!value.getClass().isArray())
+			throw new IllegalArgumentException("Value is not an array!");
+		for (int i = 0; i < Array.getLength(value); i++) {
+			options.add("-" + option);
+			options.add("" + value);
+		}
 	}
 
 	/**
@@ -389,5 +557,23 @@ public class OptionUtils {
 	 */
 	public static Enumeration toEnumeration(Vector options) {
 		return options.elements();
+	}
+
+	/**
+	 * Turns a commandline into an object.
+	 *
+	 * @param cls           the class that the commandline is expected to be
+	 * @param cmdline       the commandline to parse
+	 * @return              the object, null if failed to instantiate
+	 * @throws Exception    if parsing fails
+	 */
+	public static <T> T fromCommandLine(Class<T> cls, String cmdline) throws Exception {
+		String[]    options;
+		String      classname;
+
+		options    = Utils.splitOptions(cmdline);
+		classname  = options[0];
+		options[0] = "";
+		return (T) Utils.forName(cls, classname, options);
 	}
 }
