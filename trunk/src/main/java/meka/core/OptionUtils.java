@@ -20,6 +20,7 @@
 
 package meka.core;
 
+import weka.core.Option;
 import weka.core.Utils;
 
 import java.util.Arrays;
@@ -313,6 +314,50 @@ public class OptionUtils {
 	 */
 	public static void add(List<String> options, String[] superOptions) {
 		options.addAll(Arrays.asList(superOptions));
+	}
+
+	/**
+	 * Adds an Option for a flag to the list of options.
+	 *
+	 * @param options   the options to extend
+	 * @param text      the description
+	 * @param flag      the flag (no dash)
+	 */
+	public static void addFlag(Vector options, String text, char flag) {
+		addFlag(options, text, "" + flag);
+	}
+
+	/**
+	 * Adds an Option for a flag to the list of options.
+	 *
+	 * @param options   the options to extend
+	 * @param text      the description
+	 * @param flag      the flag (no dash)
+	 */
+	public static void addFlag(Vector options, String text, String flag) {
+		options.add(new Option("\t" + text, flag, 0, "-" + flag));
+	}
+
+	/**
+	 * Adds an Option for a flag to the list of options.
+	 *
+	 * @param options   the options to extend
+	 * @param text      the description
+	 * @param option    the option (no dash)
+	 */
+	public static void addOption(Vector options, String text, String defValue, char option) {
+		addOption(options, text, defValue, "" + option);
+	}
+
+	/**
+	 * Adds an Option for a flag to the list of options.
+	 *
+	 * @param options   the options to extend
+	 * @param text      the description
+	 * @param option    the option (no dash)
+	 */
+	public static void addOption(Vector options, String text, String defValue, String option) {
+		options.add(new Option("\t" + text + "\n\t(default: " + defValue + ")", option, 0, "-" + option + " <value>"));
 	}
 
 	/**

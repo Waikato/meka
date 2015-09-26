@@ -266,7 +266,7 @@ public class CC extends ProblemTransformationMethod
 	@Override
 	public Enumeration listOptions() {
 		Vector result = new Vector();
-		result.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
+		OptionUtils.addOption(result, seedTipText(), "0", 'S');
 		OptionUtils.add(result, super.listOptions());
 		return OptionUtils.toEnumeration(result);
 	}
