@@ -61,7 +61,7 @@ public abstract class AbstractDeepNeuralNet extends AbstractNeuralNet  {
 	@Override
 	public void setOptions(String[] options) throws Exception {
 
-		m_N = (Utils.getOptionPos('N',options) >= 0) ? Integer.parseInt(Utils.getOption('N', options)) : m_N;
+		m_N = (Utils.getOptionPos('N',options) >= 0) ? Integer.parseInt(Utils.getOption('N', options)) : 2;
 
 		super.setOptions(options);
 	}
@@ -70,9 +70,10 @@ public abstract class AbstractDeepNeuralNet extends AbstractNeuralNet  {
 	public String [] getOptions() {
 
 	  	ArrayList<String> result;
-	  	result = new ArrayList<String>(Arrays.asList(super.getOptions()));
+	  	result = new ArrayList<String>();
 	  	result.add("-N");
 		result.add(String.valueOf(m_N));
+		result.addAll(Arrays.asList(super.getOptions()));
 		return result.toArray(new String[result.size()]);
 	}
 }
