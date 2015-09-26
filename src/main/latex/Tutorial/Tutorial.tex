@@ -382,6 +382,8 @@ java meka.classifiers.multilabel.meta.EM -t data-train.arff \
 %java -cp meka.jar:weka.jar weka.classifiers.multitarget.meta.BaggingMT -x 5 -R -t data/solar_flare.arff -W weka.%classifiers.multitarget.C    C -- -W weka.classifiers.functions.Logistic
 %\end{lstlisting}
 
+{\green Note that the training set is required again in the second command because when \texttt{PCutL} is used (currently the default) it is necessary to know the label cardinality of the training data in order to calibrate a threshold.}
+
 \section{Development}
 \label{development}
 The following sections explain a bit more in detail of how to obtain MEKA's source code, how to compile it and how to develop new algorithms.
@@ -405,12 +407,12 @@ Instead of using subversion, you can simply use the source code that is part of 
 \subsection{Compiling}
 \label{compiling}
 \heading{Using \texttt{Maven}}
-MEKA uses \textit{Apache Maven}\footnote{\url{http://maven.apache.org/}} as build tool. You can compile MEKA as follows:
+\framework{\MEKA} uses \textit{Apache Maven}\footnote{\url{http://maven.apache.org/}} as build tool. You can compile \framework{\MEKA} as follows:
 \begin{lstlisting}
 mvn clean install
 \end{lstlisting}
 If you want to generate an archive containing all source code, pdfs and binary jars, then you can use the following commands
-(make sure that the version in the \textit{release.xml} file matches the one in the \textit{pom.xml}):
+(make sure that the version in the \texttt{release.xml} file matches the one in the \texttt{pom.xml}):
 \begin{lstlisting}
 mvn clean install
 mvn -f release.xml package
@@ -419,17 +421,17 @@ Please note, if you develop new algorithms, you should also create a unit test f
 
 \heading{Using IntelliJ IDEA}
 After obtaining the source code, you can simply import Meka as a Maven project.
-Select \textit{File $\rightarrow$ New $\rightarrow$ Project from Existing Sources} from the main menu and point to
-the directory containing the \textit{pom.xml} file.
+Select \textsf{File $\rightarrow$ New $\rightarrow$ Project from Existing Sources} from the main menu and point to
+the directory containing the \texttt{pom.xml} file.
 
 \heading{Using Eclipse}
 If you are using the \textit{Eclipse IDE for Java Developers}, then you can import as a Maven project.
-Select \textit{File $\rightarrow$ Import...} and then select {Maven $\rightarrow$ Existing Maven Projects}.
-After selecting the root directory with Meka's \textit{pom.xml}, click on \textit{Finish}.
+Select \textsf{File $\rightarrow$ Import...} and then select {Maven $\rightarrow$ Existing Maven Projects}.
+After selecting the root directory with \framework{\MEKA}'s \texttt{pom.xml}, click on \textsf{Finish}.
 
 \subsection{Unit tests}
 \label{unittests}
-MEKA uses the JUnit 3.8.x unit testing framework.
+\framework{\MEKA} uses the JUnit 3.8.x unit testing framework.
 
 \noindent A classifier test case is derived from the following abstract super class:
 \begin{lstlisting}
@@ -448,7 +450,7 @@ mvn test
 
 \subsection{\label{sec:extending}Extending \framework{\MEKA}}%: Writing New Classifiers
 
-Writing \framework{\MEKA} classifiers involves writing regular \framework{\WEKA} classifiers that extend either the \texttt{MultilabelClassifier} or \texttt{MultiTargetClassifier} class, and expect the \texttt{classIndex()} of \texttt{Instance}s and \texttt{Instances}s to indicate the number of target attributes (indexed at the beginning) rather than the class index (as explained in Section \ref{sec:format}). 
+\framework{\MEKA} classifiers are regular \framework{\WEKA} classifiers that extend either the \texttt{MultilabelClassifier} or \texttt{MultiTargetClassifier} class (most of them are \texttt{ProblemTransformationMethod}s), and expect the \texttt{classIndex()} of \texttt{Instance}s and \texttt{Instances}s to indicate the number of target attributes (indexed at the beginning) rather than the class index (see Section \ref{sec:format}). 
 
 The following is an example of a functioning (but extremely minimalistic) classifier, \texttt{TestClassifier}, that predicts $0$-relevance for all labels:
 
@@ -477,9 +479,9 @@ public class TestClassifier extends ProblemTransformationMethod {
 \end{lstlisting}
 }
 
-This shows how easy it is to create a new classifier. If it is not a \textit{problem transformation method}-based one,
-then use the appropriate WEKA superclass and implement the \textit{meka.classifiers.multilabel.MultiLabelClassifier}
-interface (\textit{ProblemTransformationMethod} implements this interface).
+This shows how easy it is to create a new classifier. If it is not a \textit{problem transformation method},
+then use the appropriate \framework{\WEKA} superclass and implement the \texttt{MultiLabelClassifier}
+interface (\texttt{ProblemTransformationMethod} implements this interface).
 For more useful examples see the source code of existing \framework{\MEKA} classifiers.
 The \texttt{testCapabilities(D)} line is optional but highly recommended. Note that the \texttt{distributionForInstance}
 method returns a \texttt{double[]} array exactly like in \framework{\WEKA}. However, whereas in \framework{\WEKA},
@@ -540,11 +542,12 @@ In the multi-target case, the \texttt{double[]} values returned by the method \t
 \end{lstlisting} 
 If this were the dataset exemplified in \ref{sec:format}, this classification would be \texttt{C}, \texttt{1}, and \texttt{1} for the class attributes \texttt{category}, \texttt{label}, and \texttt{rank}, respectively.
 
-Note that no threshold is calibrated. However, any associated voting or probabilistic values may be stored in the following $\texttt{C+1},\ldots,\texttt{2C}$ values; for example (again assuming \texttt{-C 6}):
+Note that no threshold is calibrated. However, any associated voting or probabilistic values {\green may be stored in the following $\texttt{C+1},\ldots,\texttt{2C}$ values; for example (again assuming \texttt{-C 6}):
 \begin{lstlisting}
 	[3.0, 1.0, 0.0, 0.5, 0.9, 0.9]
 \end{lstlisting} 
 where \texttt{C} is predicted as the value of the first target attribute with confidence $0.9$, and so on. However these values are currently only for use at classification time (for example the voting scheme of an ensemble method, see \texttt{weka.classifiers.multitarget.BaggingMT}); and not taken into account for evaluation. Note also that we intend to deprecate this method in the future, so avoid if possible.
+}
 
 \subsubsection{Incremental Classifiers}
 
@@ -586,6 +589,7 @@ Note that \framework{\MOA} now also supports \framework{\MEKA} classifiers via a
 
 Semi-supervised classifiers implement \texttt{SemisupervisedClassifier} interface and must implement the method \texttt{setUnlabelledData(Instances)} which is called automatically by the \texttt{Evaluation} class prior to \texttt{buildClassifier(Instances)}. It is up to the classifier to decide what to do with the unlabelled instances. Currently, \framework{\MEKA} assumes that unlabelled instances are the test instances (e.g., supplied with the \texttt{-T} flag). It sets all labels to missing beforehand just in case. In the case of a separate set of unlabelled instances, a model can be built, given unlabelled instances with \texttt{-T}, and then saved/dumped into a file with the \texttt{-d <filename>} option, and loaded again (with the \texttt{-l} option) along with a \emph{different} set with \texttt{-T}. 
 
+{\green
 \subsection{Miscellaneous}
 
 The \texttt{.props} files have the following order: 
@@ -603,6 +607,7 @@ The \texttt{.props} files have the following order:
 	\item Unix: \texttt{\$HOME/.meka}
 \end{itemize}
 
+}
 
 \section{Getting Help / Reporting Bugs / Contributing}
 
