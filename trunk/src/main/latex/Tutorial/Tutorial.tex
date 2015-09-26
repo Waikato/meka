@@ -14,19 +14,21 @@
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
 
+\usepackage{courier}
 \lstset{
 	tabsize=2,
 	backgroundcolor=\color{white},   % choose the background color
-	basicstyle=\footnotesize,        % size of fonts used for the code
 	breaklines=true,                 % automatic line breaking only at whitespace
 	captionpos=b,                    % sets the caption-position to bottom
 	commentstyle=\color{mygreen},    % comment style
 	escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
 	keywordstyle=\color{blue},       % keyword style
 	stringstyle=\color{mymauve},     % string literal style
+	basicstyle=\footnotesize,        % size of fonts used for the code
+	basicstyle=\small\ttfamily,
+	breaklines=true,
+	xleftmargin=\parindent
 }
-\usepackage{courier}
-\lstset{basicstyle=\small\ttfamily,breaklines=true,frame=L,xleftmargin=\parindent}
 %\lstset{framextopmargin=50pt,frame=bottomline}
 %\lstset{breaklines=true} 
 %\lstset{breakatwhitespace=true} 
@@ -78,7 +80,8 @@ This tutorial applies to \framework{\MEKA} version {\version}.
 
 \section{Getting Started}
 
-\framework{\MEKA} can be download from: \url{http://sourceforge.net/projects/meka/files/}. This tutorial is written for version \version; and assumes that you have downloaded and extracted the \texttt{meka-release-\version} and that \texttt{meka-\version}, found within, is your current working directory.
+\framework{\MEKA} can be download from: \url{http://sourceforge.net/projects/meka/files/}. This tutorial is written for version \version; and assumes that you have downloaded and extracted {\green the \texttt{meka-release-\version} and that \texttt{meka-\version}, found within, is your current working directory.
+}
 
 \subsection{Requirements}
 
@@ -89,8 +92,10 @@ This tutorial applies to \framework{\MEKA} version {\version}.
 \end{itemize}
 
 %\subsection{Downloading}
+{\green
 \framework{\MEKA} comes bundled with other packages such as \framework{\WEKA}'s \texttt{weka.jar}, and also \framework{\MULAN}'s \texttt{mulan.jar} for running classifiers from this framework. % If \framework{\WEKA} is already installed on your system, it must be at least version release (\texttt{3.7.X}) to be compatible with \texttt{\MEKA}.
 These files are found in the \texttt{lib} directory. See \texttt{lib/README.txt} for version information.
+}
 
 
 %\framework{\MEKA}'s incremental classification extension (\texttt{mice.jar}) comes packaged in a separate jar file. 
@@ -98,10 +103,11 @@ These files are found in the \texttt{lib} directory. See \texttt{lib/README.txt}
 \subsection{Running}
 \label{sec:running}
 
-\framework{\MEKA} can be used very easily from the command line. For example, to run the Binary Relevance (BR) classifier on the \textit{Music} dataset; type:
+\framework{\MEKA} can be used very easily from the command line. For example, to run the Binary Relevance (BR) classifier on the \textit{Music} dataset; {\green type:
 \begin{lstlisting}
 java -cp "./lib/*" meka.classifiers.multilabel.BR -t data/Music.arff
 \end{lstlisting}
+}
 
 If you are on a Microsoft Windows system, you need to use back slashes instead of forward slashes (\texttt{.\textbackslash lib\textbackslash*}). If you add the \texttt{jar} files to the system's \texttt{CLASSPATH}, you do not need to supply the \texttt{-cp} option at runtime. For the remainder of examples in this tutorial we will assume that this is the case.
 
@@ -172,10 +178,9 @@ A suitable dataset is the only requirement to begin running experiments with \fr
 
 With the exception of the different use of the \texttt{-c} flag (see the previous section), many of \framework{\WEKA}'s command line options for evaluation work identically in \framework{\MEKA} too. You can obtain a list of them by running any classifier with the \texttt{-h} flag, for example: \texttt{java meka.classifiers.multilabel.BR -h} displays the following:
 	 
-{
-\tiny
-\lstinputlisting{help.txt}
-}
+\begin{center}
+\lstinputlisting[basicstyle=\scriptsize\ttfamily,frame=single]{help.txt}
+\end{center}
 
 The only required options are \texttt{-t} to specify the dataset, and \texttt{-C} to specify the number of target attributes (which is typically included within the dataset, as explained in the previous section).  
 
@@ -195,7 +200,7 @@ The CLI is the most powerful way to work with \framework{\MEKA}, but the GUI is 
 	\item Load a dataset file using \textsf{Open} from the file menu. %See \Sec{sec:data.gui} for information on preprocessing the datasets.
 	\item Click on the \textsf{Classify} tab.
 	\item \textsf{Choose} a multi-label or multi-target classifier (or leave the default choice). 
-	\item Click on the label to the right of this button and set specific options to the classifier. In most cases, these options also involve setting a \framework{\WEKA} single-label base classifier (and also its options). For \framework{\MEKA}'s meta classifiers, you will need to first choose a \framework{\MEKA} base classifier, and then a single-label \framework{\WEKA} base classifier for this classifier. See, for example, \Fig{screen:eval}, using a \texttt{BaggingML} ensemble of \texttt{CC} (classifier chains) with \texttt{SMO} as the single-label base classifier.
+	\item Click on the label to the right of this button and set specific options to the classifier. In most cases, these options also involve setting a \framework{\WEKA} single-label base classifier (and also its options). For \framework{\MEKA}'s \texttt{meta} classifiers, you will need to first choose a multi-label base classifier, and then a single-label (\framework{\WEKA}) base classifier for this classifier. See, for example, \Fig{screen:eval}, using a \texttt{BaggingML} ensemble of \texttt{CC} (classifier chains) with \texttt{SMO} as the single-label base classifier.
 	\item In the \textsf{Evaluation} panel you configure what type of evaluation you want to do, and some of the options given in the previous section are available here. For example, a 55/45 train/test split, as being specified in \Fig{screen:split}.
 	\item When you click \textsf{Start} the experiment will be run. When finished, the result will appear in the \textsf{History} panel. This is the same output as would be seen on the command line, and explained in the following section. The verbosity of the results is controlled by the \textsf{Verbosity} option.
 	%\item You can export results to text, or copy of paste it.
@@ -221,11 +226,13 @@ The CLI is the most powerful way to work with \framework{\MEKA}, but the GUI is 
 
 \subsection{\label{sec:evaluation}Evaluation}
 
-Running a BR classifier with Naive Bayes on the \textit{Music} data will output the following:
+Running \texttt{BR} {\green with \texttt{NaiveBayes}} on the \textit{Music} data will output the following:
 
-{\small
-\lstinputlisting{eval.txt}
-}
+%\lstinputlisting{eval.txt}
+\begin{center}
+%\lstinputlisting[basicstyle=\scriptsize\ttfamily,frame=single]{../../../test/resources/meka/classifiers/%multilabel/BR.ref}
+\lstinputlisting[basicstyle=\scriptsize\ttfamily,frame=single]{eval.txt}
+\end{center}
 
 The results of the experiment in \Fig{screen:split} are shown in \Fig{screen:result}.
 \begin{figure}
@@ -252,11 +259,11 @@ Note that by increasing the verbosity level, you can get more or less output. On
 \end{tabular}
 \end{center}
 
-Most of these metrics are described in \cite{ECC2,MMD}. The most common metrics reported in the multi-label literature are \texttt{Hamming Loss} (evaluation by label, averaged across all labels) and \texttt{Exact Match} (evaluation of each example, averaged across all examples). Multi-label \texttt{Accuracy} (also called \textit{Jaccard Index} in information retrieval) is a good compromise between both these metrics.
+Most of these metrics are described in \cite{ECC2,MMD}. The most common metrics reported in the multi-label literature are \texttt{Hamming Loss} (evaluation by label, averaged across all labels) and \texttt{Exact Match} (evaluation of each example, averaged across all examples). Multi-label \texttt{Accuracy} (also called \texttt{Jaccard Index} in information retrieval) is a good compromise between both these metrics.
 
 %\subsection{Thresholds}
 
-Note that a \texttt{Threshold} has been calibrated automatically; to minimise the difference between the label cardinality of the training set and the predictions on the test set; a practice described in \cite{ECC2}. To calibrate a threshold for \emph{each} label, add the \texttt{-threshold PCutL} option\footnote{Note: this was \texttt{-T C} in some earlier versions of \framework{\MEKA}}. This gives a vector of thresholds which, in this case, increases \texttt{Accuracy} slightly (to \texttt{0.456}). Different thresholds are calculated for different methods and datasets. Note that \texttt{PCutL} is being specified in \Fig{screen:split}, which results in a threshold for each label in \Fig{screen:result}.
+Note that a \texttt{Threshold} can be calibrated automatically whenever \texttt{-threshold PCut}, by minimizing the difference between the label cardinality of the training set and the predictions on the test set\footnote{This does \emph{not} require access to the true predictions in the test set} \cite{ECC2}, the so-called \textit{P-Cut} method. To calibrate a threshold the same way but for each label individual, use instead \texttt{-threshold PCutL} option. This is being specified in \Fig{screen:split}, (note that one threshold is calibrated for each label in \Fig{screen:result}. In \textsf{Prequential} evaluation, only a fixed threshold is allowed.
 
 %\begin{lstlisting}
 %          Threshold : [0.29971988795518206, 0.26330532212885155, \
@@ -264,12 +271,12 @@ Note that a \texttt{Threshold} has been calibrated automatically; to minimise th
 %			  0.3473389355742297]
 %\end{lstlisting}
 
-\framework{\MEKA} also supports \emph{cross validation}; for example:
+\framework{\MEKA} also supports \textsf{Cross-validation}; for example:
 \begin{lstlisting}
 java meka.classifiers.multilabel.BR -x 10 -R -t data/Music.arff \
   -W weka.classifiers.bayes.NaiveBayes
 \end{lstlisting}
-conducts 10 fold cross validation on a randomised version of the \textit{Music} dataset and outputs the average results across all folds with standard deviation. %Note that using the \texttt{-f} option in this case to save output to a file will output only the results of the validation; which can be useful for compiling results later.
+conducts 10 fold cross validation on a randomised version of the \textit{Music} dataset and outputs the average results across all folds with standard deviation. Note that under incremental evaluation, the \texttt{-x} option is reused to indicate the number of samples to take. %Note that using the \texttt{-f} option in this case to save output to a file will output only the results of the validation; which can be useful for compiling results later.
 
 %Sometimes it can be useful to analyse the actual predictions made at test time (for example if you wish to use an evaluation metric not included in \framework{\MEKA}). \framework{\MEKA} can produce plain-text files with the option \texttt{-f <file name>}; for example:
 %\begin{lstlisting}
@@ -345,11 +352,11 @@ the \texttt{-verbosity 5} options increases the amount of evaluation output.
 %  -W weka.classifiers.functions.Logistic
 %\end{lstlisting}
 
-\paragraph{Incremental Classification: Ensembles of Binary Relevance} (see \cite{ECC2,MEDS2}) With 10 ensemble members (default) on the \textit{Enron} dataset with \texttt{NaiveBayesUpdateable} as a base classifier; using over 20 evaluation windows:
+\paragraph{Incremental Classification: Ensembles of Binary Relevance} (see \cite{ECC2,MEDS2}) With 10 ensemble members (default) on the \textit{Enron} dataset with \texttt{NaiveBayesUpdateable} as a base classifier; prequential evaluation taking 20 samples of performance over time:
 
 \begin{lstlisting}
 java meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable\
-  -B 20 -t data/Enron.arff \
+  -x 20 -t data/Enron.arff \
   -W meka.classifiers.multilabel.incremental.BRUpdateable -- \
     -W weka.classifiers.bayes.NaiveBayesUpdateable
 \end{lstlisting}
