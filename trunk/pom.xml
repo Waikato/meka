@@ -322,15 +322,6 @@
             <goals>
               <goal>exec</goal>
             </goals>
-            <configuration>
-              <executable>java</executable>
-              <arguments>
-                <argument>-Xmx2g</argument>
-                <argument>-classpath</argument>
-                <classpath/>
-                <argument>meka.gui.guichooser.GUIChooser</argument>
-              </arguments>
-            </configuration>
           </execution>
           <execution>
             <id>br-help</id>
@@ -369,6 +360,15 @@
             </configuration>
           </execution>
         </executions>
+        <configuration>
+          <executable>java</executable>
+          <arguments>
+            <argument>-Xmx2g</argument>
+            <argument>-classpath</argument>
+            <classpath/>
+            <argument>meka.gui.guichooser.GUIChooser</argument>
+          </arguments>
+        </configuration>
       </plugin>
     </plugins>
   </build>
