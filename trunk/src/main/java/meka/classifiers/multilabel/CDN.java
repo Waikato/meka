@@ -16,6 +16,7 @@
 package meka.classifiers.multilabel;
 
 import meka.core.A;
+import meka.core.OptionUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.core.*;
@@ -182,58 +183,30 @@ public class CDN extends ProblemTransformationMethod implements Randomizable, Te
 
 	@Override
 	public Enumeration listOptions() {
-
-		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tTotal Iterations.\n\tdefault: "+I, "I", 1, "-I <value>"));
-		newVector.addElement(new Option("\tCollection Iterations.\n\tdefault: "+I_c, "Ic", 1, "-Ic <value>"));
-		newVector.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
-
-		Enumeration enu = super.listOptions();
-
-		while (enu.hasMoreElements())
-			newVector.addElement(enu.nextElement());
-
-		return newVector.elements();
+		Vector result = new Vector();
+		result.addElement(new Option("\tTotal Iterations.\n\tdefault: 1000", "I", 1, "-I <value>"));
+		result.addElement(new Option("\tCollection Iterations.\n\tdefault: 100", "Ic", 1, "-Ic <value>"));
+		result.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
+		OptionUtils.add(result, super.listOptions());
+		return OptionUtils.toEnumeration(result);
 	}
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
-		String tmpStr;
-
-		tmpStr = Utils.getOption('I',options);
-		if (!tmpStr.isEmpty())
-			setI(Integer.parseInt(tmpStr));
-		else
-			setI(1000);
-
-		tmpStr = Utils.getOption("Ic",options);
-		if (!tmpStr.isEmpty())
-			setIc(Integer.parseInt(tmpStr));
-		else
-			setIc(100);
-
-		tmpStr = Utils.getOption('S', options);
-		if (!tmpStr.isEmpty())
-			setSeed(Integer.parseInt(tmpStr));
-		else
-			setSeed(0);
-
+		setI(OptionUtils.parse(options, 'I', 1000));
+		setIc(OptionUtils.parse(options, "Ic", 100));
+		setSeed(OptionUtils.parse(options, 'S', 0));
 		super.setOptions(options);
 	}
 
 	@Override
 	public String [] getOptions() {
-
-		ArrayList<String> result;
-		result = new ArrayList<String>();
-		result.add("-I");
-		result.add("" + getI());
-		result.add("-Ic");
-		result.add("" + getIc());
-		result.add("-S");
-		result.add("" + getSeed());
-		result.addAll(Arrays.asList(super.getOptions()));
-		return result.toArray(new String[result.size()]);
+		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, 'I', getI());
+		OptionUtils.add(result, "Ic", getIc());
+		OptionUtils.add(result, 'S', getSeed());
+		OptionUtils.add(result, super.getOptions());
+		return OptionUtils.toArray(result);
 	}
 
 	public static void main(String args[]) {

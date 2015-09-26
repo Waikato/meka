@@ -15,13 +15,10 @@
 
 package meka.classifiers.multilabel.NN;
 
+import meka.core.OptionUtils;
 import weka.core.Option;
-import weka.core.Utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * AbstractDeepNeuralNet.java - Extends AbstractNeuralNet with depth options. 
@@ -38,43 +35,34 @@ public abstract class AbstractDeepNeuralNet extends AbstractNeuralNet  {
 		return m_N;
 	}
 
-	/*
 	public void setN(int n) { 
 		m_N = n;
 	}
-	*/
+
+	public String nTipText() {
+		return "The number of RBMs.";
+	}
 
 	@Override
 	public Enumeration listOptions() {
-
-		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tSets the number of RBMs\n\tdefault: "+m_N, "N", 1, "-N <value>"));
-
-		Enumeration enu = super.listOptions();
-
-		while (enu.hasMoreElements()) 
-			newVector.addElement(enu.nextElement());
-
-		return newVector.elements();
+		Vector result = new Vector();
+		result.addElement(new Option("\tSets the number of RBMs\n\tdefault: 2", "N", 1, "-N <value>"));
+		OptionUtils.add(result, super.listOptions());
+		return OptionUtils.toEnumeration(result);
 	}
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
-
-		m_N = (Utils.getOptionPos('N',options) >= 0) ? Integer.parseInt(Utils.getOption('N', options)) : 2;
-
+		setN(OptionUtils.parse(options, 'N', 2));
 		super.setOptions(options);
 	}
 
 	@Override
 	public String [] getOptions() {
-
-	  	ArrayList<String> result;
-	  	result = new ArrayList<String>();
-	  	result.add("-N");
-		result.add(String.valueOf(m_N));
-		result.addAll(Arrays.asList(super.getOptions()));
-		return result.toArray(new String[result.size()]);
+	  	List<String> result = new ArrayList<>();
+		OptionUtils.add(result, 'N', getN());
+		OptionUtils.add(result, super.getOptions());
+		return OptionUtils.toArray(result);
 	}
 }
 

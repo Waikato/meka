@@ -24,10 +24,7 @@ import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Random;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * SCC.java - Super Class Classifier (aka Super Node Classifier).
@@ -428,47 +425,36 @@ public class SCC extends ProblemTransformationMethod implements Randomizable, Mu
 
 	@Override
 	public Enumeration listOptions() {
-
-		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tSets the number of simulated annealing iterations\n\tdefault: "+m_I, "I", 1, "-I <value>"));
-		newVector.addElement(new Option("\tSets the number of internal-validation iterations\n\tdefault: "+m_Iv, "V", 1, "-V <value>"));
-		newVector.addElement(new Option("\tSets the pruning number for PS\n\tdefault: "+m_P, "P", 1, "-P <value>"));
-		newVector.addElement(new Option("\tSets the limit for PS (was N) \n\tdefault: "+m_L, "L", 1, "-L <value>"));
-
-		Enumeration enu = super.listOptions();
-
-		while (enu.hasMoreElements()) 
-			newVector.addElement(enu.nextElement());
-
-		return newVector.elements();
+		Vector result = new Vector();
+		result.addElement(new Option("\tSets the number of simulated annealing iterations\n\tdefault: 1000", "I", 1, "-I <value>"));
+		result.addElement(new Option("\tSets the number of internal-validation iterations\n\tdefault: 0", "V", 1, "-V <value>"));
+		result.addElement(new Option("\tSets the pruning number for PS\n\tdefault: 1", "P", 1, "-P <value>"));
+		result.addElement(new Option("\tSets the limit for PS (was N) \n\tdefault: 2", "L", 1, "-L <value>"));
+		result.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
+		OptionUtils.add(result, super.listOptions());
+		return OptionUtils.toEnumeration(result);
 	}
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
-		m_I = (Utils.getOptionPos('I',options) >= 0) ? Integer.parseInt(Utils.getOption('I', options)) : m_I;
-		m_L = (Utils.getOptionPos('L',options) >= 0) ? Integer.parseInt(Utils.getOption('L', options)) : m_L;
-		m_Iv = (Utils.getOptionPos('V',options) >= 0) ? Integer.parseInt(Utils.getOption('V', options)) : m_Iv;
-		m_P = (Utils.getOptionPos('P',options) >= 0) ? Integer.parseInt(Utils.getOption('P', options)) : m_P;
+		setI(OptionUtils.parse(options, 'I', 1000));
+		setN(OptionUtils.parse(options, 'L', 2));
+		setIv(OptionUtils.parse(options, 'V', 0));
+		setP(OptionUtils.parse(options, 'P', 1));
+		setSeed(OptionUtils.parse(options, 'S', 0));
 		super.setOptions(options);
 	}
 
 	@Override
 	public String [] getOptions() {
-
-		String [] superOptions = super.getOptions();
-		String [] options = new String [superOptions.length + 8];
-		int current = 0;
-		options[current++] = "-I";
-		options[current++] = String.valueOf(m_I);
-		options[current++] = "-V";
-		options[current++] = String.valueOf(m_Iv);
-		options[current++] = "-P";
-		options[current++] = String.valueOf(m_P);
-		options[current++] = "-L";
-		options[current++] = String.valueOf(m_L);
-		System.arraycopy(superOptions, 0, options, current, superOptions.length);
-		return options;
-
+		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, 'I', getI());
+		OptionUtils.add(result, 'L', getN());
+		OptionUtils.add(result, 'V', getIv());
+		OptionUtils.add(result, 'P', getP());
+		OptionUtils.add(result, 'S', getSeed());
+		OptionUtils.add(result, super.getOptions());
+		return OptionUtils.toArray(result);
 	}
 
 }

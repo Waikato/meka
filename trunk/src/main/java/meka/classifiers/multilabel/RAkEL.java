@@ -16,6 +16,7 @@
 package meka.classifiers.multilabel;
 
 import meka.core.MLUtils;
+import meka.core.OptionUtils;
 import meka.core.PSUtils;
 import meka.core.SuperLabelUtils;
 import weka.classifiers.AbstractClassifier;
@@ -186,45 +187,27 @@ public class RAkEL extends PS {
 
 	@Override
 	public Enumeration listOptions() {
-		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tSets M (default "+m_M+"): the number of subsets", "M", 1, "-M <num>"));
-		newVector.addElement(new Option("\tSets k (default "+m_K+"): the size of partitions.", "k", 1, "-k <num>"));
-		//newVector.addElement(new Option("\tRandom number seed for sampling (default "+m_S+")", "S", 1, "-S <seed>"));
-
-		Enumeration enu = super.listOptions();
-		while (enu.hasMoreElements()) {
-			newVector.addElement(enu.nextElement());
-		}
-
-		return newVector.elements();
+		Vector result = new Vector();
+		result.addElement(new Option("\tSets M (default 10): the number of subsets", "M", 1, "-M <num>"));
+		result.addElement(new Option("\tSets k (default 3): the size of partitions.", "k", 1, "-k <num>"));
+		OptionUtils.add(result, super.listOptions());
+		return OptionUtils.toEnumeration(result);
 	}
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
-		//try { m_S = Integer.parseInt(Utils.getOption('S',options)); } catch(Exception e) { }
-		//
-		String tmpStr; 
-		tmpStr = Utils.getOption('M', options);
-		if (tmpStr.length() != 0) 
-			setM(Integer.parseInt(tmpStr)); 
-
-		tmpStr = Utils.getOption('k', options);
-		if (tmpStr.length() != 0) 
-			setK(Integer.parseInt(tmpStr)); 
-
+		setK(OptionUtils.parse(options, 'k', 3));
+		setM(OptionUtils.parse(options, 'M', 10));
 		super.setOptions(options);
 	}
 
 	@Override
 	public String [] getOptions() {
-		ArrayList<String> result;
-	  	result = new ArrayList<String>(); 
-	  	result.add("-k");
-	  	result.add(String.valueOf(m_K));
-		result.add("-M");
-	  	result.add(String.valueOf(m_M));
-		result.addAll(Arrays.asList(super.getOptions()));
-		return result.toArray(new String[result.size()]);
+		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, 'k', getK());
+		OptionUtils.add(result, 'M', getM());
+		OptionUtils.add(result, super.getOptions());
+		return OptionUtils.toArray(result);
 	}
 
 	@Override

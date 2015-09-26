@@ -17,6 +17,7 @@ package meka.classifiers.multilabel;
 
 import meka.core.A;
 import meka.core.MLUtils;
+import meka.core.OptionUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -233,42 +234,30 @@ public class PMCC extends MCC {
 
 	@Override
 	public Enumeration listOptions() {
-
-		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tThe population size (of chains) -- should be smaller than the total number of chains evaluated (Is) \n\tdefault: "+m_M, "M", 1, "-M <value>"));
-		newVector.addElement(new Option("\tUse temperature: cool the chain down over time (from the beginning of the chain) -- can be faster\n\tdefault: "+m_O+" (no temperature)", "O", 1, "-O <value>"));
-		newVector.addElement(new Option("\tIf using O = 1 for temperature, this sets the Beta constant      \n\tdefault: "+m_Beta, "B", 1, "-B <value>"));
-
-		Enumeration enu = super.listOptions();
-
-		while (enu.hasMoreElements()) 
-			newVector.addElement(enu.nextElement());
-
-		return newVector.elements();
+		Vector result = new Vector();
+		result.addElement(new Option("\tThe population size (of chains) -- should be smaller than the total number of chains evaluated (Is) \n\tdefault: 10", "M", 1, "-M <value>"));
+		result.addElement(new Option("\tUse temperature: cool the chain down over time (from the beginning of the chain) -- can be faster\n\tdefault: 0 (no temperature)", "O", 1, "-O <value>"));
+		result.addElement(new Option("\tIf using O = 1 for temperature, this sets the Beta constant      \n\tdefault: 0.03", "B", 1, "-B <value>"));
+		OptionUtils.add(result, super.listOptions());
+		return OptionUtils.toEnumeration(result);
 	}
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
-		m_M = (Utils.getOptionPos('M',options) >= 0) ? Integer.parseInt(Utils.getOption('M', options)) : m_M;
-		m_O = (Utils.getOptionPos('O',options) >= 0) ? Integer.parseInt(Utils.getOption('O', options)) : m_O;
-		m_Beta = (Utils.getOptionPos('B',options) >= 0) ? Double.parseDouble(Utils.getOption('B', options)) : m_Beta;
+		setM(OptionUtils.parse(options, 'M', 10));
+		setO(OptionUtils.parse(options, 'O', 0));
+		setBeta(OptionUtils.parse(options, 'B', 0.03));
 		super.setOptions(options);
 	}
 
 	@Override
 	public String [] getOptions() {
-
-		ArrayList<String> result;
-	  	//result = new ArrayList<String>(Arrays.asList(super.getOptions()));
-		result = new ArrayList<String>();
-	  	result.add("-M");
-	  	result.add("" + m_M);
-		result.add("-O");
-	  	result.add("" + m_O);
-		result.add("-B");
-	  	result.add("" + m_Beta);
-		result.addAll(Arrays.asList(super.getOptions()));
-		return result.toArray(new String[result.size()]);
+		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, 'M', getM());
+		OptionUtils.add(result, 'O', getO());
+		OptionUtils.add(result, 'B', getBeta());
+		OptionUtils.add(result, super.getOptions());
+		return OptionUtils.toArray(result);
 	}
 
 	/** Set the temperature factor  */

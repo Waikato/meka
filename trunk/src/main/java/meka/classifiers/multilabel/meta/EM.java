@@ -19,14 +19,12 @@ import meka.classifiers.multilabel.CC;
 import meka.classifiers.multilabel.ProblemTransformationMethod;
 import meka.classifiers.multilabel.SemisupervisedClassifier;
 import meka.core.MLUtils;
+import meka.core.OptionUtils;
 import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * EM.java - Expectation Maximization using any multi-label classifier.
@@ -127,33 +125,24 @@ public class EM extends ProblemTransformationMethod implements SemisupervisedCla
 
 	@Override
 	public Enumeration listOptions() {
-
-		Vector newVector = new Vector();
-		newVector.addElement(new Option("\tThe number of iterations of EM to carry out (default: "+m_I+")", "I", 1, "-I <value>"));
-
-		Enumeration enu = super.listOptions();
-
-		while (enu.hasMoreElements()) 
-			newVector.addElement(enu.nextElement());
-
-		return newVector.elements();
+		Vector result = new Vector();
+		result.addElement(new Option("\tThe number of iterations of EM to carry out (default: 10)", "I", 1, "-I <value>"));
+		OptionUtils.add(result, super.listOptions());
+		return OptionUtils.toEnumeration(result);
 	}
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
-
-		m_I = (Utils.getOptionPos('I',options) >= 0) ? Integer.parseInt(Utils.getOption('I',options)) : m_I; 
+		setIterations(OptionUtils.parse(options, 'I', 10));
 		super.setOptions(options);
 	}
 
 	@Override
 	public String [] getOptions() {
-	  	ArrayList<String> result;
-	  	result = new ArrayList<String>();
-	  	result.add("-I");
-	  	result.add(String.valueOf(m_I));
-	  	result.addAll(Arrays.asList(super.getOptions()));
-		return result.toArray(new String[result.size()]);
+	  	List<String> result = new ArrayList<>();
+		OptionUtils.add(result, 'I', getIterations());
+		OptionUtils.add(result, super.getOptions());
+		return OptionUtils.toArray(result);
 	}
 
 	@Override
