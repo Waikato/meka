@@ -20,7 +20,7 @@
 
 package meka.core;
 
-import java.io.File;
+import java.io.*;
 
 /**
  * Utility class for I/O related actions.
@@ -31,65 +31,141 @@ import java.io.File;
 public class FileUtils {
 
 
-  /**
-   * Returns the number of directories that this file object contains.
-   * E.g.: /home/blah/some/where.txt will return 3. /blah.txt returns 0.
-   * 
-   * @param file		the file
-   */
-  public static int getDirectoryDepth(File file) {
-    int		result;
+	/**
+	 * Returns the number of directories that this file object contains.
+	 * E.g.: /home/blah/some/where.txt will return 3. /blah.txt returns 0.
+	 *
+	 * @param file		the file
+	 */
+	public static int getDirectoryDepth(File file) {
+		int		result;
 
-    result = 0;
-    
-    if (!file.isDirectory())
-      file = file.getParentFile();
-    
-    while (file.getParentFile() != null) {
-      result++;
-      file = file.getParentFile();
-    }
-    
-    return result;
-  }
-  
-  /**
-   * Creates a partial filename for the given file, based on how many parent
-   * directories should be included. Examples:
-   * <pre>
-   * createPartialFilename(new File("/home/some/where/file.txt"), -1)
-   *   = /home/some/where/file.txt
-   * createPartialFilename(new File("/home/some/where/file.txt"), 0)
-   *   = file.txt
-   * createPartialFilename(new File("/home/some/where/file.txt"), 1)
-   *   = where/file.txt
-   * createPartialFilename(new File("/home/some/where/file.txt"), 2)
-   *   = some/where/file.txt
-   * </pre>
-   *
-   * @param file		the file to create the partial filename for
-   * @param numParentDirs	the number of parent directories to include in
-   * 				the partial name, -1 returns the absolute
-   * 				filename
-   * @return			the generated filename
-   */
-  public static String createPartialFilename(File file, int numParentDirs) {
-    String	result;
-    File	parent;
-    int		i;
+		result = 0;
 
-    if (numParentDirs == -1) {
-      result = file.getAbsolutePath();
-    }
-    else {
-      result = file.getName();
-      parent = file;
-      for (i = 0; (i < numParentDirs) && (parent.getParentFile() != null); i++) {
-        parent = parent.getParentFile();
-        result = parent.getName() + File.separator + result;
-      }
-    }
+		if (!file.isDirectory())
+			file = file.getParentFile();
 
-    return result;
-  }
+		while (file.getParentFile() != null) {
+			result++;
+			file = file.getParentFile();
+		}
+
+		return result;
+	}
+
+	/**
+	 * Creates a partial filename for the given file, based on how many parent
+	 * directories should be included. Examples:
+	 * <pre>
+	 * createPartialFilename(new File("/home/some/where/file.txt"), -1)
+	 *   = /home/some/where/file.txt
+	 * createPartialFilename(new File("/home/some/where/file.txt"), 0)
+	 *   = file.txt
+	 * createPartialFilename(new File("/home/some/where/file.txt"), 1)
+	 *   = where/file.txt
+	 * createPartialFilename(new File("/home/some/where/file.txt"), 2)
+	 *   = some/where/file.txt
+	 * </pre>
+	 *
+	 * @param file		the file to create the partial filename for
+	 * @param numParentDirs	the number of parent directories to include in
+	 * 				the partial name, -1 returns the absolute
+	 * 				filename
+	 * @return			the generated filename
+	 */
+	public static String createPartialFilename(File file, int numParentDirs) {
+		String	result;
+		File	parent;
+		int		i;
+
+		if (numParentDirs == -1) {
+			result = file.getAbsolutePath();
+		}
+		else {
+			result = file.getName();
+			parent = file;
+			for (i = 0; (i < numParentDirs) && (parent.getParentFile() != null); i++) {
+				parent = parent.getParentFile();
+				result = parent.getName() + File.separator + result;
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Closes the stream, if possible, suppressing any exception.
+	 *
+	 * @param is		the stream to close
+	 */
+	public static void closeQuietly(InputStream is) {
+		if (is != null) {
+			try {
+				is.close();
+			}
+			catch (Exception e) {
+				// ignored
+			}
+		}
+	}
+
+	/**
+	 * Closes the stream, if possible, suppressing any exception.
+	 *
+	 * @param os		the stream to close
+	 */
+	public static void closeQuietly(OutputStream os) {
+		if (os != null) {
+			try {
+				os.flush();
+			}
+			catch (Exception e) {
+				// ignored
+			}
+			try {
+				os.close();
+			}
+			catch (Exception e) {
+				// ignored
+			}
+		}
+	}
+
+	/**
+	 * Closes the reader, if possible, suppressing any exception.
+	 *
+	 * @param reader	the reader to close
+	 */
+	public static void closeQuietly(Reader reader) {
+		if (reader != null) {
+			try {
+				reader.close();
+			}
+			catch (Exception e) {
+				// ignored
+			}
+		}
+	}
+
+	/**
+	 * Closes the writer, if possible, suppressing any exception.
+	 *
+	 * @param writer	the writer to close
+	 */
+	public static void closeQuietly(Writer writer) {
+		if (writer != null) {
+			try {
+				writer.flush();
+			}
+			catch (Exception e) {
+				// ignored
+			}
+			try {
+				writer.close();
+			}
+			catch (Exception e) {
+				// ignored
+			}
+		}
+	}
 }
