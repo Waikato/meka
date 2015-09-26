@@ -50,6 +50,9 @@ public class ClassifyTabOptions
 	/** the number of folds for CV. */
 	protected JTextField m_TextFolds;
 
+	/** the number of samples for incremental evaluation. */
+	protected JTextField m_TextSamples;
+
 	/** the threshold option. */
 	protected JTextField m_TextTOP;
 
@@ -94,6 +97,9 @@ public class ClassifyTabOptions
 
 		m_TextFolds = new JTextField("10", 5);
 		addParameter("CV folds", m_TextFolds);
+
+		m_TextSamples = new JTextField("10", 5);
+		addParameter("Samples (prequential)", m_TextSamples);
 
 		m_TextTOP = new JTextField("PCut1", 5);
 		addParameter("Threshold", m_TextTOP);
@@ -253,7 +259,7 @@ public class ClassifyTabOptions
 		catch (Exception e) {
 			System.err.println("Failed to parse percentage value: " + m_TextSplitPercentage.getText());
 			e.printStackTrace();
-			result = 1;
+			result = 67;
 		}
 
 		return result;
@@ -282,7 +288,36 @@ public class ClassifyTabOptions
 		catch (Exception e) {
 			System.err.println("Failed to parse folds value: " + m_TextFolds.getText());
 			e.printStackTrace();
-			result = 1;
+			result = 10;
+		}
+
+		return result;
+	}
+
+	/**
+	 * Sets the samples value for prequential evaluation.
+	 *
+	 * @param value	the samples value to use
+	 */
+	public void setSamples(int value) {
+		m_TextSamples.setText("" + value);
+	}
+
+	/**
+	 * Returns the currently set samples value for prequential evaluation.
+	 *
+	 * @return		the samples value
+	 */
+	public int getSamples() {
+		int		result;
+
+		try {
+			result = Integer.parseInt(m_TextSamples.getText());
+		}
+		catch (Exception e) {
+			System.err.println("Failed to parse samples value: " + m_TextSamples.getText());
+			e.printStackTrace();
+			result = 10;
 		}
 
 		return result;

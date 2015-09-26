@@ -132,6 +132,9 @@ public class ClassifyTab
 	/** the number of folds. */
 	protected int m_Folds;
 
+	/** the number of samples for prequential evaluation. */
+	protected int m_Samples;
+
 	/** the panel with the options. */
 	protected ClassifyTabOptions m_ClassifyTabOptions;
 
@@ -161,6 +164,7 @@ public class ClassifyTab
 		m_Seed               = 1;
 		m_SplitPercentage    = 66.0;
 		m_Folds              = 10;
+		m_Samples            = 10;
 		m_Randomize          = true;
 		m_TOP                = "PCut1";
 		m_VOP                = "3";
@@ -443,7 +447,7 @@ public class ClassifyTab
 						try {
 							classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
 							//System.out.println("data.classIndex() "+data.classIndex());
-							result    = IncrementalEvaluation.evaluateModelPrequentialBasic(classifier, data, (data.numInstances()/(m_Folds+1)), 1., m_TOP, m_VOP);
+							result    = IncrementalEvaluation.evaluateModelPrequentialBasic(classifier, data, (data.numInstances()/(m_Samples+1)), 1., m_TOP, m_VOP);
 							addResultToHistory(
 									result,
 									new Object[]{classifier, new Instances(data, 0)},
@@ -501,6 +505,7 @@ public class ClassifyTab
 			m_ClassifyTabOptions = new ClassifyTabOptions();
 			m_ClassifyTabOptions.setSeed(m_Seed);
 			m_ClassifyTabOptions.setFolds(m_Folds);
+			m_ClassifyTabOptions.setSamples(m_Samples);
 			m_ClassifyTabOptions.setSplitPercentage(m_SplitPercentage);
 			m_ClassifyTabOptions.setTOP(m_TOP);
 			m_ClassifyTabOptions.setVOP(m_VOP);
@@ -517,6 +522,7 @@ public class ClassifyTab
 				m_Seed            = m_ClassifyTabOptions.getSeed();
 				m_SplitPercentage = m_ClassifyTabOptions.getSplitPercentage();
 				m_Folds           = m_ClassifyTabOptions.getFolds();
+				m_Samples         = m_ClassifyTabOptions.getSamples();
 				m_TOP             = m_ClassifyTabOptions.getTOP();
 				m_VOP             = m_ClassifyTabOptions.getVOP();
 				m_Randomize 	  = m_ClassifyTabOptions.getRandomize();
