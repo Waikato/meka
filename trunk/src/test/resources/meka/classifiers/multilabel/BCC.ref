@@ -438,8 +438,8 @@ Size of the tree : 	53
 == Evaluation Info
 
 Classifier                     meka.classifiers.multilabel.BCC
-Options                        [-S, 0, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2, -X, Ibf]
-Additional Info                
+Options                        [-X, Ibf, -S, 0, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
+Additional Info                [0, 2, 1, 4, 5, 3]
 Dataset                        Music
 Number of labels (L)           6
 

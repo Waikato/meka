@@ -1,7 +1,7 @@
 == Evaluation Info
 
 Classifier                     meka.classifiers.multilabel.CDT
-Options                        [-I, 1000, -Ic, 100, -S, 0, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2, -H, 2, -L, 1, -P, _]
+Options                        [-H, 2, -L, 1, -X, None, -I, 1000, -Ic, 100, -S, 0, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
 Additional Info                
 Dataset                        Music
 Number of labels (L)           6

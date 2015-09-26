@@ -1,7 +1,7 @@
 == Evaluation Info
 
 Classifier                     meka.classifiers.multilabel.MajorityLabelset
-Options                        [-W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
+Options                        []
 Additional Info                
 Dataset                        Music
 Number of labels (L)           6

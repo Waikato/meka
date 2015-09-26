@@ -5,7 +5,7 @@ Model                          No model built yet
 
 Classifier                     meka.classifiers.multitarget.CCp
 Options                        [-S, 0, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
-Additional Info                
+Additional Info                [0, 1, 2, 3, 4, 5]
 Dataset                        Music
 Number of labels (L)           6
 
