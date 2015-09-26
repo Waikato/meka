@@ -24,6 +24,7 @@ import weka.core.TechnicalInformation.Type;
 import meka.core.*;
 import meka.classifiers.multilabel.ProblemTransformationMethod;
 import meka.classifiers.multilabel.NN.*;
+import meka.classifiers.multilabel.BR;
 
 /**
  * DeepML.java - Deep Multi-label Classification.
@@ -50,6 +51,18 @@ public class DeepML extends AbstractDeepNeuralNet implements TechnicalInformatio
 			new RBM(this.getOptions()) :		// RBM
 			new DBM(this.getOptions())) ;		// DBM
 	}
+
+	public DeepML() {
+		// default classifier for GUI
+		this.m_Classifier = new BR();
+	}
+
+	@Override
+	protected String defaultClassifierString() {
+		// default classifier for CLI
+		return "meka.classifiers.multilabel.BR";
+	}
+
 
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
