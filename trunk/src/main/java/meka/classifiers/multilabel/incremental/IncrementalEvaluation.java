@@ -427,6 +427,8 @@ public class IncrementalEvaluation {
 				eval_sample.put("Test time",(test_time)/1000.0);
 				eval_sample.put("Build time",(train_time)/1000.0);
 				eval_sample.put("Total time",(test_time+train_time)/1000.0);
+				eval_sample.put("Instances",(double)i);
+				eval_sample.put("Samples",(double)(samples.size()+1));
 				samples.add(eval_sample);
 				System.out.println("Sample (#"+samples.size()+") of performance at "+i+"/"+D.numInstances()+" instances.");
 			}

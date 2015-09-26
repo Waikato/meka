@@ -294,9 +294,9 @@ public class Result implements Serializable {
 	 * @param results An ArrayList of Results
 	 * @return	Instances
 	 */
-	public static Instances getResultsAsInstances(ArrayList<HashMap<String,Object>> results) {
+	public static Instances getResultsAsInstances(ArrayList<HashMap<String,Object>> metrics) {
 
-		HashMap<String,Object> o_master = results.get(0);
+		HashMap<String,Object> o_master = metrics.get(0);
 		ArrayList<Attribute> attInfo = new ArrayList<Attribute>();
 		for (String key : o_master.keySet())  {
 			if (o_master.get(key) instanceof Double) {
@@ -305,9 +305,9 @@ public class Result implements Serializable {
 			}
 		}
 
-		Instances resultInstances = new Instances("Results",attInfo,results.size());
+		Instances resultInstances = new Instances("Results",attInfo,metrics.size());
 
-		for (HashMap<String,Object> o : results) {
+		for (HashMap<String,Object> o : metrics) {
 			Instance rx = new DenseInstance(attInfo.size());
 			for (Attribute att : attInfo) {
 				String name = att.name();
