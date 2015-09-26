@@ -315,23 +315,60 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.2.1</version>
+        <version>1.4.0</version>
         <executions>
           <execution>
+            <id>gui</id>
             <goals>
               <goal>exec</goal>
             </goals>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-Xmx2g</argument>
+                <argument>-classpath</argument>
+                <classpath/>
+                <argument>meka.gui.guichooser.GUIChooser</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>br-help</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-classpath</argument>
+                <classpath/>
+                <argument>meka.classifiers.multilabel.BR</argument>
+              </arguments>
+              <outputFile>src/main/latex/Tutorial/help.txt</outputFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>br-run</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-classpath</argument>
+                <classpath/>
+                <argument>meka.classifiers.multilabel.BR</argument>
+                <argument>-t</argument>
+                <argument>src/main/data/Music.arff</argument>
+                <argument>-W</argument>
+                <argument>weka.classifiers.bayes.NaiveBayes</argument>
+              </arguments>
+              <outputFile>src/main/latex/Tutorial/eval.txt</outputFile>
+            </configuration>
           </execution>
         </executions>
-        <configuration>
-          <executable>java</executable>
-          <arguments>
-            <argument>-Xmx2g</argument>
-            <argument>-classpath</argument>
-            <classpath/>
-            <argument>meka.gui.guichooser.GUIChooser</argument>
-          </arguments>
-        </configuration>
       </plugin>
     </plugins>
   </build>
