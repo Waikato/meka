@@ -20,6 +20,9 @@
 
 package meka.experiment.evaluationstatistics;
 
+import meka.classifiers.multilabel.MultiLabelClassifier;
+import weka.core.Instances;
+
 import java.util.List;
 
 /**
@@ -37,6 +40,16 @@ public interface IncrementalEvaluationStatisticsHandler
 	 * @return      true if supported
 	 */
 	public boolean supportsIncrementalUpdate();
+
+	/**
+	 * Checks whether the specified combination of classifier and dataset is required for evaluation
+	 * or already present from previous evaluation.
+	 *
+	 * @param classifier    the classifier to check
+	 * @param dataset       the dataset to check
+	 * @return              true if it needs evaluating
+	 */
+	public boolean requires(MultiLabelClassifier classifier, Instances dataset);
 
 	/**
 	 * Adds the given statistics.

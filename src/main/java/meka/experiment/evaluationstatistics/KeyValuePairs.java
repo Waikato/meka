@@ -24,6 +24,7 @@ import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.core.ExceptionUtils;
 import meka.core.FileUtils;
 import meka.core.OptionUtils;
+import weka.core.Instances;
 import weka.core.Utils;
 
 import java.io.BufferedReader;
@@ -51,6 +52,9 @@ public class KeyValuePairs
 
 	/** the key for the relation. */
 	public final static String KEY_RELATION = "Relation";
+
+	/** the statistics so far. */
+	protected List<EvaluationStatistics> m_Statistics = new ArrayList<>();
 
 	/**
 	 * Description to be displayed in the GUI.
@@ -81,6 +85,28 @@ public class KeyValuePairs
 	}
 
 	/**
+	 * Initializes the handler.
+	 *
+	 * @return      null if successfully initialized, otherwise error message
+	 */
+	@Override
+	public String initialize() {
+		String      result;
+
+		result = super.initialize();
+
+		if (result == null) {
+			m_Statistics.clear();
+			if (m_File.exists()) {
+				log("File '" + m_File + "' exists, loading...");
+				m_Statistics.addAll(read());
+			}
+		}
+
+		return result;
+	}
+
+	/**
 	 * Reads the statistics.
 	 *
 	 * @return              the statistics that were read
@@ -103,9 +129,13 @@ public class KeyValuePairs
 			freader = new FileReader(m_File);
 			breader = new BufferedReader(freader);
 			while ((line = breader.readLine()) != null) {
+				if (line.trim().isEmpty())
+					continue;
 				entries = line.split("\t");
 				raw   = new HashMap<>();
 				for (String entry: entries) {
+					if (entry.trim().isEmpty())
+						continue;
 					parts = entry.split("=");
 					if (parts.length == 2)
 						raw.put(parts[0], parts[1]);
@@ -127,6 +157,7 @@ public class KeyValuePairs
 							System.err.println("Failed to parse double value of '" + key + "': " + raw.get(key));
 						}
 					}
+					result.add(stat);
 				}
 			}
 		}
@@ -153,6 +184,34 @@ public class KeyValuePairs
 	}
 
 	/**
+	 * Checks whether the specified combination of classifier and dataset is required for evaluation
+	 * or already present from previous evaluation.
+	 *
+	 * @param classifier    the classifier to check
+	 * @param dataset       the dataset to check
+	 * @return              true if it needs evaluating
+	 */
+	public boolean requires(MultiLabelClassifier classifier, Instances dataset) {
+		boolean     result;
+		String      cls;
+		String      rel;
+
+		result = true;
+
+		cls = Utils.toCommandLine(classifier);
+		rel = dataset.relationName();
+
+		for (EvaluationStatistics stat: m_Statistics) {
+			if (Utils.toCommandLine(stat.getClassifier()).equals(cls) && stat.getRelation().equals(rel)) {
+				result = false;
+				break;
+			}
+		}
+
+		return result;
+	}
+
+	/**
 	 * Adds the given statistics.
 	 *
 	 * @param stats         the statistics to store
@@ -166,7 +225,7 @@ public class KeyValuePairs
 		bwriter = null;
 		fwriter = null;
 		try {
-			fwriter = new FileWriter(m_File);
+			fwriter = new FileWriter(m_File, true);
 			bwriter = new BufferedWriter(fwriter);
 			for (EvaluationStatistics stat: stats) {
 				bwriter.write(KEY_CLASSIFIER + "=" + Utils.toCommandLine(stat.getClassifier()));

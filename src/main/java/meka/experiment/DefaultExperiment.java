@@ -297,6 +297,15 @@ public class DefaultExperiment
 	}
 
 	/**
+	 * For logging messages to stderr.
+	 *
+	 * @param msg       the message to output
+	 */
+	protected void log(String msg) {
+		System.err.println(msg);
+	}
+
+	/**
 	 * Adds the source's class name to the message if not null.
 	 *
 	 * @param source    the source
@@ -322,6 +331,9 @@ public class DefaultExperiment
 		if (result == null)
 			result = handleError(m_StatisticsHandler, m_StatisticsHandler.initialize());
 
+		if (result != null)
+			log(result);
+
 		return result;
 	}
 
@@ -343,17 +355,27 @@ public class DefaultExperiment
 			dataset = m_DatasetProvider.next();
 			if (dataset == null) {
 				result = "Failed to obtain next dataset!";
+				log(result);
 				m_Running = false;
 				break;
 			}
 
 			// iterate classifiers
 			for (MultiLabelClassifier classifier: m_Classifiers) {
+				// evaluation required?
+				if (m_StatisticsHandler instanceof IncrementalEvaluationStatisticsHandler) {
+					if (!((IncrementalEvaluationStatisticsHandler) m_StatisticsHandler).requires(classifier, dataset)) {
+						log("Already present, skipping: " + Utils.toCommandLine(classifier) + " --> " + dataset.relationName());
+						continue;
+					}
+				}
+
 				try {
 					classifier = (MultiLabelClassifier) AbstractClassifier.makeCopy(classifier);
 				}
 				catch (Exception e) {
 					result = ExceptionUtils.handleException(this, "Failed to create copy of classifier: " + classifier.getClass().getName(), e);
+					log(result);
 					m_Running = false;
 					break;
 				}
@@ -373,6 +395,7 @@ public class DefaultExperiment
 					}
 					catch (Exception e) {
 						result = ExceptionUtils.handleException(this, "Failed to evaluate dataset '" + dataset.relationName() + "' with classifier: " + Utils.toCommandLine(classifier), e);
+						log(result);
 						m_Running = false;
 						break;
 					}
@@ -402,6 +425,9 @@ public class DefaultExperiment
 				result = "Experiment interrupted: " + result;
 		}
 
+		if (result != null)
+			log(result);
+
 		m_Running = false;
 
 		return result;
@@ -418,6 +444,9 @@ public class DefaultExperiment
 		result = handleError(m_DatasetProvider, m_DatasetProvider.finish());
 		if (result != null)
 			result = handleError(m_StatisticsHandler, m_StatisticsHandler.finish());
+
+		if (result != null)
+			log(result);
 
 		return result;
 	}

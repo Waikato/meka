@@ -72,4 +72,13 @@ public abstract class AbstractEvaluationStatisticsExporter
 	public String[] getOptions() {
 		return new String[0];
 	}
+
+	/**
+	 * For logging messages to stderr.
+	 *
+	 * @param msg       the message to output
+	 */
+	protected void log(String msg) {
+		System.err.println(msg);
+	}
 }

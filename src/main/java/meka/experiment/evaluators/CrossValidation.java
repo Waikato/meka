@@ -240,6 +240,7 @@ public class CrossValidation
 		result = new ArrayList<>();
 		rand   = new Random(m_Seed);
 		for (i = 1; i <= m_NumFolds; i++) {
+			log("Fold: " + i);
 			if (m_PreserveOrder)
 				train = dataset.trainCV(m_NumFolds, i - 1);
 			else
