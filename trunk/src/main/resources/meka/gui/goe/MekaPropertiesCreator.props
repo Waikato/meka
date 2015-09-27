@@ -85,3 +85,11 @@ meka.experiment.evaluationstatistics.FileBasedEvaluationStatisticsHandler=\
 # the experiment file handlers
 meka.experiment.filehandlers.ExperimentFileHandler=\
   meka.experiment.filehandlers
+
+# the statistics exporters
+meka.experiment.statisticsexport.EvaluationStatisticsExporter=\
+  meka.experiment.statisticsexport
+
+# the file-based statistics exporters
+meka.experiment.statisticsexport.FileBasedEvaluationStatisticsExporter=\
+  meka.experiment.statisticsexport
