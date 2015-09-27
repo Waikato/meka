@@ -21,6 +21,7 @@
 package meka.core;
 
 import weka.core.Option;
+import weka.core.OptionHandler;
 import weka.core.Utils;
 
 import java.io.File;
@@ -214,6 +215,36 @@ public class OptionUtils {
 			return defValue;
 		else
 			return new File(value);
+	}
+
+	/**
+	 * Parses an OptionHandler option, uses default if option is missing.
+	 *
+	 * @param options       the option array to use
+	 * @param option        the option to look for in the options array (no leading dash)
+	 * @param defValue      the default value
+	 * @return              the parsed value (or default value if option not present)
+	 * @throws Exception    if parsing of value fails
+	 */
+	public static OptionHandler parse(String[] options, char option, OptionHandler defValue) throws Exception {
+		return parse(options, "" + option, defValue);
+	}
+
+	/**
+	 * Parses an OptionHandler option, uses default if option is missing.
+	 *
+	 * @param options       the option array to use
+	 * @param option        the option to look for in the options array (no leading dash)
+	 * @param defValue      the default value
+	 * @return              the parsed value (or default value if option not present)
+	 * @throws Exception    if parsing of value fails
+	 */
+	public static OptionHandler parse(String[] options, String option, OptionHandler defValue) throws Exception {
+		String value = Utils.getOption(option, options);
+		if (value.isEmpty())
+			return defValue;
+		else
+			return OptionUtils.fromCommandLine(OptionHandler.class, value);
 	}
 
 	/**
@@ -448,6 +479,29 @@ public class OptionUtils {
 	}
 
 	/**
+	 * Adds the OptionHandler to the options.
+	 *
+	 * @param options   the current list of options to extend
+	 * @param option    the option (without the leading dash)
+	 * @param value     the current value
+	 */
+	public static void add(List<String> options, char option, OptionHandler value) {
+		add(options, "" + option, value);
+	}
+
+	/**
+	 * Adds the OptionHandler to the options.
+	 *
+	 * @param options   the current list of options to extend
+	 * @param option    the option (without the leading dash)
+	 * @param value     the current value
+	 */
+	public static void add(List<String> options, String option, OptionHandler value) {
+		options.add("-" + option);
+		options.add("" + Utils.toCommandLine(value));
+	}
+
+	/**
 	 * Adds the array to the options.
 	 *
 	 * @param options   the current list of options to extend
@@ -469,8 +523,14 @@ public class OptionUtils {
 		if (!value.getClass().isArray())
 			throw new IllegalArgumentException("Value is not an array!");
 		for (int i = 0; i < Array.getLength(value); i++) {
-			options.add("-" + option);
-			options.add("" + value);
+			Object element = Array.get(value, i);
+			if (element instanceof OptionHandler) {
+				add(options, option, (OptionHandler) element);
+			}
+			else {
+				options.add("-" + option);
+				options.add("" + value);
+			}
 		}
 	}
 
