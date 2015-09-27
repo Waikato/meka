@@ -34,7 +34,7 @@ import java.util.HashMap;
  * @version $Revision$
  */
 public class EvaluationStatistics
-  extends HashMap<String,Double>  {
+  extends HashMap<String,Number>  {
 	private static final long serialVersionUID = -1873027591755259927L;
 
 	/** the classifier. */
@@ -64,11 +64,11 @@ public class EvaluationStatistics
 		if (result != null) {
 			for (String key : result.vals.keySet()) {
 				if (result.vals.get(key) instanceof Number)
-					put(key, ((Number) result.vals.get(key)).doubleValue());
+					put(key, (Number) result.vals.get(key));
 			}
 			for (String key : result.output.keySet()) {
 				if (result.output.get(key) instanceof Number)
-					put(key, ((Number) result.output.get(key)).doubleValue());
+					put(key, (Number) result.output.get(key));
 			}
 		}
 	}

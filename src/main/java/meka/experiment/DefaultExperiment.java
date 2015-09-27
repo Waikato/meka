@@ -55,13 +55,13 @@ public class DefaultExperiment
 	protected MultiLabelClassifier[] m_Classifiers = new MultiLabelClassifier[0];
 
 	/** the dataset provider. */
-	protected DatasetProvider m_DatasetProvider = new LocalDatasetProvider();
+	protected DatasetProvider m_DatasetProvider = getDefaultDatasetProvider();
 
 	/** the evaluator. */
-	protected Evaluator m_Evaluator = new TrainTestSplit();
+	protected Evaluator m_Evaluator = getDefaultEvaluator();
 
 	/** the statistics handler. */
-	protected EvaluationStatisticsHandler m_StatisticsHandler = new Serialized();
+	protected EvaluationStatisticsHandler m_StatisticsHandler = getDefaultStatisticsHandler();
 
 	/** whether the experiment is still running. */
 	protected boolean m_Running;
@@ -100,6 +100,15 @@ public class DefaultExperiment
 	}
 
 	/**
+	 * Returns the default dataset provider.
+	 *
+	 * @return          the default
+	 */
+	protected DatasetProvider getDefaultDatasetProvider() {
+		return new LocalDatasetProvider();
+	}
+
+	/**
 	 * Sets the dataset provider to use.
 	 *
 	 * @param value         the provider
@@ -127,6 +136,15 @@ public class DefaultExperiment
 	@Override
 	public String datasetProviderTipText() {
 		return "The dataset provider to use.";
+	}
+
+	/**
+	 * Returns the default evaluator to use.
+	 *
+	 * @return              the default
+	 */
+	protected Evaluator getDefaultEvaluator() {
+		return new TrainTestSplit();   // TODO: cross-validation?
 	}
 
 	/**
@@ -167,6 +185,15 @@ public class DefaultExperiment
 	@Override
 	public void setStatisticsHandler(EvaluationStatisticsHandler value) {
 		m_StatisticsHandler = value;
+	}
+
+	/**
+	 * Returns the default statistics handler.
+	 *
+	 * @return          the default
+	 */
+	protected EvaluationStatisticsHandler getDefaultStatisticsHandler() {
+		return new Serialized();   // TODO: plain-text?
 	}
 
 	/**
@@ -237,9 +264,9 @@ public class DefaultExperiment
 	public Enumeration<Option> listOptions() {
 		Vector result = new Vector();
 		OptionUtils.addOption(result, classifiersTipText(), "none", 'C');
-		OptionUtils.addOption(result, datasetProviderTipText(), LocalDatasetProvider.class.getName(), 'D');
-		OptionUtils.addOption(result, evaluatorTipText(), TrainTestSplit.class.getName(), 'E');
-		OptionUtils.addOption(result, statisticsHandlerTipText(), Serialized.class.getName(), 'S');
+		OptionUtils.addOption(result, datasetProviderTipText(), getDefaultDatasetProvider().getClass().getName(), 'D');
+		OptionUtils.addOption(result, evaluatorTipText(), getDefaultEvaluator().getClass().getName(), 'E');
+		OptionUtils.addOption(result, statisticsHandlerTipText(), getDefaultStatisticsHandler().getClass().getName(), 'S');
 		return OptionUtils.toEnumeration(result);
 	}
 
@@ -252,9 +279,9 @@ public class DefaultExperiment
 	@Override
 	public void setOptions(String[] options) throws Exception {
 		setClassifiers(OptionUtils.parse(options, 'C', MultiLabelClassifier.class));
-		setDatasetProvider((DatasetProvider) OptionUtils.parse(options, 'D', new LocalDatasetProvider()));
-		setEvaluator((Evaluator) OptionUtils.parse(options, 'E', new TrainTestSplit()));
-		setStatisticsHandler((EvaluationStatisticsHandler) OptionUtils.parse(options, 'S', new Serialized()));
+		setDatasetProvider((DatasetProvider) OptionUtils.parse(options, 'D', getDefaultDatasetProvider()));
+		setEvaluator((Evaluator) OptionUtils.parse(options, 'E', getDefaultEvaluator()));
+		setStatisticsHandler((EvaluationStatisticsHandler) OptionUtils.parse(options, 'S', getDefaultStatisticsHandler()));
 	}
 
 	/**
@@ -334,9 +361,16 @@ public class DefaultExperiment
 					break;
 				}
 
-				// notify listeners
 				if (m_Running) {
+					// notify listeners
 					notifyIterationNotificationListeners(classifier, dataset);
+
+					// perform evaluation
+					result = m_Evaluator.initialize();
+					if (result != null) {
+						m_Running = false;
+						break;
+					}
 					try {
 						stats = m_Evaluator.evaluate(classifier, dataset);
 					}

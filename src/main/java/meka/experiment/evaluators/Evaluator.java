@@ -38,6 +38,13 @@ public interface Evaluator
   extends OptionHandler, Serializable {
 
 	/**
+	 * Initializes the evaluator.
+	 *
+	 * @return      null if successfully initialized, otherwise error message
+	 */
+	public String initialize();
+
+	/**
 	 * Returns the evaluation statistics generated for the dataset.
 	 *
 	 * @param classifier    the classifier to evaluate
