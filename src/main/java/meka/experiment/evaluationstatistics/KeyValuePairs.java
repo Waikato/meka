@@ -41,7 +41,8 @@ import java.util.List;
  * @version $Revision$
  */
 public class KeyValuePairs
-  extends AbstractFileBasedEvaluationStatisticsHandler {
+  extends AbstractFileBasedEvaluationStatisticsHandler
+  implements IncrementalEvaluationStatisticsHandler {
 
 	private static final long serialVersionUID = -1090631157162943295L;
 
@@ -142,13 +143,23 @@ public class KeyValuePairs
 	}
 
 	/**
-	 * Stores the given statistics.
+	 * Returns whether the handler supports incremental write.
+	 *
+	 * @return      true if supported
+	 */
+	@Override
+	public boolean supportsIncrementalUpdate() {
+		return true;
+	}
+
+	/**
+	 * Adds the given statistics.
 	 *
 	 * @param stats         the statistics to store
 	 * @return              null if successfully stored, otherwise error message
 	 */
 	@Override
-	public String write(List<EvaluationStatistics> stats) {
+	public String append(List<EvaluationStatistics> stats) {
 		BufferedWriter  bwriter;
 		FileWriter      fwriter;
 
@@ -177,6 +188,17 @@ public class KeyValuePairs
 			FileUtils.closeQuietly(bwriter);
 			FileUtils.closeQuietly(fwriter);
 		}
+	}
+
+	/**
+	 * Stores the given statistics.
+	 *
+	 * @param stats         the statistics to store
+	 * @return              null if successfully stored, otherwise error message
+	 */
+	@Override
+	public String write(List<EvaluationStatistics> stats) {
+		return append(stats);
 	}
 
 	/**
