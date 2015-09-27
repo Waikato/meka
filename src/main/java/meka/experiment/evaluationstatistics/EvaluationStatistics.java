@@ -47,19 +47,32 @@ public class EvaluationStatistics
 	 * Default constructor.
 	 */
 	public EvaluationStatistics() {
-		this(null, null, null);
+		this(null, (String) null, null);
 	}
 
 	/**
 	 * Extracts the statistics from the Result object.
 	 *
+	 * @param classifier    the classifier
+	 * @param dataset       the dataset
 	 * @param result        the evaluation
 	 */
 	public EvaluationStatistics(MultiLabelClassifier classifier, Instances dataset, Result result) {
+		this(classifier, (dataset != null) ? dataset.relationName() : null, result);
+	}
+
+	/**
+	 * Extracts the statistics from the Result object.
+	 *
+	 * @param classifier    the classifier
+	 * @param relation      the relation
+	 * @param result        the evaluation
+	 */
+	public EvaluationStatistics(MultiLabelClassifier classifier, String relation, Result result) {
 		super();
 
 		m_Classifier = classifier;
-		m_Relation   = (dataset != null) ? dataset.relationName() : null;
+		m_Relation   = relation;
 
 		if (result != null) {
 			for (String key : result.vals.keySet()) {

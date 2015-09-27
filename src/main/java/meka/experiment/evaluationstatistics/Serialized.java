@@ -21,15 +21,9 @@
 package meka.experiment.evaluationstatistics;
 
 import meka.core.ExceptionUtils;
-import meka.core.OptionUtils;
-import weka.core.Option;
 import weka.core.SerializationHelper;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Uses Java serialization for readin/writing the statistics.
@@ -38,12 +32,9 @@ import java.util.Vector;
  * @version $Revision$
  */
 public class Serialized
-  implements FileBasedEvaluationStatisticsHandler {
+  extends AbstractFileBaseEvaluationStatisticHandler {
 
 	private static final long serialVersionUID = -1090631157162943295L;
-
-	/** the file to read from/write to. */
-	protected File m_File = new File(".");
 
 	/**
 	 * Description to be displayed in the GUI.
@@ -55,77 +46,21 @@ public class Serialized
 	}
 
 	/**
-	 * Sets the file to read from/write to.
+	 * Returns the format description.
 	 *
-	 * @param value     the file
+	 * @return      the file format
 	 */
-	public void setFile(File value) {
-		m_File = value;
+	public String getFormatDescription() {
+		return "Java serialized statistics";
 	}
 
 	/**
-	 * Returns the file to read from/write to.
+	 * Returns the format extension(s).
 	 *
-	 * @return          the file
+	 * @return      the extension(s) (incl dot)
 	 */
-	public File getFile() {
-		return m_File;
-	}
-
-	/**
-	 * Describes this property.
-	 *
-	 * @return          the description
-	 */
-	public String fileTipText() {
-		return "The file to read from/write to.";
-	}
-
-	/**
-	 * Returns an enumeration of all the available options.
-	 *
-	 * @return an enumeration of all available options.
-	 */
-	@Override
-	public Enumeration<Option> listOptions() {
-		Vector result = new Vector();
-		OptionUtils.addOption(result, fileTipText(), ".", 'F');
-		return OptionUtils.toEnumeration(result);
-	}
-
-	/**
-	 * Sets the options.
-	 *
-	 * @param options       the options
-	 * @throws Exception    never
-	 */
-	@Override
-	public void setOptions(String[] options) throws Exception {
-		setFile(OptionUtils.parse(options, 'F', new File(".")));
-	}
-
-	/**
-	 * Returns the options.
-	 *
-	 * @return              the options
-	 */
-	@Override
-	public String[] getOptions() {
-		List<String> result = new ArrayList<>();
-		OptionUtils.add(result, 'F', getFile());
-		return OptionUtils.toArray(result);
-	}
-
-	/**
-	 * Initializes the handler.
-	 *
-	 * @return      null if successfully initialized, otherwise error message
-	 */
-	@Override
-	public String initialize() {
-		if (m_File.isDirectory())
-			return "File points to a directory: " + m_File;
-		return null;
+	public String[] getFormatExtensions() {
+		return new String[]{".ser"};
 	}
 
 	/**
