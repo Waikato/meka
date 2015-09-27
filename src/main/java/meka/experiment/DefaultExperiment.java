@@ -30,7 +30,7 @@ import meka.experiment.evaluationstatistics.EvaluationStatisticsHandler;
 import meka.experiment.evaluationstatistics.IncrementalEvaluationStatisticsHandler;
 import meka.experiment.evaluationstatistics.Serialized;
 import meka.experiment.evaluators.Evaluator;
-import meka.experiment.evaluators.TrainTestSplit;
+import meka.experiment.evaluators.PercentageSplit;
 import meka.experiment.events.IterationNotificationEvent;
 import meka.experiment.events.IterationNotificationListener;
 import weka.classifiers.AbstractClassifier;
@@ -144,7 +144,7 @@ public class DefaultExperiment
 	 * @return              the default
 	 */
 	protected Evaluator getDefaultEvaluator() {
-		return new TrainTestSplit();   // TODO: cross-validation?
+		return new PercentageSplit();   // TODO: cross-validation?
 	}
 
 	/**

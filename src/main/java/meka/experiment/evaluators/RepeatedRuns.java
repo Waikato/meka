@@ -70,7 +70,7 @@ public class RepeatedRuns
 	 */
 	@Override
 	protected Evaluator getDefaultEvaluator() {
-		return new TrainTestSplit();  // TODO
+		return new PercentageSplit();  // TODO
 	}
 
 	/**
