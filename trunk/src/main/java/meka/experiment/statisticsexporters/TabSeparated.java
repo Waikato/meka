@@ -45,12 +45,6 @@ public class TabSeparated
 
 	private static final long serialVersionUID = -2891664931765964612L;
 
-	/** the header for the classifier. */
-	public final static String HEADER_CLASSIFIER = "Classifier";
-
-	/** the header for the relation. */
-	public final static String HEADER_RELATION = "Relation";
-
 	@Override
 	public String globalInfo() {
 		return "Exports the statistics to a tab-separated file.";
@@ -107,8 +101,8 @@ public class TabSeparated
 			headers.remove(RepeatedRuns.KEY_RUN);
 			headers.add(0, RepeatedRuns.KEY_RUN);
 		}
-		headers.add(0, HEADER_RELATION);
-		headers.add(0, HEADER_CLASSIFIER);
+		headers.add(0, EvaluationStatistics.KEY_RELATION);
+		headers.add(0, EvaluationStatistics.KEY_CLASSIFIER);
 
 		fwriter = null;
 		bwriter = null;
