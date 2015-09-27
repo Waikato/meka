@@ -14,34 +14,41 @@
  */
 
 /**
- * MekaResultProducer.java
- * Copyright (C) 2014 University of Waikato, Hamilton, New Zealand
+ * FileBasedEvaluationStatisticsHandler.java
+ * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
-package meka.experiment;
 
-import weka.experiment.ResultProducer;
+package meka.experiment.evaluationstatistics;
+
+import java.io.File;
 
 /**
- * Interface for MEKA {@link ResultProducer} classes that need to know
- * about the overall number of classes.
- * 
- * @author  fracpete (fracpete at waikato dot ac dot nz)
+ * Interface for file-based statistics handlers.
+ *
+ * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
-public interface MekaResultProducer
-	extends ResultProducer {
+public interface FileBasedEvaluationStatisticsHandler
+  extends EvaluationStatisticsHandler {
 
 	/**
-	 * Sets the overal number of classes.
-	 * 
-	 * @param value			the number of classes
+	 * Sets the file to read from/write to.
+	 *
+	 * @param value     the file
 	 */
-	public void setTotalNumClasses(int value);
+	public void setFile(File value);
 
 	/**
-	 * Returns the overal number of classes.
-	 * 
-	 * @return			the number of classes
+	 * Returns the file to read from/write to.
+	 *
+	 * @return          the file
 	 */
-	public int getTotalNumClasses();
+	public File getFile();
+
+	/**
+	 * Describes this property.
+	 *
+	 * @return          the description
+	 */
+	public String fileTipText();
 }

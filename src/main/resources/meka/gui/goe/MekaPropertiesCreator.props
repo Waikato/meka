@@ -65,3 +65,23 @@ meka.gui.guichooser.AbstractMenuItemDefinition=\
 # the renderers of the model viewer
 meka.gui.modelviewer.renderers.AbstractObjectRenderer=\
   meka.gui.modelviewer.renderers
+
+# the dataset providers
+meka.experiment.datasetproviders.DatasetProvider=\
+  meka.experiment.datasetproviders
+
+# the evaluators
+meka.experiment.evaluators.Evaluator=\
+  meka.experiment.evaluators
+
+# the evaluation statistics handlers
+meka.experiment.evaluationstatistics.EvaluationStatisticsHandler=\
+  meka.experiment.evaluationstatistics
+
+# the file-based evaluation statistics handlers
+meka.experiment.evaluationstatistics.FileBasedEvaluationStatisticsHandler=\
+  meka.experiment.evaluationstatistics
+
+# the experiment file handlers
+meka.experiment.filehandlers.ExperimentFileHandler=\
+  meka.experiment.filehandlers
