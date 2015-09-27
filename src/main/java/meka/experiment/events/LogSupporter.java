@@ -14,33 +14,31 @@
  */
 
 /**
- * EvaluationStatisticsExport.java
+ * LogSupporter.java
  * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
 
-package meka.experiment.statisticsexporters;
-
-import meka.experiment.evaluationstatistics.EvaluationStatistics;
-import meka.experiment.events.LogSupporter;
-import weka.core.OptionHandler;
-
-import java.io.Serializable;
-import java.util.List;
+package meka.experiment.events;
 
 /**
- * Interface for classes that export statistics into other formats.
+ * Interface for classes that support logging.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
-public interface EvaluationStatisticsExporter
-  extends OptionHandler, Serializable, LogSupporter {
+public interface LogSupporter {
 
 	/**
-	 * Exports the statistics.
+	 * Adds the log listener to use.
 	 *
-	 * @param stats         the statistics to export
-	 * @return              null if successfully exported, otherwise error message
+	 * @param l         the listener
 	 */
-	public String export(List<EvaluationStatistics> stats);
+	public void addLogListener(LogListener l);
+
+	/**
+	 * Remove the log listener to use.
+	 *
+	 * @param l         the listener
+	 */
+	public void removeLogListener(LogListener l);
 }

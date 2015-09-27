@@ -14,33 +14,24 @@
  */
 
 /**
- * EvaluationStatisticsExport.java
+ * IterationNotificationListener.java
  * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
 
-package meka.experiment.statisticsexporters;
-
-import meka.experiment.evaluationstatistics.EvaluationStatistics;
-import meka.experiment.events.LogSupporter;
-import weka.core.OptionHandler;
-
-import java.io.Serializable;
-import java.util.List;
+package meka.experiment.events;
 
 /**
- * Interface for classes that export statistics into other formats.
+ * Interface for classes that listen to log events of an experiment.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
-public interface EvaluationStatisticsExporter
-  extends OptionHandler, Serializable, LogSupporter {
+public interface LogListener {
 
 	/**
-	 * Exports the statistics.
+	 * Gets called if there is a new log message.
 	 *
-	 * @param stats         the statistics to export
-	 * @return              null if successfully exported, otherwise error message
+	 * @param e         the event
 	 */
-	public String export(List<EvaluationStatistics> stats);
+	public void logMessage(LogEvent e);
 }

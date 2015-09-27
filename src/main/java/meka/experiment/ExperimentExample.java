@@ -29,6 +29,8 @@ import meka.experiment.evaluators.CrossValidation;
 import meka.experiment.evaluators.RepeatedRuns;
 import meka.experiment.events.IterationNotificationEvent;
 import meka.experiment.events.IterationNotificationListener;
+import meka.experiment.events.LogEvent;
+import meka.experiment.events.LogListener;
 import meka.experiment.statisticsexporters.SimpleAggregate;
 import meka.experiment.statisticsexporters.TabSeparated;
 import weka.core.Utils;
@@ -69,6 +71,13 @@ public class ExperimentExample {
 			@Override
 			public void nextIteration(IterationNotificationEvent e) {
 				System.out.println(Utils.toCommandLine(e.getClassifier()) + " --> " + e.getDataset().relationName());
+			}
+		});
+		// log events
+		exp.addLogListener(new LogListener() {
+			@Override
+			public void logMessage(LogEvent e) {
+				System.err.println("[LOG] " + e.getSource().getClass().getName() + ": " + e.getMessage());
 			}
 		});
 		// execute

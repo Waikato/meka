@@ -14,33 +14,46 @@
  */
 
 /**
- * EvaluationStatisticsExport.java
+ * LogEvent.java
  * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
 
-package meka.experiment.statisticsexporters;
+package meka.experiment.events;
 
-import meka.experiment.evaluationstatistics.EvaluationStatistics;
-import meka.experiment.events.LogSupporter;
-import weka.core.OptionHandler;
-
-import java.io.Serializable;
-import java.util.List;
+import java.util.EventObject;
 
 /**
- * Interface for classes that export statistics into other formats.
+ * Event that contains a log message.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
-public interface EvaluationStatisticsExporter
-  extends OptionHandler, Serializable, LogSupporter {
+public class LogEvent
+  extends EventObject {
+
+	private static final long serialVersionUID = 7732581989591408787L;
+
+	/** the log message. */
+	protected String m_Message;
 
 	/**
-	 * Exports the statistics.
+	 * Gets called when the experiment starts on a new evaluation.
 	 *
-	 * @param stats         the statistics to export
-	 * @return              null if successfully exported, otherwise error message
+	 * @param source        the object that triggered the event
+	 * @param message       the log message
 	 */
-	public String export(List<EvaluationStatistics> stats);
+	public LogEvent(Object source, String message) {
+		super(source);
+
+		m_Message = message;
+	}
+
+	/**
+	 * Returns the message.
+	 *
+	 * @return      the message
+	 */
+	public String getMessage() {
+		return m_Message;
+	}
 }

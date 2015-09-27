@@ -21,6 +21,7 @@
 package meka.experiment.statisticsexporters;
 
 import meka.core.OptionUtils;
+import meka.experiment.events.LogListener;
 import weka.core.Option;
 
 import java.util.ArrayList;
@@ -112,5 +113,25 @@ public abstract class AbstractMetaEvaluationStatisticsExporter
 		OptionUtils.add(result, super.getOptions());
 		OptionUtils.add(result, "base", getExporter());
 		return OptionUtils.toArray(result);
+	}
+
+	/**
+	 * Adds the log listener to use.
+	 *
+	 * @param l         the listener
+	 */
+	public void addLogListener(LogListener l) {
+		super.addLogListener(l);
+		m_Exporter.addLogListener(l);
+	}
+
+	/**
+	 * Remove the log listener to use.
+	 *
+	 * @param l         the listener
+	 */
+	public void removeLogListener(LogListener l) {
+		super.removeLogListener(l);
+		m_Exporter.removeLogListener(l);
 	}
 }

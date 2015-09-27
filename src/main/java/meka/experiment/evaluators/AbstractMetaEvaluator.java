@@ -21,6 +21,7 @@
 package meka.experiment.evaluators;
 
 import meka.core.OptionUtils;
+import meka.experiment.events.LogListener;
 import weka.core.Option;
 
 import java.util.ArrayList;
@@ -137,5 +138,25 @@ public abstract class AbstractMetaEvaluator
 	public void stop() {
 		m_Evaluator.stop();
 		super.stop();
+	}
+
+	/**
+	 * Adds the log listener to use.
+	 *
+	 * @param l         the listener
+	 */
+	public void addLogListener(LogListener l) {
+		super.addLogListener(l);
+		m_Evaluator.addLogListener(l);
+	}
+
+	/**
+	 * Remove the log listener to use.
+	 *
+	 * @param l         the listener
+	 */
+	public void removeLogListener(LogListener l) {
+		super.removeLogListener(l);
+		m_Evaluator.removeLogListener(l);
 	}
 }

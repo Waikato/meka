@@ -21,9 +21,12 @@
 package meka.experiment.evaluators;
 
 import meka.core.OptionUtils;
+import meka.experiment.events.LogEvent;
+import meka.experiment.events.LogListener;
 import weka.core.Option;
 
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Vector;
 
 /**
@@ -36,6 +39,9 @@ public abstract class AbstractEvaluator
   implements Evaluator {
 
 	private static final long serialVersionUID = 6318297857792961890L;
+
+	/** the listeners. */
+	protected HashSet<LogListener> m_LogListeners = new HashSet<>();
 
 	/** whether the evaluation got stopped. */
 	protected boolean m_Stopped;
@@ -89,12 +95,39 @@ public abstract class AbstractEvaluator
 	}
 
 	/**
-	 * For logging messages to stderr.
+	 * Adds the log listener to use.
+	 *
+	 * @param l         the listener
+	 */
+	public void addLogListener(LogListener l) {
+		m_LogListeners.add(l);
+	}
+
+	/**
+	 * Remove the log listener to use.
+	 *
+	 * @param l         the listener
+	 */
+	public void removeLogListener(LogListener l) {
+		m_LogListeners.remove(l);
+	}
+
+	/**
+	 * For logging messages. Uses stderr if no listeners defined.
 	 *
 	 * @param msg       the message to output
 	 */
-	protected void log(String msg) {
-		System.err.println(msg);
+	protected synchronized void log(String msg) {
+		LogEvent e;
+
+		if (m_LogListeners.size() == 0) {
+			System.err.println(msg);
+			return;
+		}
+
+		e = new LogEvent(this, msg);
+		for (LogListener l: m_LogListeners)
+			l.logMessage(e);
 	}
 
 	/**

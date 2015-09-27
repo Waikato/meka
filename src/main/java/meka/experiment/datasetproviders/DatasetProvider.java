@@ -20,6 +20,7 @@
 
 package meka.experiment.datasetproviders;
 
+import meka.experiment.events.LogSupporter;
 import weka.core.Instances;
 import weka.core.OptionHandler;
 
@@ -33,7 +34,7 @@ import java.util.Iterator;
  * @version $Revision$
  */
 public interface DatasetProvider
-  extends OptionHandler, Iterator<Instances>, Serializable {
+  extends OptionHandler, Iterator<Instances>, Serializable, LogSupporter {
 
 	/**
 	 * Initializes the provider to start providing datasets from scratch.

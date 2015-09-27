@@ -22,6 +22,7 @@ package meka.experiment.evaluators;
 
 import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
+import meka.experiment.events.LogSupporter;
 import weka.core.Instances;
 import weka.core.OptionHandler;
 
@@ -35,7 +36,7 @@ import java.util.List;
  * @version $Revision$
  */
 public interface Evaluator
-  extends OptionHandler, Serializable {
+  extends OptionHandler, Serializable, LogSupporter {
 
 	/**
 	 * Initializes the evaluator.

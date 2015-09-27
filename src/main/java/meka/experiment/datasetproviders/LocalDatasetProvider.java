@@ -37,7 +37,7 @@ import java.util.*;
  * @version $Revision$
  */
 public class LocalDatasetProvider
-		implements DatasetProvider {
+		extends AbstractDatasetProvider {
 
 	private static final long serialVersionUID = 2167509900278245507L;
 
@@ -93,8 +93,9 @@ public class LocalDatasetProvider
 	@Override
 	public Enumeration<Option> listOptions() {
 		Vector result = new Vector();
+		OptionUtils.add(result, super.listOptions());
 		OptionUtils.addOption(result, datasetsTipText(), "none", "dataset");
-		return null;
+		return OptionUtils.toEnumeration(result);
 	}
 
 	/**
@@ -106,6 +107,7 @@ public class LocalDatasetProvider
 	@Override
 	public void setOptions(String[] options) throws Exception {
 		setDatasets(OptionUtils.parse(options, "dataset", File.class));
+		super.setOptions(options);
 	}
 
 	/**
@@ -116,6 +118,7 @@ public class LocalDatasetProvider
 	@Override
 	public String[] getOptions() {
 		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, super.getOptions());
 		OptionUtils.add(result, "dataset", getDatasets());
 		return OptionUtils.toArray(result);
 	}
@@ -165,22 +168,5 @@ public class LocalDatasetProvider
 		}
 		m_Current++;
 		return result;
-	}
-
-	/**
-	 * Does nothing.
-	 */
-	@Override
-	public void remove() {
-		// ignored
-	}
-
-	/**
-	 * Gets called after the experiment finishes.
-	 *
-	 * @return          null if successfully finished, otherwise error message
-	 */
-	public String finish() {
-		return null;
 	}
 }
