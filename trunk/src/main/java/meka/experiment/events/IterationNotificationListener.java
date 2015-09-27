@@ -14,34 +14,24 @@
  */
 
 /**
- * MekaSplitEvaluator.java
- * Copyright (C) 2014 University of Waikato, Hamilton, New Zealand
+ * IterationNotificationListener.java
+ * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
-package meka.experiment;
 
-import weka.experiment.SplitEvaluator;
+package meka.experiment.events;
 
 /**
- * Interface for MEKA split evaluators.
- * 
- * @author  fracpete (fracpete at waikato dot ac dot nz)
+ * Interface for classes that listen to iteration events of an experiment.
+ *
+ * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
-public interface MekaSplitEvaluator
-	extends SplitEvaluator {
+public interface IterationNotificationListener {
 
 	/**
-	 * Sets the overal number of classes.
-	 * 
-	 * @param value			the number of classes
+	 * Gets called if there is a new iteration (classifier/dataset combination) occurring in the experiment.
+	 *
+	 * @param e         the event
 	 */
-	public void setTotalNumClasses(int value);
-
-	/**
-	 * Returns the overal number of classes.
-	 * 
-	 * @return			the number of classes
-	 */
-	public int getTotalNumClasses();
-
+	public void nextIteration(IterationNotificationEvent e);
 }
