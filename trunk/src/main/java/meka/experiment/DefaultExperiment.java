@@ -315,7 +315,15 @@ public class DefaultExperiment
 		m_Running = true;
 
 		while (m_DatasetProvider.hasNext()) {
+			// next dataset
 			dataset = m_DatasetProvider.next();
+			if (dataset == null) {
+				result = "Failed to obtain next dataset!";
+				m_Running = false;
+				break;
+			}
+
+			// iterate classifiers
 			for (MultiLabelClassifier classifier: m_Classifiers) {
 				try {
 					classifier = (MultiLabelClassifier) AbstractClassifier.makeCopy(classifier);
@@ -356,8 +364,12 @@ public class DefaultExperiment
 			if (!(m_StatisticsHandler instanceof IncrementalEvaluationStatisticsHandler))
 				m_StatisticsHandler.write(m_Statistics);
 		}
-		if (!m_Running)
-			result = "Experiment interrupted!";
+		if (!m_Running) {
+			if (result == null)
+				result = "Experiment interrupted!";
+			else
+				result = "Experiment interrupted: " + result;
+		}
 
 		m_Running = false;
 
