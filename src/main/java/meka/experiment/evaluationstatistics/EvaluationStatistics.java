@@ -37,6 +37,12 @@ public class EvaluationStatistics
   extends HashMap<String,Number>  {
 	private static final long serialVersionUID = -1873027591755259927L;
 
+	/** the key for the classifier. */
+	public final static String KEY_CLASSIFIER = "Classifier";
+
+	/** the key for the relation. */
+	public final static String KEY_RELATION = "Relation";
+
 	/** the classifier. */
 	protected MultiLabelClassifier m_Classifier;
 
