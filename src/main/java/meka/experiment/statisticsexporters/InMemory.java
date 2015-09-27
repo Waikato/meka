@@ -49,6 +49,12 @@ public class InMemory
 		return "Just stores the statistics in mmemory.";
 	}
 
+	/**
+	 * Exports the statistics.
+	 *
+	 * @param stats         the statistics to export
+	 * @return              null if successfully exported, otherwise error message
+	 */
 	@Override
 	public String export(List<EvaluationStatistics> stats) {
 		m_Statistics.clear();
