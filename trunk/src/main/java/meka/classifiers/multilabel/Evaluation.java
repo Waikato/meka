@@ -553,7 +553,7 @@ public class Evaluation {
 		text.append("-x <number of folds>\n");
 		text.append("\tDo cross-validation with this many folds.\n");
 		text.append("-R\n");
-		text.append("\tRandomise the dataset (done after a range is removed, but before the train/test split).\n");
+		text.append("\tRandomize the order of instances in the dataset.\n");
 		text.append("-split-percentage <percentage>\n");
 		text.append("\tSets the percentage for the train/test set split, e.g., 66.\n");
 		text.append("-split-number <number>\n");
@@ -564,8 +564,8 @@ public class Evaluation {
 		text.append("\tSets random number seed (use with -R, for different CV or train/test splits).\n");
 		text.append("-threshold <threshold>\n");
 		text.append("\tSets the type of thresholding; where\n\t\t'PCut1' automatically calibrates a threshold (the default);\n\t\t'PCutL' automatically calibrates one threshold for each label;\n\t\tany number, e.g. '0.5', specifies that threshold.\n");
-		text.append("-C <number of classes/labels>\n");
-		text.append("\tSets the number of target attributes (classes/labels) to expect (indexed from the beginning).\n");
+		text.append("-C <number of labels>\n");
+		text.append("\tSets the number of target variables (labels) to assume (indexed from the beginning).\n");
 		//text.append("-f <results_file>\n");
 		//text.append("\tSpecify a file to output results and evaluation statistics into.\n");
 		text.append("-d <classifier_file>\n");
