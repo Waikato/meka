@@ -14,11 +14,11 @@
  */
 
 /**
- * AbstractEvaluationStatisticsExporter.java
+ * LocalDatasetProvider.java
  * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
 
-package meka.experiment.statisticsexporters;
+package meka.experiment.datasetproviders;
 
 import meka.experiment.events.LogEvent;
 import meka.experiment.events.LogListener;
@@ -29,28 +29,21 @@ import java.util.HashSet;
 import java.util.Vector;
 
 /**
- * Ancestor for statistics exporters.
+ * Loads local files from disk.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
-public abstract class AbstractEvaluationStatisticsExporter
-  implements EvaluationStatisticsExporter {
+public abstract class AbstractDatasetProvider
+		implements DatasetProvider {
 
-	private static final long serialVersionUID = 8950819250563958834L;
+	private static final long serialVersionUID = 2167509900278245507L;
 
 	/** the listeners. */
 	protected HashSet<LogListener> m_LogListeners = new HashSet<>();
 
 	/**
-	 * Description to be displayed in the GUI.
-	 *
-	 * @return      the description
-	 */
-	public abstract String globalInfo();
-
-	/**
-	 * Returns an enumeration of all the available options.
+	 * Returns an enumeration of all the available options..
 	 *
 	 * @return an enumeration of all available options.
 	 */
@@ -63,7 +56,7 @@ public abstract class AbstractEvaluationStatisticsExporter
 	 * Sets the options.
 	 *
 	 * @param options       the options
-	 * @throws Exception    never
+	 * @throws Exception    if parsing of options fails
 	 */
 	@Override
 	public void setOptions(String[] options) throws Exception {
@@ -77,6 +70,33 @@ public abstract class AbstractEvaluationStatisticsExporter
 	@Override
 	public String[] getOptions() {
 		return new String[0];
+	}
+
+	/**
+	 * Initializes the provider to start providing datasets from scratch.
+	 *
+	 * @return      null if successfully initialized, otherwise error message
+	 */
+	@Override
+	public String initialize() {
+		return null;
+	}
+
+	/**
+	 * Does nothing.
+	 */
+	@Override
+	public void remove() {
+		// ignored
+	}
+
+	/**
+	 * Gets called after the experiment finishes.
+	 *
+	 * @return          null if successfully finished, otherwise error message
+	 */
+	public String finish() {
+		return null;
 	}
 
 	/**
@@ -103,7 +123,7 @@ public abstract class AbstractEvaluationStatisticsExporter
 	 * @param msg       the message to output
 	 */
 	protected synchronized void log(String msg) {
-		LogEvent e;
+		LogEvent    e;
 
 		if (m_LogListeners.size() == 0) {
 			System.err.println(msg);

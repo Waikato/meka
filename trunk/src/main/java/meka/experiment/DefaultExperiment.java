@@ -30,6 +30,8 @@ import meka.experiment.evaluators.CrossValidation;
 import meka.experiment.evaluators.Evaluator;
 import meka.experiment.events.IterationNotificationEvent;
 import meka.experiment.events.IterationNotificationListener;
+import meka.experiment.events.LogEvent;
+import meka.experiment.events.LogListener;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 import weka.core.Option;
@@ -65,6 +67,9 @@ public class DefaultExperiment
 
 	/** the listeners for iterations.  */
 	protected transient HashSet<IterationNotificationListener> m_IterationNotficationListeners;
+
+	/** the listeners. */
+	protected HashSet<LogListener> m_LogListeners = new HashSet<>();
 
 	/** the collected statistics. */
 	protected List<EvaluationStatistics> m_Statistics = new ArrayList<>();
@@ -297,12 +302,39 @@ public class DefaultExperiment
 	}
 
 	/**
-	 * For logging messages to stderr.
+	 * Adds the log listener to use.
+	 *
+	 * @param l         the listener
+	 */
+	public void addLogListener(LogListener l) {
+		m_LogListeners.add(l);
+	}
+
+	/**
+	 * Remove the log listener to use.
+	 *
+	 * @param l         the listener
+	 */
+	public void removeLogListener(LogListener l) {
+		m_LogListeners.remove(l);
+	}
+
+	/**
+	 * For logging messages. Uses stderr if no listeners defined.
 	 *
 	 * @param msg       the message to output
 	 */
-	protected void log(String msg) {
-		System.err.println(msg);
+	protected synchronized void log(String msg) {
+		LogEvent e;
+
+		if (m_LogListeners.size() == 0) {
+			System.err.println(msg);
+			return;
+		}
+
+		e = new LogEvent(this, msg);
+		for (LogListener l: m_LogListeners)
+			l.logMessage(e);
 	}
 
 	/**
@@ -315,8 +347,27 @@ public class DefaultExperiment
 	protected String handleError(Object source, String msg) {
 		if (msg == null)
 			return null;
-		return source.getClass().getName() + ": " + msg;
+		msg = source.getClass().getName() + ": " + msg;
+		log(msg);
+		return msg;
 	}
+
+  /**
+   * Logs the stacktrace along with the message on stderr and returns a
+   * combination of both of them as string.
+   *
+   * @param msg		the message for the exception
+   * @param t		the exception
+   * @return		the full error message (message + stacktrace)
+   */
+  public String handleException(String msg, Throwable t) {
+	  String    result;
+
+	  result = ExceptionUtils.handleException(this, msg, t, false);
+	  log(result);
+
+	  return result;
+  }
 
 	/**
 	 * Initializes the experiment.
@@ -330,6 +381,14 @@ public class DefaultExperiment
 		result = handleError(m_DatasetProvider, m_DatasetProvider.initialize());
 		if (result == null)
 			result = handleError(m_StatisticsHandler, m_StatisticsHandler.initialize());
+
+		if (result == null) {
+			for (LogListener l: m_LogListeners) {
+				m_DatasetProvider.addLogListener(l);
+				m_StatisticsHandler.addLogListener(l);
+				m_Evaluator.addLogListener(l);
+			}
+		}
 
 		if (result != null)
 			log(result);
@@ -374,7 +433,7 @@ public class DefaultExperiment
 					classifier = (MultiLabelClassifier) AbstractClassifier.makeCopy(classifier);
 				}
 				catch (Exception e) {
-					result = ExceptionUtils.handleException(this, "Failed to create copy of classifier: " + classifier.getClass().getName(), e);
+					result = handleException("Failed to create copy of classifier: " + classifier.getClass().getName(), e);
 					log(result);
 					m_Running = false;
 					break;
@@ -394,7 +453,7 @@ public class DefaultExperiment
 						stats = m_Evaluator.evaluate(classifier, dataset);
 					}
 					catch (Exception e) {
-						result = ExceptionUtils.handleException(this, "Failed to evaluate dataset '" + dataset.relationName() + "' with classifier: " + Utils.toCommandLine(classifier), e);
+						result = handleException("Failed to evaluate dataset '" + dataset.relationName() + "' with classifier: " + Utils.toCommandLine(classifier), e);
 						log(result);
 						m_Running = false;
 						break;

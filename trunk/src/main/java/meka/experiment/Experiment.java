@@ -26,6 +26,7 @@ import meka.experiment.evaluationstatistics.EvaluationStatistics;
 import meka.experiment.evaluationstatistics.EvaluationStatisticsHandler;
 import meka.experiment.evaluators.Evaluator;
 import meka.experiment.events.IterationNotificationListener;
+import meka.experiment.events.LogSupporter;
 import weka.core.OptionHandler;
 
 import java.io.Serializable;
@@ -38,7 +39,7 @@ import java.util.List;
  * @version $Revision$
  */
 public interface Experiment
-  extends OptionHandler, Serializable {
+  extends OptionHandler, Serializable, LogSupporter {
 
 	/**
 	 * Sets the classifiers to be evaluated.

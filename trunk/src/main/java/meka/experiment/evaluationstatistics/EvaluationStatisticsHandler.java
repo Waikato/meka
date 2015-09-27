@@ -20,6 +20,7 @@
 
 package meka.experiment.evaluationstatistics;
 
+import meka.experiment.events.LogSupporter;
 import weka.core.OptionHandler;
 
 import java.io.Serializable;
@@ -32,7 +33,7 @@ import java.util.List;
  * @version $Revision$
  */
 public interface EvaluationStatisticsHandler
-  extends OptionHandler, Serializable {
+  extends OptionHandler, Serializable, LogSupporter {
 
 	/**
 	 * Initializes the handler.
