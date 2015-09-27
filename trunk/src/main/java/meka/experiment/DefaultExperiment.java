@@ -404,6 +404,7 @@ public class DefaultExperiment
 	 * Stops the experiment if still running.
 	 */
 	public void stop() {
+		m_Evaluator.stop();
 		m_Running = false;
 	}
 

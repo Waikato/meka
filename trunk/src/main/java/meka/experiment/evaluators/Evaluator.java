@@ -45,4 +45,9 @@ public interface Evaluator
 	 * @return              the statistics
 	 */
 	public List<EvaluationStatistics> evaluate(MultiLabelClassifier classifier, Instances dataset);
+
+	/**
+	 * Stops the evaluation, if possible.
+	 */
+	public void stop();
 }

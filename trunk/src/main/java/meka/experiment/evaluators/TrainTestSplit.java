@@ -62,6 +62,9 @@ public class TrainTestSplit
 	/** the verbosity option. */
 	protected String m_VOP = "3";
 
+	/** whether the evaluation got stopped. */
+	protected boolean m_Stopped;
+
 	/**
 	 * Description to be displayed in the GUI.
 	 *
@@ -213,6 +216,7 @@ public class TrainTestSplit
 		Instances                   test;
 		Result                      res;
 
+		m_Stopped = false;
 		result    = new ArrayList<>();
 		trainSize = (int) (dataset.numInstances() * m_TrainPercentage / 100.0);
 		train     = new Instances(dataset, 0, trainSize);
@@ -227,6 +231,16 @@ public class TrainTestSplit
 					"Failed to evaluate dataset '" + dataset.relationName() + "' with classifier: " + Utils.toCommandLine(classifier), e);
 		}
 
+		if (m_Stopped)
+			result.clear();
+
 		return result;
+	}
+
+	/**
+	 * Stops the evaluation, if possible.
+	 */
+	public void stop() {
+		m_Stopped = true;
 	}
 }
