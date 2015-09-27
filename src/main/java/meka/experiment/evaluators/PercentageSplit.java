@@ -232,8 +232,7 @@ public class PercentageSplit
 		Instances                   test;
 		Result                      res;
 
-		m_Stopped = false;
-		result    = new ArrayList<>();
+		result = new ArrayList<>();
 		if (!m_PreserveOrder) {
 			dataset = new Instances(dataset);
 			dataset.randomize(new Random(m_Seed));
