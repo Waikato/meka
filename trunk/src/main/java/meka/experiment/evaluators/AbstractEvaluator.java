@@ -89,6 +89,15 @@ public abstract class AbstractEvaluator
 	}
 
 	/**
+	 * For logging messages to stderr.
+	 *
+	 * @param msg       the message to output
+	 */
+	protected void log(String msg) {
+		System.err.println(msg);
+	}
+
+	/**
 	 * Stops the evaluation, if possible.
 	 */
 	public void stop() {

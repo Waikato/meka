@@ -202,6 +202,7 @@ public class RepeatedRuns
 		result = new ArrayList<>();
 
 		for (i = m_LowerRuns; i <= m_UpperRuns; i++) {
+			log("Run: " + i);
 			if (m_Evaluator instanceof Randomizable)
 				((Randomizable) m_Evaluator).setSeed(i);
 			m_Evaluator.initialize();

@@ -74,6 +74,15 @@ public abstract class AbstractEvaluationStatisticsHandler
 	}
 
 	/**
+	 * For logging messages to stderr.
+	 *
+	 * @param msg       the message to output
+	 */
+	protected void log(String msg) {
+		System.err.println(msg);
+	}
+
+	/**
 	 * Gets called after the experiment finished.
 	 *
 	 * @return          null if successfully finished, otherwise error message
