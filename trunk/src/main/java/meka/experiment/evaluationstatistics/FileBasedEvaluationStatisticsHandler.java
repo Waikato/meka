@@ -32,6 +32,20 @@ public interface FileBasedEvaluationStatisticsHandler
   extends EvaluationStatisticsHandler {
 
 	/**
+	 * Returns the format description.
+	 *
+	 * @return      the file format
+	 */
+	public String getFormatDescription();
+
+	/**
+	 * Returns the format extension(s).
+	 *
+	 * @return      the extension(s) (incl dot)
+	 */
+	public String[] getFormatExtensions();
+
+	/**
 	 * Sets the file to read from/write to.
 	 *
 	 * @param value     the file
