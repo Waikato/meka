@@ -25,12 +25,9 @@ import meka.core.ExceptionUtils;
 import meka.core.OptionUtils;
 import meka.experiment.datasetproviders.DatasetProvider;
 import meka.experiment.datasetproviders.LocalDatasetProvider;
-import meka.experiment.evaluationstatistics.EvaluationStatistics;
-import meka.experiment.evaluationstatistics.EvaluationStatisticsHandler;
-import meka.experiment.evaluationstatistics.IncrementalEvaluationStatisticsHandler;
-import meka.experiment.evaluationstatistics.Serialized;
+import meka.experiment.evaluationstatistics.*;
+import meka.experiment.evaluators.CrossValidation;
 import meka.experiment.evaluators.Evaluator;
-import meka.experiment.evaluators.PercentageSplit;
 import meka.experiment.events.IterationNotificationEvent;
 import meka.experiment.events.IterationNotificationListener;
 import weka.classifiers.AbstractClassifier;
@@ -144,7 +141,7 @@ public class DefaultExperiment
 	 * @return              the default
 	 */
 	protected Evaluator getDefaultEvaluator() {
-		return new PercentageSplit();   // TODO: cross-validation?
+		return new CrossValidation();
 	}
 
 	/**
@@ -193,7 +190,7 @@ public class DefaultExperiment
 	 * @return          the default
 	 */
 	protected EvaluationStatisticsHandler getDefaultStatisticsHandler() {
-		return new Serialized();   // TODO: plain-text?
+		return new KeyValuePairs();
 	}
 
 	/**
