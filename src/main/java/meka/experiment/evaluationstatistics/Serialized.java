@@ -32,7 +32,7 @@ import java.util.List;
  * @version $Revision$
  */
 public class Serialized
-  extends AbstractFileBaseEvaluationStatisticHandler {
+  extends AbstractFileBasedEvaluationStatisticsHandler {
 
 	private static final long serialVersionUID = -1090631157162943295L;
 

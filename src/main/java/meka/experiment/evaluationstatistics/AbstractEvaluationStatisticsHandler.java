@@ -14,70 +14,34 @@
  */
 
 /**
- * AbstractFileBaseEvaluationStatisticHandler.java
+ * AbstractEvaluationStatisticsHandler.java
  * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
 
 package meka.experiment.evaluationstatistics;
 
-import meka.core.OptionUtils;
 import weka.core.Option;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Vector;
 
 /**
- * Ancestor for file-base handlers.
+ * Ancestor for handlers.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
-public abstract class AbstractFileBaseEvaluationStatisticHandler
-  implements FileBasedEvaluationStatisticsHandler {
+public abstract class AbstractEvaluationStatisticsHandler
+  implements EvaluationStatisticsHandler {
 
 	private static final long serialVersionUID = -1090631157162943295L;
 
-	/** the file to read from/write to. */
-	protected File m_File = getDefaultFile();
-
 	/**
-	 * Returns the default file.
+	 * Description to be displayed in the GUI.
 	 *
-	 * @return          the default
+	 * @return      the description
 	 */
-	protected File getDefaultFile() {
-		return new File(".");
-	}
-
-	/**
-	 * Sets the file to read from/write to.
-	 *
-	 * @param value     the file
-	 */
-	public void setFile(File value) {
-		m_File = value;
-	}
-
-	/**
-	 * Returns the file to read from/write to.
-	 *
-	 * @return          the file
-	 */
-	public File getFile() {
-		return m_File;
-	}
-
-	/**
-	 * Describes this property.
-	 *
-	 * @return          the description
-	 */
-	public String fileTipText() {
-		return "The file to read from/write to.";
-	}
+	public abstract String globalInfo();
 
 	/**
 	 * Returns an enumeration of all the available options.
@@ -86,9 +50,7 @@ public abstract class AbstractFileBaseEvaluationStatisticHandler
 	 */
 	@Override
 	public Enumeration<Option> listOptions() {
-		Vector result = new Vector();
-		OptionUtils.addOption(result, fileTipText(), "" + getDefaultFile(), 'F');
-		return OptionUtils.toEnumeration(result);
+		return new Vector().elements();
 	}
 
 	/**
@@ -99,7 +61,6 @@ public abstract class AbstractFileBaseEvaluationStatisticHandler
 	 */
 	@Override
 	public void setOptions(String[] options) throws Exception {
-		setFile(OptionUtils.parse(options, 'F', getDefaultFile()));
 	}
 
 	/**
@@ -109,21 +70,7 @@ public abstract class AbstractFileBaseEvaluationStatisticHandler
 	 */
 	@Override
 	public String[] getOptions() {
-		List<String> result = new ArrayList<>();
-		OptionUtils.add(result, 'F', getFile());
-		return OptionUtils.toArray(result);
-	}
-
-	/**
-	 * Initializes the handler.
-	 *
-	 * @return      null if successfully initialized, otherwise error message
-	 */
-	@Override
-	public String initialize() {
-		if (m_File.isDirectory())
-			return "File points to a directory: " + m_File;
-		return null;
+		return new String[0];
 	}
 
 	/**
