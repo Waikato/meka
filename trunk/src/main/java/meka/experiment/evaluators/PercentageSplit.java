@@ -14,7 +14,7 @@
  */
 
 /**
- * TrainTestSplit.java
+ * PercentageSplit.java
  * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
 
@@ -34,12 +34,12 @@ import weka.core.Utils;
 import java.util.*;
 
 /**
- * Evaluates the classifier on a train/test split. Order can be preserved.
+ * Evaluates the classifier on a percentage split. Order can be preserved.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
-public class TrainTestSplit
+public class PercentageSplit
   extends AbstractEvaluator
   implements Randomizable {
 
@@ -66,7 +66,7 @@ public class TrainTestSplit
 	 * @return      the description
 	 */
 	public String globalInfo() {
-		return "Evaluates the classifier on a train/test split. Order can be preserved.";
+		return "Evaluates the classifier on a percentage split. Order can be preserved.";
 	}
 
 	/**
