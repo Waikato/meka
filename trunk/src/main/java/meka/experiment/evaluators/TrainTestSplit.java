@@ -31,10 +31,7 @@ import weka.core.Option;
 import weka.core.Randomizable;
 import weka.core.Utils;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Evaluates the classifier on a train/test split. Order can be preserved.
@@ -237,6 +234,10 @@ public class TrainTestSplit
 
 		m_Stopped = false;
 		result    = new ArrayList<>();
+		if (!m_PreserveOrder) {
+			dataset = new Instances(dataset);
+			dataset.randomize(new Random(m_Seed));
+		}
 		trainSize = (int) (dataset.numInstances() * m_TrainPercentage / 100.0);
 		train     = new Instances(dataset, 0, trainSize);
 		test      = new Instances(dataset, trainSize, dataset.numInstances() - trainSize);
