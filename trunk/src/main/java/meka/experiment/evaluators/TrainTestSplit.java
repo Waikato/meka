@@ -43,27 +43,25 @@ import java.util.Vector;
  * @version $Revision$
  */
 public class TrainTestSplit
-  implements Evaluator, Randomizable {
+  extends AbstractEvaluator
+  implements Randomizable {
 
 	private static final long serialVersionUID = 6318297857792961890L;
 
 	/** percentage to use for training. */
-	protected double m_TrainPercentage = 67.0;
+	protected double m_TrainPercentage = getDefaultTrainPercentage();
 
 	/** whether to preserve the order. */
 	protected boolean m_PreserveOrder = false;
 
 	/** the seed value. */
-	protected int m_Seed = 0;
+	protected int m_Seed = getDefaultSeed();
 
 	/** the threshold option. */
 	protected String m_TOP = "PCut1";
 
 	/** the verbosity option. */
 	protected String m_VOP = "3";
-
-	/** whether the evaluation got stopped. */
-	protected boolean m_Stopped;
 
 	/**
 	 * Description to be displayed in the GUI.
@@ -72,6 +70,15 @@ public class TrainTestSplit
 	 */
 	public String globalInfo() {
 		return "Evaluates the classifier on a train/test split. Order can be preserved.";
+	}
+
+	/**
+	 * Gets the default percentage to use for training.
+	 *
+	 * @return the defaut
+	 */
+	protected double getDefaultTrainPercentage() {
+		return 67.0;
 	}
 
 	/**
@@ -132,6 +139,15 @@ public class TrainTestSplit
 	}
 
 	/**
+	 * Gets the default seed for the random number generations
+	 *
+	 * @return the default
+	 */
+	protected int getDefaultSeed() {
+		return 0;
+	}
+
+	/**
 	 * Set the seed for random number generation.
 	 *
 	 * @param value the seed
@@ -168,9 +184,10 @@ public class TrainTestSplit
 	@Override
 	public Enumeration<Option> listOptions() {
 		Vector result = new Vector();
-		OptionUtils.addOption(result, trainPercentageTipText(), "67", 'P');
+		OptionUtils.add(result, super.listOptions());
+		OptionUtils.addOption(result, trainPercentageTipText(), "" + getDefaultTrainPercentage(), 'P');
 		OptionUtils.addFlag(result, preserveOrderTipText(), 'O');
-		OptionUtils.addOption(result, seedTipText(), "0", 'S');
+		OptionUtils.addOption(result, seedTipText(), "" + getDefaultSeed(), 'S');
 		return OptionUtils.toEnumeration(result);
 	}
 
@@ -182,9 +199,10 @@ public class TrainTestSplit
 	 */
 	@Override
 	public void setOptions(String[] options) throws Exception {
-		setTrainPercentage(OptionUtils.parse(options, 'P', 67.0));
+		setTrainPercentage(OptionUtils.parse(options, 'P', getDefaultTrainPercentage()));
 		setPreserveOrder(Utils.getFlag('O', options));
-		setSeed(OptionUtils.parse(options, 'S', 0));
+		setSeed(OptionUtils.parse(options, 'S', getDefaultSeed()));
+		super.setOptions(options);
 	}
 
 	/**
@@ -195,6 +213,7 @@ public class TrainTestSplit
 	@Override
 	public String[] getOptions() {
 		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, super.getOptions());
 		OptionUtils.add(result, 'P', getTrainPercentage());
 		OptionUtils.add(result, 'O', getPreserveOrder());
 		OptionUtils.add(result, 'S', getSeed());
@@ -235,12 +254,5 @@ public class TrainTestSplit
 			result.clear();
 
 		return result;
-	}
-
-	/**
-	 * Stops the evaluation, if possible.
-	 */
-	public void stop() {
-		m_Stopped = true;
 	}
 }
