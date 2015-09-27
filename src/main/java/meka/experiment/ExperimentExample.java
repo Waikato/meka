@@ -29,6 +29,7 @@ import meka.experiment.evaluators.CrossValidation;
 import meka.experiment.evaluators.RepeatedRuns;
 import meka.experiment.events.IterationNotificationEvent;
 import meka.experiment.events.IterationNotificationListener;
+import meka.experiment.statisticsexporters.TabSeparated;
 import weka.core.Utils;
 
 import java.io.File;
@@ -80,5 +81,10 @@ public class ExperimentExample {
 		System.out.println("finish: " + msg);
 		// print stats (also stored in file)
 		System.out.println("statistics:\n" + exp.getStatistics());
+		// export them
+		TabSeparated exporter = new TabSeparated();
+		exporter.setFile(new File(System.getProperty("java.io.tmpdir") + "/mekaexp.tsv"));
+		msg = exporter.export(exp.getStatistics());
+		System.out.println("export: " + msg);
 	}
 }
