@@ -23,15 +23,11 @@ package meka.experiment.statisticsexporters;
 import meka.core.ExceptionUtils;
 import meka.core.FileUtils;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
-import meka.experiment.evaluators.CrossValidation;
-import meka.experiment.evaluators.RepeatedRuns;
+import meka.experiment.evaluationstatistics.EvaluationStatisticsUtils;
 import weka.core.Utils;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -79,7 +75,6 @@ public class TabSeparated
 	@Override
 	public String export(List<EvaluationStatistics> stats) {
 		String          result;
-		HashSet<String> keys;
 		List<String>    headers;
 		FileWriter      fwriter;
 		BufferedWriter  bwriter;
@@ -87,23 +82,7 @@ public class TabSeparated
 
 		result = null;
 
-		// construct header
-		keys = new HashSet<>();
-		for (EvaluationStatistics stat: stats)
-			keys.addAll(stat.keySet());
-		headers = new ArrayList<>(keys);
-		Collections.sort(headers);
-		if (headers.contains(CrossValidation.KEY_FOLD)) {
-			headers.remove(CrossValidation.KEY_FOLD);
-			headers.add(0, CrossValidation.KEY_FOLD);
-		}
-		if (headers.contains(RepeatedRuns.KEY_RUN)) {
-			headers.remove(RepeatedRuns.KEY_RUN);
-			headers.add(0, RepeatedRuns.KEY_RUN);
-		}
-		headers.add(0, EvaluationStatistics.KEY_RELATION);
-		headers.add(0, EvaluationStatistics.KEY_CLASSIFIER);
-
+		headers = EvaluationStatisticsUtils.header(stats, true, true);
 		fwriter = null;
 		bwriter = null;
 		try {

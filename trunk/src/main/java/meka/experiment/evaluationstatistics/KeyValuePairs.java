@@ -210,6 +210,30 @@ public class KeyValuePairs
 
 		return result;
 	}
+	/**
+	 * Retrieves the statis for the specified combination of classifier and dataset.
+	 *
+	 * @param classifier    the classifier to check
+	 * @param dataset       the dataset to check
+	 * @return              the stats, null if not available
+	 */
+	public List<EvaluationStatistics> retrieve(MultiLabelClassifier classifier, Instances dataset) {
+		List<EvaluationStatistics>  result;
+		String                      cls;
+		String                      rel;
+
+		result = new ArrayList<>();
+
+		cls = Utils.toCommandLine(classifier);
+		rel = dataset.relationName();
+
+		for (EvaluationStatistics stat: m_Statistics) {
+			if (Utils.toCommandLine(stat.getClassifier()).equals(cls) && stat.getRelation().equals(rel))
+				result.add(stat);
+		}
+
+		return result;
+	}
 
 	/**
 	 * Adds the given statistics.
