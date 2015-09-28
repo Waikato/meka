@@ -20,10 +20,15 @@
 
 package meka.experiment.evaluationstatistics;
 
+import meka.classifiers.multilabel.MultiLabelClassifier;
+import meka.core.OptionUtils;
 import meka.experiment.evaluators.CrossValidation;
 import meka.experiment.evaluators.RepeatedRuns;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Helper class for stats related operations.
@@ -56,6 +61,76 @@ public class EvaluationStatisticsUtils {
 	}
 
 	/**
+	 * Returns all the unique classifiers of all the statistics.
+	 *
+	 * @param stats     the stats to inspect
+	 * @param sort      whether to sort the classifiers alphabetically
+	 * @return          the classifiers
+	 */
+	public static List<MultiLabelClassifier> classifiers(List<EvaluationStatistics> stats, boolean sort) {
+		List<MultiLabelClassifier>      result;
+		List<String>                    cmdlines;
+
+		result   = new ArrayList<>();
+		cmdlines = commandLines(stats, sort);
+		for (String cmdline: cmdlines) {
+			try {
+				result.add(OptionUtils.fromCommandLine(MultiLabelClassifier.class, cmdline));
+			}
+			catch (Exception e) {
+				System.err.println("Failed to instantiate command-line: " + cmdline);
+				e.printStackTrace();
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Returns all the unique classifiers of all the statistics.
+	 *
+	 * @param stats     the stats to inspect
+	 * @param sort      whether to sort the classifiers alphabetically
+	 * @return          the command-lines
+	 */
+	public static List<String> commandLines(List<EvaluationStatistics> stats, boolean sort) {
+		List<String>        result;
+
+		result = new ArrayList<>();
+		for (EvaluationStatistics stat: stats) {
+			if (!result.contains(stat.getCommandLine()))
+				result.add(stat.getCommandLine());
+		}
+
+		if (sort)
+			Collections.sort(result);
+
+		return result;
+	}
+
+	/**
+	 * Returns all the unique relations of all the statistics.
+	 *
+	 * @param stats     the stats to inspect
+	 * @param sort      whether to sort the relations alphabetically
+	 * @return          the relations
+	 */
+	public static List<String> relations(List<EvaluationStatistics> stats, boolean sort) {
+		List<String>        result;
+
+		result = new ArrayList<>();
+		for (EvaluationStatistics stat: stats) {
+			if (!result.contains(stat.getRelation()))
+				result.add(stat.getRelation());
+		}
+
+		if (sort)
+			Collections.sort(result);
+
+		return result;
+	}
+
+	/**
 	 * Creates a list of headers (= stats keys) from the provided statistics.
 	 *
 	 * @param stats                 the stats to use
@@ -63,7 +138,7 @@ public class EvaluationStatisticsUtils {
 	 * @param addClassifierRelation whether to add "Classifier" and "Relation"
 	 * @return                      the generated header list
 	 */
-	public static List<String> header(List<EvaluationStatistics> stats, boolean moveRunFold, boolean addClassifierRelation) {
+	public static List<String> headers(List<EvaluationStatistics> stats, boolean moveRunFold, boolean addClassifierRelation) {
 		List<String>    result;
 
 		result = keys(stats, true);
