@@ -20,6 +20,7 @@
 
 package meka.experiment.datasetproviders;
 
+import meka.core.ExceptionUtils;
 import meka.experiment.events.LogEvent;
 import meka.experiment.events.LogListener;
 import weka.core.Option;
@@ -133,5 +134,22 @@ public abstract class AbstractDatasetProvider
 		e = new LogEvent(this, msg);
 		for (LogListener l: m_LogListeners)
 			l.logMessage(e);
+	}
+
+	/**
+	 * Logs the stacktrace along with the message on stderr and returns a
+	 * combination of both of them as string.
+	 *
+	 * @param msg		the message for the exception
+	 * @param t		the exception
+	 * @return		the full error message (message + stacktrace)
+	 */
+	public String handleException(String msg, Throwable t) {
+		String    result;
+
+		result = ExceptionUtils.handleException(this, msg, t, false);
+		log(result);
+
+		return result;
 	}
 }

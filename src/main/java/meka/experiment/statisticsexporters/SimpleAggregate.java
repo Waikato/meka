@@ -24,11 +24,11 @@ import gnu.trove.list.array.TDoubleArrayList;
 import meka.core.ExceptionUtils;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
 import meka.experiment.evaluationstatistics.EvaluationStatisticsComparator;
+import meka.experiment.evaluationstatistics.EvaluationStatisticsUtils;
 import weka.core.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -62,7 +62,11 @@ public class SimpleAggregate
 	 */
 	@Override
 	public String globalInfo() {
-		return "Simple aggregator of statistics.";
+		return "Simple aggregator of statistics.\n"
+				+ "For each numeric attribute the following attributes get generated:\n"
+				+ "- " + SUFFIX_COUNT + ": the number of rows used to calculate this aggregate\n"
+				+ "- " + SUFFIX_MEAN + ": the average/mean\n"
+				+ "- " + SUFFIX_STDEV + ": the standard deviation";
 	}
 
 	/**
@@ -131,15 +135,13 @@ public class SimpleAggregate
 	 */
 	protected EvaluationStatistics doAggregate(List<EvaluationStatistics> stats) {
 		EvaluationStatistics    result;
-		HashSet<String>         keys;
+		List<String>            keys;
 		TDoubleArrayList        values;
 
 		result = new EvaluationStatistics(stats.get(0).getClassifier(), stats.get(0).getRelation(), null);
 
 		// collect all stats
-		keys = new HashSet<>();
-		for (EvaluationStatistics stat: stats)
-			keys.addAll(stat.keySet());
+		keys = EvaluationStatisticsUtils.keys(stats, false);
 
 		// collect values
 		for (String key: keys) {
@@ -172,6 +174,7 @@ public class SimpleAggregate
 		int                             i;
 
 		try {
+			stats  = new ArrayList<>(stats);
 			result = new ArrayList<>();
 			comp   = new EvaluationStatisticsComparator(Utils.splitOptions(m_AggregationKeys));
 			// sort

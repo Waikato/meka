@@ -33,7 +33,9 @@ import meka.experiment.events.LogEvent;
 import meka.experiment.events.LogListener;
 import meka.experiment.statisticsexporters.SimpleAggregate;
 import meka.experiment.statisticsexporters.TabSeparated;
+import meka.experiment.statisticsexporters.WekaFilter;
 import weka.core.Utils;
+import weka.filters.unsupervised.attribute.RemoveByName;
 
 import java.io.File;
 
@@ -92,12 +94,16 @@ public class ExperimentExample {
 		// print stats (also stored in file)
 		System.out.println("statistics:\n" + exp.getStatistics());
 		// export them
-		SimpleAggregate exporter = new SimpleAggregate();
-		exporter.setExporter(new TabSeparated());
 		TabSeparated tabsep = new TabSeparated();
 		tabsep.setFile(new File(System.getProperty("java.io.tmpdir") + "/mekaexp.tsv"));
-		exporter.setExporter(tabsep);
-		msg = exporter.export(exp.getStatistics());
+		RemoveByName remove = new RemoveByName();
+		remove.setExpression(".*(" + SimpleAggregate.SUFFIX_COUNT + "|" + SimpleAggregate.SUFFIX_STDEV + ")$");
+		WekaFilter filter = new WekaFilter();
+		filter.setFilter(remove);
+		filter.setExporter(tabsep);
+		SimpleAggregate aggregate = new SimpleAggregate();
+		aggregate.setExporter(filter);
+		msg = aggregate.export(exp.getStatistics());
 		System.out.println("export: " + msg);
 	}
 }

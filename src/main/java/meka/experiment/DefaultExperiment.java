@@ -352,22 +352,22 @@ public class DefaultExperiment
 		return msg;
 	}
 
-  /**
-   * Logs the stacktrace along with the message on stderr and returns a
-   * combination of both of them as string.
-   *
-   * @param msg		the message for the exception
-   * @param t		the exception
-   * @return		the full error message (message + stacktrace)
-   */
-  public String handleException(String msg, Throwable t) {
-	  String    result;
+	/**
+	 * Logs the stacktrace along with the message on stderr and returns a
+	 * combination of both of them as string.
+	 *
+	 * @param msg		the message for the exception
+	 * @param t		the exception
+	 * @return		the full error message (message + stacktrace)
+	 */
+	public String handleException(String msg, Throwable t) {
+		String    result;
 
-	  result = ExceptionUtils.handleException(this, msg, t, false);
-	  log(result);
+		result = ExceptionUtils.handleException(this, msg, t, false);
+		log(result);
 
-	  return result;
-  }
+		return result;
+	}
 
 	/**
 	 * Initializes the experiment.
@@ -425,6 +425,8 @@ public class DefaultExperiment
 				if (m_StatisticsHandler instanceof IncrementalEvaluationStatisticsHandler) {
 					if (!((IncrementalEvaluationStatisticsHandler) m_StatisticsHandler).requires(classifier, dataset)) {
 						log("Already present, skipping: " + Utils.toCommandLine(classifier) + " --> " + dataset.relationName());
+						m_Statistics.addAll(
+								((IncrementalEvaluationStatisticsHandler) m_StatisticsHandler).retrieve(classifier, dataset));
 						continue;
 					}
 				}

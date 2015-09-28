@@ -52,6 +52,15 @@ public interface IncrementalEvaluationStatisticsHandler
 	public boolean requires(MultiLabelClassifier classifier, Instances dataset);
 
 	/**
+	 * Retrieves the statis for the specified combination of classifier and dataset.
+	 *
+	 * @param classifier    the classifier to check
+	 * @param dataset       the dataset to check
+	 * @return              the stats, null if not available
+	 */
+	public List<EvaluationStatistics> retrieve(MultiLabelClassifier classifier, Instances dataset);
+
+	/**
 	 * Adds the given statistics.
 	 *
 	 * @param stats         the statistics to store
