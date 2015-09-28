@@ -418,6 +418,7 @@ public class DefaultExperiment
 				m_Running = false;
 				break;
 			}
+			log("Using dataset: " + dataset.relationName());
 
 			// iterate classifiers
 			for (MultiLabelClassifier classifier: m_Classifiers) {
@@ -444,6 +445,7 @@ public class DefaultExperiment
 				if (m_Running) {
 					// notify listeners
 					notifyIterationNotificationListeners(classifier, dataset);
+					log("Using classifier: " + OptionUtils.toCommandLine(classifier));
 
 					// perform evaluation
 					result = m_Evaluator.initialize();
