@@ -24,6 +24,7 @@ import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.core.OptionUtils;
 import meka.experiment.evaluators.CrossValidation;
 import meka.experiment.evaluators.RepeatedRuns;
+import weka.core.Instances;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -104,6 +105,42 @@ public class EvaluationStatisticsUtils {
 
 		if (sort)
 			Collections.sort(result);
+
+		return result;
+	}
+
+	/**
+	 * Returns all the values of a specific measurement for the specified classifier/dataset combination.
+	 *
+	 * @param stats         the stats to inspect
+	 * @param classifier    the classifier to look for
+	 * @param dataset       the dataset to look for
+	 * @param measurement   the measurement to retrieve
+	 * @return              the values
+	 */
+	public static List<Number> measurements(List<EvaluationStatistics> stats, MultiLabelClassifier classifier, Instances dataset, String measurement) {
+		return measurements(stats, OptionUtils.toCommandLine(classifier), dataset.relationName(), measurement);
+	}
+
+	/**
+	 * Returns all the values of a specific measurement for the specified classifier/dataset combination.
+	 *
+	 * @param stats         the stats to inspect
+	 * @param classifier    the classifier to look for (commandline)
+	 * @param dataset       the dataset to look for (relation name)
+	 * @param measurement   the measurement to retrieve
+	 * @return              the values
+	 */
+	public static List<Number> measurements(List<EvaluationStatistics> stats, String classifier, String dataset, String measurement) {
+		List<Number>    result;
+
+		result = new ArrayList<>();
+		for (EvaluationStatistics stat: stats) {
+			if (stat.getCommandLine().equals(classifier) && stat.getRelation().equals(dataset)) {
+				if (stat.containsKey(measurement))
+					result.add(stat.get(measurement));
+			}
+		}
 
 		return result;
 	}
