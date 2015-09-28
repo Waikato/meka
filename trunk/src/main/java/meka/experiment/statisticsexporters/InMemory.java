@@ -56,7 +56,7 @@ public class InMemory
 	 * @return              null if successfully exported, otherwise error message
 	 */
 	@Override
-	public String export(List<EvaluationStatistics> stats) {
+	protected String doExport(List<EvaluationStatistics> stats) {
 		m_Statistics.clear();
 		m_Statistics.addAll(stats);
 		return null;
