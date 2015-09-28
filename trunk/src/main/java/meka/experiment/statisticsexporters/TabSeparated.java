@@ -24,7 +24,6 @@ import meka.core.ExceptionUtils;
 import meka.core.FileUtils;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
 import meka.experiment.evaluationstatistics.EvaluationStatisticsUtils;
-import weka.core.Utils;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -82,7 +81,7 @@ public class TabSeparated
 
 		result = null;
 
-		headers = EvaluationStatisticsUtils.header(stats, true, true);
+		headers = EvaluationStatisticsUtils.headers(stats, true, true);
 		fwriter = null;
 		bwriter = null;
 		try {
@@ -104,7 +103,7 @@ public class TabSeparated
 					if (i > 0)
 						bwriter.write("\t");
 					if (i == 0) {
-						bwriter.write(Utils.toCommandLine(stat.getClassifier()));
+						bwriter.write(stat.getCommandLine());
 					}
 					else if (i == 1) {
 						bwriter.write(stat.getRelation());

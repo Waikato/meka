@@ -202,7 +202,7 @@ public class KeyValuePairs
 		rel = dataset.relationName();
 
 		for (EvaluationStatistics stat: m_Statistics) {
-			if (Utils.toCommandLine(stat.getClassifier()).equals(cls) && stat.getRelation().equals(rel)) {
+			if (stat.getCommandLine().equals(cls) && stat.getRelation().equals(rel)) {
 				result = false;
 				break;
 			}
@@ -228,7 +228,7 @@ public class KeyValuePairs
 		rel = dataset.relationName();
 
 		for (EvaluationStatistics stat: m_Statistics) {
-			if (Utils.toCommandLine(stat.getClassifier()).equals(cls) && stat.getRelation().equals(rel))
+			if (stat.getCommandLine().equals(cls) && stat.getRelation().equals(rel))
 				result.add(stat);
 		}
 
@@ -252,7 +252,7 @@ public class KeyValuePairs
 			fwriter = new FileWriter(m_File, true);
 			bwriter = new BufferedWriter(fwriter);
 			for (EvaluationStatistics stat: stats) {
-				bwriter.write(KEY_CLASSIFIER + "=" + Utils.toCommandLine(stat.getClassifier()));
+				bwriter.write(KEY_CLASSIFIER + "=" + stat.getCommandLine());
 				bwriter.write("\t");
 				bwriter.write(KEY_RELATION + "=" + stat.getRelation());
 				bwriter.write("\t");

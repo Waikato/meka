@@ -21,6 +21,7 @@
 package meka.experiment.evaluationstatistics;
 
 import meka.classifiers.multilabel.MultiLabelClassifier;
+import meka.core.OptionUtils;
 import meka.core.Result;
 import weka.core.Instances;
 import weka.core.Utils;
@@ -45,6 +46,9 @@ public class EvaluationStatistics
 
 	/** the classifier. */
 	protected MultiLabelClassifier m_Classifier;
+
+	/** the classifier commandline. */
+	protected String m_CommandLine;
 
 	/** the relation name. */
 	protected String m_Relation;
@@ -77,8 +81,9 @@ public class EvaluationStatistics
 	public EvaluationStatistics(MultiLabelClassifier classifier, String relation, Result result) {
 		super();
 
-		m_Classifier = classifier;
-		m_Relation   = relation;
+		m_Classifier  = classifier;
+		m_CommandLine = (classifier == null) ? null : OptionUtils.toCommandLine(classifier);
+		m_Relation    = relation;
 
 		if (result != null) {
 			for (String key : result.vals.keySet()) {
@@ -99,6 +104,15 @@ public class EvaluationStatistics
 	 */
 	public MultiLabelClassifier getClassifier() {
 		return m_Classifier;
+	}
+
+	/**
+	 * Returns the commandline of the classifier for these statistics.
+	 *
+	 * @return      the classifier commandline, null if not set
+	 */
+	public String getCommandLine() {
+		return m_CommandLine;
 	}
 
 	/**

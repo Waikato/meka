@@ -158,7 +158,7 @@ public class WekaFilter
 		int                     i;
 
 		// header
-		headers = EvaluationStatisticsUtils.header(stats, true, true);
+		headers = EvaluationStatisticsUtils.headers(stats, true, true);
 		atts    = new ArrayList<>();
 		for (String header: headers) {
 			if (header.equals(EvaluationStatistics.KEY_CLASSIFIER) || header.equals(EvaluationStatistics.KEY_RELATION))
@@ -173,7 +173,7 @@ public class WekaFilter
 			values = new double[result.numAttributes()];
 			for (i = 0; i < values.length; i++) {
 				if (headers.get(i).equals(EvaluationStatistics.KEY_CLASSIFIER))
-					values[i] = result.attribute(i).addStringValue(Utils.toCommandLine(stat.getClassifier()));
+					values[i] = result.attribute(i).addStringValue(stat.getCommandLine());
 				else if (headers.get(i).equals(EvaluationStatistics.KEY_RELATION))
 					values[i] = result.attribute(i).addStringValue(stat.getRelation());
 				else if (stat.containsKey(headers.get(i)))
