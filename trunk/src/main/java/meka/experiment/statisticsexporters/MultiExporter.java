@@ -41,6 +41,9 @@ public class MultiExporter
 
 	private static final long serialVersionUID = 7974229256817823349L;
 
+	/** the base exporter. */
+	protected EvaluationStatisticsExporter[] m_Exporters = getDefaultExporters();
+
 	/**
 	 * Description to be displayed in the GUI.
 	 *
@@ -50,9 +53,6 @@ public class MultiExporter
 	public String globalInfo() {
 		return "Exports the statistics using multiple exporters.";
 	}
-
-	/** the base exporter. */
-	protected EvaluationStatisticsExporter[] m_Exporters = getDefaultExporters();
 
 	/**
 	 * Returns the default exporters to use.
