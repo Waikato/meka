@@ -120,6 +120,12 @@ public class ExperimentExample {
 		tabsepZOL.setFile(new File(tmpDir + "/mekaexp-ZOL.tsv"));
 		MultiExporter multiexp = new MultiExporter();
 		multiexp.setExporters(new EvaluationStatisticsExporter[]{aggregate, tabsepFull, tabsepHL, tabsepZOL});
+		multiexp.addLogListener(new LogListener() {
+			@Override
+			public void logMessage(LogEvent e) {
+				System.err.println("[EXPORT] " + e.getSource().getClass().getName() + ": " + e.getMessage());
+			}
+		});
 		msg = multiexp.export(exp.getStatistics());
 		System.out.println("export: " + msg);
 	}
