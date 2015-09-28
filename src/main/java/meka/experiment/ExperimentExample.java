@@ -48,6 +48,9 @@ import java.io.File;
  */
 public class ExperimentExample {
 	public static void main(String[] args) throws Exception {
+		String tmpDir = System.getProperty("java.io.tmpdir");
+		System.out.println("Using tmp dir: " + tmpDir);
+
 		Experiment exp = new DefaultExperiment();
 		// classifiers
 		exp.setClassifiers(new MultiLabelClassifier[]{
@@ -63,7 +66,7 @@ public class ExperimentExample {
 		exp.setDatasetProvider(dp);
 		// output of metrics
 		KeyValuePairs sh = new KeyValuePairs();
-		sh.setFile(new File(System.getProperty("java.io.tmpdir") + "/mekaexp.txt"));
+		sh.setFile(new File(tmpDir + "/mekaexp.txt"));
 		exp.setStatisticsHandler(sh);
 		// evaluation
 		RepeatedRuns eval = new RepeatedRuns();
@@ -92,11 +95,9 @@ public class ExperimentExample {
 		System.out.println("run: " + msg);
 		msg = exp.finish();
 		System.out.println("finish: " + msg);
-		// print stats (also stored in file)
-		System.out.println("statistics:\n" + exp.getStatistics());
 		// export them
 		TabSeparated tabsepAgg = new TabSeparated();
-		tabsepAgg.setFile(new File(System.getProperty("java.io.tmpdir") + "/mekaexp-agg.tsv"));
+		tabsepAgg.setFile(new File(tmpDir + "/mekaexp-agg.tsv"));
 		RemoveByName remove = new RemoveByName();
 		remove.setExpression(".*(" + SimpleAggregate.SUFFIX_COUNT + "|" + SimpleAggregate.SUFFIX_STDEV + ")$");
 		RenameAttribute rename = new RenameAttribute();
@@ -110,13 +111,13 @@ public class ExperimentExample {
 		SimpleAggregate aggregate = new SimpleAggregate();
 		aggregate.setExporter(filter);
 		TabSeparated tabsepFull = new TabSeparated();
-		tabsepFull.setFile(new File(System.getProperty("java.io.tmpdir") + "/mekaexp-full.tsv"));
+		tabsepFull.setFile(new File(tmpDir + "/mekaexp-full.tsv"));
 		TabSeparatedMeasurement tabsepHL = new TabSeparatedMeasurement();
 		tabsepHL.setMeasurement("Hamming loss");
-		tabsepHL.setFile(new File(System.getProperty("java.io.tmpdir") + "/mekaexp-HL.tsv"));
+		tabsepHL.setFile(new File(tmpDir + "/mekaexp-HL.tsv"));
 		TabSeparatedMeasurement tabsepZOL = new TabSeparatedMeasurement();
 		tabsepZOL.setMeasurement("ZeroOne loss");
-		tabsepZOL.setFile(new File(System.getProperty("java.io.tmpdir") + "/mekaexp-ZOL.tsv"));
+		tabsepZOL.setFile(new File(tmpDir + "/mekaexp-ZOL.tsv"));
 		MultiExporter multiexp = new MultiExporter();
 		multiexp.setExporters(new EvaluationStatisticsExporter[]{aggregate, tabsepFull, tabsepHL, tabsepZOL});
 		msg = multiexp.export(exp.getStatistics());
