@@ -267,7 +267,7 @@ public class WekaFilter
 	 * @return              null if successfully exported, otherwise error message
 	 */
 	@Override
-	public String export(List<EvaluationStatistics> stats) {
+	protected String doExport(List<EvaluationStatistics> stats) {
 		return m_Exporter.export(filter(stats));
 	}
 }

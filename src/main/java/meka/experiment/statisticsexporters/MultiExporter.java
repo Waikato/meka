@@ -157,13 +157,14 @@ public class MultiExporter
 	 * @return              null if successfully exported, otherwise error message
 	 */
 	@Override
-	public String export(List<EvaluationStatistics> stats) {
+	protected String doExport(List<EvaluationStatistics> stats) {
 		String      result;
 		int         i;
 
 		result = null;
 
 		for (i = 0; i < m_Exporters.length; i++) {
+			log("Exporter #" + (i+1) + ": " + m_Exporters[i].getClass().getName());
 			result = m_Exporters[i].export(stats);
 			if (result != null) {
 				result = "Exporter #" + (i+1) + ": " + result;

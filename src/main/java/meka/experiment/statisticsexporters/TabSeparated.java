@@ -77,7 +77,7 @@ public class TabSeparated
 	 * @return              null if successfully exported, otherwise error message
 	 */
 	@Override
-	public String export(List<EvaluationStatistics> stats) {
+	protected String doExport(List<EvaluationStatistics> stats) {
 		String          result;
 		List<String>    headers;
 		FileWriter      fwriter;

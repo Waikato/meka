@@ -21,6 +21,7 @@
 package meka.experiment.statisticsexporters;
 
 import meka.core.OptionUtils;
+import meka.experiment.evaluationstatistics.EvaluationStatistics;
 import weka.core.Option;
 
 import java.io.File;
@@ -116,5 +117,17 @@ public abstract class AbstractFileBasedEvaluationStatisticsExporter
 		OptionUtils.add(result, super.getOptions());
 		OptionUtils.add(result, 'F', getFile());
 		return OptionUtils.toArray(result);
+	}
+
+	/**
+	 * Exports the statistics.
+	 *
+	 * @param stats         the statistics to export
+	 * @return              null if successfully exported, otherwise error message
+	 */
+	@Override
+	public String export(List<EvaluationStatistics> stats) {
+		log("Exporting to: " + m_File);
+		return super.export(stats);
 	}
 }

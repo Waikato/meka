@@ -21,12 +21,14 @@
 package meka.experiment.statisticsexporters;
 
 import meka.core.ExceptionUtils;
+import meka.experiment.evaluationstatistics.EvaluationStatistics;
 import meka.experiment.events.LogEvent;
 import meka.experiment.events.LogListener;
 import weka.core.Option;
 
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -36,7 +38,7 @@ import java.util.Vector;
  * @version $Revision$
  */
 public abstract class AbstractEvaluationStatisticsExporter
-  implements EvaluationStatisticsExporter {
+		implements EvaluationStatisticsExporter {
 
 	private static final long serialVersionUID = 8950819250563958834L;
 
@@ -131,5 +133,24 @@ public abstract class AbstractEvaluationStatisticsExporter
 		log(result);
 
 		return result;
+	}
+
+	/**
+	 * Exports the statistics.
+	 *
+	 * @param stats         the statistics to export
+	 * @return              null if successfully exported, otherwise error message
+	 */
+	protected abstract String doExport(List<EvaluationStatistics> stats);
+
+	/**
+	 * Exports the statistics.
+	 *
+	 * @param stats         the statistics to export
+	 * @return              null if successfully exported, otherwise error message
+	 */
+	@Override
+	public String export(List<EvaluationStatistics> stats) {
+		return doExport(stats);
 	}
 }
