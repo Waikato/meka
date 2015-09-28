@@ -40,6 +40,11 @@ public class TabSeparated
 
 	private static final long serialVersionUID = -2891664931765964612L;
 
+	/**
+	 * Description to be displayed in the GUI.
+	 *
+	 * @return      the description
+	 */
 	@Override
 	public String globalInfo() {
 		return "Exports the statistics to a tab-separated file.";
