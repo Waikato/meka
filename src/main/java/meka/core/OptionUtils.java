@@ -636,4 +636,15 @@ public class OptionUtils {
 		options[0] = "";
 		return (T) Utils.forName(cls, classname, options);
 	}
+
+	/**
+	 * Returns the commandline string for the object.
+	 *
+	 * @param obj           the object to generate the commandline for
+	 * @return              the commandline
+	 * @see                 Utils#toCommandLine(Object)
+	 */
+	public static String toCommandLine(Object obj) {
+		return Utils.toCommandLine(obj);
+	}
 }
