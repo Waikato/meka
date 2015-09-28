@@ -15,10 +15,7 @@
 
 package meka.classifiers.multilabel.incremental;
 
-import meka.core.MLEvalUtils;
-import meka.core.MLUtils;
-import meka.core.Result;
-import meka.core.ThresholdUtils;
+import meka.core.*;
 import weka.classifiers.UpdateableClassifier;
 import weka.core.*;
 import meka.classifiers.multilabel.MultiLabelClassifier;
@@ -68,26 +65,19 @@ public class IncrementalEvaluation {
 		MLUtils.prepareData(D);
 
 		// Set the number of windows (batches) @todo move below combining options?
-		int nWin = 20;
-		try {
-			nWin = (Utils.getOptionPos('B',options) >= 0) ? Integer.parseInt(Utils.getOption('B',options)) : nWin;
-		} catch(Exception e) {
-			throw new Exception("[Error] Failed to parse option B");
-		}
+		int nWin = OptionUtils.parse(options, 'x', 10);
+
+		// Set the size of the initial triaining
+		int nInit = OptionUtils.parse(options, "split-percentage", 10);
 
 		// Partially labelled ?
-		double rLabeled = 1.0; 
-		try {
-			rLabeled = (Utils.getOptionPos("semisupervised", options) >= 0) ? Double.parseDouble(Utils.getOption("semisupervised", options)) : rLabeled;
-		} catch(IOException e) {
-			throw new Exception("[Error] Failed to parse option S");
-		}
+		double rLabeled = OptionUtils.parse(options, "supervision", 1.);
 
 		// Get Threshold
-		String Top = (Utils.getOptionPos("threshold",options) >= 0) ? Utils.getOption("threshold",options) : "PCut1";
+		String Top = OptionUtils.parse(options, "threshold", "0.5");
 
 		// Get Verbosity (do we want to see everything?)
-		String Vop = (Utils.getOptionPos("verbosity",options) >= 0) ? Utils.getOption("verbosity",options) : "3";
+		String Vop = OptionUtils.parse(options, "verbosity", "3");
 
 		if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(D)+"\tL="+D.classIndex()+"");
 
@@ -453,10 +443,12 @@ public class IncrementalEvaluation {
 		text.append("\n\nEvaluation Options:\n\n");
 		text.append("-t\n");
 		text.append("\tSpecify the dataset (required)\n");
+		//text.append("-split-percentage <percentage>\n");
+		//text.append("\tSets the percentage of data to use for the initial training, e.g., 10.\n");
 		text.append("-x <number of windows>\n");
 		text.append("\tSets the number of samples to take (at evenly space intervals); default: 10.\n");
-		text.append("-semisupervised <ratio labelled>\n");
-		text.append("\tSets the ratio of labelled instances; default: 1.0.\n");
+		text.append("-supervision <ratio labelled>\n");
+		text.append("\tSets the ratio of labelled instances; default: 1.\n");
 		text.append("-threshold <threshold>\n");
 		text.append("\tSets the threshold to use.\n");
 		text.append("-verbosity <verbosity level>\n");
