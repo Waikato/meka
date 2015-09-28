@@ -21,7 +21,6 @@
 package meka.experiment.evaluationstatistics;
 
 import meka.classifiers.multilabel.MultiLabelClassifier;
-import meka.core.ExceptionUtils;
 import meka.core.FileUtils;
 import meka.core.OptionUtils;
 import weka.core.Instances;
@@ -140,7 +139,7 @@ public class KeyValuePairs
 					if (parts.length == 2)
 						raw.put(parts[0], parts[1]);
 					else
-						System.err.println("Failed to parse: " + entry);
+						log("Failed to parse: " + entry);
 				}
 				if (raw.containsKey(KEY_CLASSIFIER) && raw.containsKey(KEY_RELATION)) {
 					stat = new EvaluationStatistics(
@@ -154,7 +153,7 @@ public class KeyValuePairs
 							stat.put(key, Double.parseDouble(raw.get(key)));
 						}
 						catch (Exception e) {
-							System.err.println("Failed to parse double value of '" + key + "': " + raw.get(key));
+							log("Failed to parse double value of '" + key + "': " + raw.get(key));
 						}
 					}
 					result.add(stat);
@@ -163,7 +162,7 @@ public class KeyValuePairs
 		}
 		catch (Exception e) {
 			result = null;
-			ExceptionUtils.handleException(this, "Failed to read serialized statistics from: " + m_File, e);
+			handleException("Failed to read serialized statistics from: " + m_File, e);
 		}
 		finally {
 			FileUtils.closeQuietly(breader);
@@ -265,7 +264,7 @@ public class KeyValuePairs
 			return null;
 		}
 		catch (Exception e) {
-			return ExceptionUtils.handleException(this, "Failed to write statistics to: " + m_File, e);
+			return handleException("Failed to write statistics to: " + m_File, e);
 		}
 		finally {
 			FileUtils.closeQuietly(bwriter);

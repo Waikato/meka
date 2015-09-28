@@ -123,7 +123,7 @@ public class TabSeparated
 			}
 		}
 		catch (Exception e) {
-			result = ExceptionUtils.handleException(this, "Failed to export statistics to: " + m_File, e);
+			result = handleException("Failed to export statistics to: " + m_File, e);
 		}
 		finally {
 			FileUtils.closeQuietly(bwriter);

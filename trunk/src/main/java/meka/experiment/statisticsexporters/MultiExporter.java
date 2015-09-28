@@ -22,7 +22,7 @@ package meka.experiment.statisticsexporters;
 
 import meka.core.OptionUtils;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
-import meka.experiment.events.LogListener;
+import meka.events.LogListener;
 import weka.core.Option;
 
 import java.util.ArrayList;
