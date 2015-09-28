@@ -303,6 +303,7 @@ If the multi-label classifier implements \texttt{MultiLabelDrawable} (such as \t
 \end{figure}
 
 \subsection{Examples} 
+\label{sec:examples}
 
 In the following we give some examples, with an emphasis on general usage and parameters. An extensive list of examples is given at \url{http://meka.sourceforge.net/methods.html}. 
 
@@ -536,18 +537,19 @@ where clearly the third and fourth labels are most relevant. Under a threshold o
 
 %\subsubsection{Multi-target Classifiers}
 
-In the multi-target case, the \texttt{double[]} values returned by the method \texttt{distributionForInstance} must indicate the \emph{relevant class value}; for example (assuming \texttt{-C 3}): 
+In the multi-target case, the \texttt{double[]} values returned by the method \texttt{distributionForInstance} must indicate the \emph{relevant value}; for example (assuming \texttt{-C 3}): 
 \begin{lstlisting}
 	[3.0, 1.0, 0.0]
 \end{lstlisting} 
-If this were the dataset exemplified in \ref{sec:format}, this classification would be \texttt{C}, \texttt{1}, and \texttt{1} for the class attributes \texttt{category}, \texttt{label}, and \texttt{rank}, respectively.
+If this were the dataset exemplified in \Sec{sec:format}, this classification would be \texttt{C,1,1} for the class attributes \texttt{category,label,rank}, respectively.
 
-Note that no threshold is calibrated. However, any associated voting or probabilistic values {\green may be stored in the following $\texttt{C+1},\ldots,\texttt{2C}$ values; for example (again assuming \texttt{-C 6}):
+Therefore, at the current release, thresholds are not automatically calibrated for multi-target data. 
+
+Associated probabilistic/confidence may be stored in an extended part of the array, e.g., $\texttt{[C+1,\ldots,2C]}$, for example (if \texttt{-C 6}):
 \begin{lstlisting}
 	[3.0, 1.0, 0.0, 0.5, 0.9, 0.9]
 \end{lstlisting} 
-where \texttt{C} is predicted as the value of the first target attribute with confidence $0.9$, and so on. However these values are currently only for use at classification time (for example the voting scheme of an ensemble method, see \texttt{weka.classifiers.multitarget.BaggingMT}); and not taken into account for evaluation. Note also that we intend to deprecate this method in the future, so avoid if possible.
-}
+where the $3$-rd \emph{value} is predicted for the first \emph{target variable}, with confidence $0.5$, and so on. Note, however, that this mechanism will be replaced in future versions of \framework{\MEKA}.
 
 \subsubsection{Incremental Classifiers}
 
@@ -577,37 +579,34 @@ public class TestClassifierUpdateable extends TestClassifier
 \end{lstlisting}
 }
 
-Note that the \texttt{IncrementalEvaluation} class is called for evaluation in this case; see Section \ref{sec:evaluation}. For analysis of data streams, the \framework{\MOA} framework \cite{MOA} contains more possibilities than \framework{\WEKA}. For this reason we include the \texttt{moa.jar} in \framework{\MEKA}, and can be used via \framework{WEKA}'s \texttt{MOA} meta classifier (wrapper), e.g., 
+Note that the \texttt{IncrementalEvaluation} class is called for evaluation in this case; see Section \ref{sec:evaluation}, and example in \Sec{sec:examples}. Note also the \framework{\MOA} framework \cite{MOA} contains more possibilities than \framework{\WEKA}, and its classifiers can be used via \framework{WEKA}'s \texttt{MOA} meta classifier (wrapper), e.g., 
 \begin{lstlisting}
 java meka.classifiers.multilabel.BRUpdateable -t data/Music.arff \
 	-W weka.classifiers.meta.MOA -- -B moa.classifiers.trees.HoeffdingTree
 \end{lstlisting}
 
-Note that \framework{\MOA} now also supports \framework{\MEKA} classifiers via a wrapper class; and is currently being developed to support a range of incremental multi-label classification and evaluation for data streams.
+Note that \framework{\MOA} now also supports \framework{\MEKA} classifiers via a wrapper class.
 
 \subsubsection{Semi-supervised Classifiers}
 
-Semi-supervised classifiers implement \texttt{SemisupervisedClassifier} interface and must implement the method \texttt{setUnlabelledData(Instances)} which is called automatically by the \texttt{Evaluation} class prior to \texttt{buildClassifier(Instances)}. It is up to the classifier to decide what to do with the unlabelled instances. Currently, \framework{\MEKA} assumes that unlabelled instances are the test instances (e.g., supplied with the \texttt{-T} flag). It sets all labels to missing beforehand just in case. In the case of a separate set of unlabelled instances, a model can be built, given unlabelled instances with \texttt{-T}, and then saved/dumped into a file with the \texttt{-d <filename>} option, and loaded again (with the \texttt{-l} option) along with a \emph{different} set with \texttt{-T}. 
+Semi-supervised classifiers implement \texttt{SemisupervisedClassifier} interface and must implement the method \texttt{setUnlabelledData(Instances)} which is called automatically by the \texttt{Evaluation} class prior to \texttt{buildClassifier(Instances)}. It is up to the classifier to decide what to do with the unlabelled instances. Currently, \framework{\MEKA} assumes that unlabelled instances are the test instances (e.g., supplied with the \texttt{-T} flag). It sets all labels to missing beforehand just in case. In the case of a separate set of unlabelled instances, a model can be built, given unlabelled instances with \texttt{-T}, and then saved/dumped into a file with the \texttt{-d <filename>} option, and loaded again (with the \texttt{-l} option) along with a \emph{different} set with \texttt{-T}.  See the example in \Sec{sec:examples}.
 
-{\green
 \subsection{Miscellaneous}
 
-The \texttt{.props} files have the following order: 
+Note that \framework{\MEKA}'s home directory is OS-specific,
+
+\begin{itemize}
+	\item In Microsoft Windows: \texttt{\%USERPROFILE\%\\mekafiles}
+	\item In Unix-based systems: \texttt{\$HOME/.meka}
+\end{itemize}
+
+Note that the \texttt{.props} files have preference the following order: 
 \begin{enumerate}
 	\item the \texttt{jar}
 	\item user's home directory
 	\item \framework{\MEKA}'s home directory
 	\item current directory
 \end{enumerate}
-
-\framework{\MEKA}'s home directory is OS-specific,
-
-\begin{itemize}
-	\item Windows: \texttt{\%USERPROFILE\%\\mekafiles}
-	\item Unix: \texttt{\$HOME/.meka}
-\end{itemize}
-
-}
 
 \section{Getting Help / Reporting Bugs / Contributing}
 
