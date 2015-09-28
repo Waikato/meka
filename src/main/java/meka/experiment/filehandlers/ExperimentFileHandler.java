@@ -21,6 +21,7 @@
 package meka.experiment.filehandlers;
 
 import meka.experiment.Experiment;
+import meka.events.LogSupporter;
 import weka.core.OptionHandler;
 
 import java.io.File;
@@ -33,7 +34,7 @@ import java.io.Serializable;
  * @version $Revision$
  */
 public interface ExperimentFileHandler
-	extends OptionHandler, Serializable {
+	extends OptionHandler, Serializable, LogSupporter {
 
 	/**
 	 * A description of the file format.

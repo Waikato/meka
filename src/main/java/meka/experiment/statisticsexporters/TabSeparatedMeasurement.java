@@ -20,7 +20,6 @@
 
 package meka.experiment.statisticsexporters;
 
-import meka.core.ExceptionUtils;
 import meka.core.FileUtils;
 import meka.core.OptionUtils;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
@@ -260,7 +259,7 @@ public class TabSeparatedMeasurement
 			}
 		}
 		catch (Exception e) {
-			result = ExceptionUtils.handleException(this, "Failed to export statistics to: " + m_File, e);
+			result = handleException("Failed to export statistics to: " + m_File, e);
 		}
 		finally {
 			FileUtils.closeQuietly(bwriter);

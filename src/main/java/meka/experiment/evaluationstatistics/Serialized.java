@@ -20,7 +20,6 @@
 
 package meka.experiment.evaluationstatistics;
 
-import meka.core.ExceptionUtils;
 import weka.core.SerializationHelper;
 
 import java.util.List;
@@ -77,7 +76,7 @@ public class Serialized
 		}
 		catch (Exception e) {
 			result = null;
-			ExceptionUtils.handleException(this, "Failed to read serialized statistics from: " + m_File, e);
+			handleException("Failed to read serialized statistics from: " + m_File, e);
 		}
 
 		return result;
@@ -96,7 +95,7 @@ public class Serialized
 			return null;
 		}
 		catch (Exception e) {
-			return ExceptionUtils.handleException(this, "Failed to write statistics to: " + m_File, e);
+			return handleException("Failed to write statistics to: " + m_File, e);
 		}
 	}
 

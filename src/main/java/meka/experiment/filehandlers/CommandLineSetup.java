@@ -20,9 +20,9 @@
 
 package meka.experiment.filehandlers;
 
-import meka.core.ExceptionUtils;
 import meka.core.FileUtils;
 import meka.core.OptionUtils;
+import meka.events.LogObject;
 import meka.experiment.Experiment;
 import weka.core.Option;
 import weka.core.Utils;
@@ -38,7 +38,8 @@ import java.util.Vector;
  * @version $Revision$
  */
 public class CommandLineSetup
-  implements ExperimentFileHandler {
+		extends LogObject
+		implements ExperimentFileHandler {
 
 	private static final long serialVersionUID = -5374752688504488703L;
 
@@ -126,7 +127,7 @@ public class CommandLineSetup
 		}
 		catch (Exception e) {
 			result = null;
-			ExceptionUtils.handleException(this, "Failed to read experiment from: " + file, e);
+			handleException("Failed to read experiment from: " + file, e);
 		}
 		finally {
 			FileUtils.closeQuietly(breader);
@@ -160,7 +161,7 @@ public class CommandLineSetup
 			bwriter.flush();
 		}
 		catch (Exception e) {
-			result = ExceptionUtils.handleException(this, "Failed to write experiment to: " + file, e);
+			result = handleException("Failed to write experiment to: " + file, e);
 		}
 		finally {
 			FileUtils.closeQuietly(bwriter);

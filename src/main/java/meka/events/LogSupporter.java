@@ -14,24 +14,31 @@
  */
 
 /**
- * IterationNotificationListener.java
+ * LogSupporter.java
  * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
 
-package meka.experiment.events;
+package meka.events;
 
 /**
- * Interface for classes that listen to log events of an experiment.
+ * Interface for classes that support logging.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
-public interface LogListener {
+public interface LogSupporter {
 
 	/**
-	 * Gets called if there is a new log message.
+	 * Adds the log listener to use.
 	 *
-	 * @param e         the event
+	 * @param l         the listener
 	 */
-	public void logMessage(LogEvent e);
+	public void addLogListener(LogListener l);
+
+	/**
+	 * Remove the log listener to use.
+	 *
+	 * @param l         the listener
+	 */
+	public void removeLogListener(LogListener l);
 }

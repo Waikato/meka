@@ -21,7 +21,7 @@
 package meka.experiment.statisticsexporters;
 
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
-import meka.experiment.events.LogSupporter;
+import meka.events.LogSupporter;
 import weka.core.OptionHandler;
 
 import java.io.Serializable;

@@ -26,7 +26,7 @@ import meka.experiment.evaluationstatistics.EvaluationStatistics;
 import meka.experiment.evaluationstatistics.EvaluationStatisticsHandler;
 import meka.experiment.evaluators.Evaluator;
 import meka.experiment.events.IterationNotificationListener;
-import meka.experiment.events.LogSupporter;
+import meka.events.LogSupporter;
 import weka.core.OptionHandler;
 
 import java.io.Serializable;

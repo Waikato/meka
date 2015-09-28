@@ -20,7 +20,7 @@
 
 package meka.experiment.datasetproviders;
 
-import meka.experiment.events.LogSupporter;
+import meka.events.LogSupporter;
 import weka.core.Instances;
 import weka.core.OptionHandler;
 

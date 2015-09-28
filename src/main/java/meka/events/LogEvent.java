@@ -18,7 +18,7 @@
  * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
 
-package meka.experiment.events;
+package meka.events;
 
 import java.util.EventObject;
 

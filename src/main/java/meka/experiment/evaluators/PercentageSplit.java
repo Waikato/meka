@@ -22,7 +22,6 @@ package meka.experiment.evaluators;
 
 import meka.classifiers.multilabel.Evaluation;
 import meka.classifiers.multilabel.MultiLabelClassifier;
-import meka.core.ExceptionUtils;
 import meka.core.OptionUtils;
 import meka.core.Result;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
@@ -245,8 +244,7 @@ public class PercentageSplit
 			result.add(new EvaluationStatistics(classifier, dataset, res));
 		}
 		catch (Exception e) {
-			ExceptionUtils.handleException(
-					this,
+			handleException(
 					"Failed to evaluate dataset '" + dataset.relationName() + "' with classifier: " + Utils.toCommandLine(classifier), e);
 		}
 

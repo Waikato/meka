@@ -20,14 +20,11 @@
 
 package meka.experiment.statisticsexporters;
 
-import meka.core.ExceptionUtils;
+import meka.events.LogObject;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
-import meka.experiment.events.LogEvent;
-import meka.experiment.events.LogListener;
 import weka.core.Option;
 
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Vector;
 
@@ -38,12 +35,10 @@ import java.util.Vector;
  * @version $Revision$
  */
 public abstract class AbstractEvaluationStatisticsExporter
+		extends LogObject
 		implements EvaluationStatisticsExporter {
 
 	private static final long serialVersionUID = 8950819250563958834L;
-
-	/** the listeners. */
-	protected HashSet<LogListener> m_LogListeners = new HashSet<>();
 
 	/**
 	 * Description to be displayed in the GUI.
@@ -80,59 +75,6 @@ public abstract class AbstractEvaluationStatisticsExporter
 	@Override
 	public String[] getOptions() {
 		return new String[0];
-	}
-
-	/**
-	 * Adds the log listener to use.
-	 *
-	 * @param l         the listener
-	 */
-	public void addLogListener(LogListener l) {
-		m_LogListeners.add(l);
-	}
-
-	/**
-	 * Remove the log listener to use.
-	 *
-	 * @param l         the listener
-	 */
-	public void removeLogListener(LogListener l) {
-		m_LogListeners.remove(l);
-	}
-
-	/**
-	 * For logging messages. Uses stderr if no listeners defined.
-	 *
-	 * @param msg       the message to output
-	 */
-	protected synchronized void log(String msg) {
-		LogEvent e;
-
-		if (m_LogListeners.size() == 0) {
-			System.err.println(msg);
-			return;
-		}
-
-		e = new LogEvent(this, msg);
-		for (LogListener l: m_LogListeners)
-			l.logMessage(e);
-	}
-
-	/**
-	 * Logs the stacktrace along with the message on stderr and returns a
-	 * combination of both of them as string.
-	 *
-	 * @param msg		the message for the exception
-	 * @param t		the exception
-	 * @return		the full error message (message + stacktrace)
-	 */
-	public String handleException(String msg, Throwable t) {
-		String    result;
-
-		result = ExceptionUtils.handleException(this, msg, t, false);
-		log(result);
-
-		return result;
 	}
 
 	/**

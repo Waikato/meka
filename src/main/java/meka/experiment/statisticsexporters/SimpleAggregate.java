@@ -21,7 +21,6 @@
 package meka.experiment.statisticsexporters;
 
 import gnu.trove.list.array.TDoubleArrayList;
-import meka.core.ExceptionUtils;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
 import meka.experiment.evaluationstatistics.EvaluationStatisticsComparator;
 import meka.experiment.evaluationstatistics.EvaluationStatisticsUtils;
@@ -197,7 +196,7 @@ public class SimpleAggregate
 		}
 		catch (Exception e) {
 			result = stats;
-			ExceptionUtils.handleException(this, "Failed to aggregate!", e);
+			handleException("Failed to aggregate!", e);
 		}
 
 		return result;

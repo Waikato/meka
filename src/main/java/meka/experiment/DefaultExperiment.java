@@ -21,17 +21,19 @@
 package meka.experiment;
 
 import meka.classifiers.multilabel.MultiLabelClassifier;
-import meka.core.ExceptionUtils;
 import meka.core.OptionUtils;
+import meka.events.LogListener;
+import meka.events.LogObject;
 import meka.experiment.datasetproviders.DatasetProvider;
 import meka.experiment.datasetproviders.LocalDatasetProvider;
-import meka.experiment.evaluationstatistics.*;
+import meka.experiment.evaluationstatistics.EvaluationStatistics;
+import meka.experiment.evaluationstatistics.EvaluationStatisticsHandler;
+import meka.experiment.evaluationstatistics.IncrementalEvaluationStatisticsHandler;
+import meka.experiment.evaluationstatistics.KeyValuePairs;
 import meka.experiment.evaluators.CrossValidation;
 import meka.experiment.evaluators.Evaluator;
 import meka.experiment.events.IterationNotificationEvent;
 import meka.experiment.events.IterationNotificationListener;
-import meka.experiment.events.LogEvent;
-import meka.experiment.events.LogListener;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 import weka.core.Option;
@@ -46,7 +48,8 @@ import java.util.*;
  * @version $Revision$
  */
 public class DefaultExperiment
-  implements Experiment {
+		extends LogObject
+		implements Experiment {
 
 	private static final long serialVersionUID = 8654760249461885158L;
 
@@ -67,9 +70,6 @@ public class DefaultExperiment
 
 	/** the listeners for iterations.  */
 	protected transient HashSet<IterationNotificationListener> m_IterationNotficationListeners;
-
-	/** the listeners. */
-	protected HashSet<LogListener> m_LogListeners = new HashSet<>();
 
 	/** the collected statistics. */
 	protected List<EvaluationStatistics> m_Statistics = new ArrayList<>();
@@ -302,42 +302,6 @@ public class DefaultExperiment
 	}
 
 	/**
-	 * Adds the log listener to use.
-	 *
-	 * @param l         the listener
-	 */
-	public void addLogListener(LogListener l) {
-		m_LogListeners.add(l);
-	}
-
-	/**
-	 * Remove the log listener to use.
-	 *
-	 * @param l         the listener
-	 */
-	public void removeLogListener(LogListener l) {
-		m_LogListeners.remove(l);
-	}
-
-	/**
-	 * For logging messages. Uses stderr if no listeners defined.
-	 *
-	 * @param msg       the message to output
-	 */
-	protected synchronized void log(String msg) {
-		LogEvent e;
-
-		if (m_LogListeners.size() == 0) {
-			System.err.println(msg);
-			return;
-		}
-
-		e = new LogEvent(this, msg);
-		for (LogListener l: m_LogListeners)
-			l.logMessage(e);
-	}
-
-	/**
 	 * Adds the source's class name to the message if not null.
 	 *
 	 * @param source    the source
@@ -350,23 +314,6 @@ public class DefaultExperiment
 		msg = source.getClass().getName() + ": " + msg;
 		log(msg);
 		return msg;
-	}
-
-	/**
-	 * Logs the stacktrace along with the message on stderr and returns a
-	 * combination of both of them as string.
-	 *
-	 * @param msg		the message for the exception
-	 * @param t		the exception
-	 * @return		the full error message (message + stacktrace)
-	 */
-	public String handleException(String msg, Throwable t) {
-		String    result;
-
-		result = ExceptionUtils.handleException(this, msg, t, false);
-		log(result);
-
-		return result;
 	}
 
 	/**

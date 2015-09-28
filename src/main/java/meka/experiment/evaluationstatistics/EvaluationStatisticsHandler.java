@@ -20,7 +20,7 @@
 
 package meka.experiment.evaluationstatistics;
 
-import meka.experiment.events.LogSupporter;
+import meka.events.LogSupporter;
 import weka.core.OptionHandler;
 
 import java.io.Serializable;

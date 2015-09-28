@@ -20,7 +20,6 @@
 
 package meka.experiment.datasetproviders;
 
-import meka.core.ExceptionUtils;
 import meka.core.MLUtils;
 import meka.core.OptionUtils;
 import weka.core.Instances;
@@ -164,7 +163,7 @@ public class LocalDatasetProvider
 		}
 		catch (Exception e) {
 			result = null;
-			ExceptionUtils.handleException(this, "Failed to load dataset: " + m_Datasets.get(m_Current), e);
+			handleException("Failed to load dataset: " + m_Datasets.get(m_Current), e);
 		}
 		m_Current++;
 		return result;

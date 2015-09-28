@@ -22,7 +22,7 @@ package meka.experiment.evaluators;
 
 import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
-import meka.experiment.events.LogSupporter;
+import meka.events.LogSupporter;
 import weka.core.Instances;
 import weka.core.OptionHandler;
 
