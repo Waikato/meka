@@ -23,6 +23,7 @@ import meka.classifiers.multilabel.Evaluation;
 import meka.classifiers.multilabel.IncrementalMultiLabelClassifier;
 import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
+import meka.core.MLEvalUtils;
 import meka.core.MLUtils;
 import meka.core.Result;
 import meka.gui.core.GUIHelper;
@@ -88,7 +89,10 @@ public class ClassifyTab
 	public final static String TYPE_SUPPLIEDTESTSET = "Supplied test set";
 
 	/** incremental batch train/test split. */
-	public final static String TYPE_INCREMENTAL = "Prequential (incremental)";
+	public final static String TYPE_BINCREMENTAL = "Batch-incremental";
+
+	/** incremental pequential. */
+	public final static String TYPE_PREQUENTIAL = "Prequential (incremental)";
 
 	/** the panel for the GOE. */
 	protected JPanel m_PanelGOE;
@@ -206,7 +210,8 @@ public class ClassifyTab
 						TYPE_TRAINTESTSPLIT,
 						TYPE_SUPPLIEDTESTSET,
 						TYPE_CROSSVALIDATION,
-						TYPE_INCREMENTAL
+						TYPE_PREQUENTIAL,
+						TYPE_BINCREMENTAL
 				});
 		m_ComboBoxExperiment.addActionListener(new ActionListener() {
 			@Override
@@ -286,7 +291,8 @@ public class ClassifyTab
 				}
 				break;
 
-			case TYPE_INCREMENTAL:
+			case TYPE_BINCREMENTAL:
+			case TYPE_PREQUENTIAL:
 				if (m_GenericObjectEditor.getClassType() != IncrementalMultiLabelClassifier.class) {
 					m_LastNonIncrementalClassifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
 					m_GenericObjectEditor = new GenericObjectEditor(true);
@@ -437,7 +443,39 @@ public class ClassifyTab
 				};
 				break;
 
-			case TYPE_INCREMENTAL:
+			case TYPE_BINCREMENTAL:
+				run = new Runnable() {
+					@Override
+					public void run() {
+						MultiLabelClassifier classifier;
+						Result result;
+						startBusy("Incremental...");
+						try {
+							classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
+							//System.out.println("data.classIndex() "+data.classIndex());
+							result = IncrementalEvaluation.evaluateModelBatchWindow(classifier, data, m_Samples, 1., m_TOP, m_VOP);
+							addResultToHistory(
+									result,
+									new Object[]{classifier, new Instances(data, 0)},
+									classifier.getClass().getName().replace("meka.classifiers.", "")
+							);
+							finishBusy("");
+						}
+						catch (Exception e) {
+							System.err.println("Evaluation failed (incremental splits):");
+							e.printStackTrace();
+							finishBusy("Evaluation failed: " + e);
+							JOptionPane.showMessageDialog(
+									ClassifyTab.this,
+									"Evaluation failed:\n" + e,
+									"Error",
+									JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				};
+				break;
+
+			case TYPE_PREQUENTIAL:
 				run = new Runnable() {
 					@Override
 					public void run() {
