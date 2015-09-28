@@ -35,7 +35,10 @@ import meka.experiment.statisticsexporters.SimpleAggregate;
 import meka.experiment.statisticsexporters.TabSeparated;
 import meka.experiment.statisticsexporters.WekaFilter;
 import weka.core.Utils;
+import weka.filters.Filter;
+import weka.filters.MultiFilter;
 import weka.filters.unsupervised.attribute.RemoveByName;
+import weka.filters.unsupervised.attribute.RenameAttribute;
 
 import java.io.File;
 
@@ -98,8 +101,13 @@ public class ExperimentExample {
 		tabsep.setFile(new File(System.getProperty("java.io.tmpdir") + "/mekaexp.tsv"));
 		RemoveByName remove = new RemoveByName();
 		remove.setExpression(".*(" + SimpleAggregate.SUFFIX_COUNT + "|" + SimpleAggregate.SUFFIX_STDEV + ")$");
+		RenameAttribute rename = new RenameAttribute();
+		rename.setFind(SimpleAggregate.SUFFIX_MEAN + "$");
+		rename.setReplace("");
+		MultiFilter multi = new MultiFilter();
+		multi.setFilters(new Filter[]{remove, rename});
 		WekaFilter filter = new WekaFilter();
-		filter.setFilter(remove);
+		filter.setFilter(multi);
 		filter.setExporter(tabsep);
 		SimpleAggregate aggregate = new SimpleAggregate();
 		aggregate.setExporter(filter);
