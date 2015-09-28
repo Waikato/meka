@@ -176,15 +176,15 @@ A suitable dataset is the only requirement to begin running experiments with \fr
 
 \subsection{Command Line Interface}
 
-With the exception of the different use of the \texttt{-c} flag (see the previous section), many of \framework{\WEKA}'s command line options for evaluation work identically in \framework{\MEKA} too. You can obtain a list of them by running any classifier with the \texttt{-h} flag, for example: \texttt{java meka.classifiers.multilabel.BR -h} displays the following:
+With the exception of the different use of the \texttt{-c} flag (see the previous section), many of \framework{\WEKA}'s command line options for evaluation work identically in \framework{\MEKA} too. You can obtain a list of them by running any classifier with the \texttt{-h} flag, for example running \texttt{java meka.classifiers.multilabel.BR -h} on the command line results in the output:
 	 
 \begin{center}
-\lstinputlisting[basicstyle=\scriptsize\ttfamily,frame=single]{help.txt}
+\lstinputlisting[basicstyle=\scriptsize\ttfamily,frame=single,firstline=2,lastline=56]{help.txt}
 \end{center}
 
-The only required options are \texttt{-t} to specify the dataset, and \texttt{-C} to specify the number of target attributes (which is typically included within the dataset, as explained in the previous section).  
+Note that the only required option is just \texttt{-t} to specify the dataset (and \texttt{-C} to specify the number of target attributes, if not already included within the dataset \texttt{@relation} tag, as explained in the previous section). Note also that the \texttt{Classifier Options} are specific to each classifier (which in this case is \texttt{BR}), and each base classifier (for \texttt{BR}, the default base classifier is \texttt{J48}). The \texttt{J48}-specific options (which are truncated in this output) are visible following the hyphen (\texttt{-}). 
 
-The \texttt{Classifier Options} are specific to each classifier, which in this case (for \texttt{java meka.classifiers.multilabel.BR}) are not very extensive. However, in nearly all methods, performance varies considerably with the \emph{base classifier}. Since version 1.7.5 the default is \texttt{J48} (decision trees). The base classifier is changed with the \texttt{-W} option. For example, to use Naive Bayes, type\footnote{If typed on one line, the backslash `\texttt{\textbackslash}' should be omitted} on the command line:
+\texttt{BR} has limited options, for example to change the base classifier (the \texttt{-W} option). For example, to use Naive Bayes, type\footnote{If typed on one line, the backslash `\texttt{\textbackslash}' should be omitted} on the command line:
 
 \begin{lstlisting}
 java meka.classifiers.multilabel.BR -t data/Music.arff \
@@ -204,8 +204,9 @@ The CLI is the most powerful way to work with \framework{\MEKA}, but the GUI is 
 	\item In the \textsf{Evaluation} panel you configure what type of evaluation you want to do, and some of the options given in the previous section are available here. For example, a 55/45 train/test split, as being specified in \Fig{screen:split}.
 	\item When you click \textsf{Start} the experiment will be run. When finished, the result will appear in the \textsf{History} panel. This is the same output as would be seen on the command line, and explained in the following section. The verbosity of the results is controlled by the \textsf{Verbosity} option.
 	%\item You can export results to text, or copy of paste it.
+	\item (Optional) View the Precision-Recall curves by right-clicking on the results and selecting \textsf{Show Precision-Recall}.
 	\item (Optional) If you chose a \texttt{MultiLabelDrawable} classifier (such as \texttt{BR}, \texttt{CC}, \texttt{LP}, or any derivatives) and a \texttt{Drawable} base classifier such as \texttt{J48}, you can right click on the results and select \textsf{Show Graphs}.
-	\item (Optional) Optionally, you can click on the \textsf{Visualize} tab inspect the dataset.
+	\item (Optional) Click on the \textsf{Visualize} tab inspect the dataset.
 \end{enumerate}
 
 
@@ -234,14 +235,13 @@ Running \texttt{BR} {\green with \texttt{NaiveBayes}} on the \textit{Music} data
 \lstinputlisting[basicstyle=\scriptsize\ttfamily,frame=single]{eval.txt}
 \end{center}
 
-The results of the experiment in \Fig{screen:split} are shown in \Fig{screen:result}.
 \begin{figure}
 	\centering
 	\includegraphics[height=0.95\textwidth]{GUI04.png}
 	\caption{\label{screen:result} \framework{MEKA}'s GUI interface; results.}
 \end{figure}
 
-Note that by increasing the verbosity level, you can get more or less output. On the command line, this is with \texttt{-verbosity <n>} where \texttt{<n>} = 
+The results of the experiment in \Fig{screen:split} are shown in \Fig{screen:result}. Note that by increasing the verbosity level, you can get more or less output. On the command line, this is with \texttt{-verbosity <n>} where \texttt{<n>} = 
 \begin{center}
 \begin{tabular}{ll}
 	\hline
@@ -361,7 +361,7 @@ java meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable\
     -W weka.classifiers.bayes.NaiveBayesUpdateable
 \end{lstlisting}
 
-Evaluating incremental classifiers will carry out evaluation for the data over $\texttt{B}-1$ evaluation windows (an initial window is used for initial training but is not included in evaluation). The result shown is the average across all windows. On the command line, the per-window evaluation statistics are also shown, with a high-enough \texttt{verbosity}. %Note that the \framework{\MOA} framework \cite{MOA} for evaluating incremental classifiers is much more sophisticated; and a new release will include a wrapper to \framework{\MEKA}. 
+The \emph{final} evaluation is reported, and $\texttt{x}-1$ samples are stored (can be visualised with the GUI). An initial window is used for initial training but is not included in evaluation (the equivalent to $1/\texttt{x}$-th of the data). 
 
 \paragraph{Multi-target: Ensembles of Class Relevance} (see \cite{UPM}) The multi-target version of the Binary Relevance classifier) on the \textit{solar flare} dataset with Logistic Regression as a base classifier under $10$-fold cross-validation:
 \begin{lstlisting}
