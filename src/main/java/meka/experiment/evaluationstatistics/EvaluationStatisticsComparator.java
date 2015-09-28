@@ -81,7 +81,7 @@ public class EvaluationStatisticsComparator
 
 		for (String key: m_Keys) {
 			if (key.equals(EvaluationStatistics.KEY_CLASSIFIER)) {
-				result = Utils.toCommandLine(o1.getClassifier()).compareTo(Utils.toCommandLine(o2.getClassifier()));
+				result = o1.getCommandLine().compareTo(o2.getCommandLine());
 			}
 			else if (key.equals(EvaluationStatistics.KEY_RELATION)) {
 				result = o1.getRelation().compareTo(o2.getRelation());
