@@ -54,7 +54,7 @@ public class IncrementalEvaluation {
 
 	/**
 	 * EvaluateModel - Build and evaluate.
-	 * @param	h			a multi-label updateable classifier
+	 * @param	h			a multi-label Updateable classifier
 	 * @param	options	dataset options (classifier options should already be set)
 	 * @return	The evaluation Result
 	 */
@@ -104,7 +104,7 @@ public class IncrementalEvaluation {
 	 * @param	Vop	verbosity option
 	 * The window is sampled every N/numWindows instances, for a total of numWindows windows.
 	 */
-	public static Result[] evaluateModelBatchWindow(MultiLabelClassifier h, Instances D, int numWindows, double rLabeled, String Top, String Vop) throws Exception {
+	public static Result evaluateModelBatchWindow(MultiLabelClassifier h, Instances D, int numWindows, double rLabeled, String Top, String Vop) throws Exception {
 
 		if (h.getDebug())
 			System.out.println(":- Classifier -: "+h.getClass().getName()+": "+Arrays.toString(h.getOptions()));
@@ -220,16 +220,15 @@ public class IncrementalEvaluation {
 		if (h.getDebug()) {
 			System.out.println("--------------------------------------------------------------------------------");
 		}
-		Result avg = MLEvalUtils.averageResults(results);
-		// @todo put in earlier?
-		avg.setInfo("Classifier",h.getClass().getName());
-		avg.setInfo("Options",Arrays.toString(h.getOptions()));
-		avg.setInfo("Additional Info",h.toString());
-		avg.setInfo("Dataset",MLUtils.getDatasetName(D));
 
-		// @todo in the future, will want to return all results
-		//return results;
-		return new Result[]{avg};
+		// TODO put in earlier?
+		results[results.length-1].setInfo("Classifier",h.getClass().getName());
+		results[results.length-1].setInfo("Options",Arrays.toString(h.getOptions()));
+		results[results.length-1].setInfo("Additional Info",h.toString());
+		results[results.length-1].setInfo("Dataset",MLUtils.getDatasetName(D));
+
+		// TODO in the future, will want to return all results
+		return results[results.length-1];
 	}
 
 	/*
