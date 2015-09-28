@@ -111,8 +111,14 @@ public class ExperimentExample {
 		aggregate.setExporter(filter);
 		TabSeparated tabsepFull = new TabSeparated();
 		tabsepFull.setFile(new File(System.getProperty("java.io.tmpdir") + "/mekaexp-full.tsv"));
+		TabSeparatedMeasurement tabsepHL = new TabSeparatedMeasurement();
+		tabsepHL.setMeasurement("Hamming loss");
+		tabsepHL.setFile(new File(System.getProperty("java.io.tmpdir") + "/mekaexp-HL.tsv"));
+		TabSeparatedMeasurement tabsepZOL = new TabSeparatedMeasurement();
+		tabsepZOL.setMeasurement("ZeroOne loss");
+		tabsepZOL.setFile(new File(System.getProperty("java.io.tmpdir") + "/mekaexp-ZOL.tsv"));
 		MultiExporter multiexp = new MultiExporter();
-		multiexp.setExporters(new EvaluationStatisticsExporter[]{aggregate, tabsepFull});
+		multiexp.setExporters(new EvaluationStatisticsExporter[]{aggregate, tabsepFull, tabsepHL, tabsepZOL});
 		msg = multiexp.export(exp.getStatistics());
 		System.out.println("export: " + msg);
 	}
