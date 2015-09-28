@@ -31,9 +31,7 @@ import meka.experiment.events.IterationNotificationEvent;
 import meka.experiment.events.IterationNotificationListener;
 import meka.experiment.events.LogEvent;
 import meka.experiment.events.LogListener;
-import meka.experiment.statisticsexporters.SimpleAggregate;
-import meka.experiment.statisticsexporters.TabSeparated;
-import meka.experiment.statisticsexporters.WekaFilter;
+import meka.experiment.statisticsexporters.*;
 import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.MultiFilter;
@@ -75,7 +73,7 @@ public class ExperimentExample {
 		exp.addIterationNotificationListener(new IterationNotificationListener() {
 			@Override
 			public void nextIteration(IterationNotificationEvent e) {
-				System.out.println(Utils.toCommandLine(e.getClassifier()) + " --> " + e.getDataset().relationName());
+				System.err.println("[ITERATION] " + Utils.toCommandLine(e.getClassifier()) + " --> " + e.getDataset().relationName());
 			}
 		});
 		// log events
@@ -97,8 +95,8 @@ public class ExperimentExample {
 		// print stats (also stored in file)
 		System.out.println("statistics:\n" + exp.getStatistics());
 		// export them
-		TabSeparated tabsep = new TabSeparated();
-		tabsep.setFile(new File(System.getProperty("java.io.tmpdir") + "/mekaexp.tsv"));
+		TabSeparated tabsepAgg = new TabSeparated();
+		tabsepAgg.setFile(new File(System.getProperty("java.io.tmpdir") + "/mekaexp-agg.tsv"));
 		RemoveByName remove = new RemoveByName();
 		remove.setExpression(".*(" + SimpleAggregate.SUFFIX_COUNT + "|" + SimpleAggregate.SUFFIX_STDEV + ")$");
 		RenameAttribute rename = new RenameAttribute();
@@ -108,10 +106,14 @@ public class ExperimentExample {
 		multi.setFilters(new Filter[]{remove, rename});
 		WekaFilter filter = new WekaFilter();
 		filter.setFilter(multi);
-		filter.setExporter(tabsep);
+		filter.setExporter(tabsepAgg);
 		SimpleAggregate aggregate = new SimpleAggregate();
 		aggregate.setExporter(filter);
-		msg = aggregate.export(exp.getStatistics());
+		TabSeparated tabsepFull = new TabSeparated();
+		tabsepFull.setFile(new File(System.getProperty("java.io.tmpdir") + "/mekaexp-full.tsv"));
+		MultiExporter multiexp = new MultiExporter();
+		multiexp.setExporters(new EvaluationStatisticsExporter[]{aggregate, tabsepFull});
+		msg = multiexp.export(exp.getStatistics());
 		System.out.println("export: " + msg);
 	}
 }
