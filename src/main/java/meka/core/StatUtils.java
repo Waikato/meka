@@ -655,7 +655,7 @@ public abstract class StatUtils {
 	private static double[] fillError(Result result, int L) {
 
 		double Yprob[][] = result.allPredictions(); 
-		int Ytrue[][] = result.allActuals(); 
+		int Ytrue[][] = result.allTrueValues();
 		int Ypred[][] = null;
 		if (result.getInfo("Type").equals("MT")) {
 			// Multi-target, so just round!
