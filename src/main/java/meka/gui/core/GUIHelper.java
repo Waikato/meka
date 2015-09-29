@@ -175,7 +175,7 @@ public class GUIHelper {
 	 * @return		the font
 	 */
 	public static Font getMonospacedFont() {
-		return new Font("monospaced", Font.PLAIN, 14);
+		return new Font("monospaced", Font.PLAIN, 12);
 	}
 
 	/**
