@@ -146,6 +146,7 @@ public class RAkELd extends PS implements TechnicalInformationHandler {
 	 * SetP - Sets the k parameter (size of partitions)
 	 */
 	public void setK(int k) {
+		m_K = k;
 	}
 
 	public String kTipText() {
@@ -155,7 +156,7 @@ public class RAkELd extends PS implements TechnicalInformationHandler {
 	@Override
 	public Enumeration listOptions() {
 		Vector result = new Vector();
-		result.addElement(new Option("\tSets k (default 3): the size of partitions.", "k", 1, "-k <num>"));
+		result.addElement(new Option("\t"+kTipText(), "k", 1, "-k <num>"));
 		OptionUtils.add(result, super.listOptions());
 		return OptionUtils.toEnumeration(result);
 	}
