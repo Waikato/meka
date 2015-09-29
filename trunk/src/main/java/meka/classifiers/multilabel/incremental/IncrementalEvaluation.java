@@ -22,7 +22,6 @@ import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.classifiers.multitarget.MultiTargetClassifier;
 import meka.classifiers.multilabel.Evaluation;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -183,7 +182,7 @@ public class IncrementalEvaluation {
 					double y[] = h.distributionForInstance(x_);
 					long after_test = System.currentTimeMillis();
 					test_time += (after_test-before_test); // was +=
-					result.addResult(y,x);
+					result.addResult(y, x);
 					n++;
 				}
 				else {
@@ -201,7 +200,7 @@ public class IncrementalEvaluation {
 			// calculate results
 			result.setInfo("Threshold", Arrays.toString(t));
 			result.output = Result.getStats(result,Vop);
-			result.output.put("Test time",(test_time)/1000.0);
+			result.output.put("Test time", (test_time) / 1000.0);
 			result.output.put("Build time",(train_time)/1000.0);
 			result.output.put("Total time",(test_time+train_time)/1000.0);
 			result.output.put("Threshold",(double)t[0]);
@@ -224,7 +223,7 @@ public class IncrementalEvaluation {
 				t = ThresholdUtils.calibrateThresholds(result.predictions,MLUtils.labelCardinalities(result.actuals));
 			}
 			else {
-				Arrays.fill(t,ThresholdUtils.calibrateThreshold(result.predictions,MLUtils.labelCardinality(result.allActuals())));
+				Arrays.fill(t,ThresholdUtils.calibrateThreshold(result.predictions,MLUtils.labelCardinality(result.allTrueValues())));
 			}
 
 		}
@@ -235,15 +234,15 @@ public class IncrementalEvaluation {
 
 
 		// This is the last Result; prepare it for evaluation output.
-		result.setInfo("Classifier",h.getClass().getName());
-		result.vals.put("Test time",(test_time)/1000.0);
+		result.setInfo("Classifier", h.getClass().getName());
+		result.vals.put("Test time", (test_time) / 1000.0);
 		result.vals.put("Build time",(train_time)/1000.0);
 		result.vals.put("Total time",(test_time+train_time)/1000.0);
 		result.vals.put("Total instances tested",(double)i);
 		result.vals.put("Initial instances for training",(double)windowSize);
-		result.setInfo("Options",Arrays.toString(h.getOptions()));
-		result.setInfo("Additional Info",h.toString());
-		result.setInfo("Dataset",MLUtils.getDatasetName(D));
+		result.setInfo("Options", Arrays.toString(h.getOptions()));
+		result.setInfo("Additional Info", h.toString());
+		result.setInfo("Dataset", MLUtils.getDatasetName(D));
 		result.output = Result.getStats(result,Vop);
 		result.output.put("Results sampled over time", Result.getResultsAsInstances(samples));
 

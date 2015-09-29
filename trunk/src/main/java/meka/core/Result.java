@@ -43,16 +43,17 @@ public class Result implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/** The number of label (target) variables in the problem */
 	public int L = 0;
 
 	public ArrayList<double[]> predictions = null;
 	// TODO, store in sparse fashion with either LabelSet or LabelVector
 	public ArrayList<int[]> actuals = null;
 
-	public HashMap<String,Object> output = new LinkedHashMap<String,Object>();
-	public HashMap<String,String> info = new LinkedHashMap<String,String>();
-	public HashMap<String,Object> vals = new LinkedHashMap<String,Object>();
-	public HashMap<String,String> model = new LinkedHashMap<String,String>();
+	public HashMap<String,String> info = new LinkedHashMap<String,String>();  // stores general dataset/classifier info
+	public HashMap<String,Object> output = new LinkedHashMap<String,Object>();// stores predictive evaluation statistics
+	public HashMap<String,Object> vals = new LinkedHashMap<String,Object>();  // stores non-predictive evaluation stats
+	public HashMap<String,String> model = new LinkedHashMap<String,String>(); // stores the model itself
 
 	public Result() {
 		predictions = new ArrayList<double[]>();
@@ -71,10 +72,15 @@ public class Result implements Serializable {
 		this.L = L;
 	}
 
+	/** The number of value-prediction pairs stared in this Result */
 	public int size() {
 		return predictions.size();
 	}
 
+	/**
+	 * Provides a nice textual output of all evaluation information.
+	 * @return	String representation
+	 */
 	@Override
 	public String toString() {
 
@@ -113,6 +119,8 @@ public class Result implements Serializable {
 
 	/**
 	 * AddResult - Add an entry.
+	 * @param pred	predictions
+	 * @param real  an instance containing the true label values
 	 */
 	public void addResult(double pred[], Instance real) {
 		predictions.add(pred);
@@ -120,35 +128,35 @@ public class Result implements Serializable {
 	}
 
 	/**
-	 * RowActual - Retrive the true values for the i-th instance.
+	 * RowActual - Retrieve the true values for the i-th instance.
 	 */
 	public int[] rowActual(int i) {
 		return actuals.get(i);
 	}
 
 	/**
-	 * RowConfidence - Retrive the prediction confidences for the i-th instance.
+	 * RowConfidence - Retrieve the prediction confidences for the i-th instance.
 	 */
 	public double[] rowConfidence(int i) {
 		return predictions.get(i);
 	}
 
 	/**
-	 * RowPrediction - Retrive the predicted values for the i-th instance according to threshold t.
+	 * RowPrediction - Retrieve the predicted values for the i-th instance according to threshold t.
 	 */
 	public int[] rowPrediction(int i, double t) {
 		return MLUtils.toIntArray(rowConfidence(i), t);
 	}
 
 	/**
-	 * RowPrediction - Retrive the predicted values for the i-th instance according to pre-calibrated/chosen threshold.
+	 * RowPrediction - Retrieve the predicted values for the i-th instance according to pre-calibrated/chosen threshold.
 	 */
 	public int[] rowPrediction(int i) {
 		return ThresholdUtils.threshold(rowConfidence(i), info.get("Threshold"));
 	}
 
 	/**
-	 * ColConfidence - Retrive the prediction confidences for the j-th label (column).
+	 * ColConfidence - Retrieve the prediction confidences for the j-th label (column).
 	 */
 	public double[] colConfidence(int j) {
 		double y[] = new double[predictions.size()];
@@ -159,7 +167,7 @@ public class Result implements Serializable {
 	}
 
 	/**
-	 * AllPredictions - Retrive all prediction confidences in an L * N matrix.
+	 * AllPredictions - Retrieve all prediction confidences in an L * N matrix (2d array).
 	 */
 	public double[][] allPredictions() {
 		double Y[][] = new double[predictions.size()][];
@@ -170,7 +178,7 @@ public class Result implements Serializable {
 	}
 
 	/**
-	 * AllPredictions - Retrive all predictions (according to threshold t) in an L * N matrix.
+	 * AllPredictions - Retrieve all predictions (according to threshold t) in an L * N matrix.
 	 */
 	public int[][] allPredictions(double t) {
 		int Y[][] = new int[predictions.size()][];
@@ -181,9 +189,9 @@ public class Result implements Serializable {
 	}
 
 	/**
-	 * AllActuals - Retrive all true predictions in an L x N matrix.
+	 * AllTrueValues - Retrieve all true values in an L x N matrix.
 	 */
-	public int[][] allActuals() {
+	public int[][] allTrueValues() {
 		int Y[][] = new int[actuals.size()][];
 		for(int i = 0; i < actuals.size(); i++) {
 			Y[i] = rowActual(i);
@@ -201,12 +209,14 @@ public class Result implements Serializable {
 	*/
 
 	/**
-	 * Retrieve the measurement for metric 'metric'.
+	 * Set the measurement for metric 'metric'.
 	 */
-	public Object getMeasurement(String metric) {
-		return output.get(metric);
-	}
+	public void setMeasurement(String metric, Object stat) { output.put(metric,stat); }
 
+    /**
+     * Retrieve the measurement for metric 'metric'.
+     */
+	public Object getMeasurement(String metric) { return output.get(metric); }
 
 	/**
 	 * SetValue.
@@ -220,9 +230,7 @@ public class Result implements Serializable {
 	 * AddValue.
 	 * Retrieve the value for metric 'metric'
 	 */
-	public Object getValue(String metric) {
-		return vals.get(metric);
-	}
+	public Object getValue(String metric) { return vals.get(metric); }
 
 	/**
 	 * SetInfo.
@@ -266,9 +274,9 @@ public class Result implements Serializable {
 	 */
 	public static HashMap<String,Object> getStats(Result r, String vop) {
 		if (r.getInfo("Type").startsWith("MT"))
-			return MLEvalUtils.getMTStats(r.allPredictions(),r.allActuals(), vop);
+			return MLEvalUtils.getMTStats(r.allPredictions(),r.allTrueValues(), vop);
 		else 
-			return MLEvalUtils.getMLStats(r.allPredictions(), r.allActuals(), r.getInfo("Threshold"), vop);
+			return MLEvalUtils.getMLStats(r.allPredictions(), r.allTrueValues(), r.getInfo("Threshold"), vop);
 	}
 
 	/**
