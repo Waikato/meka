@@ -35,6 +35,7 @@ public class LogObject
   implements Serializable, LogSupporter {
 
 	private static final long serialVersionUID = -3814825277914734502L;
+
 	/** the listeners. */
 	protected HashSet<LogListener> m_LogListeners = new HashSet<>();
 
