@@ -526,6 +526,44 @@ public abstract class Metrics {
 	   return curveData;
    }
 
+	/** Levenshtein Distance. Multi-target compatible */
+	public static double L_LevenshteinDistance(int Y[][], int P[][]) {
+		double loss = 0.;
+		int N = Y.length;
+		for(int i = 0; i < N; i++) {
+			loss += L_LevenshteinDistance(Y[i],P[i]);
+		}
+		return loss / (double)N;
+	}
+
+	/** Levenshtein Distance. Multi-target compatible */
+	public static double L_LevenshteinDistance(int y[], int p[]) {
+		int L = y.length;
+		return (LevenshteinDistance(y, y.length, p, p.length) / (double)L);
+	}
+
+	private static int LevenshteinDistance(int y[], int len_y, int p[], int len_p) {
+		int cost;
+
+		// base case: empty strings
+		if (len_y == 0) return len_p;
+		if (len_p == 0) return len_y;
+
+		// test if last characters of the strings match
+		if (y[len_y-1] == p[len_p-1])
+			cost = 0;
+		else
+			cost = 1;
+
+		// return minimum of delete char from y, delete char from p, and delete char from both
+		return A.min(new int[]{
+						LevenshteinDistance(y, len_y - 1, p, len_p) + 1,
+						LevenshteinDistance(y, len_y, p, len_p - 1) + 1,
+						LevenshteinDistance(y, len_y - 1, p, len_p - 1) + cost
+				}
+		);
+	}
+
    /** Log Likelihood */
    public double P_LogLikelihood(int y[], double p[]) {
 	   int L = y.length;

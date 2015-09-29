@@ -164,7 +164,7 @@ public abstract class MLEvalUtils {
 	 */
 	public static HashMap<String,Object> getMTStats(double Rpred[][], int Y[][], String vop) {
 
-		// just a question of rounding for now
+		// just a question of rounding for now, could use A.toIntArray(..)
 		int Ypred[][] = ThresholdUtils.round(Rpred);
 
 		int N = Y.length;
@@ -182,6 +182,8 @@ public abstract class MLEvalUtils {
 			output.put("ZeroOne loss"		,Metrics.L_ZeroOne(Y,Ypred));
 		}
 		if (V > 2) {
+			output.put("Levenshtein distance"	        ,Metrics.L_LevenshteinDistance(Y,Ypred));
+
 			double HL[] = new double[L];
 			for(int j = 0; j < L; j++) {
 				HL[j] = Metrics.P_Hamming(Y,Ypred,j);
