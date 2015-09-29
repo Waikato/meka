@@ -32,19 +32,13 @@ import java.util.*;
  *
  * See also <i>RAkEL</i> from the <a href=http://mulan.sourceforge.net>MULAN</a> framework.
  * @author 	Jesse Read
- * @version June 2014
+ * @version September 2015
  */
 
-public class RAkEL extends PS {
+public class RAkEL extends RAkELd {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -6208337124440497991L;
-
-	protected Classifier m_Classifiers[] = null;
-	protected Instances m_InstancesTemplates[] = null; 
-	int m_K = 3;
-	int m_M = 10;
-	protected int kMap[][] = null;
 
 	/**
 	 * Description to display in the GUI.
@@ -80,60 +74,7 @@ public class RAkEL extends PS {
 		}
 	}
 
-	private int[] mapBack(Instances template, int i) {
-		try {
-			return MLUtils.toIntArray(template.classAttribute().value(i));
-		} catch(Exception e) {
-			return new int[]{};
-		}
-	}
-
 	@Override
-	public double[] distributionForInstance(Instance x) throws Exception {
-
-		int L = x.classIndex();
-
-		// If there is only one label, predict it
-		//if(L == 1) return new double[]{1.0};
-
-		double y[] = new double[L];
-		//int c[] = new int[L]; // to scale it between 0 and 1
-
-		for(int m = 0; m < m_M; m++) {
-
-			// Transform instance
-			Instance x_m = PSUtils.convertInstance(x,L,m_InstancesTemplates[m]);
-			x_m.setDataset(m_InstancesTemplates[m]);
-
-			// Get a meta classification
-			int i_m = (int)m_Classifiers[m].classifyInstance(x_m);        // e.g., 2
-			int k_indices[] = mapBack(m_InstancesTemplates[m],i_m); // e.g., [3,8]
-
-			// Vote with classification
-			for (int i : k_indices) {
-				int index = kMap[m][i];
-				y[index] += 1.;
-			}
-
-		}
-
-		return y;
-	}
-
-	/** 
-	 * GetK - Get the k parameter (size of partitions).
-	 */
-	public int getK() {
-		return m_K;
-	}
-
-	/** 
-	 * SetP - Sets the k parameter (size of partitions)
-	 */
-	public void setK(int k) {
-		m_K = k;
-	}
-
 	public String kTipText() {
 		return "The number of labels in each subset (must be at least 1 and less than the number of labels) ";
 	}
@@ -189,14 +130,12 @@ public class RAkEL extends PS {
 	public Enumeration listOptions() {
 		Vector result = new Vector();
 		result.addElement(new Option("\tSets M (default 10): the number of subsets", "M", 1, "-M <num>"));
-		result.addElement(new Option("\tSets k (default 3): the size of partitions.", "k", 1, "-k <num>"));
 		OptionUtils.add(result, super.listOptions());
 		return OptionUtils.toEnumeration(result);
 	}
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
-		setK(OptionUtils.parse(options, 'k', 3));
 		setM(OptionUtils.parse(options, 'M', 10));
 		super.setOptions(options);
 	}
@@ -204,21 +143,9 @@ public class RAkEL extends PS {
 	@Override
 	public String [] getOptions() {
 		List<String> result = new ArrayList<>();
-		OptionUtils.add(result, 'k', getK());
 		OptionUtils.add(result, 'M', getM());
 		OptionUtils.add(result, super.getOptions());
 		return OptionUtils.toArray(result);
-	}
-
-	@Override
-	public String toString() {
-		if (kMap == null)
-			return "No model built yet";
-		StringBuilder s = new StringBuilder("{");
-		for(int k = 0; k < m_M; k++) {
-			s.append(Arrays.toString(kMap[k]));
-		}
-		return s.append("}").toString();
 	}
 
 	public static void main(String args[]) {
