@@ -19,6 +19,7 @@
  */
 package meka.gui.explorer;
 
+import meka.core.ExceptionUtils;
 import meka.core.MLUtils;
 import meka.gui.core.*;
 import meka.gui.events.RecentItemEvent;
@@ -104,6 +105,9 @@ public class Explorer
 	/** the statusbar to use. */
 	protected StatusBar m_StatusBar;
 
+	/** the log tab. */
+	protected LogTab m_LogTab;
+
 	/**
 	 * Initializes the members.
 	 */
@@ -139,7 +143,9 @@ public class Explorer
 					continue;
 				if (tab instanceof VisualizeTab)
 					continue;
-				m_Tabs.add(tab);
+				if (tab instanceof LogTab)
+					continue;
+			m_Tabs.add(tab);
 			}
 			catch (Exception e) {
 				System.err.println("Failed to instantiate Explorer tab: " + classname);
@@ -147,6 +153,8 @@ public class Explorer
 			}
 		}
 		m_Tabs.add(new VisualizeTab());
+		m_LogTab = new LogTab();
+		m_Tabs.add(m_LogTab);
 		for (AbstractExplorerTab tab: m_Tabs) {
 			tab.setOwner(this);
 			m_TabbedPane.addTab(tab.getTitle(), tab);
@@ -385,14 +393,15 @@ public class Explorer
 
 		// load data
 		try {
+			log(null, "Loading: " + file);
 			loader.setFile(file);
 			data = loader.getDataSet();
 			// fix class attributes definition in relation name if necessary
 			MLUtils.fixRelationName(data);
+			log(null, "Loaded successfully: " + file);
 		}
 		catch (Exception e) {
-			System.err.println("Failed to load data from '" + file + "':");
-			e.printStackTrace();
+			handleException(null, "Failed to load data from '" + file + "':", e);
 			JOptionPane.showMessageDialog(
 					this,
 					"Failed to load dataset from '" + file + "':\n" + e,
@@ -410,8 +419,7 @@ public class Explorer
 			m_RecentFilesHandler.addRecentItem(new RecentFilesHandlerWithCommandline.Setup(file, loader));
 		}
 		catch (Exception e) {
-			System.err.println("Failed to prepare data from '" + file + "':");
-			e.printStackTrace();
+			handleException(null, "Failed to prepare data from '" + file + "':", e);
 			JOptionPane.showMessageDialog(
 					this,
 					"Failed to load prepare data from '" + file + "':\n" + e,
@@ -446,15 +454,16 @@ public class Explorer
 		if (saver == null)
 			saver = ConverterUtils.getSaverForFile(file);
 		try {
+			log(null, "Saving: " + file);
 			saver.setInstances(m_Data);
 			if ((saver.retrieveFile() == null) || !saver.retrieveFile().equals(file))
 				saver.setFile(file);
 			saver.writeBatch();
 			m_CurrentFile = file;
+			log(null, "Saved successfully: " + file);
 		}
 		catch (Exception e) {
-			System.err.println("Failed to save data to '" + file + "':");
-			e.printStackTrace();
+			handleException(null, "Failed to save data to '" + file + "':", e);
 			JOptionPane.showMessageDialog(
 					this,
 					"Failed to save dataset to '" + file + "':\n" + e,
@@ -562,8 +571,7 @@ public class Explorer
 		}
 		catch (Exception e) {
 			result = false;
-			System.err.println("Failed to save undo data to '" + tempFile + "':");
-			e.printStackTrace();
+			handleException(null, "Failed to save undo data to '" + tempFile + "':", e);
 			JOptionPane.showMessageDialog(
 					this,
 					"Failed to save undo data to '" + tempFile + "':\n" + e,
@@ -609,8 +617,7 @@ public class Explorer
 			notifyTabsDataChanged(null, inst);
 		}
 		catch (Exception e) {
-			System.err.println("Failed to load undo data from '" + file + "':");
-			e.printStackTrace();
+			handleException(null, "Failed to load undo data from '" + file + "':", e);
 			JOptionPane.showMessageDialog(
 					this,
 					"Failed to load undo data from '" + file + "':\n" + e,
@@ -619,6 +626,34 @@ public class Explorer
 		}
 
 		updateMenu();
+	}
+
+	/**
+	 * For logging messages.
+	 *
+	 * @param tab       the origin of the message
+	 * @param msg       the message to output
+	 */
+	protected synchronized void log(AbstractExplorerTab tab, String msg) {
+		m_LogTab.log(tab, msg);
+	}
+
+	/**
+	 * Logs the stacktrace along with the message on the log tab and returns a
+	 * combination of both of them as string.
+	 *
+	 * @param tab       the origin of the message
+	 * @param msg		the message for the exception
+	 * @param t		    the exception
+	 * @return		    the full error message (message + stacktrace)
+	 */
+	public String handleException(AbstractExplorerTab tab, String msg, Throwable t) {
+		String    result;
+
+		result = ExceptionUtils.handleException(tab, msg, t, false);
+		log(null, result);
+
+		return result;
 	}
 
 	/**

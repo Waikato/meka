@@ -171,6 +171,7 @@ public abstract class AbstractExplorerTab
 	 * @param msg		the message to display
 	 */
 	public void startBusy(String msg) {
+		log(msg);
 		m_Owner.getStatusBar().startBusy(msg);
 	}
 
@@ -178,7 +179,8 @@ public abstract class AbstractExplorerTab
 	 * Stops the animated icon, without setting status message.
 	 */
 	public void finishBusy() {
-		m_Owner.getStatusBar().finishBusy();
+		log("Finished");
+		m_Owner.getStatusBar().finishBusy("");
 	}
 
 	/**
@@ -187,6 +189,7 @@ public abstract class AbstractExplorerTab
 	 * @param msg		the message to display
 	 */
 	public void finishBusy(String msg) {
+		log(msg);
 		m_Owner.getStatusBar().finishBusy(msg);
 	}
 
@@ -197,5 +200,26 @@ public abstract class AbstractExplorerTab
 	 */
 	public static List<String> getTabs() {
 		return GenericObjectEditor.getClassnames(AbstractExplorerTab.class.getName());
+	}
+
+	/**
+	 * For logging messages. Uses stderr if no listeners defined.
+	 *
+	 * @param msg       the message to output
+	 */
+	protected synchronized void log(String msg) {
+		m_Owner.log(this, msg);
+	}
+
+	/**
+	 * Logs the stacktrace along with the message on the log tab and returns a
+	 * combination of both of them as string.
+	 *
+	 * @param msg		the message for the exception
+	 * @param t		the exception
+	 * @return		the full error message (message + stacktrace)
+	 */
+	public String handleException(String msg, Throwable t) {
+		return m_Owner.handleException(this, msg, t);
 	}
 }

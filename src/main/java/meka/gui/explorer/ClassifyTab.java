@@ -23,8 +23,8 @@ import meka.classifiers.multilabel.Evaluation;
 import meka.classifiers.multilabel.IncrementalMultiLabelClassifier;
 import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
-import meka.core.MLEvalUtils;
 import meka.core.MLUtils;
+import meka.core.OptionUtils;
 import meka.core.Result;
 import meka.gui.core.GUIHelper;
 import meka.gui.core.ResultHistoryList;
@@ -340,18 +340,19 @@ public class ClassifyTab
 						startBusy("Cross-validating...");
 						try {
 							classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
-							//System.out.println("data.classIndex() "+data.classIndex());
+							log(OptionUtils.toCommandLine(classifier));
+							log("Dataset: " + data.relationName());
+							log("Class-index: " + data.classIndex());
 							result = Evaluation.cvModel(classifier, data, m_Folds, m_TOP, m_VOP);
 							addResultToHistory(
 									result,
 									new Object[]{classifier, new Instances(data, 0)},
 									classifier.getClass().getName().replace("meka.classifiers.", "")
 							);
-							finishBusy("");
+							finishBusy();
 						}
 						catch (Exception e) {
-							System.err.println("Evaluation failed:");
-							e.printStackTrace();
+							handleException("Evaluation failed:", e);
 							finishBusy("Evaluation failed: " + e);
 							JOptionPane.showMessageDialog(
 									ClassifyTab.this,
@@ -378,18 +379,19 @@ public class ClassifyTab
 							train      = new Instances(data, 0, trainSize);
 							test       = new Instances(data, trainSize, data.numInstances() - trainSize);
 							classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
-							//System.out.println("data.classIndex() "+train.classIndex());
+							log(OptionUtils.toCommandLine(classifier));
+							log("Dataset: " + train.relationName());
+							log("Class-index: " + train.classIndex());
 							result     = Evaluation.evaluateModel(classifier, train, test, m_TOP, m_VOP);
 							addResultToHistory(
 									result,
 									new Object[]{classifier, new Instances(train, 0)},
 									classifier.getClass().getName().replace("meka.classifiers.", "")
 							);
-							finishBusy("");
+							finishBusy();
 						}
 						catch (Exception e) {
-							System.err.println("Evaluation failed (train/test split):");
-							e.printStackTrace();
+							handleException("Evaluation failed (train/test split):", e);
 							finishBusy("Evaluation failed: " + e);
 							JOptionPane.showMessageDialog(
 									ClassifyTab.this,
@@ -420,18 +422,19 @@ public class ClassifyTab
 							if (msg != null)
 								throw new IllegalArgumentException("Train and test set are not compatible:\n" + msg);
 							classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
-							//System.out.println("data.classIndex() "+train.classIndex());
+							log(OptionUtils.toCommandLine(classifier));
+							log("Dataset: " + train.relationName());
+							log("Class-index: " + train.classIndex());
 							result     = Evaluation.evaluateModel(classifier, train, test, m_TOP, m_VOP);
 							addResultToHistory(
 									result,
 									new Object[]{classifier, new Instances(train, 0)},
 									classifier.getClass().getName().replace("meka.classifiers.", "")
 							);
-							finishBusy("");
+							finishBusy();
 						}
 						catch (Exception e) {
-							System.err.println("Evaluation failed (train/test split):");
-							e.printStackTrace();
+							handleException("Evaluation failed (train/test split):", e);
 							finishBusy("Evaluation failed: " + e);
 							JOptionPane.showMessageDialog(
 									ClassifyTab.this,
@@ -452,18 +455,19 @@ public class ClassifyTab
 						startBusy("Incremental...");
 						try {
 							classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
-							//System.out.println("data.classIndex() "+data.classIndex());
+							log(OptionUtils.toCommandLine(classifier));
+							log("Dataset: " + data.relationName());
+							log("Class-index: " + data.classIndex());
 							result = IncrementalEvaluation.evaluateModelBatchWindow(classifier, data, m_Samples, 1., m_TOP, m_VOP);
 							addResultToHistory(
 									result,
 									new Object[]{classifier, new Instances(data, 0)},
 									classifier.getClass().getName().replace("meka.classifiers.", "")
 							);
-							finishBusy("");
+							finishBusy();
 						}
 						catch (Exception e) {
-							System.err.println("Evaluation failed (incremental splits):");
-							e.printStackTrace();
+							handleException("Evaluation failed (incremental splits):", e);
 							finishBusy("Evaluation failed: " + e);
 							JOptionPane.showMessageDialog(
 									ClassifyTab.this,
@@ -484,18 +488,19 @@ public class ClassifyTab
 						startBusy("Incremental...");
 						try {
 							classifier = (MultiLabelClassifier) m_GenericObjectEditor.getValue();
-							//System.out.println("data.classIndex() "+data.classIndex());
+							log(OptionUtils.toCommandLine(classifier));
+							log("Dataset: " + data.relationName());
+							log("Class-index: " + data.classIndex());
 							result    = IncrementalEvaluation.evaluateModelPrequentialBasic(classifier, data, (data.numInstances()/(m_Samples+1)), 1., m_TOP, m_VOP);
 							addResultToHistory(
 									result,
 									new Object[]{classifier, new Instances(data, 0)},
 									classifier.getClass().getName().replace("meka.classifiers.", "")
 							);
-							finishBusy("");
+							finishBusy();
 						}
 						catch (Exception e) {
-							System.err.println("Evaluation failed (incremental splits):");
-							e.printStackTrace();
+							handleException("Evaluation failed (incremental splits):", e);
 							finishBusy("Evaluation failed: " + e);
 							JOptionPane.showMessageDialog(
 									ClassifyTab.this,
@@ -659,8 +664,7 @@ public class ClassifyTab
 		m_ButtonStart.setEnabled(true);
 		m_ButtonStop.setEnabled(false);
 		if (t != null) {
-			System.err.println("Execution failed:");
-			t.printStackTrace();
+			handleException("Execution failed:", t);
 			JOptionPane.showMessageDialog(
 					this,
 					"Execution failed:\n" + t,
