@@ -15,30 +15,32 @@
 
 package meka.classifiers.multilabel;
 
-import meka.core.MLUtils;
-import meka.core.SuperLabelUtils;
+import meka.core.*;
 import weka.classifiers.AbstractClassifier;
-import weka.core.Instances;
-import weka.core.RevisionUtils;
-import weka.core.TechnicalInformation;
+import weka.classifiers.Classifier;
+import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
-import weka.core.TechnicalInformationHandler;
 
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 /**
  * RAkELd - Takes RAndom partition of labELs; like RAkEL but labelsets are disjoint / non-overlapping subsets.
- * Thus, <code>m</code> is set automatically to the <i>number</i> of partitions (<code>k</code> still indicates the size of partitions, although anything more than L/2 doesn't make much sense -- this defaults to <code>PS</code>).
+ * As in RAkEL, <code>k</code> still indicates the size of partitions, although anything more than L/2 just causes the classifier to default to <code>PS</code>).
  * @see		RAkEL
  * @author 	Jesse Read 
- * @version June 2014
+ * @version September 2015
  */
-public class RAkELd extends RAkEL implements TechnicalInformationHandler {
+public class RAkELd extends PS implements TechnicalInformationHandler {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -6208388889440497990L;
+
+	protected Classifier m_Classifiers[] = null;
+	protected Instances m_InstancesTemplates[] = null;
+	int m_K = 3;
+	int m_M = 10;
+	protected int kMap[][] = null;
 
 	/**
 	 * Description to display in the GUI.
@@ -50,10 +52,6 @@ public class RAkELd extends RAkEL implements TechnicalInformationHandler {
 		return "Takes RAndom partition of labELs; like RAkEL but labelsets are disjoint / non-overlapping subsets.";
 	}
 
-	// actual 'M', -- RAkEL's M is overridden with this one which is automatically set
-	// TODO RAkEL should extend RAkELd instead of the other way.
-	private int m_M_;
-
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
 
@@ -63,21 +61,21 @@ public class RAkELd extends RAkEL implements TechnicalInformationHandler {
 
 		// Note: a slightly round-about way of doing it:
 		int num = (int)Math.ceil(L / m_K);
-		kMap = SuperLabelUtils.generatePartition(MLUtils.gen_indices(L),num,r,true); 
-		m_M_ = kMap.length;
-		m_Classifiers = AbstractClassifier.makeCopies(m_Classifier,m_M_);
-		m_InstancesTemplates = new Instances[m_M_];
+		kMap = SuperLabelUtils.generatePartition(A.make_sequence(L),num,r,true);
+		m_M = kMap.length;
+		m_Classifiers = AbstractClassifier.makeCopies(m_Classifier,m_M);
+		m_InstancesTemplates = new Instances[m_M];
 
 		if (getDebug())
-			System.out.println("Building "+m_M_+" models of "+m_K+" partitions:");
+			System.out.println("Building "+m_M+" models of "+m_K+" partitions:");
 
-		for(int i = 0; i < m_M_; i++) {
+		for(int i = 0; i < m_M; i++) {
 
 			if (getDebug()) 
-				System.out.println("\tpartitioning model "+(i+1)+"/"+m_M_+": "+Arrays.toString(kMap[i])+", P="+m_P+", N="+m_N);
+				System.out.println("\tpartitioning model "+(i+1)+"/"+m_M+": "+Arrays.toString(kMap[i])+", P="+m_P+", N="+m_N);
 			Instances D_i = SuperLabelUtils.makePartitionDataset(D,kMap[i],m_P,m_N);
 			if (getDebug()) 
-				System.out.println("\tbuilding model "+(i+1)+"/"+m_M_+": "+Arrays.toString(kMap[i]));
+				System.out.println("\tbuilding model "+(i+1)+"/"+m_M+": "+Arrays.toString(kMap[i]));
 
 			m_Classifiers[i].buildClassifier(D_i);
 			m_InstancesTemplates[i] = new Instances(D_i,0);
@@ -87,24 +85,93 @@ public class RAkELd extends RAkEL implements TechnicalInformationHandler {
 	}
 
 	@Override
+	public double[] distributionForInstance(Instance x) throws Exception {
+
+		int L = x.classIndex();
+
+		// If there is only one label, predict it
+		//if(L == 1) return new double[]{1.0};
+
+		double y[] = new double[L];
+		//int c[] = new int[L]; // to scale it between 0 and 1
+
+		for(int m = 0; m < m_M; m++) {
+
+			// Transform instance
+			Instance x_m = PSUtils.convertInstance(x, L, m_InstancesTemplates[m]);
+			x_m.setDataset(m_InstancesTemplates[m]);
+
+			// Get a meta classification
+			int i_m = (int)m_Classifiers[m].classifyInstance(x_m);        // e.g., 2
+			int k_indices[] = mapBack(m_InstancesTemplates[m],i_m); // e.g., [3,8]
+
+			// Vote with classification
+			for (int i : k_indices) {
+				int index = kMap[m][i];
+				y[index] += 1.;
+			}
+
+		}
+
+		return y;
+	}
+
+	private int[] mapBack(Instances template, int i) {
+		try {
+			return MLUtils.toIntArray(template.classAttribute().value(i));
+		} catch(Exception e) {
+			return new int[]{};
+		}
+	}
+
+	@Override
 	public String toString() {
 		if (kMap == null)
 			return "No model built yet";
 		StringBuilder s = new StringBuilder("{");
-		for(int k = 0; k < m_M_; k++) {
+		for(int k = 0; k < m_M; k++) {
 			s.append(Arrays.toString(kMap[k]));
 		}
 		return s.append("}").toString();
 	}
 
-	@Override
+	/**
+	 * GetK - Get the k parameter (size of partitions).
+	 */
+	public int getK() {
+		return m_K;
+	}
+
+	/**
+	 * SetP - Sets the k parameter (size of partitions)
+	 */
+	public void setK(int k) {
+	}
+
 	public String kTipText() {
 		return "The number of labels in each partition -- should be 1 <= k < (L/2) where L is the total number of labels.";
 	}
 
 	@Override
-	public String mTipText() {
-		return "This option is set automatically to the number of partitions (L/k)";
+	public Enumeration listOptions() {
+		Vector result = new Vector();
+		result.addElement(new Option("\tSets k (default 3): the size of partitions.", "k", 1, "-k <num>"));
+		OptionUtils.add(result, super.listOptions());
+		return OptionUtils.toEnumeration(result);
+	}
+
+	@Override
+	public void setOptions(String[] options) throws Exception {
+		setK(OptionUtils.parse(options, 'k', 3));
+		super.setOptions(options);
+	}
+
+	@Override
+	public String [] getOptions() {
+		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, 'k', getK());
+		OptionUtils.add(result, super.getOptions());
+		return OptionUtils.toArray(result);
 	}
 
 	@Override
