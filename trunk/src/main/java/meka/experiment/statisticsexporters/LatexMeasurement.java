@@ -100,8 +100,8 @@ public class LatexMeasurement
 			bwriter = new BufferedWriter(fwriter);
 
 			// output header
-			String tabularConfig = "lllllllllllllllllllllllllllllllllllllllllllllllllll".substring(0,classifiers.size());
-			bwriter.write("\\begin{tabular}["+tabularConfig+"]");
+			String tabularConfig = "lllllllllllllllllllllllllllllllllllllllllllllllllll".substring(0,classifiers.size()+1);
+			bwriter.write("\\begin{tabular}{"+tabularConfig+"}");
 			bwriter.newLine();
 			bwriter.write("\\hline");
 			bwriter.newLine();
