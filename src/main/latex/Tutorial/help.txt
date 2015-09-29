@@ -1,46 +1,89 @@
+
+java.lang.Exception: [Error] You did not specify a dataset!
+
+
 Evaluation Options:
 
 -h
-        Output help information.
+	Output help information.
 -t <name of training file>
-        Sets training file.
+	Sets training file.
 -T <name of test file>
-        Sets test file.
+	Sets test file.
 -x <number of folds>
-        Do cross-validation with this many folds.
+	Do cross-validation with this many folds.
 -R
-        Randomise the dataset (done after a range is removed, but before the train/test split).
+	Randomize the order of instances in the dataset.
 -split-percentage <percentage>
-        Sets the percentage for the train/test set split, e.g., 66.
+	Sets the percentage for the train/test set split, e.g., 66.
 -split-number <number>
-        Sets the number of training examples, e.g., 800
+	Sets the number of training examples, e.g., 800
 -i
-        Invert the specified train/test split.
+	Invert the specified train/test split.
 -s <random number seed>
-        Sets random number seed (use with -R, for different CV or train/test splits).
+	Sets random number seed (use with -R, for different CV or train/test splits).
 -threshold <threshold>
-        Sets the type of thresholding; where
-                'PCut1' automatically calibrates a threshold (the default);
-                'PCutL' automatically calibrates one threshold for each label;
-                any number, e.g. '0.5', specifies that threshold.
--C <number of classes/labels>
-        Sets the number of target attributes (classes/labels) to expect (indexed from the beginning).
+	Sets the type of thresholding; where
+		'PCut1' automatically calibrates a threshold (the default);
+		'PCutL' automatically calibrates one threshold for each label;
+		any number, e.g. '0.5', specifies that threshold.
+-C <number of labels>
+	Sets the number of target variables (labels) to assume (indexed from the beginning).
 -d <classifier_file>
-        Specify a file to dump classifier into.
+	Specify a file to dump classifier into.
 -l <classifier_file>
-        Specify a file to load classifier from.
+	Specify a file to load classifier from.
 -verbosity <verbosity level>
-        Specify more/less evaluation output
+	Specify more/less evaluation output
 
 
 Classifier Options:
 
 -W
-        Full name of base classifier.
-        (default: weka.classifiers.trees.J48)
+	Full name of base classifier.
+	(default: weka.classifiers.trees.J48)
 -output-debug-info
 	If set, classifier is run in debug mode and
 	may output additional info to the console
 --do-not-check-capabilities
 	If set, classifier capabilities are not checked before classifier is built
 	(use with caution).
+-
+
+-U
+	Use unpruned tree.
+-O
+	Do not collapse tree.
+-C
+	Set confidence threshold for pruning.
+	(default 0.25)
+-M
+	Set minimum number of instances per leaf.
+	(default 2)
+-R
+	Use reduced error pruning.
+-N
+	Set number of folds for reduced error
+	pruning. One fold is used as pruning set.
+	(default 3)
+-B
+	Use binary splits only.
+-S
+	Do not perform subtree raising.
+-L
+	Do not clean up after the tree has been built.
+-A
+	Laplace smoothing for predicted probabilities.
+-J
+	Do not use MDL correction for info gain on numeric attributes.
+-Q
+	Seed for random data shuffling (default 1).
+--doNotMakeSplitPointActualValue
+	Do not make split point actual value.
+-output-debug-info
+	If set, classifier is run in debug mode and
+	may output additional info to the console
+--do-not-check-capabilities
+	If set, classifier capabilities are not checked before classifier is built
+	(use with caution).
+
