@@ -99,7 +99,7 @@ public class ClassifyTabOptions
 		addParameter("CV folds", m_TextFolds);
 
 		m_TextSamples = new JTextField("10", 5);
-		addParameter("Samples (prequential)", m_TextSamples);
+		addParameter("Samples/batches (incremental)", m_TextSamples);
 
 		m_TextTOP = new JTextField("PCut1", 5);
 		addParameter("Threshold", m_TextTOP);
