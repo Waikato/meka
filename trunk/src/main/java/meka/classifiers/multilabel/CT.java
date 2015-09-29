@@ -51,6 +51,11 @@ public class CT extends MCC implements TechnicalInformationHandler {
 			m_Width = (int)Math.sqrt(L);
 			if (getDebug()) System.out.println("Setting width to "+m_Width);
 		}
+		else if (m_Width == 0) {
+			// 0-width is not possible, use it to indicate a width of L
+			m_Width = L;
+			if (getDebug()) System.out.println("Setting width to "+m_Width);
+		}
 
 		/*
 		 * Make the Trellis. Start with a random structure.
@@ -182,7 +187,7 @@ public class CT extends MCC implements TechnicalInformationHandler {
 	}
 
 	public String densityTipText() {
-		return "Determines the neighbourhood density (the number of neighbours for each node in the trellis).";
+		return "Determines the neighbourhood density (the number of neighbours for each node in the trellis). Default = 1, BR = 0.";
 	}
 
 	/** 
@@ -200,7 +205,7 @@ public class CT extends MCC implements TechnicalInformationHandler {
 	}
 
 	public String widthTipText() {
-		return "Determines the width of the trellis (use -1 for a square trellis, i.e., width of sqrt(number of labels)).";
+		return "Determines the width of the trellis (use 0 for chain; use -1 for a square trellis, i.e., width of sqrt(number of labels)).";
 	}
 
 	/** 
@@ -218,7 +223,7 @@ public class CT extends MCC implements TechnicalInformationHandler {
 	}
 
 	public String dependencyMetricTipText() {
-		return "The dependency heuristic to use in rearranging the trellis (applicable if chain iterations > 0).";
+		return "The dependency heuristic to use in rearranging the trellis (applicable if chain iterations > 0), default: Ibf (Mutual Information, fast binary version for multi-label data)";
 	}
 
 
@@ -239,9 +244,9 @@ public class CT extends MCC implements TechnicalInformationHandler {
 	@Override
 	public Enumeration listOptions() {
 		Vector result = new Vector();
-		result.addElement(new Option("\tThe width of the trellis.\n\tdefault: -1 (sqrt[number of labels])", "H", 1, "-H <value>"));
-		result.addElement(new Option("\tThe density/type of the trellis.\n\tdefault: 1\n\trange: 0-3 (0=BR)", "L", 1, "-L <value>"));
-		result.addElement(new Option("\tThe dependency payoff function.\n\tdefault: Ibf\n\t", "X", 1, "-X <value>"));
+		result.addElement(new Option("\t"+widthTipText(), "H", 1, "-H <value>"));
+		result.addElement(new Option("\t"+densityTipText(), "L", 1, "-L <value>"));
+		result.addElement(new Option("\t"+dependencyMetricTipText(), "X", 1, "-X <value>"));
 		OptionUtils.add(result, super.listOptions());
 		return OptionUtils.toEnumeration(result);
 	}
