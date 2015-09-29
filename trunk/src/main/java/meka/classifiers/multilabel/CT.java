@@ -45,16 +45,17 @@ public class CT extends MCC implements TechnicalInformationHandler {
 		int L = D.classIndex();
 		int d = D.numAttributes()-L;
 		m_R = new Random(getSeed());
+		int width = m_Width;
 
 		if (m_Width < 0) {
 			// If no width specified for the trellis, use sqrt(L)
-			m_Width = (int)Math.sqrt(L);
-			if (getDebug()) System.out.println("Setting width to "+m_Width);
+			width = (int)Math.sqrt(L);
+			if (getDebug()) System.out.println("Setting width to "+width);
 		}
 		else if (m_Width == 0) {
 			// 0-width is not possible, use it to indicate a width of L
-			m_Width = L;
-			if (getDebug()) System.out.println("Setting width to "+m_Width);
+			width = L;
+			if (getDebug()) System.out.println("Setting width to "+width);
 		}
 
 		/*
@@ -67,7 +68,7 @@ public class CT extends MCC implements TechnicalInformationHandler {
 
 		A.shuffle(indices, m_R);
 
-		trel = new Trellis(indices, m_Width, m_Density);
+		trel = new Trellis(indices, width, m_Density);
 
 		long start = System.currentTimeMillis();
 

@@ -50,6 +50,10 @@ public class RAkELd extends RAkEL implements TechnicalInformationHandler {
 		return "Takes RAndom partition of labELs; like RAkEL but labelsets are disjoint / non-overlapping subsets.";
 	}
 
+	// actual 'M', -- RAkEL's M is overridden with this one which is automatically set
+	// TODO RAkEL should extend RAkELd instead of the other way.
+	private int m_M_;
+
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
 
@@ -60,26 +64,37 @@ public class RAkELd extends RAkEL implements TechnicalInformationHandler {
 		// Note: a slightly round-about way of doing it:
 		int num = (int)Math.ceil(L / m_K);
 		kMap = SuperLabelUtils.generatePartition(MLUtils.gen_indices(L),num,r,true); 
-		m_M = kMap.length;
-		m_Classifiers = AbstractClassifier.makeCopies(m_Classifier,m_M);
-		m_InstancesTemplates = new Instances[m_M];
+		m_M_ = kMap.length;
+		m_Classifiers = AbstractClassifier.makeCopies(m_Classifier,m_M_);
+		m_InstancesTemplates = new Instances[m_M_];
 
 		if (getDebug())
-			System.out.println("Building "+m_M+" models of "+m_K+" partitions:");
+			System.out.println("Building "+m_M_+" models of "+m_K+" partitions:");
 
-		for(int i = 0; i < m_M; i++) {
+		for(int i = 0; i < m_M_; i++) {
 
 			if (getDebug()) 
-				System.out.println("\tpartitioning model "+(i+1)+"/"+m_M+": "+Arrays.toString(kMap[i])+", P="+m_P+", N="+m_N);
+				System.out.println("\tpartitioning model "+(i+1)+"/"+m_M_+": "+Arrays.toString(kMap[i])+", P="+m_P+", N="+m_N);
 			Instances D_i = SuperLabelUtils.makePartitionDataset(D,kMap[i],m_P,m_N);
 			if (getDebug()) 
-				System.out.println("\tbuilding model "+(i+1)+"/"+m_M+": "+Arrays.toString(kMap[i]));
+				System.out.println("\tbuilding model "+(i+1)+"/"+m_M_+": "+Arrays.toString(kMap[i]));
 
 			m_Classifiers[i].buildClassifier(D_i);
 			m_InstancesTemplates[i] = new Instances(D_i,0);
 
 		}
 
+	}
+
+	@Override
+	public String toString() {
+		if (kMap == null)
+			return "No model built yet";
+		StringBuilder s = new StringBuilder("{");
+		for(int k = 0; k < m_M_; k++) {
+			s.append(Arrays.toString(kMap[k]));
+		}
+		return s.append("}").toString();
 	}
 
 	@Override
