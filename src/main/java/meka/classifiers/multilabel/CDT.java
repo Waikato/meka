@@ -52,9 +52,12 @@ public class CDT extends CDN {
 	  	
 		int L = D.classIndex();
 		int d = D.numAttributes()-L;
-		u = new Random(getSeed());
+		m_R = new Random(getSeed());
 		if (m_Width < 0)
 			m_Width = (int)Math.sqrt(L);
+		else if (m_Width == 0) {
+			m_Width = L;
+		}
 
 		nodes = new CNode[L];
 		/*
@@ -70,7 +73,7 @@ public class CDT extends CDN {
 
 		/* Rearrange the Trellis */
 		if (!m_DependencyMetric.equals("None"))
-			trel = CT.orderTrellis(trel,StatUtils.margDepMatrix(D,m_DependencyMetric),u);
+			trel = CT.orderTrellis(trel,StatUtils.margDepMatrix(D,m_DependencyMetric),m_R);
 
 		/*
 		 * Build Trellis
@@ -107,7 +110,7 @@ public class CDT extends CDN {
 			Collections.shuffle(Arrays.asList(sequence));
 			for(int j : sequence) {
 				// sample
-				y[j] = nodes[j].sample(x,y,u);
+				y[j] = nodes[j].sample(x,y,m_R);
 				// collect marginals
 				if (i > (I - I_c)) {
 					y_marg[j] += y[j];
@@ -128,9 +131,9 @@ public class CDT extends CDN {
 	@Override
 	public Enumeration listOptions() {
 		Vector result = new Vector();
-		result.addElement(new Option("\tThe width of the trellis.\n\tdefault: "+m_Width, "H", 1, "-H <value>"));
-		result.addElement(new Option("\tThe density/connectivity of the trellis.\n\tdefault: "+m_Density+"\n\trange: 0-3 (0=BR)", "L", 1, "-L <value>"));
-		result.addElement(new Option("\tThe dependency payoff function.\n\tdefault: "+m_DependencyMetric+"(random)\n\t", "X", 1, "-X <value>"));
+		result.addElement(new Option("\t"+widthTipText(), "H", 1, "-H <value>"));
+		result.addElement(new Option("\t"+densityTipText(), "L", 1, "-L <value>"));
+		result.addElement(new Option("\t"+dependencyMetricTipText(), "X", 1, "-X <value>"));
 		OptionUtils.add(result, super.listOptions());
 		return OptionUtils.toEnumeration(result);
 	}
@@ -186,7 +189,7 @@ public class CDT extends CDN {
 	}
 
 	public String widthTipText() {
-		return "Determines the width of the trellis (use -1 for a square trellis, i.e., width of sqrt(number of labels)).";
+		return "Determines the width of the trellis (use 0 for chain; use -1 for a square trellis, i.e., width of sqrt(number of labels)).";
 	}
 
 	/** 

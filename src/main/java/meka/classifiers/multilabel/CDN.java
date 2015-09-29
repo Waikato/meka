@@ -40,7 +40,7 @@ public class CDN extends ProblemTransformationMethod implements Randomizable, Te
 	private static final long serialVersionUID = -4571133392057899417L;
 
 	protected Classifier h[] = null;
-	protected Random u = null;
+	protected Random m_R = null;
 	protected Instances D_templates[];
 
 	protected int I = 1000;	// total iterations
@@ -53,7 +53,7 @@ public class CDN extends ProblemTransformationMethod implements Randomizable, Te
 		int N = D.numInstances();
 		int L = D.classIndex();
 		h = new Classifier[L];
-		u = new Random(m_S);
+		m_R = new Random(m_S);
 		D_templates = new Instances[L];
 
 		// Build L probabilistic models, each to predict Y_i | X, Y_{-y}; save the templates.
@@ -109,7 +109,7 @@ public class CDN extends ProblemTransformationMethod implements Randomizable, Te
 				// q = h_j(x)    i.e. p(y_j | x)
 
 				double dist[] = h[j].distributionForInstance(x);
-				int k = A.samplePMF(dist,u);
+				int k = A.samplePMF(dist,m_R);
 				x.setValue(j,k);
 				likelihood[j] = dist[k];
 				// likelihood
@@ -160,7 +160,7 @@ public class CDN extends ProblemTransformationMethod implements Randomizable, Te
 	}
 
 	public String iTipText() {
-		return "The number of iterations.";
+		return "The total number of iterations.";
 	}
 
 	/**
@@ -184,9 +184,9 @@ public class CDN extends ProblemTransformationMethod implements Randomizable, Te
 	@Override
 	public Enumeration listOptions() {
 		Vector result = new Vector();
-		result.addElement(new Option("\tTotal Iterations.\n\tdefault: 1000", "I", 1, "-I <value>"));
-		result.addElement(new Option("\tCollection Iterations.\n\tdefault: 100", "Ic", 1, "-Ic <value>"));
-		result.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
+		result.addElement(new Option("\t"+iTipText()+"\n\tdefault: 1000", "I", 1, "-I <value>"));
+		result.addElement(new Option("\t"+icTipText()+"\n\tdefault: 100", "Ic", 1, "-Ic <value>"));
+		result.addElement(new Option("\t"+seedTipText(), "S", 1, "-S <value>"));
 		OptionUtils.add(result, super.listOptions());
 		return OptionUtils.toEnumeration(result);
 	}
