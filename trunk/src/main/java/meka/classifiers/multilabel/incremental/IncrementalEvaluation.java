@@ -102,6 +102,7 @@ public class IncrementalEvaluation {
 	 * @param	rLabeled	labelled-ness (1.0 by default)
 	 * @param	Top	threshold option
 	 * @param	Vop	verbosity option
+	 * @return	The Result on the final window (but it contains samples of all the other evaluated windows).
 	 * The window is sampled every N/numWindows instances, for a total of numWindows windows.
 	 */
 	public static Result evaluateModelBatchWindow(MultiLabelClassifier h, Instances D, int numWindows, double rLabeled, String Top, String Vop) throws Exception {
@@ -112,7 +113,10 @@ public class IncrementalEvaluation {
 		int N = D.numInstances();
 		int L = D.classIndex();
 
-		Result results[] = new Result[numWindows-1];		// we don't record the results from the initial window
+		// the Result to use
+		Result result = null;
+		// the samples of all windows
+		ArrayList<HashMap<String,Object>> samples = new ArrayList<HashMap<String,Object>>();
 
 		long train_time = 0;
 		long test_time = 0;
@@ -130,7 +134,7 @@ public class IncrementalEvaluation {
 			System.out.println("Training classifier on initial window ...");
 		}
 		train_time = System.currentTimeMillis();
-		h.buildClassifier(D_init); 										// initial classifir
+		h.buildClassifier(D_init); 										// initial classifier
 		train_time = System.currentTimeMillis() - train_time;
 		if (h.getDebug()) {
 			System.out.println("Done (in "+(train_time/1000.0)+" s)");
@@ -154,14 +158,18 @@ public class IncrementalEvaluation {
 
 		int i = 0;
 		for (int w = 0; w < numWindows-1; w++) {
+			// For each evaluation window ...
 
-			results[w] = new Result(L);
-			results[w].setInfo("Supervision",String.valueOf(rLabeled));
+            result = new Result(L);
+			result.setInfo("Supervision",String.valueOf(rLabeled));
+			result.setInfo("Type","MLi");
 
 			int n = 0;
 			test_time = 0;
 			train_time = 0;
+
 			for(int c = 0; i < (w*windowSize)+windowSize; i++) {
+				// For each instance in the evaluation window ...
 
 				Instance x = D.instance(i);
 				AbstractInstance x_ = (AbstractInstance)((AbstractInstance) x).copy(); 		// copy 
@@ -175,7 +183,7 @@ public class IncrementalEvaluation {
 					double y[] = h.distributionForInstance(x_);
 					long after_test = System.currentTimeMillis();
 					test_time += (after_test-before_test); // was +=
-					results[w].addResult(y,x);
+					result.addResult(y,x);
 					n++;
 				}
 				else {
@@ -183,7 +191,7 @@ public class IncrementalEvaluation {
 					x = MLUtils.setLabelsMissing(x,L);
 				}
 
-				// UPDATE (The classifier will have to decide if it wants to deal with unlabelled instances.)
+				// Update the classifier. (The classifier will have to decide if it wants to deal with unlabelled instances.)
 				long before = System.currentTimeMillis();
 				((UpdateableClassifier)h).updateClassifier(x);
 				long after = System.currentTimeMillis();
@@ -191,12 +199,15 @@ public class IncrementalEvaluation {
 			}
 
 			// calculate results
-			results[w].setInfo("Type","MLi");
-			results[w].setInfo("Threshold", Arrays.toString(t));
-			results[w].output = Result.getStats(results[w],Vop);
-			results[w].vals.put("Test time",(test_time)/1000.0);
-			results[w].vals.put("Build time",(train_time)/1000.0);
-			results[w].vals.put("Total time",(test_time+train_time)/1000.0);
+			result.setInfo("Threshold", Arrays.toString(t));
+			result.output = Result.getStats(result,Vop);
+			result.output.put("Test time",(test_time)/1000.0);
+			result.output.put("Build time",(train_time)/1000.0);
+			result.output.put("Total time",(test_time+train_time)/1000.0);
+			result.output.put("Threshold",(double)t[0]);
+			result.output.put("Instances",(double)i);
+			result.output.put("Samples",(double)(samples.size()+1));
+			samples.add(result.output);
 
 			// Display results (to CLI)
 			if (h.getDebug()) {
@@ -204,31 +215,39 @@ public class IncrementalEvaluation {
 				n = 0;
 				for (String m : measures) {
 					System.out.print(" ");
-					System.out.print(Utils.doubleToString((Double)results[w].output.get(m),12,4));
+					System.out.print(Utils.doubleToString((Double)result.output.get(m),12,4));
 				} System.out.println("");
 			}
 
 			// Calibrate threshold for next window
 			if (Top.equals("PCutL")) {
-				t = ThresholdUtils.calibrateThresholds(results[w].predictions,MLUtils.labelCardinalities(results[w].actuals));
+				t = ThresholdUtils.calibrateThresholds(result.predictions,MLUtils.labelCardinalities(result.actuals));
 			}
 			else {
-				Arrays.fill(t,ThresholdUtils.calibrateThreshold(results[w].predictions,MLUtils.labelCardinality(results[w].allActuals())));
+				Arrays.fill(t,ThresholdUtils.calibrateThreshold(result.predictions,MLUtils.labelCardinality(result.allActuals())));
 			}
+
 		}
 
 		if (h.getDebug()) {
 			System.out.println("--------------------------------------------------------------------------------");
 		}
 
-		// TODO put in earlier?
-		results[results.length-1].setInfo("Classifier",h.getClass().getName());
-		results[results.length-1].setInfo("Options",Arrays.toString(h.getOptions()));
-		results[results.length-1].setInfo("Additional Info",h.toString());
-		results[results.length-1].setInfo("Dataset",MLUtils.getDatasetName(D));
 
-		// TODO in the future, will want to return all results
-		return results[results.length-1];
+		// This is the last Result; prepare it for evaluation output.
+		result.setInfo("Classifier",h.getClass().getName());
+		result.vals.put("Test time",(test_time)/1000.0);
+		result.vals.put("Build time",(train_time)/1000.0);
+		result.vals.put("Total time",(test_time+train_time)/1000.0);
+		result.vals.put("Total instances tested",(double)i);
+		result.vals.put("Initial instances for training",(double)windowSize);
+		result.setInfo("Options",Arrays.toString(h.getOptions()));
+		result.setInfo("Additional Info",h.toString());
+		result.setInfo("Dataset",MLUtils.getDatasetName(D));
+		result.output = Result.getStats(result,Vop);
+		result.output.put("Results sampled over time", Result.getResultsAsInstances(samples));
+
+		return result;
 	}
 
 	/*
