@@ -362,7 +362,7 @@ java meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable\
     -W weka.classifiers.bayes.NaiveBayesUpdateable
 \end{lstlisting}
 
-The \emph{final} evaluation is reported, and $\texttt{x}-1$ samples are stored (can be visualised with the GUI). An initial window is used for initial training but is not included in evaluation (the equivalent to $1/\texttt{x}$-th of the data). 
+Under \emph{prequential evaluation}, the cumulative \emph{final} evaluation is reported, and $\texttt{x}$ samples are stored along the way (these can be visualised as a plot over time from within the GUI). An initial window is used for initial training but is not included in evaluation, the equivalent to $1/(\texttt{x}+1)$-th of the data; the remaining data is divided into $\texttt{x}$ windows. If using \emph{batch-incremental evaluation}, evaluation is carried out in batches, but this is non-cumulative (the result is reset before each new batch). This mode is selected with \texttt{-b} on the command line. The \texttt{-x} option is, in this case, considered as the number of batches (minus an original batch used only for training -- similarly to under the prequential option).
 
 \paragraph{Multi-target: Ensembles of Class Relevance} (see \cite{UPM}) The multi-target version of the Binary Relevance classifier) on the \textit{solar flare} dataset with Logistic Regression as a base classifier under $10$-fold cross-validation:
 \begin{lstlisting}
