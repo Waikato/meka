@@ -53,10 +53,12 @@ public class CDT extends CDN {
 		int L = D.classIndex();
 		int d = D.numAttributes()-L;
 		m_R = new Random(getSeed());
+		int width = m_Width;
+
 		if (m_Width < 0)
-			m_Width = (int)Math.sqrt(L);
+			width = (int)Math.sqrt(L);
 		else if (m_Width == 0) {
-			m_Width = L;
+			width = L;
 		}
 
 		nodes = new CNode[L];
@@ -67,7 +69,7 @@ public class CDT extends CDN {
 			System.out.println("Make Trellis of width "+m_Width);
 		int indices[] = A.make_sequence(L);
 		A.shuffle(indices, new Random(getSeed()));
-		trel = new Trellis(indices, m_Width, m_Density);
+		trel = new Trellis(indices, width, m_Density);
 		if (getDebug())
 			System.out.println("==>\n"+trel.toString());
 
