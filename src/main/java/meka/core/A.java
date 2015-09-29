@@ -121,6 +121,16 @@ public abstract class A {
 		return p;
 	}
 
+	/** Minimum */
+	public static int min(int a[]) {
+		int min = Integer.MAX_VALUE;
+		for (int a_ : a) {
+			if (a_ < min)
+				min = a_;
+		}
+		return min;
+	}
+
 	/** Mode */
 	public static int mode(int a[]) {
 		int max = 0;
