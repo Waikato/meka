@@ -100,35 +100,48 @@ public class LatexMeasurement
 			bwriter = new BufferedWriter(fwriter);
 
 			// output header
+			String tabularConfig = "lllllllllllllllllllllllllllllllllllllllllllllllllll".substring(0,classifiers.size());
+			bwriter.write("\\begin{tabular}["+tabularConfig+"]");
+			bwriter.newLine();
 			bwriter.write("\\hline");
-			bwriter.write("Datasets &");
+			bwriter.newLine();
+			bwriter.write("           Datasets ");
 			for (i = 0; i < classifiers.size(); i++) {
-				bwriter.write("\t");
-				bwriter.write("[" + (i+1) + "] &");
+				String name = classifiers.get(i);
+				int idx_2 = name.indexOf(' ');
+				name = name.substring(0,idx_2);
+				int idx_1 = name.lastIndexOf('.');
+				name = name.substring(idx_1+1);
+				bwriter.write("& " + (name+"                       ").substring(0,5));
+				//bwriter.write("& [" + String.format("%5d",(i+1)) + "]");
 			}
 			bwriter.write("\\\\");
+			bwriter.newLine();
 			bwriter.write("\\hline");
 			bwriter.newLine();
 			bwriter.flush();
 
 			// output statistics
 			for (String relation: relations) {
-				bwriter.write(relation);
+				String name = String.format("%20s", relation.substring(0,relation.indexOf(':')));
+				bwriter.write(name);
 				for (i = 0; i < classifiers.size(); i++) {
 					bwriter.write("\t");
 					measurements = EvaluationStatisticsUtils.measurements(stats, classifiers.get(i), relation, m_Measurement);
 					if (measurements.size() > 0) {
 						if (measurements.size() > 1)
 							log("Found " + measurements.size() + " measurements for combination " + classifiers.get(i) + "/" + relation);
-						String value = String.format("%4.2f", measurements.get(0));
+						String value = String.format("& %5.3f", measurements.get(0));
 						bwriter.write(value);
 					}
 				}
-				bwriter.write("\\\\");
+				bwriter.write(" \\\\");
 				bwriter.newLine();
 				bwriter.flush();
 			}
 			bwriter.write("\\hline");
+			bwriter.newLine();
+			bwriter.write("\\end{tabular}");
 			bwriter.newLine();
 			bwriter.flush();
 
