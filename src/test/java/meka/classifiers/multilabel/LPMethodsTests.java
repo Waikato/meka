@@ -56,7 +56,7 @@ public class LPMethodsTests extends TestCase {
 		LC lc = new LC();
 		lc.setClassifier(new SMO());
 		r = EvaluationTests.cvEvaluateClassifier(lc);
-		String s = (String)r.output.get("Accuracy");
+		String s = (String)r.getMeasurement("Accuracy");
 		System.out.println("LC "+s);
 		TestHelper.assertAlmostEquals("LC Accuracy Correct", "0.568 +/- 0.032", (String)s, 1);
 
@@ -64,23 +64,23 @@ public class LPMethodsTests extends TestCase {
 		PS ps = new PS();
 		ps.setClassifier(new SMO());
 		r = EvaluationTests.cvEvaluateClassifier(ps);
-		System.out.println("PS "+r.output.get("Accuracy"));
-		assertTrue("PS(0,0) Accuracy Identical to LC", s.equals(r.output.get("Accuracy")));
+		System.out.println("PS "+r.getMeasurement("Accuracy"));
+		assertTrue("PS(0,0) Accuracy Identical to LC", s.equals(r.getMeasurement("Accuracy")));
 
 		// Test PS (3,1) -- should be faster 
 		ps.setP(3);
 		ps.setN(1);
 
 		r = EvaluationTests.cvEvaluateClassifier(ps);
-		System.out.println("PS(3,1) "+r.output.get("Accuracy"));
-		TestHelper.assertAlmostEquals("PS(3,1) Accuracy Correct", "0.565 +/- 0.04", (String)r.output.get("Accuracy"), 1);
+		System.out.println("PS(3,1) "+r.getMeasurement("Accuracy"));
+		TestHelper.assertAlmostEquals("PS(3,1) Accuracy Correct", "0.565 +/- 0.04", (String)r.getMeasurement("Accuracy"), 1);
 
 		// Test EPS
 		EnsembleML eps = new EnsembleML();
 		eps.setClassifier(ps);
 		r = EvaluationTests.cvEvaluateClassifier(eps);
-		System.out.println("EPS "+r.output.get("Accuracy"));
-		TestHelper.assertAlmostEquals("EPS Accuracy Correct", "0.574 +/- 0.042", (String)r.output.get("Accuracy"), 1);
+		System.out.println("EPS "+r.getMeasurement("Accuracy"));
+		TestHelper.assertAlmostEquals("EPS Accuracy Correct", "0.574 +/- 0.042", (String)r.getMeasurement("Accuracy"), 1);
 	}
 
 }

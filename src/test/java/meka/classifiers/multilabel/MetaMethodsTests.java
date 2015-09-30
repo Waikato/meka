@@ -61,13 +61,13 @@ public class MetaMethodsTests extends TestCase {
 		BR br = new BR();
 		br.setClassifier(new SMO());
 		Result r = EvaluationTests.cvEvaluateClassifier(br);
-		assertTrue("BR Accuracy Correct", r.output.get("Accuracy").equals("0.493 +/- 0.036") );
+		assertTrue("BR Accuracy Correct", r.getMeasurement("Accuracy").equals("0.493 +/- 0.036") );
 
 		// Test EBR
 		EnsembleML ebr = new EnsembleML();
 		ebr.setClassifier(br);
 		Result Er = EvaluationTests.cvEvaluateClassifier(ebr);
-		assertTrue("EBR Accuracy Correct", Er.output.get("Accuracy").equals("0.557 +/- 0.04 ") );
+		assertTrue("EBR Accuracy Correct", Er.getMeasurement("Accuracy").equals("0.557 +/- 0.04 ") );
 	}
 
 }

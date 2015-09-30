@@ -80,7 +80,7 @@ public class EvaluationTests extends TestCase {
 		try {
 			Result r1 = Evaluation.evaluateModel(h, D_train, D_test, "PCut1");
 			Result r2 = Evaluation.evaluateModel(h, D_train, D_test, "PCut1");
-			assertTrue("Experiments are Repeatable (with same result)", r1.output.get("Accuracy").equals(r2.output.get("Accuracy")));
+			assertTrue("Experiments are Repeatable (with same result)", r1.getMeasurement("Accuracy").equals(r2.getMeasurement("Accuracy")));
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -121,7 +121,7 @@ public class EvaluationTests extends TestCase {
 			e.printStackTrace();
 		}
 
-		assertTrue("Mulan Format OK? (same result?)", r1.output.get("Accuracy").equals(r2.output.get("Accuracy")));
+		assertTrue("Mulan Format OK? (same result?)", r1.getMeasurement("Accuracy").equals(r2.getMeasurement("Accuracy")));
 	}
 
 	public void testIncrementalEvaluation() {
@@ -149,7 +149,7 @@ public class EvaluationTests extends TestCase {
 		if (r2==null)
 			System.out.println("r2 is null");
 
-		assertTrue("Inc. Eval the same?", ((String)r1.output.get("Accuracy")).equals(((String)r2.output.get("Accuracy"))));
+		assertTrue("Inc. Eval the same?", ((String)r1.getMeasurement("Accuracy")).equals(((String)r2.getMeasurement("Accuracy"))));
 		// test/train
 
 		// compare with non-ss

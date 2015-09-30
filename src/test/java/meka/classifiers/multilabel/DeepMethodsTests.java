@@ -70,8 +70,8 @@ public class DeepMethodsTests extends TestCase {
 		dbn.setH(30);
 
 		Result r = EvaluationTests.cvEvaluateClassifier(dbn);
-		System.out.println("DeepML + MCC" + r.output.get("Accuracy"));
-		String s = (String)r.output.get("Accuracy");
+		System.out.println("DeepML + MCC" + r.getMeasurement("Accuracy"));
+		String s = (String)r.getMeasurement("Accuracy");
 		assertTrue("DeepML+MCC Accuracy Correct", s.startsWith("0.53")); // Good enough 
 	}
 
@@ -90,8 +90,8 @@ public class DeepMethodsTests extends TestCase {
 			System.exit(1);
 		}
 		Result r = EvaluationTests.cvEvaluateClassifier(dbn);
-		String s = (String)r.output.get("Accuracy");
-		System.out.println("DBPNN + _" + r.output.get("Accuracy"));
+		String s = (String)r.getMeasurement("Accuracy");
+		System.out.println("DBPNN + _" + r.getMeasurement("Accuracy"));
 		assertTrue("DBPNN Accuracy Correct", s.equals("0.556 +/- 0.038"));
 	}
 
