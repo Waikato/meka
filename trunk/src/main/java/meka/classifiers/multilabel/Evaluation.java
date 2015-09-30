@@ -78,17 +78,6 @@ public class Evaluation {
 			D_train.randomize(new Random(seed));
 		}
 
-		// Randomize (Model) DEPRECATED
-		//if (h instanceof Randomizable) {
-			/*
-			   THIS WILL BE DEPRECATED, METHODS SHOULD IMPLEMENT THEIR OWN OPTION FOR THE SEED (Or, maybe, just override this one)
-			   As it will be commented out, results could be a bit different (but not significantly so)
-			   */
-			//int method_seed = (Utils.getOptionPos('S',options) >= 0) ? Integer.parseInt(Utils.getOption('S',options)) : 1;
-			//System.out.println("set seed = "+method_seed);
-		//	((Randomizable)h).setSeed(seed);
-		//}
-
 		// Verbosity Option
 		String voption = "1";
 		if (Utils.getOptionPos("verbosity",options) >= 0) {
@@ -183,14 +172,15 @@ public class Evaluation {
 
 				if (lname != null) {
 					// h is already built, and loaded from a file, test it!
-					r = testClassifier(h,D_test);
-					// @note: unfortunately, we have to do this again -- but with a threshold
-					//        we cannnot just call 
-					// 				r = evaluateModel(h,test,top,voption);
-					// because of the threshold -- which (if we use PCut1 or PCutL)
-					// we calculate from training data + predictions! like this:
-					String t = MLEvalUtils.getThreshold(r.predictions,D_train,top);
-					// so then, we recalculate the statistics with that threshold:
+					r = testClassifier(h, D_test);
+
+					String t = top;
+
+					if (top.startsWith("PCut")) {
+						// if PCut is specified we need the training data,
+						// so that we can calibrate the threshold!
+						t = MLEvalUtils.getThreshold(r.predictions,D_train,top);
+					}
 					r = evaluateModel(h,D_test,t,voption);
 				}
 				else {
@@ -200,10 +190,6 @@ public class Evaluation {
 				System.out.println(r.toString());
 			}
 
-			// Save ranking data to file?
-			//if (fname != null) {
-			//	Result.writeResultToFile(r,fname);
-			//}
 			// Save model to file?
 			if (dname != null) {
 				dataHeader = new Instances(D_train, 0);
