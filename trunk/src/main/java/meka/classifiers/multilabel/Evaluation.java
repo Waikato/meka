@@ -436,7 +436,7 @@ public class Evaluation {
 		if(h.getDebug()) {
 
 			for(int i = 0; i < result.size(); i++) {
-				System.out.println("\t"+Arrays.toString(result.rowActual(i))+" vs "+Arrays.toString(result.rowRanking(i)));
+				System.out.println("\t"+Arrays.toString(result.rowTrue(i))+" vs "+Arrays.toString(result.rowRanking(i)));
 			}
 		}
 		*/

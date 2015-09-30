@@ -254,7 +254,7 @@ public class SCC extends ProblemTransformationMethod implements Randomizable, Mu
 		CR cr = new CR();
 		cr.setClassifier(((ProblemTransformationMethod)m_Classifier).getClassifier()); // assume PT
 		Result result_1 = Evaluation.evaluateModel((ProblemTransformationMethod)cr,D_train,D_test,"PCut1","5");
-		double acc1 = (Double)result_1.output.get(i_ErrFn);
+		double acc1 = (Double)result_1.getMeasurement(i_ErrFn);
 		if (getDebug()) System.out.println(" "+acc1);
 
 		int partition[][] = SuperLabelUtils.generatePartition(MLUtils.gen_indices(L),rand);
@@ -304,7 +304,7 @@ public class SCC extends ProblemTransformationMethod implements Randomizable, Mu
 			if (getDebug()) System.out.println("4. REFINING THE INITIAL SET WITH SOME OLD-FASHIONED INTERNAL EVAL");
 			// Build & evaluate the classifier with the latest partition
 			result_1 = testClassifier((ProblemTransformationMethod)m_Classifier,D_train,D_test,partition);
-			w = (Double)result_1.output.get(i_ErrFn);
+			w = (Double)result_1.getMeasurement(i_ErrFn);
 			if (getDebug()) System.out.println("@0 : "+SuperLabelUtils.toString(partition)+ "\t("+w+")");
 			for(int i = 0; i < m_Iv; i++) {
 				int partition_[][] = mutateCombinations(M.deep_copy(partition),rand);
@@ -312,7 +312,7 @@ public class SCC extends ProblemTransformationMethod implements Randomizable, Mu
 				trainClassifier(m_Classifier,D_train,partition);
 				// Evaluate on D_test
 				Result result_2 = testClassifier((ProblemTransformationMethod)m_Classifier,D_train,D_test,partition_);
-				double w_ = (Double)result_2.output.get(i_ErrFn);
+				double w_ = (Double)result_2.getMeasurement(i_ErrFn);
 				if (w_ > w) {
 					w = w_;
 					partition = partition_;
