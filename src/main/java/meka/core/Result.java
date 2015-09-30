@@ -84,13 +84,6 @@ public class Result implements Serializable {
 	@Override
 	public String toString() {
 
-		/*
-		if (info.containsKey("Type") && info.get("Type").equalsIgnoreCase("CV")) {
-			// TODO make this nicer
-			return "\n\n== Cross Validation Results\n\n" + MLUtils.hashMapToString(info);
-		}
-		*/
-
 		StringBuilder resultString = new StringBuilder();
 		if (info.containsKey("Verbosity")) {
 			int V = MLUtils.getIntegerOption(info.get("Verbosity"),1);
@@ -130,7 +123,7 @@ public class Result implements Serializable {
 	/**
 	 * RowActual - Retrieve the true values for the i-th instance.
 	 */
-	public int[] rowActual(int i) {
+	public int[] rowTrue(int i) {
 		return actuals.get(i);
 	}
 
@@ -145,7 +138,7 @@ public class Result implements Serializable {
 	 * RowPrediction - Retrieve the predicted values for the i-th instance according to threshold t.
 	 */
 	public int[] rowPrediction(int i, double t) {
-		return MLUtils.toIntArray(rowConfidence(i), t);
+		return A.toIntArray(rowConfidence(i), t);
 	}
 
 	/**
@@ -157,6 +150,7 @@ public class Result implements Serializable {
 
 	/**
 	 * ColConfidence - Retrieve the prediction confidences for the j-th label (column).
+	 * Similar to M.getCol(Y,j)
 	 */
 	public double[] colConfidence(int j) {
 		double y[] = new double[predictions.size()];
@@ -194,7 +188,7 @@ public class Result implements Serializable {
 	public int[][] allTrueValues() {
 		int Y[][] = new int[actuals.size()][];
 		for(int i = 0; i < actuals.size(); i++) {
-			Y[i] = rowActual(i);
+			Y[i] = rowTrue(i);
 		}
 		return Y;
 	}

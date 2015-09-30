@@ -55,7 +55,7 @@ public class MCC extends CC implements TechnicalInformationHandler {
 		r.setInfo("Threshold","0.5"); 
 		r.setInfo("Verbosity","7");
 		r.output = Result.getStats(r, "7");
-		return (Double)r.output.get(m_Payoff);
+		return (Double)r.getMeasurement(m_Payoff);
 	}
 
 	@Override

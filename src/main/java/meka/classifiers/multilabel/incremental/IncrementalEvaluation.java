@@ -200,12 +200,12 @@ public class IncrementalEvaluation {
 			// calculate results
 			result.setInfo("Threshold", Arrays.toString(t));
 			result.output = Result.getStats(result,Vop);
-			result.output.put("Test time", (test_time) / 1000.0);
-			result.output.put("Build time",(train_time)/1000.0);
-			result.output.put("Total time",(test_time+train_time)/1000.0);
-			result.output.put("Threshold",(double)t[0]);
-			result.output.put("Instances",(double)i);
-			result.output.put("Samples",(double)(samples.size()+1));
+			result.setMeasurement("Test time", (test_time) / 1000.0);
+			result.setMeasurement("Build time",(train_time)/1000.0);
+			result.setMeasurement("Total time",(test_time+train_time)/1000.0);
+			result.setMeasurement("Threshold",(double)t[0]);
+			result.setMeasurement("Instances",(double)i);
+			result.setMeasurement("Samples",(double)(samples.size()+1));
 			samples.add(result.output);
 
 			// Display results (to CLI)
@@ -214,7 +214,7 @@ public class IncrementalEvaluation {
 				n = 0;
 				for (String m : measures) {
 					System.out.print(" ");
-					System.out.print(Utils.doubleToString((Double)result.output.get(m),12,4));
+					System.out.print(Utils.doubleToString((Double)result.getMeasurement(m),12,4));
 				} System.out.println("");
 			}
 
@@ -244,7 +244,7 @@ public class IncrementalEvaluation {
 		result.setInfo("Additional Info", h.toString());
 		result.setInfo("Dataset", MLUtils.getDatasetName(D));
 		result.output = Result.getStats(result,Vop);
-		result.output.put("Results sampled over time", Result.getResultsAsInstances(samples));
+		result.setMeasurement("Results sampled over time", Result.getResultsAsInstances(samples));
 
 		return result;
 	}
@@ -443,7 +443,7 @@ public class IncrementalEvaluation {
 		}
 
 		result.output = Result.getStats(result,Vop);
-		result.output.put("Results sampled over time", Result.getResultsAsInstances(samples));
+		result.setMeasurement("Results sampled over time", Result.getResultsAsInstances(samples));
 
 		result.vals.put("Test time",(test_time)/1000.0);
 		result.vals.put("Build time",(train_time)/1000.0);
