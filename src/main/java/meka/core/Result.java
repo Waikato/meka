@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 /**
  * Result - Stores predictions alongside true labels, for evaluation. 
@@ -193,7 +194,7 @@ public class Result implements Serializable {
 		return Y;
 	}
 
-	/**
+	/*
 	 * AddValue.
 	 * Add v to an existing metric value.
 	public void addValue(String metric, double v) {
@@ -201,6 +202,13 @@ public class Result implements Serializable {
 		vals.put(metric,(freq == null) ? v : freq + v);
 	}
 	*/
+
+	/**
+	 * Return the set of metrics for which measurements are available.
+	 */
+	public Set<String> availableMetrics() {
+		return output.keySet();
+	}
 
 	/**
 	 * Set the measurement for metric 'metric'.

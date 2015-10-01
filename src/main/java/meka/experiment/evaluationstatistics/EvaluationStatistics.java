@@ -90,9 +90,9 @@ public class EvaluationStatistics
 				if (result.vals.get(key) instanceof Number)
 					put(key, (Number) result.vals.get(key));
 			}
-			for (String key : result.output.keySet()) {
-				if (result.output.get(key) instanceof Number)
-					put(key, (Number) result.output.get(key));
+			for (String key : result.availableMetrics()) {
+				if (result.getMeasurement(key) instanceof Number)
+					put(key, (Number) result.getMeasurement(key));
 			}
 		}
 	}
