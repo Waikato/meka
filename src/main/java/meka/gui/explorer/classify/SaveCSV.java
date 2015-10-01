@@ -26,6 +26,7 @@ import meka.gui.core.MekaFileChooser;
 import meka.gui.core.ResultHistoryList;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
+import weka.core.converters.CSVSaver;
 import weka.gui.ExtensionFileFilter;
 import weka.gui.visualize.PlotData2D;
 import weka.gui.visualize.ThresholdVisualizePanel;
@@ -35,7 +36,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 
 /**
  * Allows the user to displays graphs of the performance of an incremental classifier if available.
@@ -92,7 +95,7 @@ public class SaveCSV
 
 		if (!hasSessionValue(KEY_FILECHOOSER)) {
 			result = new MekaFileChooser();
-			filter = new ExtensionFileFilter(".csv", "Comma Separated Value file (*.csv)");
+			filter = new ExtensionFileFilter(".csv", "CSV file (*.csv)");
 			result.addChoosableFileFilter(filter);
 			result.setFileFilter(filter);
 			setSessionValue(KEY_FILECHOOSER, result);
@@ -110,23 +113,30 @@ public class SaveCSV
 	 */
 	@Override
 	public ActionListener getActionListener(final ResultHistoryList history, final int index) {
+		final Result result = history.getResultAt(index);
 
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				Instances performance = (Instances) result.getMeasurement(IncrementalPerformance.RESULTS_SAMPLED_OVER_TIME);
+
 				int retVal = getFileChooser().showSaveDialog(null);
 				if (retVal != MekaFileChooser.APPROVE_OPTION)
 					return;
 				File file = getFileChooser().getSelectedFile();
+
+
 				try {
-					SerializationHelper.writeAll(file.getAbsolutePath(), (Object[]) history.getPayloadAt(index));
-				}
-				catch (Exception ex) {
+
+					CSVSaver saver = new CSVSaver();
+					saver.setInstances(performance);
+					saver.setFile(getFileChooser().getSelectedFile());
+					saver.writeBatch();
+				} catch (Exception ex) {
 					String msg = "Failed to write to '" + file + "'!";
 					System.err.println(msg);
 					ex.printStackTrace();
-					JOptionPane.showMessageDialog(
-							null, msg + "\n" + e);
+					JOptionPane.showMessageDialog( null, msg + "\n" + e);
 				}
 			}
 		};
