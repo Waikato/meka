@@ -34,7 +34,7 @@ Improvements since the last version are as follows:
 	
 		- The Classify tab now automatically discovers its result history plugins at runtime. 
 		- These have to be derived from `meka.gui.explorer.classify.AbstractClassifyResultHistoryPlugin` and placed in the `meka.gui.explorer.classify` package. 
-		- New functionality (Show Graph, Save Graph and Save Model) is using this architecture
+		- New functionality (Show Graph, Save Graph, Save Model, Save CSV, Incremental Performance, Show ROC, etc.) is using this architecture
 
 	* The Explorer tabs are now plugins and get discovered dynamically at runtime. 
 	
