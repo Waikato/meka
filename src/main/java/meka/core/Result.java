@@ -146,7 +146,15 @@ public class Result implements Serializable {
 	 * RowPrediction - Retrieve the predicted values for the i-th instance according to pre-calibrated/chosen threshold.
 	 */
 	public int[] rowPrediction(int i) {
-		return ThresholdUtils.threshold(rowConfidence(i), info.get("Threshold"));
+		String t = info.get("Threshold");
+		if (t == null) {
+			// For multi-label data, should know about a threshold first
+			return ThresholdUtils.threshold(rowConfidence(i), t);
+		}
+		else {
+			// Probably multi-target data (no threshold allowed)
+			return A.toIntArray(rowConfidence(i));
+		}
 	}
 
 	/**
