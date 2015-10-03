@@ -39,6 +39,13 @@ public abstract class AbstractDatasetProvider
 	private static final long serialVersionUID = 2167509900278245507L;
 
 	/**
+	 * Description to be displayed in the GUI.
+	 *
+	 * @return      the description
+	 */
+	public abstract String globalInfo();
+
+	/**
 	 * Returns an enumeration of all the available options..
 	 *
 	 * @return an enumeration of all available options.
