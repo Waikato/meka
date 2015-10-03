@@ -158,6 +158,7 @@ public class LocalDatasetProvider
 	public Instances next() {
 		Instances result;
 		try {
+			log("Loading: " + m_Datasets.get(m_Current));
 			result = ConverterUtils.DataSource.read(m_Datasets.get(m_Current).getAbsolutePath());
 			MLUtils.prepareData(result);
 		}
