@@ -22,24 +22,19 @@ package meka.experiment.filehandlers;
 
 import meka.core.FileUtils;
 import meka.core.OptionUtils;
-import meka.events.LogObject;
 import meka.experiment.Experiment;
-import weka.core.Option;
 import weka.core.Utils;
 
 import java.io.*;
-import java.util.Enumeration;
-import java.util.Vector;
 
 /**
- * Stores the setup of the experimeent as a commandline.
+ * Stores the setup of the experiment as a commandline.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
 public class CommandLineSetup
-		extends LogObject
-		implements ExperimentFileHandler {
+		extends AbstractExperimentFileHandler {
 
 	private static final long serialVersionUID = -5374752688504488703L;
 
@@ -70,37 +65,6 @@ public class CommandLineSetup
 	@Override
 	public String[] getFormatExtensions() {
 		return new String[]{".setup"};
-	}
-
-	/**
-	 * Returns an enumeration of all the available options..
-	 *
-	 * @return an enumeration of all available options.
-	 */
-	@Override
-	public Enumeration<Option> listOptions() {
-		return new Vector().elements();
-	}
-
-	/**
-	 * Sets the options.
-	 *
-	 * @param options       the options
-	 * @throws Exception    never
-	 */
-	@Override
-	public void setOptions(String[] options) throws Exception {
-
-	}
-
-	/**
-	 * Returns the options.
-	 *
-	 * @return              the options
-	 */
-	@Override
-	public String[] getOptions() {
-		return new String[0];
 	}
 
 	/**
