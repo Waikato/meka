@@ -23,14 +23,17 @@ package meka.experiment;
 import meka.classifiers.multilabel.BR;
 import meka.classifiers.multilabel.CC;
 import meka.classifiers.multilabel.MultiLabelClassifier;
+import meka.core.OptionUtils;
+import meka.events.LogEvent;
+import meka.events.LogListener;
+import meka.experiment.datasetproviders.DatasetProvider;
 import meka.experiment.datasetproviders.LocalDatasetProvider;
+import meka.experiment.datasetproviders.MultiDatasetProvider;
 import meka.experiment.evaluationstatistics.KeyValuePairs;
 import meka.experiment.evaluators.CrossValidation;
 import meka.experiment.evaluators.RepeatedRuns;
 import meka.experiment.events.IterationNotificationEvent;
 import meka.experiment.events.IterationNotificationListener;
-import meka.events.LogEvent;
-import meka.events.LogListener;
 import meka.experiment.statisticsexporters.*;
 import weka.core.Utils;
 import weka.filters.Filter;
@@ -58,12 +61,17 @@ public class ExperimentExample {
 				new CC()
 		});
 		// datasets
-		LocalDatasetProvider dp = new LocalDatasetProvider();
-		dp.setDatasets(new File[]{
+		LocalDatasetProvider dp1 = new LocalDatasetProvider();
+		dp1.setDatasets(new File[]{
 				new File("src/main/data/Music.arff"),
+		});
+		LocalDatasetProvider dp2 = new LocalDatasetProvider();
+		dp2.setDatasets(new File[]{
 				new File("src/main/data/solar_flare.arff"),
 		});
-		exp.setDatasetProvider(dp);
+		MultiDatasetProvider mdp = new MultiDatasetProvider();
+		mdp.setProviders(new DatasetProvider[]{dp1, dp2});
+		exp.setDatasetProvider(mdp);
 		// output of metrics
 		KeyValuePairs sh = new KeyValuePairs();
 		sh.setFile(new File(tmpDir + "/mekaexp.txt"));
@@ -86,6 +94,8 @@ public class ExperimentExample {
 				System.err.println("[LOG] " + e.getSource().getClass().getName() + ": " + e.getMessage());
 			}
 		});
+		// output options
+		System.out.println("Setup:\n" + OptionUtils.toCommandLine(exp) + "\n");
 		// execute
 		String msg = exp.initialize();
 		System.out.println("initialize: " + msg);
