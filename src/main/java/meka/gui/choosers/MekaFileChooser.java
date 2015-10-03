@@ -110,4 +110,15 @@ public class MekaFileChooser
 		m_PanelBookmarks.setBorder(BorderFactory.createEmptyBorder(2, 5, 0, 0));
 		return m_PanelBookmarks;
 	}
+
+	/**
+	 * Outputs the error in the console window.
+	 *
+	 * @param msg		the message
+	 * @param t 		the exception
+	 */
+	protected static void handleException(String msg, Throwable t) {
+		System.err.println(msg);
+		t.printStackTrace();
+	}
 }
