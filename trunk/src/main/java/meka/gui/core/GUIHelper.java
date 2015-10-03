@@ -20,6 +20,7 @@
 
 package meka.gui.core;
 
+import meka.gui.choosers.MekaFileChooser;
 import weka.core.Utils;
 import weka.gui.ConverterFileChooser;
 

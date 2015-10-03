@@ -20,6 +20,7 @@
 
 package meka.gui.modelviewer;
 
+import meka.gui.choosers.MekaFileChooser;
 import meka.gui.core.*;
 import meka.gui.events.RecentItemEvent;
 import meka.gui.events.RecentItemListener;
