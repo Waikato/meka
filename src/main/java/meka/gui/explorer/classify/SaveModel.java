@@ -20,7 +20,7 @@
 
 package meka.gui.explorer.classify;
 
-import meka.gui.core.MekaFileChooser;
+import meka.gui.choosers.MekaFileChooser;
 import meka.gui.core.ResultHistoryList;
 import weka.core.SerializationHelper;
 import weka.gui.ExtensionFileFilter;

@@ -18,7 +18,10 @@
  * Copyright (C) 2014-2015 University of Waikato, Hamilton, New Zealand
  */
 
-package meka.gui.core;
+package meka.gui.choosers;
+
+import meka.gui.core.FileChooserBookmarksPanel;
+import meka.gui.core.GUIHelper;
 
 import javax.swing.*;
 import java.io.File;

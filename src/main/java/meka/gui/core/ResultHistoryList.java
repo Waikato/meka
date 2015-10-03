@@ -20,6 +20,7 @@
 package meka.gui.core;
 
 import meka.core.Result;
+import meka.gui.choosers.MekaFileChooser;
 import weka.gui.ExtensionFileFilter;
 
 import javax.swing.*;

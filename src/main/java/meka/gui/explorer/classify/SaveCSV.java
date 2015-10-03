@@ -22,23 +22,16 @@ package meka.gui.explorer.classify;
 
 import meka.classifiers.multilabel.IncrementalMultiLabelClassifier;
 import meka.core.Result;
-import meka.gui.core.MekaFileChooser;
+import meka.gui.choosers.MekaFileChooser;
 import meka.gui.core.ResultHistoryList;
 import weka.core.Instances;
-import weka.core.SerializationHelper;
 import weka.core.converters.CSVSaver;
 import weka.gui.ExtensionFileFilter;
-import weka.gui.visualize.PlotData2D;
-import weka.gui.visualize.ThresholdVisualizePanel;
-import weka.gui.visualize.VisualizePanel;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 
 /**
  * Allows the user to displays graphs of the performance of an incremental classifier if available.

@@ -21,7 +21,7 @@
 package meka.gui.explorer.classify;
 
 import meka.core.MultiLabelDrawable;
-import meka.gui.core.MekaFileChooser;
+import meka.gui.choosers.MekaFileChooser;
 import meka.gui.core.ResultHistoryList;
 import weka.gui.ExtensionFileFilter;
 

@@ -22,7 +22,7 @@ package meka.gui.explorer;
 import com.googlecode.jfilechooserbookmarks.gui.BaseScrollPane;
 import meka.core.FileUtils;
 import meka.gui.core.GUIHelper;
-import meka.gui.core.MekaFileChooser;
+import meka.gui.choosers.MekaFileChooser;
 import weka.gui.ExtensionFileFilter;
 
 import javax.swing.*;
