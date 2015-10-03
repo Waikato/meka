@@ -27,6 +27,7 @@ import weka.core.Utils;
 import weka.core.logging.Logger;
 import weka.gui.HierarchyPropertyParser;
 import weka.gui.PropertyDialog;
+import weka.gui.PropertyPanel;
 import weka.gui.beans.PluginManager;
 
 import javax.swing.*;
@@ -273,5 +274,32 @@ public class GenericObjectEditor
 			ex.printStackTrace();
 			System.err.println(ex.getMessage());
 		}
+	}
+
+	/**
+	 * Tries to determine a view for the editor.
+	 *
+	 * @param editor	the editor to get the view for
+	 * @return		the view, null if failed to determine one
+	 */
+	public static JComponent findView(PropertyEditor editor) {
+		JComponent	result;
+
+		result = null;
+
+		if (editor.supportsCustomEditor() && editor.isPaintable()) {
+			result = new PropertyPanel(editor);
+		}
+		else if (editor.supportsCustomEditor() && (editor.getCustomEditor() instanceof JComponent)) {
+			result = (JComponent) editor.getCustomEditor();
+		}
+		else if (editor.getTags() != null) {
+			result = new PropertyValueSelector(editor);
+		}
+		else if (editor.getAsText() != null) {
+			result = new PropertyText(editor);
+		}
+
+		return result;
 	}
 }
