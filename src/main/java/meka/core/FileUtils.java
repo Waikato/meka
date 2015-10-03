@@ -168,4 +168,27 @@ public class FileUtils {
 			}
 		}
 	}
+
+	/**
+	 * Returns the extension of the file, if any.
+	 *
+	 * @param file	the file to get the extension from
+	 * @return		the extension (no dot), null if none available
+	 */
+	public static String getExtension(File file) {
+		if (file.getName().contains("."))
+			return file.getName().substring(file.getName().lastIndexOf(".") + 1);
+		else
+			return null;
+	}
+
+	/**
+	 * Returns the extension of the file, if any.
+	 *
+	 * @param filename	the file to get the extension from
+	 * @return		the extension (no dot), null if none available
+	 */
+	public static String getExtension(String filename) {
+		return getExtension(new File(filename));
+	}
 }
