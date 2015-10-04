@@ -34,6 +34,8 @@ import meka.experiment.evaluators.CrossValidation;
 import meka.experiment.evaluators.Evaluator;
 import meka.experiment.events.IterationNotificationEvent;
 import meka.experiment.events.IterationNotificationListener;
+import meka.experiment.events.StatisticsNotificationEvent;
+import meka.experiment.events.StatisticsNotificationListener;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 import weka.core.Option;
@@ -70,6 +72,9 @@ public class DefaultExperiment
 
 	/** the listeners for iterations.  */
 	protected transient HashSet<IterationNotificationListener> m_IterationNotficationListeners;
+
+	/** the listeners for statistics.  */
+	protected transient HashSet<StatisticsNotificationListener> m_StatisticsNotificationListeners;
 
 	/** the collected statistics. */
 	protected List<EvaluationStatistics> m_Statistics = new ArrayList<>();
@@ -219,7 +224,7 @@ public class DefaultExperiment
 	}
 
 	/**
-	 * Adds the listener.
+	 * Adds the iteration listener.
 	 *
 	 * @param l         the listener to add
 	 */
@@ -230,7 +235,7 @@ public class DefaultExperiment
 	}
 
 	/**
-	 * Removes the listener.
+	 * Removes the iteration listener.
 	 *
 	 * @param l         the listener to remove
 	 */
@@ -255,6 +260,44 @@ public class DefaultExperiment
 		e = new IterationNotificationEvent(this, classifier, dataset);
 		for (IterationNotificationListener l: m_IterationNotficationListeners)
 			l.nextIteration(e);
+	}
+
+	/**
+	 * Adds the statistics listener.
+	 *
+	 * @param l         the listener to add
+	 */
+	public synchronized void addStatisticsNotificationListener(StatisticsNotificationListener l) {
+		if (m_StatisticsNotificationListeners == null)
+			m_StatisticsNotificationListeners = new HashSet<>();
+		m_StatisticsNotificationListeners.add(l);
+	}
+
+	/**
+	 * Removes the statistics listener.
+	 *
+	 * @param l         the listener to remove
+	 */
+	public synchronized void removeStatisticsNotificationListener(StatisticsNotificationListener l) {
+		if (m_StatisticsNotificationListeners == null)
+			m_StatisticsNotificationListeners = new HashSet<>();
+		m_StatisticsNotificationListeners.remove(l);
+	}
+
+	/**
+	 * Notifies all listeners of a new classifier/dataset combination.
+	 *
+	 * @param stats     the statistics
+	 */
+	protected synchronized void notifyStatisticsNotificationListeners(List<EvaluationStatistics> stats) {
+		StatisticsNotificationEvent e;
+
+		if (m_StatisticsNotificationListeners == null)
+			return;
+
+		e = new StatisticsNotificationEvent(this, stats);
+		for (StatisticsNotificationListener l: m_StatisticsNotificationListeners)
+			l.statisticsAvailable(e);
 	}
 
 	/**
@@ -413,6 +456,7 @@ public class DefaultExperiment
 						m_Statistics.addAll(stats);
 						if (m_StatisticsHandler instanceof IncrementalEvaluationStatisticsHandler)
 							((IncrementalEvaluationStatisticsHandler) m_StatisticsHandler).append(stats);
+						notifyStatisticsNotificationListeners(stats);
 					}
 				}
 

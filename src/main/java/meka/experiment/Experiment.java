@@ -21,12 +21,13 @@
 package meka.experiment;
 
 import meka.classifiers.multilabel.MultiLabelClassifier;
+import meka.events.LogSupporter;
 import meka.experiment.datasetproviders.DatasetProvider;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
 import meka.experiment.evaluationstatistics.EvaluationStatisticsHandler;
 import meka.experiment.evaluators.Evaluator;
 import meka.experiment.events.IterationNotificationListener;
-import meka.events.LogSupporter;
+import meka.experiment.events.StatisticsNotificationListener;
 import weka.core.OptionHandler;
 
 import java.io.Serializable;
@@ -126,18 +127,32 @@ public interface Experiment
 	public String statisticsHandlerTipText();
 
 	/**
-	 * Adds the listener.
+	 * Adds the iteration listener.
 	 *
 	 * @param l         the listener to add
 	 */
 	public void addIterationNotificationListener(IterationNotificationListener l);
 
 	/**
-	 * Removes the listener.
+	 * Removes the iteration listener.
 	 *
 	 * @param l         the listener to remove
 	 */
 	public void removeIterationNotificationListener(IterationNotificationListener l);
+
+	/**
+	 * Adds the statistics listener.
+	 *
+	 * @param l         the listener to add
+	 */
+	public void addStatisticsNotificationListener(StatisticsNotificationListener l);
+
+	/**
+	 * Removes the statistics listener.
+	 *
+	 * @param l         the listener to remove
+	 */
+	public void removeStatisticsNotificationListener(StatisticsNotificationListener l);
 
 	/**
 	 * Initializes the experiment.

@@ -34,6 +34,8 @@ import meka.experiment.evaluators.CrossValidation;
 import meka.experiment.evaluators.RepeatedRuns;
 import meka.experiment.events.IterationNotificationEvent;
 import meka.experiment.events.IterationNotificationListener;
+import meka.experiment.events.StatisticsNotificationEvent;
+import meka.experiment.events.StatisticsNotificationListener;
 import meka.experiment.statisticsexporters.*;
 import weka.core.Utils;
 import weka.filters.Filter;
@@ -85,6 +87,13 @@ public class ExperimentExample {
 			@Override
 			public void nextIteration(IterationNotificationEvent e) {
 				System.err.println("[ITERATION] " + Utils.toCommandLine(e.getClassifier()) + " --> " + e.getDataset().relationName());
+			}
+		});
+		// statistics
+		exp.addStatisticsNotificationListener(new StatisticsNotificationListener() {
+			@Override
+			public void statisticsAvailable(StatisticsNotificationEvent e) {
+				System.err.println("[STATISTICS] #" + e.getStatistics().size());
 			}
 		});
 		// log events
