@@ -12,8 +12,16 @@
 
 # classifiers
 meka.classifiers.multilabel.MultiLabelClassifier=meka.gui.goe.GenericObjectEditor
-meka.classifiers.multilabel.MultiLabelClassifier[]=meka.gui.goe.GenericObjectEditor
+meka.classifiers.multilabel.MultiLabelClassifier[]=weka.gui.GenericArrayEditor
 meka.classifiers.multilabel.SemisupervisedClassifier=meka.gui.goe.GenericObjectEditor
-meka.classifiers.multilabel.SemisupervisedClassifier[]=meka.gui.goe.GenericObjectEditor
+meka.classifiers.multilabel.SemisupervisedClassifier[]=weka.gui.GenericArrayEditor
 meka.classifiers.multitarget.MultiTargetClassifier=meka.gui.goe.GenericObjectEditor
-meka.classifiers.multitarget.MultiTargetClassifier[]=meka.gui.goe.GenericObjectEditor
+meka.classifiers.multitarget.MultiTargetClassifier[]=weka.gui.GenericArrayEditor
+meka.experiment.datasetproviders.DatasetProvider=meka.gui.goe.GenericObjectEditor
+meka.experiment.datasetproviders.DatasetProvider[]=weka.gui.GenericArrayEditor
+meka.experiment.evaluationstatistics.EvaluationStatisticsHandler=meka.gui.goe.GenericObjectEditor
+meka.experiment.evaluationstatistics.EvaluationStatisticsHandler[]=weka.gui.GenericArrayEditor
+meka.experiment.evaluators.Evaluator=meka.gui.goe.GenericObjectEditor
+meka.experiment.evaluators.Evaluator[]=weka.gui.GenericArrayEditor
+meka.experiment.statisticsexporters.EvaluationStatisticsExporter=meka.gui.goe.GenericObjectEditor
+meka.experiment.statisticsexporters.EvaluationStatisticsExporter[]=weka.gui.GenericArrayEditor

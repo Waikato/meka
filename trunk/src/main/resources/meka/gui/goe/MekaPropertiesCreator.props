@@ -66,6 +66,10 @@ meka.gui.guichooser.AbstractMenuItemDefinition=\
 meka.gui.modelviewer.renderers.AbstractObjectRenderer=\
   meka.gui.modelviewer.renderers
 
+# the types of experiment
+meka.experiment.Experiment=\
+  meka.experiment
+
 # the dataset providers
 meka.experiment.datasetproviders.DatasetProvider=\
   meka.experiment.datasetproviders
@@ -87,9 +91,13 @@ meka.experiment.filehandlers.ExperimentFileHandler=\
   meka.experiment.filehandlers
 
 # the statistics exporters
-meka.experiment.statisticsexport.EvaluationStatisticsExporter=\
+meka.experiment.statisticsexporters.EvaluationStatisticsExporter=\
   meka.experiment.statisticsexport
 
 # the file-based statistics exporters
-meka.experiment.statisticsexport.FileBasedEvaluationStatisticsExporter=\
+meka.experiment.statisticsexporters.FileBasedEvaluationStatisticsExporter=\
   meka.experiment.statisticsexport
+
+# The Experimenter tabs
+meka.gui.experimenter.AbstractExperimenterTab=\
+  meka.gui.experimenter
