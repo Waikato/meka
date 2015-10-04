@@ -32,10 +32,7 @@ import meka.experiment.datasetproviders.MultiDatasetProvider;
 import meka.experiment.evaluationstatistics.KeyValuePairs;
 import meka.experiment.evaluators.CrossValidation;
 import meka.experiment.evaluators.RepeatedRuns;
-import meka.experiment.events.IterationNotificationEvent;
-import meka.experiment.events.IterationNotificationListener;
-import meka.experiment.events.StatisticsNotificationEvent;
-import meka.experiment.events.StatisticsNotificationListener;
+import meka.experiment.events.*;
 import meka.experiment.statisticsexporters.*;
 import weka.core.Utils;
 import weka.filters.Filter;
@@ -82,6 +79,13 @@ public class ExperimentExample {
 		RepeatedRuns eval = new RepeatedRuns();
 		eval.setEvaluator(new CrossValidation());
 		exp.setEvaluator(eval);
+		// stage
+		exp.addExecutionStageListener(new ExecutionStageListener() {
+			@Override
+			public void experimentStage(ExecutionStageEvent e) {
+				System.err.println("[STAGE] " + e.getStage());
+			}
+		});
 		// iterations
 		exp.addIterationNotificationListener(new IterationNotificationListener() {
 			@Override

@@ -32,10 +32,7 @@ import meka.experiment.evaluationstatistics.IncrementalEvaluationStatisticsHandl
 import meka.experiment.evaluationstatistics.KeyValuePairs;
 import meka.experiment.evaluators.CrossValidation;
 import meka.experiment.evaluators.Evaluator;
-import meka.experiment.events.IterationNotificationEvent;
-import meka.experiment.events.IterationNotificationListener;
-import meka.experiment.events.StatisticsNotificationEvent;
-import meka.experiment.events.StatisticsNotificationListener;
+import meka.experiment.events.*;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 import weka.core.Option;
@@ -69,6 +66,9 @@ public class DefaultExperiment
 
 	/** whether the experiment is still running. */
 	protected boolean m_Running;
+
+	/** the listeners for execution stages.  */
+	protected transient HashSet<ExecutionStageListener> m_ExecutionStageListeners;
 
 	/** the listeners for iterations.  */
 	protected transient HashSet<IterationNotificationListener> m_IterationNotficationListeners;
@@ -224,6 +224,44 @@ public class DefaultExperiment
 	}
 
 	/**
+	 * Adds the execution stage listener.
+	 *
+	 * @param l         the listener to add
+	 */
+	public synchronized void addExecutionStageListener(ExecutionStageListener l) {
+		if (m_ExecutionStageListeners == null)
+			m_ExecutionStageListeners = new HashSet<>();
+		m_ExecutionStageListeners.add(l);
+	}
+
+	/**
+	 * Removes the execution stage listener.
+	 *
+	 * @param l         the listener to remove
+	 */
+	public synchronized void removeExecutionStageListener(ExecutionStageListener l) {
+		if (m_ExecutionStageListeners == null)
+			m_ExecutionStageListeners = new HashSet<>();
+		m_ExecutionStageListeners.remove(l);
+	}
+
+	/**
+	 * Notifies all listeners of a new execution stage.
+	 *
+	 * @param stage         the new stage
+	 */
+	protected synchronized void notifyExecutionStageListeners(ExecutionStageEvent.Stage stage) {
+		ExecutionStageEvent  e;
+
+		if (m_ExecutionStageListeners == null)
+			return;
+
+		e = new ExecutionStageEvent(this, stage);
+		for (ExecutionStageListener l: m_ExecutionStageListeners)
+			l.experimentStage(e);
+	}
+
+	/**
 	 * Adds the iteration listener.
 	 *
 	 * @param l         the listener to add
@@ -367,6 +405,8 @@ public class DefaultExperiment
 	public String initialize() {
 		String      result;
 
+		notifyExecutionStageListeners(ExecutionStageEvent.Stage.INITIALIZE);
+
 		m_Statistics.clear();
 		result = handleError(m_DatasetProvider, m_DatasetProvider.initialize());
 		if (result == null)
@@ -398,6 +438,8 @@ public class DefaultExperiment
 
 		result    = null;
 		m_Running = true;
+
+		notifyExecutionStageListeners(ExecutionStageEvent.Stage.RUN);
 
 		while (m_DatasetProvider.hasNext()) {
 			// next dataset
@@ -501,6 +543,8 @@ public class DefaultExperiment
 
 		if (result != null)
 			log(result);
+
+		notifyExecutionStageListeners(ExecutionStageEvent.Stage.FINISH);
 
 		return result;
 	}
