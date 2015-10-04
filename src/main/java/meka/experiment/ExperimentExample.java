@@ -35,10 +35,6 @@ import meka.experiment.evaluators.RepeatedRuns;
 import meka.experiment.events.*;
 import meka.experiment.statisticsexporters.*;
 import weka.core.Utils;
-import weka.filters.Filter;
-import weka.filters.MultiFilter;
-import weka.filters.unsupervised.attribute.RemoveByName;
-import weka.filters.unsupervised.attribute.RenameAttribute;
 
 import java.io.File;
 
@@ -121,18 +117,13 @@ public class ExperimentExample {
 		// export them
 		TabSeparated tabsepAgg = new TabSeparated();
 		tabsepAgg.setFile(new File(tmpDir + "/mekaexp-agg.tsv"));
-		RemoveByName remove = new RemoveByName();
-		remove.setExpression(".*(" + SimpleAggregate.SUFFIX_COUNT + "|" + SimpleAggregate.SUFFIX_STDEV + ")$");
-		RenameAttribute rename = new RenameAttribute();
-		rename.setFind(SimpleAggregate.SUFFIX_MEAN + "$");
-		rename.setReplace("");
-		MultiFilter multi = new MultiFilter();
-		multi.setFilters(new Filter[]{remove, rename});
-		WekaFilter filter = new WekaFilter();
-		filter.setFilter(multi);
-		filter.setExporter(tabsepAgg);
 		SimpleAggregate aggregate = new SimpleAggregate();
-		aggregate.setExporter(filter);
+		aggregate.setSuffixMean("");
+		aggregate.setSuffixStdDev(" (stdev)");
+		aggregate.setSkipCount(true);
+		aggregate.setSkipMean(false);
+		aggregate.setSkipStdDev(false);
+		aggregate.setExporter(tabsepAgg);
 		TabSeparated tabsepFull = new TabSeparated();
 		tabsepFull.setFile(new File(tmpDir + "/mekaexp-full.tsv"));
 		TabSeparatedMeasurement tabsepHL = new TabSeparatedMeasurement();
@@ -149,6 +140,7 @@ public class ExperimentExample {
 				System.err.println("[EXPORT] " + e.getSource().getClass().getName() + ": " + e.getMessage());
 			}
 		});
+		System.out.println(OptionUtils.toCommandLine(multiexp));
 		msg = multiexp.export(exp.getStatistics());
 		System.out.println("export: " + msg);
 	}

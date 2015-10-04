@@ -99,7 +99,7 @@ public class MultiExporter
 	public Enumeration<Option> listOptions() {
 		Vector result = new Vector();
 		OptionUtils.add(result, super.listOptions());
-		OptionUtils.addOption(result, exportersTipText(), "none", "base");
+		OptionUtils.addOption(result, exportersTipText(), "none", "exporter");
 		return OptionUtils.toEnumeration(result);
 	}
 
@@ -111,7 +111,7 @@ public class MultiExporter
 	 */
 	@Override
 	public void setOptions(String[] options) throws Exception {
-		setExporters(OptionUtils.parse(options, "base", EvaluationStatisticsExporter.class));
+		setExporters(OptionUtils.parse(options, "exporter", EvaluationStatisticsExporter.class));
 		super.setOptions(options);
 	}
 
@@ -124,7 +124,7 @@ public class MultiExporter
 	public String[] getOptions() {
 		List<String> result = new ArrayList<>();
 		OptionUtils.add(result, super.getOptions());
-		OptionUtils.add(result, "base", getExporters());
+		OptionUtils.add(result, "exporter", getExporters());
 		return OptionUtils.toArray(result);
 	}
 
