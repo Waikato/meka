@@ -23,10 +23,6 @@ package meka.experiment.statisticsexporters;
 import meka.core.OptionUtils;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
 import weka.core.Option;
-import weka.filters.Filter;
-import weka.filters.MultiFilter;
-import weka.filters.unsupervised.attribute.RemoveByName;
-import weka.filters.unsupervised.attribute.RenameAttribute;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -131,25 +127,12 @@ public abstract class AbstractMeasurementEvaluationStatisticsExporter
 	 */
 	protected List<EvaluationStatistics> aggregate(List<EvaluationStatistics> stats) {
 		InMemory        inmem;
-		RemoveByName    remove;
-		RenameAttribute rename;
-		MultiFilter     multi;
-		WekaFilter      filter;
 		SimpleAggregate aggregate;
 
 		inmem = new InMemory();
-		remove = new RemoveByName();
-		remove.setExpression(".*(" + SimpleAggregate.SUFFIX_COUNT + "|" + SimpleAggregate.SUFFIX_STDEV + ")$");
-		rename = new RenameAttribute();
-		rename.setFind(SimpleAggregate.SUFFIX_MEAN + "$");
-		rename.setReplace("");
-		multi = new MultiFilter();
-		multi.setFilters(new Filter[]{remove, rename});
-		filter = new WekaFilter();
-		filter.setFilter(multi);
-		filter.setExporter(inmem);
 		aggregate = new SimpleAggregate();
-		aggregate.setExporter(filter);
+		aggregate.setSuffixMean("");
+		aggregate.setExporter(inmem);
 		aggregate.export(stats);
 
 		return inmem.getStatistics();
