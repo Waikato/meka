@@ -14,7 +14,7 @@
  */
 
 /**
- * TabSeparated.java
+ * Latex.java
  * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
 
@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Exports the statistics to a tab-separated file.
  *
- * @author FracPete (fracpete at waikato dot ac dot nz)
+ * @author Jesse Read
  * @version $Revision$
  */
 public class Latex
