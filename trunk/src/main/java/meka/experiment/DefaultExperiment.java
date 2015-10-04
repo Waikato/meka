@@ -407,18 +407,16 @@ public class DefaultExperiment
 
 		notifyExecutionStageListeners(ExecutionStageEvent.Stage.INITIALIZE);
 
+		for (LogListener l: m_LogListeners) {
+			m_DatasetProvider.addLogListener(l);
+			m_StatisticsHandler.addLogListener(l);
+			m_Evaluator.addLogListener(l);
+		}
+
 		m_Statistics.clear();
 		result = handleError(m_DatasetProvider, m_DatasetProvider.initialize());
 		if (result == null)
 			result = handleError(m_StatisticsHandler, m_StatisticsHandler.initialize());
-
-		if (result == null) {
-			for (LogListener l: m_LogListeners) {
-				m_DatasetProvider.addLogListener(l);
-				m_StatisticsHandler.addLogListener(l);
-				m_Evaluator.addLogListener(l);
-			}
-		}
 
 		if (result != null)
 			log(result);
@@ -544,6 +542,12 @@ public class DefaultExperiment
 
 		if (result != null)
 			log(result);
+
+		for (LogListener l: m_LogListeners) {
+			m_DatasetProvider.removeLogListener(l);
+			m_StatisticsHandler.removeLogListener(l);
+			m_Evaluator.removeLogListener(l);
+		}
 
 		notifyExecutionStageListeners(ExecutionStageEvent.Stage.FINISH);
 
