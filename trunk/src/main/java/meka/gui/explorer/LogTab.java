@@ -180,5 +180,6 @@ public class LogTab
 		else
 			m_TextArea.append(msg);
 		m_TextArea.append("\n");
+		m_TextArea.setCaretPosition(m_TextArea.getDocument().getLength());
 	}
 }
