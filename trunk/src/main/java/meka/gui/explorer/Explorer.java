@@ -153,12 +153,12 @@ public class Explorer
 			}
 		}
 		m_Tabs.add(new VisualizeTab());
+		m_LogTab = new LogTab();
+		m_Tabs.add(m_LogTab);
 		for (AbstractExplorerTab tab: m_Tabs) {
 			tab.setOwner(this);
 			m_TabbedPane.addTab(tab.getTitle(), tab);
 		}
-		m_LogTab = new LogTab();
-		m_Tabs.add(m_LogTab);
 
 		// status bar
 		m_StatusBar = new StatusBar();
