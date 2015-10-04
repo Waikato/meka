@@ -188,6 +188,7 @@ public class GUIChooser
 	 */
 	public void close() {
 		closeParent();
+		System.exit(0);
 	}
 
 	/**
