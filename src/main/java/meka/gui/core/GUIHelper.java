@@ -227,6 +227,18 @@ public class GUIHelper {
 	}
 
 	/**
+	 * Checks the caption whether an underscore "_" is present to indicate
+	 * that the following character is to act as mnemonic.
+	 *
+	 * @param caption	the caption to analyze
+	 * @return		true if an underscore is present
+	 * @see		#MNEMONIC_INDICATOR
+	 */
+	public static boolean hasMnemonic(String caption) {
+		return (caption.indexOf(MNEMONIC_INDICATOR) > -1);
+	}
+
+	/**
 	 * Returns the mnemonic for this caption, preceded by an underscore "_".
 	 *
 	 * @param caption	the caption to extract
@@ -241,6 +253,17 @@ public class GUIHelper {
 			return caption.charAt(pos + 1);
 		else
 			return '\0';
+	}
+
+	/**
+	 * Removes the mnemonic indicator in this caption.
+	 *
+	 * @param caption	the caption to process
+	 * @return		the processed caption
+	 * @see		#MNEMONIC_INDICATOR
+	 */
+	public static String stripMnemonic(String caption) {
+		return caption.replace("" + MNEMONIC_INDICATOR, "");
 	}
 
 	/**
