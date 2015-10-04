@@ -26,6 +26,7 @@ import meka.experiment.datasetproviders.DatasetProvider;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
 import meka.experiment.evaluationstatistics.EvaluationStatisticsHandler;
 import meka.experiment.evaluators.Evaluator;
+import meka.experiment.events.ExecutionStageListener;
 import meka.experiment.events.IterationNotificationListener;
 import meka.experiment.events.StatisticsNotificationListener;
 import weka.core.OptionHandler;
@@ -125,6 +126,20 @@ public interface Experiment
 	 * @return          the description
 	 */
 	public String statisticsHandlerTipText();
+
+	/**
+	 * Adds the execution stage listener.
+	 *
+	 * @param l         the listener to add
+	 */
+	public void addExecutionStageListener(ExecutionStageListener l);
+
+	/**
+	 * Removes the execution stage listener.
+	 *
+	 * @param l         the listener to remove
+	 */
+	public void removeExecutionStageListener(ExecutionStageListener l);
 
 	/**
 	 * Adds the iteration listener.
