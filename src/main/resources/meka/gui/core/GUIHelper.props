@@ -26,6 +26,12 @@ meka.gui.explorer.Explorer.Width=800
 meka.gui.explorer.Explorer.Height=600
 meka.gui.explorer.Explorer.Pack=false
 
+# the Experimenter window
+meka.gui.experimenter.Experimenter.Icon=experimenter.gif
+meka.gui.experimenter.Experimenter.Width=800
+meka.gui.experimenter.Experimenter.Height=600
+meka.gui.experimenter.Experimenter.Pack=false
+
 # the Arff viewer window
 weka.gui.arffviewer.ArffViewerMainPanel.Icon=report.gif
 weka.gui.arffviewer.ArffViewerMainPanel.Width=1024
