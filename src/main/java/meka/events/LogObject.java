@@ -37,7 +37,7 @@ public class LogObject
 	private static final long serialVersionUID = -3814825277914734502L;
 
 	/** the listeners. */
-	protected HashSet<LogListener> m_LogListeners = new HashSet<>();
+	protected transient HashSet<LogListener> m_LogListeners = new HashSet<>();
 
 	/**
 	 * Adds the log listener to use.
