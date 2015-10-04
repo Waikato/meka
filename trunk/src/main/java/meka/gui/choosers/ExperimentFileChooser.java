@@ -27,6 +27,7 @@ import meka.experiment.filehandlers.ExperimentFileHandler;
 import meka.gui.goe.GenericObjectEditor;
 import weka.core.Utils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -38,7 +39,8 @@ import java.util.Vector;
  * @version $Revision$
  */
 public class ExperimentFileChooser
-		extends AbstractConfigurableExtensionFileFilterFileChooser<ExperimentFileHandler,ExperimentFileHandler> {
+		extends AbstractConfigurableExtensionFileFilterFileChooser<ExperimentFileHandler,ExperimentFileHandler>
+		implements FileTypeDeterminingFileChooser<ExperimentFileHandler,ExperimentFileHandler>{
 
 	private static final long serialVersionUID = 1362264114946186967L;
 
@@ -119,6 +121,31 @@ public class ExperimentFileChooser
 	}
 
 	/**
+	 * Returns the reader for the specified file.
+	 *
+	 * @param file	the file to determine a reader for
+	 * @return		the reader, null if none found
+	 */
+	public ExperimentFileHandler getReaderForFile(File file) {
+		ExperimentFileHandler	result;
+
+		result = null;
+
+		for (ExtensionFileFilterWithClass filter: m_FileFilters) {
+			if (filter.accept(file)) {
+				try {
+					result = (ExperimentFileHandler) Class.forName(filter.getClassname()).newInstance();
+				}
+				catch (Exception e) {
+					handleException("Failed to instantiate reader: " + filter.getClassname(), e);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	/**
 	 * Returns the default writer.
 	 *
 	 * @return		the default writer
@@ -137,6 +164,31 @@ public class ExperimentFileChooser
 	protected Class getWriterClass() {
 		return ExperimentFileHandler.class;
 	}
+
+  /**
+   * Returns the writer for the specified file.
+   *
+   * @param file	the file to determine a reader for
+   * @return		the writer, null if none found
+   */
+  public ExperimentFileHandler getWriterForFile(File file) {
+    ExperimentFileHandler	result;
+
+    result = null;
+
+    for (ExtensionFileFilterWithClass filter: m_FileFilters) {
+      if (filter.accept(file)) {
+	try {
+	  result = (ExperimentFileHandler) Class.forName(filter.getClassname()).newInstance();
+	}
+	catch (Exception e) {
+          handleException("Failed to instantiate writer: " + filter.getClassname(), e);
+	}
+      }
+    }
+
+    return result;
+  }
 
 	/**
 	 * Only for testing.
