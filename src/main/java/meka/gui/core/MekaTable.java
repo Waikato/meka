@@ -20,8 +20,6 @@
 
 package meka.gui.core;
 
-import weka.gui.JTableHelper;
-
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
