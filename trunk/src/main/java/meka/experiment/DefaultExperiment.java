@@ -458,8 +458,9 @@ public class DefaultExperiment
 				if (m_StatisticsHandler instanceof IncrementalEvaluationStatisticsHandler) {
 					if (!((IncrementalEvaluationStatisticsHandler) m_StatisticsHandler).requires(classifier, dataset)) {
 						log("Already present, skipping: " + Utils.toCommandLine(classifier) + " --> " + dataset.relationName());
-						m_Statistics.addAll(
-								((IncrementalEvaluationStatisticsHandler) m_StatisticsHandler).retrieve(classifier, dataset));
+						List<EvaluationStatistics> priorStats = ((IncrementalEvaluationStatisticsHandler) m_StatisticsHandler).retrieve(classifier, dataset);
+						m_Statistics.addAll(priorStats);
+						notifyStatisticsNotificationListeners(priorStats);
 						continue;
 					}
 				}
