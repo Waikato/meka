@@ -20,6 +20,7 @@
 
 package meka.gui.choosers;
 
+import meka.core.ObjectUtils;
 import meka.core.OptionUtils;
 import meka.core.Project;
 import meka.experiment.filehandlers.CommandLineSetup;
@@ -70,7 +71,7 @@ public class ExperimentFileChooser
 						ExperimentFileHandler.class, filter, new String[0]);
 				m_FileFilters.add(new ExtensionFileFilterWithClass(
 						handler.getFormatExtensions(),
-						handler.getFormatDescription(),
+						handler.getFormatDescription() + " (" + ObjectUtils.flatten(handler.getFormatExtensions(), ", ") + ")",
 						filter));
 			}
 			catch (Exception e) {
