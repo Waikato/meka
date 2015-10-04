@@ -14,7 +14,7 @@
  */
 
 /**
- * TabSeparated.java
+ * LatexMeasurement.java
  * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
 
@@ -33,7 +33,7 @@ import java.util.List;
  * First column are datasets, first row are classifiers.
  * Automatically aggregates the statistics and displays the "mean".
  *
- * @author FracPete (fracpete at waikato dot ac dot nz)
+ * @author Jesse Read
  * @version $Revision$
  */
 public class LatexMeasurement
