@@ -26,6 +26,9 @@ import meka.experiment.evaluationstatistics.EvaluationStatisticsUtils;
 import meka.experiment.events.ExecutionStageEvent;
 import meka.experiment.events.StatisticsNotificationEvent;
 import meka.experiment.events.StatisticsNotificationListener;
+import meka.experiment.statisticsexporters.FileBasedEvaluationStatisticsExporter;
+import meka.gui.choosers.EvaluationStatisticsExporterFileChooser;
+import meka.gui.core.GUIHelper;
 import meka.gui.core.SearchPanel;
 import meka.gui.core.SortableAndSearchableTable;
 import meka.gui.events.SearchEvent;
@@ -34,6 +37,8 @@ import meka.gui.events.SearchListener;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -155,16 +160,38 @@ public class Statistics
 	/** the search panel. */
 	protected SearchPanel m_SearchPanel;
 
+	/** the button for saving the statistics. */
+	protected JButton m_ButtonSave;
+
+	/** the filechooser for saving the statistics. */
+	protected EvaluationStatisticsExporterFileChooser m_FileChooser;
+
+	/**
+	 * Initializes the members.
+	 */
+	@Override
+	protected void initialize() {
+		super.initialize();
+
+		m_FileChooser = new EvaluationStatisticsExporterFileChooser();
+	}
+
 	/**
 	 * Initializes the widgets.
 	 */
 	@Override
 	protected void initGUI() {
+		JPanel      panel;
+		JPanel      panelSave;
+
 		super.initGUI();
 
 		m_Table = new SortableAndSearchableTable(new StatisticsTableModel());
 		m_Table.setAutoResizeMode(SortableAndSearchableTable.AUTO_RESIZE_OFF);
 		add(new BaseScrollPane(m_Table), BorderLayout.CENTER);
+
+		panel = new JPanel(new BorderLayout());
+		add(panel, BorderLayout.SOUTH);
 
 		m_SearchPanel = new SearchPanel(SearchPanel.LayoutType.HORIZONTAL, true);
 		m_SearchPanel.addSearchListener(new SearchListener() {
@@ -173,7 +200,45 @@ public class Statistics
 				m_Table.search(e.getParameters().getSearchString(), e.getParameters().isRegExp());
 			}
 		});
-		add(m_SearchPanel, BorderLayout.SOUTH);
+		panel.add(m_SearchPanel, BorderLayout.WEST);
+
+		panelSave = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		panel.add(panelSave, BorderLayout.EAST);
+
+		m_ButtonSave = new JButton("Save...", GUIHelper.getIcon("save.gif"));
+		m_ButtonSave.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				save();
+			}
+		});
+		panelSave.add(m_ButtonSave);
+	}
+
+	/**
+	 * Prompts the user with a filechooser for saving the statistics to a file.
+	 */
+	protected void save() {
+		int                                     retVal;
+		FileBasedEvaluationStatisticsExporter   exporter;
+		String                                  msg;
+
+		retVal = m_FileChooser.showSaveDialog(this);
+		if (retVal != EvaluationStatisticsExporterFileChooser.APPROVE_OPTION)
+			return;
+
+		exporter = m_FileChooser.getWriter();
+		exporter.setFile(m_FileChooser.getSelectedFile());
+		exporter.addLogListener(getOwner());
+		msg = exporter.export(m_Statistics);
+		exporter.removeLogListener(getOwner());
+		if (msg != null) {
+			JOptionPane.showMessageDialog(
+					this,
+					"Export failed:\n" + msg,
+					"Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	/**
