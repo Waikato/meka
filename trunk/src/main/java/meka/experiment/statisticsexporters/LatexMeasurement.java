@@ -21,6 +21,7 @@
 package meka.experiment.statisticsexporters;
 
 import meka.core.FileUtils;
+import meka.core.LatexUtils;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
 import meka.experiment.evaluationstatistics.EvaluationStatisticsUtils;
 
@@ -112,6 +113,7 @@ public class LatexMeasurement
 				name = name.substring(0,idx_2);
 				int idx_1 = name.lastIndexOf('.');
 				name = name.substring(idx_1+1);
+				name = LatexUtils.escape(name);
 				bwriter.write("& " + (name+"                       ").substring(0,5));
 				//bwriter.write("& [" + String.format("%5d",(i+1)) + "]");
 			}
@@ -124,6 +126,7 @@ public class LatexMeasurement
 			// output statistics
 			for (String relation: relations) {
 				String name = String.format("%20s", relation.substring(0,relation.indexOf(':')));
+				name = LatexUtils.escape(name);
 				bwriter.write(name);
 				for (i = 0; i < classifiers.size(); i++) {
 					bwriter.write("\t");
