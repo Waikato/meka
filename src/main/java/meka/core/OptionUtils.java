@@ -661,4 +661,125 @@ public class OptionUtils {
 	public static String toCommandLine(Object obj) {
 		return Utils.toCommandLine(obj);
 	}
+
+	/**
+	 * Converts specified characters into the string equivalents.
+	 *
+	 * @param string 	the string
+	 * @param find	the characters to replace
+	 * @param replace	the replacement strings for the characters
+	 * @return 		the converted string
+	 * @see		#unbackQuoteChars(String, String[], char[])
+	 */
+	public static String backQuoteChars(String string, char[] find, String[] replace) {
+		int 		index;
+		StringBuilder 	newStr;
+		int			i;
+
+		if (string == null)
+			return string;
+
+		for (i = 0; i < find.length; i++) {
+			if (string.indexOf(find[i]) != -1 ) {
+				newStr = new StringBuilder();
+				while ((index = string.indexOf(find[i])) != -1) {
+					if (index > 0)
+						newStr.append(string.substring(0, index));
+					newStr.append(replace[i]);
+					if ((index + 1) < string.length())
+						string = string.substring(index + 1);
+					else
+						string = "";
+				}
+				newStr.append(string);
+				string = newStr.toString();
+			}
+		}
+
+		return string;
+	}
+
+	/**
+	 * Converts carriage returns and new lines in a string into \r and \n.
+	 * Backquotes the following characters: ` " \ \t and %
+	 *
+	 * @param string 	the string
+	 * @return 		the converted string
+	 * @see		#unbackQuoteChars(String)
+	 */
+	public static String backQuoteChars(String string) {
+		return backQuoteChars(
+				string,
+				new char[]  {'\\',   '\'',  '\t',  '\n',  '\r',  '"'},
+				new String[]{"\\\\", "\\'", "\\t", "\\n", "\\r", "\\\""});
+	}
+
+	/**
+	 * The inverse operation of backQuoteChars().
+	 * Converts the specified strings into their character representations.
+	 *
+	 * @param string 	the string
+	 * @param find	the string to find
+	 * @param replace	the character equivalents of the strings
+	 * @return 		the converted string
+	 * @see		#backQuoteChars(String, char[], String[])
+	 */
+	public static String unbackQuoteChars(String string, String[] find, char[] replace) {
+		int 		index;
+		StringBuilder 	newStr;
+		int[] 		pos;
+		int			curPos;
+		String 		str;
+		int			i;
+
+		if (string == null)
+			return null;
+
+		pos = new int[find.length];
+
+		str = new String(string);
+		newStr = new StringBuilder();
+		while (str.length() > 0) {
+			// get positions and closest character to replace
+			curPos = str.length();
+			index  = -1;
+			for (i = 0; i < pos.length; i++) {
+				pos[i] = str.indexOf(find[i]);
+				if ( (pos[i] > -1) && (pos[i] < curPos) ) {
+					index  = i;
+					curPos = pos[i];
+				}
+			}
+
+			// replace character if found, otherwise finished
+			if (index == -1) {
+				newStr.append(str);
+				str = "";
+			}
+			else {
+				newStr.append(str.substring(0, pos[index]));
+				newStr.append(replace[index]);
+				str = str.substring(pos[index] + find[index].length());
+			}
+		}
+
+		return newStr.toString();
+	}
+
+	/**
+	 * The inverse operation of backQuoteChars().
+	 * Converts back-quoted carriage returns and new lines in a string
+	 * to the corresponding character ('\r' and '\n').
+	 * Also "un"-back-quotes the following characters: ` " \ \t and %
+	 *
+	 * @param string 	the string
+	 * @return 		the converted string
+	 * @see		#backQuoteChars(String)
+	 */
+	public static String unbackQuoteChars(String string) {
+		return unbackQuoteChars(
+				string,
+				new String[]{"\\\\", "\\'", "\\t", "\\n", "\\r", "\\\""},
+				new char[]{'\\', '\'', '\t', '\n', '\r', '"'});
+	}
 }
