@@ -20,6 +20,8 @@
 
 package meka.experiment.evaluationstatistics;
 
+import meka.core.FileFormatSupporter;
+
 import java.io.File;
 
 /**
@@ -29,7 +31,7 @@ import java.io.File;
  * @version $Revision$
  */
 public interface FileBasedEvaluationStatisticsHandler
-  extends EvaluationStatisticsHandler {
+  extends EvaluationStatisticsHandler, FileFormatSupporter {
 
 	/**
 	 * Returns the format description.
