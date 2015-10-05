@@ -384,7 +384,7 @@ public class Experimenter
 		m_MenuItemFileOpen.setEnabled(!running);
 		m_MenuItemFileSave.setEnabled((getCurrentFile() != null));
 		m_MenuItemFileSaveAs.setEnabled(true);
-		m_MenuItemFileClose.setEnabled(true);
+		m_MenuItemFileClose.setEnabled(!running);
 
 		// Execution
 		m_MenuItemExecutionStart.setEnabled(present && !running);
@@ -455,6 +455,7 @@ public class Experimenter
 			notifyTabsExperimentChanged(null, m_Experiment);
 			if (m_RecentFilesHandler != null)
 				m_RecentFilesHandler.addRecentItem(new RecentFilesHandlerWithCommandline.Setup(file, handler));
+			m_CurrentFile = file;
 		}
 		catch (Exception e) {
 			handleException(null, "Failed to load experiment from '" + file + "':", e);
@@ -552,8 +553,6 @@ public class Experimenter
 			protected Object doInBackground() throws Exception {
 				m_Result = null;
 
-				m_StatusBar.startBusy("Running...");
-
 				m_Experiment.addIterationNotificationListener(Experimenter.this);
 				m_Experiment.addStatisticsNotificationListener(Experimenter.this);
 				m_Experiment.addLogListener(Experimenter.this);
@@ -587,8 +586,6 @@ public class Experimenter
 			@Override
 			protected void done() {
 				super.done();
-
-				m_StatusBar.finishBusy("");
 
 				m_Experiment.removeIterationNotificationListener(Experimenter.this);
 				m_Experiment.removeStatisticsNotificationListener(Experimenter.this);
@@ -656,6 +653,15 @@ public class Experimenter
 		for (AbstractExperimenterTab tab: m_Tabs) {
 			if (tab instanceof ExecutionStageListener)
 				((ExecutionStageListener) tab).experimentStage(e);
+		}
+
+		switch (e.getStage()) {
+			case RUN:
+				m_StatusBar.startBusy("Running...");
+				break;
+			case FINISH:
+				m_StatusBar.finishBusy("");
+				break;
 		}
 	}
 
