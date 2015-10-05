@@ -42,11 +42,12 @@ import weka.gui.ConverterFileChooser;
 import weka.gui.JListHelper;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 
 /**
@@ -56,7 +57,7 @@ import java.io.File;
  * @version $Revision$
  */
 public class BasicSetup
-  extends AbstractSetupTab {
+		extends AbstractSetupTab {
 
 	private static final long serialVersionUID = 3556506064253273853L;
 
@@ -193,10 +194,7 @@ public class BasicSetup
 		m_ButtonRemoveClassifier.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int[] indices = m_ListClassifiers.getList().getSelectedIndices();
-				for (int i = indices.length - 1; i >= 0; i--) {
-					m_ModelClassifiers.remove(indices[i]);
-				}
+				removeClassifiers(m_ListClassifiers.getList().getSelectedIndices());
 			}
 		});
 		m_ListClassifiers.addToButtonsPanel(m_ButtonRemoveClassifier);
@@ -205,7 +203,7 @@ public class BasicSetup
 		m_ButtonRemoveAllClassifiers.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				m_ModelClassifiers.removeAllElements();
+				removeClassifiers(null);
 			}
 		});
 		m_ListClassifiers.addToButtonsPanel(m_ButtonRemoveAllClassifiers);
@@ -217,6 +215,7 @@ public class BasicSetup
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JListHelper.moveUp(m_ListClassifiers.getList());
+				setModified(true);
 			}
 		});
 		m_ListClassifiers.addToButtonsPanel(m_ButtonMoveUpClassifier);
@@ -226,6 +225,7 @@ public class BasicSetup
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JListHelper.moveDown(m_ListClassifiers.getList());
+				setModified(true);
 			}
 		});
 		m_ListClassifiers.addToButtonsPanel(m_ButtonMoveDownClassifier);
@@ -261,10 +261,7 @@ public class BasicSetup
 		m_ButtonRemoveDataset.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int[] indices = m_ListDatasets.getList().getSelectedIndices();
-				for (int i = indices.length - 1; i >= 0; i--) {
-					m_ModelDatasets.remove(indices[i]);
-				}
+				removeDatasets(m_ListDatasets.getList().getSelectedIndices());
 			}
 		});
 		m_ListDatasets.addToButtonsPanel(m_ButtonRemoveDataset);
@@ -273,7 +270,7 @@ public class BasicSetup
 		m_ButtonRemoveAllDatasets.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				m_ModelDatasets.removeAllElements();
+				removeDatasets(null);
 			}
 		});
 		m_ListDatasets.addToButtonsPanel(m_ButtonRemoveAllDatasets);
@@ -285,6 +282,7 @@ public class BasicSetup
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JListHelper.moveUp(m_ListDatasets.getList());
+				setModified(true);
 			}
 		});
 		m_ListDatasets.addToButtonsPanel(m_ButtonMoveUpDataset);
@@ -294,6 +292,7 @@ public class BasicSetup
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JListHelper.moveDown(m_ListDatasets.getList());
+				setModified(true);
 			}
 		});
 		m_ListDatasets.addToButtonsPanel(m_ButtonMoveDownDataset);
@@ -305,6 +304,12 @@ public class BasicSetup
 		m_SpinnerNumRuns = new JSpinner();
 		((SpinnerNumberModel) m_SpinnerNumRuns.getModel()).setMinimum(1);
 		m_SpinnerNumRuns.setValue(10);
+		m_SpinnerNumRuns.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				setModified(true);
+			}
+		});
 		m_ParameterPanel.addParameter("Runs", m_SpinnerNumRuns);
 
 		m_ComboBoxEvaluation = new JComboBox<>(new String[]{
@@ -319,6 +324,7 @@ public class BasicSetup
 					return;
 				m_SpinnerNumFolds.setEnabled(index == 0);
 				m_TextPercentage.setEnabled(index == 1);
+				setModified(true);
 			}
 		});
 		m_ParameterPanel.addParameter("Evaluation", m_ComboBoxEvaluation);
@@ -326,17 +332,49 @@ public class BasicSetup
 		m_SpinnerNumFolds = new JSpinner();
 		((SpinnerNumberModel) m_SpinnerNumFolds.getModel()).setMinimum(2);
 		m_SpinnerNumFolds.setValue(10);
+		m_SpinnerNumFolds.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				setModified(true);
+			}
+		});
 		m_ParameterPanel.addParameter("Folds", m_SpinnerNumFolds);
 
 		m_TextPercentage = new JTextField("10", 5);
+		m_TextPercentage.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				setModified(true);
+			}
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				setModified(true);
+			}
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				setModified(true);
+			}
+		});
 		m_ParameterPanel.addParameter("Split percentage", m_TextPercentage);
 
 		m_CheckBoxPreserveOrder = new JCheckBox();
+		m_CheckBoxPreserveOrder.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setModified(true);
+			}
+		});
 		m_ParameterPanel.addParameter("Preserve order", m_CheckBoxPreserveOrder);
 
 		m_GOEStatisticsHandler = new GenericObjectEditor(true);
 		m_GOEStatisticsHandler.setClassType(EvaluationStatisticsHandler.class);
 		m_GOEStatisticsHandler.setValue(new KeyValuePairs());
+		m_GOEStatisticsHandler.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				setModified(true);
+			}
+		});
 		m_ParameterPanel.addParameter("Statistics", setPreferredSize(m_GOEStatisticsHandler.getCustomPanel()));
 	}
 
@@ -399,6 +437,7 @@ public class BasicSetup
 			m_ModelClassifiers.insertElementAt(OptionUtils.toCommandLine(dialog.getCurrent()), m_ListClassifiers.getList().getSelectedIndex());
 		else
 			m_ModelClassifiers.addElement(OptionUtils.toCommandLine(dialog.getCurrent()));
+		m_Modified = true;
 		updateButtons();
 	}
 
@@ -427,7 +466,27 @@ public class BasicSetup
 			return;
 
 		m_ModelClassifiers.setElementAt(OptionUtils.toCommandLine(dialog.getCurrent()), m_ListClassifiers.getList().getSelectedIndex());
+		m_Modified = true;
 		updateButtons();
+	}
+
+	/**
+	 * Removes the specified classifiers.
+	 *
+	 * @param indices       the indices, null to remove all
+	 */
+	protected void removeClassifiers(int[] indices) {
+		int     i;
+
+		if (indices == null) {
+			m_ModelClassifiers.removeAllElements();
+		}
+		else {
+			for (i = indices.length - 1; i >= 0; i--)
+				m_ModelClassifiers.remove(indices[i]);
+		}
+
+		setModified(true);
 	}
 
 	/**
@@ -441,7 +500,27 @@ public class BasicSetup
 			return;
 
 		m_ModelDatasets.addElement(m_FileChooserDatasets.getSelectedFile().getAbsolutePath());
+		m_Modified = true;
 		updateButtons();
+	}
+
+	/**
+	 * Removes the specified datasets.
+	 *
+	 * @param indices       the indices, null to remove all
+	 */
+	protected void removeDatasets(int[] indices) {
+		int     i;
+
+		if (indices == null) {
+			m_ModelDatasets.removeAllElements();
+		}
+		else {
+			for (i = indices.length - 1; i >= 0; i--)
+				m_ModelDatasets.remove(indices[i]);
+		}
+
+		setModified(true);
 	}
 
 	/**
@@ -495,11 +574,13 @@ public class BasicSetup
 		PercentageSplit         split;
 
 		// classifiers
+		m_ModelClassifiers.removeAllElements();
 		for (MultiLabelClassifier classifier: m_Experiment.getClassifiers())
 			m_ModelClassifiers.addElement(OptionUtils.toCommandLine(classifier));
 
 		// datasets
 		provider = (LocalDatasetProvider) m_Experiment.getDatasetProvider();
+		m_ModelDatasets.removeAllElements();
 		for (File dataset: provider.getDatasets())
 			m_ModelDatasets.addElement(dataset.getAbsolutePath());
 

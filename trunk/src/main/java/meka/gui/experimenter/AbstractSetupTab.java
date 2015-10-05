@@ -53,6 +53,23 @@ public abstract class AbstractSetupTab
 	/** the button for reverting the setup. */
 	protected JButton m_ButtonRevert;
 
+	/** whether the setup has been modified. */
+	protected boolean m_Modified;
+
+	/** whether to ignore changes (= don't set modified flag). */
+	protected boolean m_IgnoreChanges;
+
+	/**
+	 * Initializes the members.
+	 */
+	@Override
+	protected void initialize() {
+		super.initialize();
+
+		m_Modified      = false;
+		m_IgnoreChanges = false;
+	}
+
 	/**
 	 * Initializes the widgets.
 	 */
@@ -131,7 +148,7 @@ public abstract class AbstractSetupTab
 		editable = present && handled && !running;
 
 		// actions
-		m_ButtonApply.setEnabled(editable);
+		m_ButtonApply.setEnabled(editable && isModified());
 		m_ButtonRevert.setEnabled(editable);
 	}
 
@@ -143,6 +160,27 @@ public abstract class AbstractSetupTab
 	@Override
 	public String getTitle() {
 		return "Setup (expert)";
+	}
+
+	/**
+	 * Sets the modified state, updates the buttons.
+	 *
+	 * @param value     the state
+	 */
+	public void setModified(boolean value) {
+		if (m_IgnoreChanges)
+			return;
+		m_Modified = value;
+		updateButtons();
+	}
+
+	/**
+	 * Returns the modified state.
+	 *
+	 * @return          the state
+	 */
+	public boolean isModified() {
+		return m_Modified;
 	}
 
 	/**
@@ -193,18 +231,33 @@ public abstract class AbstractSetupTab
 	protected abstract Experiment toExperiment();
 
 	/**
+	 * Sets the experiment to use.
+	 *
+	 * @param value the experiment to use
+	 */
+	@Override
+	public void setExperiment(Experiment value) {
+		m_Modified = false;
+		super.setExperiment(value);
+	}
+
+	/**
 	 * Applies the settings to the experiment.
 	 */
 	protected void apply() {
 		m_Experiment = toExperiment();
 		getOwner().notifyTabsExperimentChanged(this, m_Experiment);
+		setModified(false);
 	}
 
 	/**
 	 * Reverts the settings to the experiment ones.
 	 */
 	protected void revert() {
+		m_IgnoreChanges = true;
 		fromExperiment();
+		m_IgnoreChanges = false;
+		setModified(false);
 	}
 
 	/**
@@ -218,6 +271,7 @@ public abstract class AbstractSetupTab
 			clear();
 		}
 		else {
+			m_IgnoreChanges = true;
 			if (handlesExperiment(m_Experiment)) {
 				m_PanelUnsupported.setVisible(false);
 				clear();
@@ -226,6 +280,7 @@ public abstract class AbstractSetupTab
 				m_PanelUnsupported.setVisible(true);
 				clear();
 			}
+			m_IgnoreChanges = false;
 		}
 		updateButtons();
 	}
