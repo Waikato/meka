@@ -37,7 +37,18 @@ public class LogObject
 	private static final long serialVersionUID = -3814825277914734502L;
 
 	/** the listeners. */
-	protected transient HashSet<LogListener> m_LogListeners = new HashSet<>();
+	protected transient HashSet<LogListener> m_LogListeners;
+
+	/**
+	 * Returns the log listeners. Instantiates them if neccessary.
+	 *
+	 * @return              the listeners
+	 */
+	protected HashSet<LogListener> getLogListeners() {
+		if (m_LogListeners == null)
+			m_LogListeners = new HashSet<>();
+		return m_LogListeners;
+	}
 
 	/**
 	 * Adds the log listener to use.
@@ -45,7 +56,7 @@ public class LogObject
 	 * @param l         the listener
 	 */
 	public void addLogListener(LogListener l) {
-		m_LogListeners.add(l);
+		getLogListeners().add(l);
 	}
 
 	/**
@@ -54,7 +65,7 @@ public class LogObject
 	 * @param l         the listener
 	 */
 	public void removeLogListener(LogListener l) {
-		m_LogListeners.remove(l);
+		getLogListeners().remove(l);
 	}
 
 	/**
@@ -65,13 +76,13 @@ public class LogObject
 	protected synchronized void log(String msg) {
 		LogEvent e;
 
-		if (m_LogListeners.size() == 0) {
+		if (getLogListeners().size() == 0) {
 			System.err.println(msg);
 			return;
 		}
 
 		e = new LogEvent(this, msg);
-		for (LogListener l: m_LogListeners)
+		for (LogListener l: getLogListeners())
 			l.logMessage(e);
 	}
 
