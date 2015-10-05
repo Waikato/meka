@@ -292,7 +292,7 @@ public class Statistics
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				m_Table.setModel(new StatisticsTableModel(m_Statistics));
+				m_Table.setModel(new StatisticsTableModel(new ArrayList<>(m_Statistics)));
 			}
 		});
 		SwingUtilities.invokeLater(new Runnable() {
