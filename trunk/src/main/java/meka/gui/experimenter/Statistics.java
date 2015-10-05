@@ -22,7 +22,6 @@ package meka.gui.experimenter;
 
 import com.googlecode.jfilechooserbookmarks.gui.BaseScrollPane;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
-import meka.experiment.evaluationstatistics.EvaluationStatisticsUtils;
 import meka.experiment.events.ExecutionStageEvent;
 import meka.experiment.events.StatisticsNotificationEvent;
 import meka.experiment.events.StatisticsNotificationListener;
@@ -31,11 +30,11 @@ import meka.gui.choosers.EvaluationStatisticsExporterFileChooser;
 import meka.gui.core.GUIHelper;
 import meka.gui.core.SearchPanel;
 import meka.gui.core.SortableAndSearchableTable;
+import meka.gui.core.EvaluationStatisticsTableModel;
 import meka.gui.events.SearchEvent;
 import meka.gui.events.SearchListener;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -53,103 +52,6 @@ public class Statistics
   implements StatisticsNotificationListener {
 
 	private static final long serialVersionUID = 3556506064253273853L;
-
-	/** the table model. */
-	public static class StatisticsTableModel
-	  extends AbstractTableModel {
-
-		private static final long serialVersionUID = 6418545317753165337L;
-
-		/** the underlying statistics. */
-		protected List<EvaluationStatistics>  m_Statistics;
-
-		/** the headers. */
-		protected List<String> m_Headers;
-
-		/**
-		 * Initializes the model with no statistics.
-		 */
-		public StatisticsTableModel() {
-			this(new ArrayList<EvaluationStatistics>());
-		}
-
-		/**
-		 * Initializes the model with the statistics.
-		 *
-		 * @param stats     the statistics to use
-		 */
-		public StatisticsTableModel(List<EvaluationStatistics> stats) {
-			m_Statistics = stats;
-			m_Headers    = EvaluationStatisticsUtils.headers(stats, true, false);
-		}
-
-		/**
-		 * Returns the name of the column.
-		 *
-		 * @param column    the column index
-		 * @return          the name
-		 */
-		@Override
-		public String getColumnName(int column) {
-			if (column == 0)
-				return "Classifier";
-			else if (column == 1)
-				return "Relation";
-			else
-				return m_Headers.get(column - 2);
-		}
-
-		/**
-		 * Returns the number of statistics in this model.
-		 *
-		 * @return          the number of statistics
-		 */
-		@Override
-		public int getRowCount() {
-			return m_Statistics.size();
-		}
-
-		/**
-		 * The number of columns in this model.
-		 *
-		 * @return          the number of columns
-		 */
-		@Override
-		public int getColumnCount() {
-			return m_Headers.size() + 2;
-		}
-
-		/**
-		 * Returns the type of the column.
-		 *
-		 * @param columnIndex   the column index
-		 * @return              the type
-		 */
-		@Override
-		public Class<?> getColumnClass(int columnIndex) {
-			if (columnIndex < 2)
-				return String.class;
-			else
-				return Double.class;
-		}
-
-		/**
-		 * Returns the cell value at the specified location.
-		 *
-		 * @param rowIndex          the row
-		 * @param columnIndex       the column
-		 * @return                  the value, null if not available
-		 */
-		@Override
-		public Object getValueAt(int rowIndex, int columnIndex) {
-			if (columnIndex == 0)
-				return m_Statistics.get(rowIndex).getCommandLine();
-			else if (columnIndex == 1)
-				return m_Statistics.get(rowIndex).getRelation();
-			else
-				return m_Statistics.get(rowIndex).get(m_Headers.get(columnIndex - 2));
-		}
-	}
 
 	/** the collected statistics. */
 	protected List<EvaluationStatistics> m_Statistics;
@@ -186,7 +88,7 @@ public class Statistics
 
 		super.initGUI();
 
-		m_Table = new SortableAndSearchableTable(new StatisticsTableModel());
+		m_Table = new SortableAndSearchableTable(new EvaluationStatisticsTableModel());
 		m_Table.setAutoResizeMode(SortableAndSearchableTable.AUTO_RESIZE_OFF);
 		add(new BaseScrollPane(m_Table), BorderLayout.CENTER);
 
@@ -292,7 +194,7 @@ public class Statistics
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				m_Table.setModel(new StatisticsTableModel(new ArrayList<>(m_Statistics)));
+				m_Table.setModel(new EvaluationStatisticsTableModel(new ArrayList<>(m_Statistics)));
 			}
 		});
 		SwingUtilities.invokeLater(new Runnable() {
