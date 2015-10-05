@@ -43,6 +43,8 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * Tab for setting up a experiment in expert mode.
@@ -138,10 +140,7 @@ public class ExpertSetup
 		m_ButtonRemoveClassifier.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int[] indices = m_ListClassifiers.getList().getSelectedIndices();
-				for (int i = indices.length - 1; i >= 0; i--) {
-					m_ModelClassifiers.remove(indices[i]);
-				}
+				removeClassifiers(m_ListClassifiers.getList().getSelectedIndices());
 			}
 		});
 		m_ListClassifiers.addToButtonsPanel(m_ButtonRemoveClassifier);
@@ -150,7 +149,7 @@ public class ExpertSetup
 		m_ButtonRemoveAllClassifiers.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				m_ModelClassifiers.removeAllElements();
+				removeClassifiers(null);
 			}
 		});
 		m_ListClassifiers.addToButtonsPanel(m_ButtonRemoveAllClassifiers);
@@ -162,6 +161,7 @@ public class ExpertSetup
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JListHelper.moveUp(m_ListClassifiers.getList());
+				setModified(true);
 			}
 		});
 		m_ListClassifiers.addToButtonsPanel(m_ButtonMoveUpClassifier);
@@ -171,6 +171,7 @@ public class ExpertSetup
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JListHelper.moveDown(m_ListClassifiers.getList());
+				setModified(true);
 			}
 		});
 		m_ListClassifiers.addToButtonsPanel(m_ButtonMoveDownClassifier);
@@ -181,16 +182,34 @@ public class ExpertSetup
 		m_GOEDatasets = new GenericObjectEditor(true);
 		m_GOEDatasets.setClassType(DatasetProvider.class);
 		m_GOEDatasets.setValue(new LocalDatasetProvider());
+		m_GOEDatasets.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				setModified(true);
+			}
+		});
 		m_ParameterPanel.addParameter("Datasets", setPreferredSize(m_GOEDatasets.getCustomPanel()));
 
 		m_GOEEvaluator = new GenericObjectEditor(true);
 		m_GOEEvaluator.setClassType(Evaluator.class);
 		m_GOEEvaluator.setValue(new RepeatedRuns());
+		m_GOEEvaluator.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				setModified(true);
+			}
+		});
 		m_ParameterPanel.addParameter("Evaluator", setPreferredSize(m_GOEEvaluator.getCustomPanel()));
 
 		m_GOEStatisticsHandler = new GenericObjectEditor(true);
 		m_GOEStatisticsHandler.setClassType(EvaluationStatisticsHandler.class);
 		m_GOEStatisticsHandler.setValue(new KeyValuePairs());
+		m_GOEStatisticsHandler.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				setModified(true);
+			}
+		});
 		m_ParameterPanel.addParameter("Statistics", setPreferredSize(m_GOEStatisticsHandler.getCustomPanel()));
 	}
 
@@ -246,6 +265,7 @@ public class ExpertSetup
 			m_ModelClassifiers.insertElementAt(OptionUtils.toCommandLine(dialog.getCurrent()), m_ListClassifiers.getList().getSelectedIndex());
 		else
 			m_ModelClassifiers.addElement(OptionUtils.toCommandLine(dialog.getCurrent()));
+		m_Modified = true;
 		updateButtons();
 	}
 
@@ -274,7 +294,27 @@ public class ExpertSetup
 			return;
 
 		m_ModelClassifiers.setElementAt(OptionUtils.toCommandLine(dialog.getCurrent()), m_ListClassifiers.getList().getSelectedIndex());
+		m_Modified = true;
 		updateButtons();
+	}
+
+	/**
+	 * Removes the specified classifiers.
+	 *
+	 * @param indices       the indices, null to remove all
+	 */
+	protected void removeClassifiers(int[] indices) {
+		int     i;
+
+		if (indices == null) {
+			m_ModelClassifiers.removeAllElements();
+		}
+		else {
+			for (i = indices.length - 1; i >= 0; i--)
+				m_ModelClassifiers.remove(indices[i]);
+		}
+
+		setModified(true);
 	}
 
 	/**
@@ -301,6 +341,7 @@ public class ExpertSetup
 	 * Maps the experiment onto the parameters.
 	 */
 	protected void fromExperiment() {
+		m_ModelClassifiers.removeAllElements();
 		for (MultiLabelClassifier classifier: m_Experiment.getClassifiers())
 			m_ModelClassifiers.addElement(OptionUtils.toCommandLine(classifier));
 
