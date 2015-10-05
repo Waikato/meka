@@ -213,7 +213,12 @@ public class RepeatedRuns
 					result.add(stat);
 				}
 			}
+			if (m_Stopped)
+				break;
 		}
+
+		if (m_Stopped)
+			result.clear();
 
 		return result;
 	}
