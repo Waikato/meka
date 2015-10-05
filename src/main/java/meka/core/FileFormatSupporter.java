@@ -14,24 +14,19 @@
  */
 
 /**
- * FileBasedEvaluationStatisticsHandler.java
+ * FileFormatSupporter.java
  * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
 
-package meka.experiment.statisticsexporters;
-
-import meka.core.FileFormatSupporter;
-
-import java.io.File;
+package meka.core;
 
 /**
- * Interface for file-based statistics exporters.
+ * For classes that support file formats.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
-public interface FileBasedEvaluationStatisticsExporter
-  extends EvaluationStatisticsExporter, FileFormatSupporter {
+public interface FileFormatSupporter {
 
 	/**
 	 * Returns the format description.
@@ -46,25 +41,4 @@ public interface FileBasedEvaluationStatisticsExporter
 	 * @return      the extension(s) (incl dot)
 	 */
 	public String[] getFormatExtensions();
-
-	/**
-	 * Sets the file to read from/write to.
-	 *
-	 * @param value     the file
-	 */
-	public void setFile(File value);
-
-	/**
-	 * Returns the file to read from/write to.
-	 *
-	 * @return          the file
-	 */
-	public File getFile();
-
-	/**
-	 * Describes this property.
-	 *
-	 * @return          the description
-	 */
-	public String fileTipText();
 }
