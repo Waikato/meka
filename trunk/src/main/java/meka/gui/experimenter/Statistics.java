@@ -26,11 +26,13 @@ import meka.experiment.events.ExecutionStageEvent;
 import meka.experiment.events.StatisticsNotificationEvent;
 import meka.experiment.events.StatisticsNotificationListener;
 import meka.experiment.statisticsexporters.FileBasedEvaluationStatisticsExporter;
+import meka.experiment.statisticsexporters.InMemory;
+import meka.experiment.statisticsexporters.SimpleAggregate;
 import meka.gui.choosers.EvaluationStatisticsExporterFileChooser;
+import meka.gui.core.EvaluationStatisticsTableModel;
 import meka.gui.core.GUIHelper;
 import meka.gui.core.SearchPanel;
 import meka.gui.core.SortableAndSearchableTable;
-import meka.gui.core.EvaluationStatisticsTableModel;
 import meka.gui.events.SearchEvent;
 import meka.gui.events.SearchListener;
 
@@ -56,8 +58,20 @@ public class Statistics
 	/** the collected statistics. */
 	protected List<EvaluationStatistics> m_Statistics;
 
-	/** the table for the statistics. */
-	protected SortableAndSearchableTable m_Table;
+	/** the tabbed pane for the statistics. */
+	protected JTabbedPane m_TabbedPane;
+
+	/** the table for the raw statistics. */
+	protected SortableAndSearchableTable m_TableRaw;
+
+	/** the model for the raw statistics. */
+	protected EvaluationStatisticsTableModel m_ModelRaw;
+
+	/** the table for the aggregated statistics. */
+	protected SortableAndSearchableTable m_TableAggregated;
+
+	/** the model for the aggregated statistics. */
+	protected EvaluationStatisticsTableModel m_ModelAggregated;
 
 	/** the search panel. */
 	protected SearchPanel m_SearchPanel;
@@ -88,9 +102,18 @@ public class Statistics
 
 		super.initGUI();
 
-		m_Table = new SortableAndSearchableTable(new EvaluationStatisticsTableModel());
-		m_Table.setAutoResizeMode(SortableAndSearchableTable.AUTO_RESIZE_OFF);
-		add(new BaseScrollPane(m_Table), BorderLayout.CENTER);
+		m_TabbedPane = new JTabbedPane();
+		add(m_TabbedPane, BorderLayout.CENTER);
+
+		m_ModelRaw = new EvaluationStatisticsTableModel();
+		m_TableRaw = new SortableAndSearchableTable(m_ModelRaw);
+		m_TableRaw.setAutoResizeMode(SortableAndSearchableTable.AUTO_RESIZE_OFF);
+		m_TabbedPane.addTab("Raw", new BaseScrollPane(m_TableRaw));
+
+		m_ModelAggregated = new EvaluationStatisticsTableModel();
+		m_TableAggregated = new SortableAndSearchableTable(m_ModelAggregated);
+		m_TableAggregated.setAutoResizeMode(SortableAndSearchableTable.AUTO_RESIZE_OFF);
+		m_TabbedPane.addTab("Aggregated", new BaseScrollPane(m_TableAggregated));
 
 		panel = new JPanel(new BorderLayout());
 		add(panel, BorderLayout.SOUTH);
@@ -99,7 +122,7 @@ public class Statistics
 		m_SearchPanel.addSearchListener(new SearchListener() {
 			@Override
 			public void searchInitiated(SearchEvent e) {
-				m_Table.search(e.getParameters().getSearchString(), e.getParameters().isRegExp());
+				m_TableRaw.search(e.getParameters().getSearchString(), e.getParameters().isRegExp());
 			}
 		});
 		panel.add(m_SearchPanel, BorderLayout.WEST);
@@ -118,12 +141,31 @@ public class Statistics
 	}
 
 	/**
+	 * Returns the current statistics.
+	 *
+	 * @return          the statistics, null if not available
+	 */
+	protected List<EvaluationStatistics> getCurrentStatistics() {
+		if (m_TabbedPane.getSelectedIndex() == 0)
+			return m_ModelRaw.getStatistics();
+		else if (m_TabbedPane.getSelectedIndex() == 1)
+			return m_ModelAggregated.getStatistics();
+		else
+			return null;
+	}
+
+	/**
 	 * Prompts the user with a filechooser for saving the statistics to a file.
 	 */
 	protected void save() {
+		List<EvaluationStatistics>              stats;
 		int                                     retVal;
 		FileBasedEvaluationStatisticsExporter   exporter;
 		String                                  msg;
+
+		stats = getCurrentStatistics();
+		if (stats == null)
+			return;
 
 		retVal = m_FileChooser.showSaveDialog(this);
 		if (retVal != EvaluationStatisticsExporterFileChooser.APPROVE_OPTION)
@@ -132,7 +174,7 @@ public class Statistics
 		exporter = m_FileChooser.getWriter();
 		exporter.setFile(m_FileChooser.getSelectedFile());
 		exporter.addLogListener(getOwner());
-		msg = exporter.export(m_Statistics);
+		msg = exporter.export(stats);
 		exporter.removeLogListener(getOwner());
 		if (msg != null) {
 			JOptionPane.showMessageDialog(
@@ -191,16 +233,44 @@ public class Statistics
 	 * Updates the view on the current statistics.
 	 */
 	protected void updateView() {
+		InMemory    inmem;
+
+		// raw
+		m_ModelRaw = new EvaluationStatisticsTableModel(new ArrayList<>(m_Statistics));
+
+		// aggregated
+		inmem = new InMemory();
+		SimpleAggregate agg = new SimpleAggregate();
+		agg.setSuffixMean("");
+		agg.setSuffixCount(" [count]");
+		agg.setSuffixStdDev(" [stdev]");
+		agg.setExporter(inmem);
+		agg.export(m_Statistics);
+		m_ModelAggregated = new EvaluationStatisticsTableModel(new ArrayList<>(inmem.getStatistics()));
+
+		// update GUI
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				m_Table.setModel(new EvaluationStatisticsTableModel(new ArrayList<>(m_Statistics)));
+				m_TableRaw.setModel(m_ModelRaw);
 			}
 		});
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				m_Table.setOptimalColumnWidth();
+				m_TableRaw.setOptimalColumnWidth();
+			}
+		});
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				m_TableAggregated.setModel(m_ModelAggregated);
+			}
+		});
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				m_TableAggregated.setOptimalColumnWidth();
 			}
 		});
 	}
