@@ -127,4 +127,13 @@ public class EvaluationStatisticsTableModel
 		else
 			return m_Statistics.get(rowIndex).get(m_Headers.get(columnIndex - 2));
 	}
+
+	/**
+	 * Returns the underlying statistics.
+	 *
+	 * @return                  the statistics
+	 */
+	public List<EvaluationStatistics> getStatistics() {
+		return m_Statistics;
+	}
 }
