@@ -138,7 +138,6 @@ public class Experimenter
 		// tabs
 		m_Tabs.add(new BasicSetup());
 		m_Tabs.add(new ExpertSetup());
-		m_Tabs.add(new Evaluation());
 		classnames = AbstractExperimenterTab.getTabs();
 		for (String classname: classnames) {
 			try {
@@ -146,8 +145,6 @@ public class Experimenter
 				if (tab.getClass() == BasicSetup.class)
 					continue;
 				if (tab.getClass() == ExpertSetup.class)
-					continue;
-				if (tab.getClass() == Evaluation.class)
 					continue;
 				if (tab instanceof LogTab)
 					continue;
