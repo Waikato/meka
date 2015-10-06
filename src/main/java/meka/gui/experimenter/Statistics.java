@@ -39,6 +39,8 @@ import meka.gui.events.SearchEvent;
 import meka.gui.events.SearchListener;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
@@ -110,6 +112,18 @@ public class Statistics
 
 	/** whether to ignore changes in the UI. */
 	protected boolean m_IgnoreChanges;
+
+	/** the menu item for loading stats. */
+	protected JMenuItem m_MenuItemOpen;
+
+	/** the menu item for saving raw stats. */
+	protected JMenuItem m_MenuItemSaveAsRaw;
+
+	/** the menu item for saving aggregated stats. */
+	protected JMenuItem m_MenuItemSaveAsAggregated;
+
+	/** the menu item for saving measurement stats. */
+	protected JMenuItem m_MenuItemSaveAsMeasurement;
 
 	/**
 	 * Initializes the members.
@@ -219,6 +233,12 @@ public class Statistics
 		JMenuItem   menuitem;
 
 		result = new JMenu(getTitle());
+		result.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				updateMenu();
+			}
+		});
 
 		menuitem = new JMenuItem("Open...", GUIHelper.getIcon("open.gif"));
 		menuitem.addActionListener(new ActionListener() {
@@ -228,6 +248,7 @@ public class Statistics
 			}
 		});
 		result.add(menuitem);
+		m_MenuItemOpen = menuitem;
 
 		menuitem = new JMenuItem("Save as (raw)...", GUIHelper.getIcon("save.gif"));
 		menuitem.addActionListener(new ActionListener() {
@@ -238,6 +259,7 @@ public class Statistics
 			}
 		});
 		result.add(menuitem);
+		m_MenuItemSaveAsRaw = menuitem;
 
 		menuitem = new JMenuItem("Save as (aggregated)...", GUIHelper.getIcon("save.gif"));
 		menuitem.addActionListener(new ActionListener() {
@@ -248,6 +270,7 @@ public class Statistics
 			}
 		});
 		result.add(menuitem);
+		m_MenuItemSaveAsAggregated = menuitem;
 
 		menuitem = new JMenuItem("Save as (measurement)...", GUIHelper.getIcon("save.gif"));
 		menuitem.addActionListener(new ActionListener() {
@@ -258,6 +281,7 @@ public class Statistics
 			}
 		});
 		result.add(menuitem);
+		m_MenuItemSaveAsMeasurement = menuitem;
 
 		return result;
 	}
@@ -530,5 +554,19 @@ public class Statistics
 				m_IgnoreChanges = false;
 			}
 		});
+	}
+
+	/**
+	 * Updates the menu items in the custom menu.
+	 */
+	protected void updateMenu() {
+		boolean     present;
+
+		present = (m_Statistics != null) && (m_Statistics.size() > 0);
+
+		m_MenuItemOpen.setEnabled(true);
+		m_MenuItemSaveAsRaw.setEnabled(present);
+		m_MenuItemSaveAsAggregated.setEnabled(present);
+		m_MenuItemSaveAsMeasurement.setEnabled(present);
 	}
 }
