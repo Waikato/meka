@@ -37,12 +37,14 @@ import meka.gui.events.SearchEvent;
 import meka.gui.events.SearchListener;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Tab for evaluating an experiment.
@@ -86,6 +88,12 @@ public class Statistics
 	/** the table for the measurement statistics. */
 	protected SortableAndSearchableTable m_TableMeasurement;
 
+	/** the model for the keys of the measurement statistics. */
+	protected DefaultTableModel m_ModelMeasurementKey;
+
+	/** the table for the keys of the measurement statistics. */
+	protected SortableAndSearchableTable m_TableMeasurementKey;
+
 	/** the search panel. */
 	protected SearchPanel m_SearchPanel;
 
@@ -118,10 +126,11 @@ public class Statistics
 	 */
 	@Override
 	protected void initGUI() {
-		JPanel      panel;
-		JPanel      panelMeasurement;
-		JPanel      panelSave;
-		JLabel      label;
+		JPanel          panel;
+		JPanel          panelMeasurement;
+		JPanel          panelSave;
+		JLabel          label;
+		BaseScrollPane  scrollPane;
 
 		super.initGUI();
 
@@ -161,9 +170,15 @@ public class Statistics
 		m_ModelMeasurement = new MeasurementEvaluationStatisticsTableModel();
 		m_TableMeasurement = new SortableAndSearchableTable(m_ModelMeasurement);
 		m_TableMeasurement.setAutoResizeMode(SortableAndSearchableTable.AUTO_RESIZE_OFF);
+		m_ModelMeasurementKey = new DefaultTableModel();
+		m_TableMeasurementKey = new SortableAndSearchableTable(m_ModelMeasurementKey);
+		m_TableMeasurementKey.setAutoResizeMode(SortableAndSearchableTable.AUTO_RESIZE_OFF);
 		panel = new JPanel(new BorderLayout());
 		panel.add(panelMeasurement, BorderLayout.NORTH);
 		panel.add(new BaseScrollPane(m_TableMeasurement), BorderLayout.CENTER);
+		scrollPane = new BaseScrollPane(m_TableMeasurementKey);
+		scrollPane.setPreferredSize(new Dimension(200, 150));
+		panel.add(scrollPane, BorderLayout.SOUTH);
 		m_TabbedPane.addTab("Measurement", panel);
 
 		// search
@@ -304,6 +319,8 @@ public class Statistics
 		String              selMeasurement;
 		final String        oldMeasurement;
 		int                 i;
+		List<String>        classifiers;
+		Vector<String>      colNames;
 
 		m_IgnoreChanges = true;
 
@@ -332,7 +349,18 @@ public class Statistics
 			oldMeasurement = measurements.get(0);
 		else
 			oldMeasurement = null;
-		m_ModelMeasurement = new MeasurementEvaluationStatisticsTableModel(inmem.getStatistics(), oldMeasurement);
+		m_ModelMeasurement = new MeasurementEvaluationStatisticsTableModel(inmem.getStatistics(), oldMeasurement, true);
+
+		// measurement key
+		classifiers = EvaluationStatisticsUtils.commandLines(inmem.getStatistics(), false);
+		colNames = new Vector<>();
+		colNames.add("Index");
+		colNames.add("Classifier");
+		m_ModelMeasurementKey = new DefaultTableModel(colNames, classifiers.size());
+		for (i = 0; i < classifiers.size(); i++) {
+			m_ModelMeasurementKey.setValueAt("[" + (i + 1) + "]", i, 0);
+			m_ModelMeasurementKey.setValueAt(classifiers.get(i), i, 1);
+		}
 
 		// update GUI
 		// 1. raw
@@ -394,6 +422,19 @@ public class Statistics
 				}
 			});
 		}
+		// 4. measurement key
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				m_TableMeasurementKey.setModel(m_ModelMeasurementKey);
+			}
+		});
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				m_TableMeasurementKey.setOptimalColumnWidth();
+			}
+		});
 		// finish
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
