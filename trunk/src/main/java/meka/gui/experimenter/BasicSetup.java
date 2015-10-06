@@ -379,6 +379,16 @@ public class BasicSetup
 	}
 
 	/**
+	 * Returns the title of the tab.
+	 *
+	 * @return the title
+	 */
+	@Override
+	public String getTitle() {
+		return "Setup (basic)";
+	}
+
+	/**
 	 * Updates the enabled state of the buttons.
 	 */
 	protected void updateButtons() {
@@ -408,16 +418,6 @@ public class BasicSetup
 		m_ButtonRemoveAllDatasets.setEnabled(editable && (m_ModelDatasets.getSize() > 0));
 		m_ButtonMoveUpDataset.setEnabled(editable && JListHelper.canMoveUp(m_ListDatasets.getList()));
 		m_ButtonMoveDownDataset.setEnabled(editable && JListHelper.canMoveDown(m_ListDatasets.getList()));
-	}
-
-	/**
-	 * Returns the title of the tab.
-	 *
-	 * @return the title
-	 */
-	@Override
-	public String getTitle() {
-		return "Setup (basic)";
 	}
 
 	/**

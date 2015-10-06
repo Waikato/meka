@@ -214,6 +214,16 @@ public class ExpertSetup
 	}
 
 	/**
+	 * Returns the title of the tab.
+	 *
+	 * @return the title
+	 */
+	@Override
+	public String getTitle() {
+		return "Setup (expert)";
+	}
+
+	/**
 	 * Updates the enabled state of the buttons.
 	 */
 	protected void updateButtons() {
@@ -236,16 +246,6 @@ public class ExpertSetup
 		m_ButtonEditClassifier.setEnabled(editable && (m_ListClassifiers.getList().getSelectedIndices().length == 1));
 		m_ButtonMoveUpClassifier.setEnabled(editable && JListHelper.canMoveUp(m_ListClassifiers.getList()));
 		m_ButtonMoveDownClassifier.setEnabled(editable && JListHelper.canMoveDown(m_ListClassifiers.getList()));
-	}
-
-	/**
-	 * Returns the title of the tab.
-	 *
-	 * @return the title
-	 */
-	@Override
-	public String getTitle() {
-		return "Setup (expert)";
 	}
 
 	/**
