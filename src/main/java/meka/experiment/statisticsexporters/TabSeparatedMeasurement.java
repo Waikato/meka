@@ -100,7 +100,7 @@ public class TabSeparatedMeasurement
 			bwriter = new BufferedWriter(fwriter);
 
 			// output header
-			bwriter.write("Datasets");
+			bwriter.write(m_Measurement);
 			for (i = 0; i < classifiers.size(); i++) {
 				bwriter.write("\t");
 				bwriter.write("[" + (i+1) + "]");
