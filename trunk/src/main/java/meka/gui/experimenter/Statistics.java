@@ -22,21 +22,22 @@ package meka.gui.experimenter;
 
 import com.googlecode.jfilechooserbookmarks.gui.BaseScrollPane;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
+import meka.experiment.evaluationstatistics.EvaluationStatisticsUtils;
 import meka.experiment.events.ExecutionStageEvent;
 import meka.experiment.events.StatisticsNotificationEvent;
 import meka.experiment.events.StatisticsNotificationListener;
 import meka.experiment.statisticsexporters.FileBasedEvaluationStatisticsExporter;
+import meka.experiment.statisticsexporters.FileBasedMeasurementEvaluationStatisticsExporter;
 import meka.experiment.statisticsexporters.InMemory;
 import meka.experiment.statisticsexporters.SimpleAggregate;
 import meka.gui.choosers.EvaluationStatisticsExporterFileChooser;
-import meka.gui.core.EvaluationStatisticsTableModel;
-import meka.gui.core.GUIHelper;
-import meka.gui.core.SearchPanel;
-import meka.gui.core.SortableAndSearchableTable;
+import meka.gui.choosers.MeasurementEvaluationStatisticsExporterFileChooser;
+import meka.gui.core.*;
 import meka.gui.events.SearchEvent;
 import meka.gui.events.SearchListener;
 
 import javax.swing.*;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -54,6 +55,9 @@ public class Statistics
   implements StatisticsNotificationListener {
 
 	private static final long serialVersionUID = 3556506064253273853L;
+	public static final int TAB_RAW = 0;
+	public static final int TAB_AGGREGATED = 1;
+	public static final int TAB_MEASUREMENT = 2;
 
 	/** the collected statistics. */
 	protected List<EvaluationStatistics> m_Statistics;
@@ -73,6 +77,15 @@ public class Statistics
 	/** the model for the aggregated statistics. */
 	protected EvaluationStatisticsTableModel m_ModelAggregated;
 
+	/** the combobox with the measurements. */
+	protected JComboBox<String> m_ComboBoxMeasurements;
+
+	/** the model for the measurement statistics. */
+	protected MeasurementEvaluationStatisticsTableModel m_ModelMeasurement;
+
+	/** the table for the measurement statistics. */
+	protected SortableAndSearchableTable m_TableMeasurement;
+
 	/** the search panel. */
 	protected SearchPanel m_SearchPanel;
 
@@ -82,6 +95,12 @@ public class Statistics
 	/** the filechooser for saving the statistics. */
 	protected EvaluationStatisticsExporterFileChooser m_FileChooser;
 
+	/** the filechooser for saving the measurement statistics. */
+	protected MeasurementEvaluationStatisticsExporterFileChooser m_FileChooserMeasurement;
+
+	/** whether to ignore changes in the UI. */
+	protected boolean m_IgnoreChanges;
+
 	/**
 	 * Initializes the members.
 	 */
@@ -89,7 +108,9 @@ public class Statistics
 	protected void initialize() {
 		super.initialize();
 
-		m_FileChooser = new EvaluationStatisticsExporterFileChooser();
+		m_FileChooser            = new EvaluationStatisticsExporterFileChooser();
+		m_FileChooserMeasurement = new MeasurementEvaluationStatisticsExporterFileChooser();
+		m_IgnoreChanges          = false;
 	}
 
 	/**
@@ -98,23 +119,54 @@ public class Statistics
 	@Override
 	protected void initGUI() {
 		JPanel      panel;
+		JPanel      panelMeasurement;
 		JPanel      panelSave;
+		JLabel      label;
 
 		super.initGUI();
 
 		m_TabbedPane = new JTabbedPane();
 		add(m_TabbedPane, BorderLayout.CENTER);
 
+		// raw
 		m_ModelRaw = new EvaluationStatisticsTableModel();
 		m_TableRaw = new SortableAndSearchableTable(m_ModelRaw);
 		m_TableRaw.setAutoResizeMode(SortableAndSearchableTable.AUTO_RESIZE_OFF);
 		m_TabbedPane.addTab("Raw", new BaseScrollPane(m_TableRaw));
 
+		// aggregated
 		m_ModelAggregated = new EvaluationStatisticsTableModel();
 		m_TableAggregated = new SortableAndSearchableTable(m_ModelAggregated);
 		m_TableAggregated.setAutoResizeMode(SortableAndSearchableTable.AUTO_RESIZE_OFF);
 		m_TabbedPane.addTab("Aggregated", new BaseScrollPane(m_TableAggregated));
 
+		// measurement
+		m_ComboBoxMeasurements = new JComboBox<>();
+		m_ComboBoxMeasurements.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (m_IgnoreChanges)
+					return;
+				if (m_ComboBoxMeasurements.getSelectedIndex() == -1)
+					return;
+				m_ModelMeasurement.setMeasurement((String) m_ComboBoxMeasurements.getSelectedItem());
+			}
+		});
+		label = new JLabel("Measurement");
+		label.setDisplayedMnemonic('M');
+		label.setLabelFor(m_ComboBoxMeasurements);
+		panelMeasurement = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		panelMeasurement.add(label);
+		panelMeasurement.add(m_ComboBoxMeasurements);
+		m_ModelMeasurement = new MeasurementEvaluationStatisticsTableModel();
+		m_TableMeasurement = new SortableAndSearchableTable(m_ModelMeasurement);
+		m_TableMeasurement.setAutoResizeMode(SortableAndSearchableTable.AUTO_RESIZE_OFF);
+		panel = new JPanel(new BorderLayout());
+		panel.add(panelMeasurement, BorderLayout.NORTH);
+		panel.add(new BaseScrollPane(m_TableMeasurement), BorderLayout.CENTER);
+		m_TabbedPane.addTab("Measurement", panel);
+
+		// search
 		panel = new JPanel(new BorderLayout());
 		add(panel, BorderLayout.SOUTH);
 
@@ -127,6 +179,7 @@ public class Statistics
 		});
 		panel.add(m_SearchPanel, BorderLayout.WEST);
 
+		// save
 		panelSave = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		panel.add(panelSave, BorderLayout.EAST);
 
@@ -141,51 +194,6 @@ public class Statistics
 	}
 
 	/**
-	 * Returns the current statistics.
-	 *
-	 * @return          the statistics, null if not available
-	 */
-	protected List<EvaluationStatistics> getCurrentStatistics() {
-		if (m_TabbedPane.getSelectedIndex() == 0)
-			return m_ModelRaw.getStatistics();
-		else if (m_TabbedPane.getSelectedIndex() == 1)
-			return m_ModelAggregated.getStatistics();
-		else
-			return null;
-	}
-
-	/**
-	 * Prompts the user with a filechooser for saving the statistics to a file.
-	 */
-	protected void save() {
-		List<EvaluationStatistics>              stats;
-		int                                     retVal;
-		FileBasedEvaluationStatisticsExporter   exporter;
-		String                                  msg;
-
-		stats = getCurrentStatistics();
-		if (stats == null)
-			return;
-
-		retVal = m_FileChooser.showSaveDialog(this);
-		if (retVal != EvaluationStatisticsExporterFileChooser.APPROVE_OPTION)
-			return;
-
-		exporter = m_FileChooser.getWriter();
-		exporter.setFile(m_FileChooser.getSelectedFile());
-		exporter.addLogListener(getOwner());
-		msg = exporter.export(stats);
-		exporter.removeLogListener(getOwner());
-		if (msg != null) {
-			JOptionPane.showMessageDialog(
-					this,
-					"Export failed:\n" + msg,
-					"Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
-	}
-
-	/**
 	 * Returns the title of the tab.
 	 *
 	 * @return the title
@@ -193,6 +201,64 @@ public class Statistics
 	@Override
 	public String getTitle() {
 		return "Statistics";
+	}
+
+	/**
+	 * Prompts the user with a filechooser for saving the statistics to a file.
+	 */
+	protected void save() {
+		int                         tab;
+		List<EvaluationStatistics>  stats;
+		int                         retVal;
+		String                      msg;
+
+		tab = m_TabbedPane.getSelectedIndex();
+
+		// stats
+		if (tab == TAB_RAW)
+			stats = m_ModelRaw.getStatistics();
+		else if (tab == TAB_AGGREGATED)
+			stats = m_ModelAggregated.getStatistics();
+		else if (tab == TAB_MEASUREMENT)
+			stats = m_ModelMeasurement.getStatistics();
+		else
+			return;
+
+		// select output file
+		if (tab == TAB_MEASUREMENT) {
+			retVal = m_FileChooserMeasurement.showSaveDialog(this);
+			if (retVal != MeasurementEvaluationStatisticsExporterFileChooser.APPROVE_OPTION)
+				return;
+		}
+		else {
+			retVal = m_FileChooser.showSaveDialog(this);
+			if (retVal != EvaluationStatisticsExporterFileChooser.APPROVE_OPTION)
+				return;
+		}
+
+		// export
+		if (tab == TAB_MEASUREMENT) {
+			FileBasedMeasurementEvaluationStatisticsExporter mexporter = m_FileChooserMeasurement.getWriter();
+			mexporter.setFile(m_FileChooserMeasurement.getSelectedFile());
+			mexporter.setMeasurement((String) m_ComboBoxMeasurements.getSelectedItem());
+			mexporter.addLogListener(getOwner());
+			msg = mexporter.export(stats);
+			mexporter.removeLogListener(getOwner());
+		}
+		else {
+			FileBasedEvaluationStatisticsExporter exporter = m_FileChooser.getWriter();
+			exporter.setFile(m_FileChooser.getSelectedFile());
+			exporter.addLogListener(getOwner());
+			msg = exporter.export(stats);
+			exporter.removeLogListener(getOwner());
+		}
+		if (msg != null) {
+			JOptionPane.showMessageDialog(
+					this,
+					"Export failed:\n" + msg,
+					"Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	/**
@@ -233,7 +299,13 @@ public class Statistics
 	 * Updates the view on the current statistics.
 	 */
 	protected void updateView() {
-		InMemory    inmem;
+		InMemory            inmem;
+		final List<String>  measurements;
+		String              selMeasurement;
+		final String        oldMeasurement;
+		int                 i;
+
+		m_IgnoreChanges = true;
 
 		// raw
 		m_ModelRaw = new EvaluationStatisticsTableModel(new ArrayList<>(m_Statistics));
@@ -248,7 +320,22 @@ public class Statistics
 		agg.export(m_Statistics);
 		m_ModelAggregated = new EvaluationStatisticsTableModel(new ArrayList<>(inmem.getStatistics()));
 
+		// measurement
+		measurements = EvaluationStatisticsUtils.measurements(inmem.getStatistics());
+		if (m_ComboBoxMeasurements.getSelectedIndex() == -1)
+			selMeasurement = (measurements.size() > 0) ? measurements.get(0) : null;
+		else
+			selMeasurement = (String) m_ComboBoxMeasurements.getSelectedItem();
+		if (measurements.contains(selMeasurement))
+			oldMeasurement = selMeasurement;
+		else if (measurements.size() > 0)
+			oldMeasurement = measurements.get(0);
+		else
+			oldMeasurement = null;
+		m_ModelMeasurement = new MeasurementEvaluationStatisticsTableModel(inmem.getStatistics(), oldMeasurement);
+
 		// update GUI
+		// 1. raw
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -261,6 +348,7 @@ public class Statistics
 				m_TableRaw.setOptimalColumnWidth();
 			}
 		});
+		// 2. aggregated
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -271,6 +359,46 @@ public class Statistics
 			@Override
 			public void run() {
 				m_TableAggregated.setOptimalColumnWidth();
+			}
+		});
+		// 3. measurement
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				m_ComboBoxMeasurements.setModel(
+						new DefaultComboBoxModel<>(measurements.toArray(new String[measurements.size()])));
+				if (oldMeasurement != null)
+					m_ComboBoxMeasurements.setSelectedItem(oldMeasurement);
+			}
+		});
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				m_TableMeasurement.setModel(m_ModelMeasurement);
+			}
+		});
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				m_TableMeasurement.setOptimalColumnWidth(0);
+			}
+		});
+		for (i = 1; i < m_ModelMeasurement.getColumnCount(); i++) {
+			final int col = i;
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					TableColumn column = m_TableMeasurement.getColumnModel().getColumn(col);
+					if (column != null)
+						column.setPreferredWidth(50);  // TODO parameter?
+				}
+			});
+		}
+		// finish
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				m_IgnoreChanges = false;
 			}
 		});
 	}
