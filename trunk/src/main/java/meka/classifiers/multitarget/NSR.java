@@ -24,6 +24,7 @@ import java.util.HashMap;
 import meka.classifiers.multilabel.ProblemTransformationMethod;
 import meka.core.PSUtils;
 
+import meka.core.SuperLabelUtils;
 import weka.core.Attribute;
 import weka.core.Capabilities;
 import weka.core.Instance;
@@ -150,6 +151,30 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 		return y_ml;
 	}
 
+	// TODO: use SuperLabelUtils
+	/**
+	 * GetTopNSubsets - return the top N subsets which differ from y by a single class value, ranked by the frequency storte in masterCombinations.
+	 */
+	public static String[] getTopNSubsets(String y, final HashMap <String,Integer>masterCombinations, int N) {
+		String y_bits[] = y.split("\\+");
+		ArrayList<String> Y = new ArrayList<String>();
+		for(String y_ : masterCombinations.keySet()) {
+			if(MLUtils.bitDifference(y_bits,y_.split("\\+")) <= 1) {
+				Y.add(y_);
+			}
+		}
+		Collections.sort(Y,new Comparator<String>(){
+					public int compare(String s1, String s2) {
+						// @note this is just done by the count, @todo: could add further conditions
+						return (masterCombinations.get(s1) > masterCombinations.get(s2) ? -1 : (masterCombinations.get(s1) > masterCombinations.get(s2) ? 1 : 0));
+					}
+				}
+		);
+		String Y_strings[] = Y.toArray(new String[Y.size()]);
+		//System.out.println("returning "+N+"of "+Arrays.toString(Y_strings));
+		return Arrays.copyOf(Y_strings,Math.min(N,Y_strings.length));
+	}
+
 	// TODO use PSUtils
 	public Instances convertInstances(Instances D, int L) throws Exception {
 
@@ -177,7 +202,7 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 				D_.instance(i).setClassValue(y);
 			// decomp
 			else if(m_N > 0) { 
-				String d_subsets[] = getTopNSubsets(y,distinctCombinations,m_N);
+				String d_subsets[] = SuperLabelUtils.getTopNSubsets(y, distinctCombinations, m_N);
 				for (String s : d_subsets) {
 					int w = distinctCombinations.get(s);
 					Instance copy = (Instance)(D_.instance(i)).copy();
@@ -202,29 +227,6 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 
 	public static String[] decodeValue(String a) {
 		return a.split("\\+");
-	}
-
-	/**
-	 * GetTopNSubsets - return the top N subsets which differ from y by a single class value, ranked by the frequency storte in masterCombinations.
-	 */
-	public static String[] getTopNSubsets(String y, final HashMap <String,Integer>masterCombinations, int N) {
-		String y_bits[] = y.split("\\+");
-		ArrayList<String> Y = new ArrayList<String>();  
-		for(String y_ : masterCombinations.keySet()) {
-			if(MLUtils.bitDifference(y_bits,y_.split("\\+")) <= 1) {
-				Y.add(y_);
-			}
-		}
-		Collections.sort(Y,new Comparator<String>(){
-			public int compare(String s1, String s2) {
-			// @note this is just done by the count, @todo: could add further conditions
-			return (masterCombinations.get(s1) > masterCombinations.get(s2) ? -1 : (masterCombinations.get(s1) > masterCombinations.get(s2) ? 1 : 0));
-			} 
-		}
-		);
-		String Y_strings[] = Y.toArray(new String[Y.size()]);
-		//System.out.println("returning "+N+"of "+Arrays.toString(Y_strings));
-		return Arrays.copyOf(Y_strings,Math.min(N,Y_strings.length));
 	}
 
 	@Override
