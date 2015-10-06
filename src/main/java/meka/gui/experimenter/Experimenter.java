@@ -382,8 +382,8 @@ public class Experimenter
 		// File
 		m_MenuItemFileNew.setEnabled(!running);
 		m_MenuItemFileOpen.setEnabled(!running);
-		m_MenuItemFileSave.setEnabled((getCurrentFile() != null));
-		m_MenuItemFileSaveAs.setEnabled(true);
+		m_MenuItemFileSave.setEnabled(present && (getCurrentFile() != null));
+		m_MenuItemFileSaveAs.setEnabled(present);
 		m_MenuItemFileClose.setEnabled(!running);
 
 		// Execution
