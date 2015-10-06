@@ -50,11 +50,14 @@ public class MeasurementEvaluationStatisticsTableModel
 	/** the classifiers. */
 	protected List<String> m_Classifiers;
 
+	/** whether to show the classifier or an index in the column header. */
+	protected boolean m_ShowIndex;
+
 	/**
 	 * Initializes the model with no statistics.
 	 */
 	public MeasurementEvaluationStatisticsTableModel() {
-		this(new ArrayList<EvaluationStatistics>(), null);
+		this(new ArrayList<EvaluationStatistics>(), null, true);
 	}
 
 	/**
@@ -62,10 +65,12 @@ public class MeasurementEvaluationStatisticsTableModel
 	 *
 	 * @param stats         the statistics to use
 	 * @param measurement   the measurement to display
+	 * @param showIndex     whether to show an index or the classifier in the header
 	 */
-	public MeasurementEvaluationStatisticsTableModel(List<EvaluationStatistics> stats, String measurement) {
+	public MeasurementEvaluationStatisticsTableModel(List<EvaluationStatistics> stats, String measurement, boolean showIndex) {
 		m_Statistics  = stats;
 		m_Measurement = measurement;
+		m_ShowIndex   = showIndex;
 		m_Classifiers = EvaluationStatisticsUtils.commandLines(stats, true);
 		m_Datasets    = EvaluationStatisticsUtils.relations(stats, true);
 	}
@@ -80,6 +85,8 @@ public class MeasurementEvaluationStatisticsTableModel
 	public String getColumnName(int column) {
 		if (column == 0)
 			return "Dataset";
+		else if (m_ShowIndex)
+			return "[" + column + "]";
 		else
 			return m_Classifiers.get(column - 1);
 	}
@@ -166,6 +173,25 @@ public class MeasurementEvaluationStatisticsTableModel
 	 */
 	public String getMeasurement() {
 		return m_Measurement;
+	}
+
+	/**
+	 * Sets whether to show an index or the classifier in the header.
+	 *
+	 * @param value             true if to show index
+	 */
+	public void setShowIndex(boolean value) {
+		m_ShowIndex = value;
+		fireTableDataChanged();
+	}
+
+	/**
+	 * Returns whethert o show an index or the classifier in the header.
+	 *
+	 * @return                  true if to show index
+	 */
+	public boolean getShowIndex() {
+		return m_ShowIndex;
 	}
 
 	/**
