@@ -102,6 +102,8 @@ public class LatexMeasurement
 
 			// output header
 			String tabularConfig = "lllllllllllllllllllllllllllllllllllllllllllllllllll".substring(0,classifiers.size()+1);
+			bwriter.write("% " + m_Measurement);
+			bwriter.newLine();
 			bwriter.write("\\begin{tabular}{"+tabularConfig+"}");
 			bwriter.newLine();
 			bwriter.write("\\hline");
