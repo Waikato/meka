@@ -34,13 +34,11 @@ import java.util.*;
  * @author 	Jesse Read
  * @version	June 2012
  */
-public class SCC extends ProblemTransformationMethod implements Randomizable, MultiTargetClassifier, TechnicalInformationHandler {
+public class SCC extends NSR implements Randomizable, MultiTargetClassifier, TechnicalInformationHandler {
 
 	private SuperNodeFilter f = new SuperNodeFilter();
 
-	private int m_P = 1;
 	private int m_Iv = 0;
-	private int m_L = 2;
 	private int m_I = 1000;
 
 	/* TODO make external options */
@@ -173,19 +171,19 @@ public class SCC extends ProblemTransformationMethod implements Randomizable, Mu
 	}
 
 	/**
-	 * Train classifier h, on dataset D, under super-class partition 'partition'.
+	 * Train classifier <code>h</code>, on dataset <code>D</code>, under super-class partition <code>partition</code>.
 	 */
 	public void trainClassifier(Classifier h, Instances D, int partition[][]) throws Exception {
 		f  = new SuperNodeFilter();
 		f.setIndices(partition);
 		f.setP(m_P >= 0 ? m_P : rand.nextInt(Math.abs(m_P)));
-		f.setN(m_L >= 0 ? m_L : rand.nextInt(Math.abs(m_L)));
+		f.setN(m_N >= 0 ? m_N : rand.nextInt(Math.abs(m_N)));
 		Instances D_ = f.process(D);
 		//int K[] = MLUtils.getK(D_); <-- if some K[j] < 2, this is a problem!
 		if (getDebug()) {
 			int N = D.numInstances();
 			int U = MLUtils.numberOfUniqueCombinations(D);
-			System.out.println("PS("+f.getP()+","+m_L+") reduced: "+N+" -> "+D_.numInstances()+" / "+U+" -> "+MLUtils.numberOfUniqueCombinations(D_));
+			System.out.println("PS("+f.getP()+","+m_N+") reduced: "+N+" -> "+D_.numInstances()+" / "+U+" -> "+ MLUtils.numberOfUniqueCombinations(D_));
 			//System.out.println("E_acc P "+f.getP()+" "+(D_.numInstances()/(double)N) +" "+(MLUtils.numberOfUniqueCombinations(D_)/(double)U));
 			//m_Info = "P="+f.getP()+"; %N="+(D_.numInstances()/(double)N) +"; %C"+(MLUtils.numberOfUniqueCombinations(D_)/(double)U)+"; size(partition)="+partition.length;
 		}
@@ -209,7 +207,7 @@ public class SCC extends ProblemTransformationMethod implements Randomizable, Mu
 			result.setInfo("Type","MT");
 		}
 		else if (h instanceof ProblemTransformationMethod) {
-			result.setInfo("Threshold",MLEvalUtils.getThreshold(result.predictions,D_train,"PCut1"));
+			result.setInfo("Threshold", MLEvalUtils.getThreshold(result.predictions, D_train, "PCut1"));
 			result.setInfo("Type","ML");
 		}
 
@@ -257,11 +255,11 @@ public class SCC extends ProblemTransformationMethod implements Randomizable, Mu
 		double acc1 = (Double)result_1.getMeasurement(i_ErrFn);
 		if (getDebug()) System.out.println(" "+acc1);
 
-		int partition[][] = SuperLabelUtils.generatePartition(MLUtils.gen_indices(L),rand);
+		int partition[][] = SuperLabelUtils.generatePartition(A.make_sequence(L), rand);
 
 		// 2. SELECT / MODIFY INDICES (using LEAD technique)
 		if (getDebug()) System.out.println("2. GET ERR-CHI-SQUARED MATRIX: ");
-		double MER[][] = StatUtils.condDepMatrix(D_test,result_1);
+		double MER[][] = StatUtils.condDepMatrix(D_test, result_1);
 		if (getDebug()) System.out.println(M.toString(MER));
 
 		/*
@@ -368,34 +366,6 @@ public class SCC extends ProblemTransformationMethod implements Randomizable, Mu
 		return y;
 	}
 
-	protected int m_S = 0;
-
-	@Override
-	public void setSeed(int s) {
-		m_S = s;
-	}
-
-	@Override
-	public int getSeed() {
-		return m_S;
-	}
-
-	public void setP(int p) {
-		m_P = p;
-	}
-
-	public int getP() {
-		return m_P;
-	}
-
-	public void setN(int l) {
-		m_L = l;
-	}
-
-	public int getN() {
-		return m_L;
-	}
-
 	public void setI(int i) {
 		m_I = i;
 	}
@@ -428,9 +398,6 @@ public class SCC extends ProblemTransformationMethod implements Randomizable, Mu
 		Vector result = new Vector();
 		result.addElement(new Option("\tSets the number of simulated annealing iterations\n\tdefault: 1000", "I", 1, "-I <value>"));
 		result.addElement(new Option("\tSets the number of internal-validation iterations\n\tdefault: 0", "V", 1, "-V <value>"));
-		result.addElement(new Option("\tSets the pruning number for PS\n\tdefault: 1", "P", 1, "-P <value>"));
-		result.addElement(new Option("\tSets the limit for PS (was N) \n\tdefault: 2", "L", 1, "-L <value>"));
-		result.addElement(new Option("\tThe seed value for randomization\n\tdefault: 0", "S", 1, "-S <value>"));
 		OptionUtils.add(result, super.listOptions());
 		return OptionUtils.toEnumeration(result);
 	}
@@ -438,10 +405,7 @@ public class SCC extends ProblemTransformationMethod implements Randomizable, Mu
 	@Override
 	public void setOptions(String[] options) throws Exception {
 		setI(OptionUtils.parse(options, 'I', 1000));
-		setN(OptionUtils.parse(options, 'L', 2));
 		setIv(OptionUtils.parse(options, 'V', 0));
-		setP(OptionUtils.parse(options, 'P', 1));
-		setSeed(OptionUtils.parse(options, 'S', 0));
 		super.setOptions(options);
 	}
 

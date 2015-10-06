@@ -15,6 +15,7 @@
 
 package meka.filters.multilabel;
 
+import meka.core.SuperLabelUtils;
 import weka.core.*;
 import meka.core.MLUtils;
 import meka.classifiers.multitarget.NSR;
@@ -169,11 +170,11 @@ public class SuperNodeFilter extends SimpleBatchFilter {
 	 * Return a set of all the combinations of attributes at 'indices' in 'D', pruned by 'p'; e.g., {00,01,11}.
 	 */
 	public static Set<String> getValues(Instances D, int indices[], int p) {
-		HashMap<String,Integer> count = getCounts(D,indices,p);
+		HashMap<String,Integer> count = getCounts(D, indices, p);
 		return count.keySet();
 	}
 
-	/** 
+	/**
 	 * Return a set of all the combinations of attributes at 'indices' in 'D', pruned by 'p'; AND THEIR COUNTS, e.g., {(00:3),(01:8),(11:3))}.
 	 */
 	public static HashMap<String,Integer> getCounts(Instances D, int indices[], int p) {
