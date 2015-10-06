@@ -98,6 +98,10 @@ meka.experiment.statisticsexporters.EvaluationStatisticsExporter=\
 meka.experiment.statisticsexporters.FileBasedEvaluationStatisticsExporter=\
   meka.experiment.statisticsexporters
 
+# the file-based statistics exporters for a single measurement
+meka.experiment.statisticsexporters.FileBasedMeasurementEvaluationStatisticsExporter=\
+  meka.experiment.statisticsexporters
+
 # The Experimenter tabs
 meka.gui.experimenter.AbstractExperimenterTab=\
   meka.gui.experimenter
