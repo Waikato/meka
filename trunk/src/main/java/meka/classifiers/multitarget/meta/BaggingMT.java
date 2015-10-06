@@ -20,6 +20,7 @@ import meka.classifiers.multilabel.meta.BaggingML;
 import meka.classifiers.multitarget.CC;
 import meka.classifiers.multitarget.MultiTargetClassifier;
 import meka.core.MLUtils;
+import meka.core.SuperLabelUtils;
 import weka.core.Instance;
 import weka.core.RevisionUtils;
 
@@ -69,8 +70,6 @@ public class BaggingMT extends BaggingML implements MultiTargetClassifier {
 			votes[j] = new HashMap<Integer,Double>();
 		}
 
-		double y[] = new double[L];
-
 		for(int m = 0; m < m_NumIterations; m++) {
 			double c[] = ((ProblemTransformationMethod)m_Classifiers[m]).distributionForInstance(x);
 			// votes[j] = votes[j] + P(j|x)		@TODO: only if c.length > L
@@ -80,10 +79,7 @@ public class BaggingMT extends BaggingML implements MultiTargetClassifier {
 			}
 		}
 
-		for(int j = 0; j < L; j++) {
-			// get the class with max weight
-			y[j] = (Integer)MLUtils.maxItem(votes[j]);
-		}
+		double y[] = SuperLabelUtils.convertVotesToDistributionForInstance(votes);
 
 		return y;
 	}
