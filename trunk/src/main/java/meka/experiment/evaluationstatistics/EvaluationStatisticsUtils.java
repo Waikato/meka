@@ -146,6 +146,27 @@ public class EvaluationStatisticsUtils {
 	}
 
 	/**
+	 * Returns all available measurements.
+	 *
+	 * @param stats         the stats to inspect
+	 * @return              the values
+	 */
+	public static List<String> measurements(List<EvaluationStatistics> stats) {
+		List<String>    result;
+		HashSet<String> set;
+
+		result = new ArrayList<>();
+		set    = new HashSet<>();
+		for (EvaluationStatistics stat: stats)
+			set.addAll(stat.keySet());
+
+		result.addAll(set);
+		Collections.sort(result);
+
+		return result;
+	}
+
+	/**
 	 * Returns all the unique relations of all the statistics.
 	 *
 	 * @param stats     the stats to inspect
