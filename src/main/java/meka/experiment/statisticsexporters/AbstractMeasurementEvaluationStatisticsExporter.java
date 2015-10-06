@@ -38,7 +38,8 @@ import java.util.Vector;
  * @version $Revision$
  */
 public abstract class AbstractMeasurementEvaluationStatisticsExporter
-  extends AbstractFileBasedEvaluationStatisticsExporter {
+  extends AbstractFileBasedEvaluationStatisticsExporter
+  implements FileBasedMeasurementEvaluationStatisticsExporter {
 
 	private static final long serialVersionUID = -2891664931765964612L;
 
