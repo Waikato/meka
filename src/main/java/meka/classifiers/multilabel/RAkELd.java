@@ -116,6 +116,9 @@ public class RAkELd extends PS implements TechnicalInformationHandler {
 		return y;
 	}
 
+	/**
+	 * mapBack: returns the original indices (encoded in the class attribute).
+	 */
 	private int[] mapBack(Instances template, int i) {
 		try {
 			return MLUtils.toIntArray(template.classAttribute().value(i));
