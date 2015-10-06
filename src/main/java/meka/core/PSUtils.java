@@ -372,14 +372,27 @@ public abstract class PSUtils {
 	}
 
 	public static Instances LCTransformation(Instances D, int L) {
-		return PSTransformation(D,L,0,0);
+		return PSTransformation(D,L,"Class",0,0);
 	}
 
 	public static Instances PSTransformation(Instances D, int P, int N) {
-		return PSTransformation(D,D.classIndex(),P,N);
+		return PSTransformation(D,D.classIndex(),"Class",P,N);
 	}
 
-	public static Instances PSTransformation(Instances D, int L, int p, int n) {
+	public static Instances PSTransformation(Instances D, int L, int P, int N) {
+		return PSTransformation(D,L,"Class",P,N);
+	}
+
+	/**
+	 * Transform instances into a multi-class representation.
+	 * @param D			original dataset
+	 * @param L			number of labels in the original dataset
+	 * @param cname		class name for the new dataset (may want to encode the list of indices here for RAkEL-like methods)
+	 * @param p			pruning value
+	 * @param n			restoration value
+	 * @return transformed dataset
+	 */
+	public static Instances PSTransformation(Instances D, int L, String cname, int p, int n) {
 		D = new Instances(D);
 
 		// Gather combinations
@@ -393,14 +406,14 @@ public abstract class PSUtils {
 		if (distinctCombinations.size() <= 1 && p > 0) {
 			// ... or try again if not ...
 			System.err.println("[Warning] You did too much pruning, setting P = P-1");
-			return PSTransformation(D,L,p-1,n);
+			return PSTransformation(D,L,cname,p-1,n);
 		}
 
 		// Create class attribute
 		ArrayList<String> ClassValues = new ArrayList<String>();
 		for(LabelSet y : distinctCombinations.keySet()) 
 			ClassValues.add(y.toString());
-		Attribute C = new Attribute("Class", ClassValues);
+		Attribute C = new Attribute(cname, ClassValues);
 
 		// Insert new special attribute (which has all possible combinations of labels) 
 		D.insertAttributeAt(C,L);
@@ -452,83 +465,6 @@ public abstract class PSUtils {
 		return D;
 	}
 
-	@Deprecated
-	public static Instances PSTransformationOLD(Instances D, int L, int P, int N) {
-
-		// Gather combinations
-		System.out.println("counting");
-		HashMap<LabelSet,Integer> distinctCombinations = PSUtils.countCombinationsSparse(D,L);
-
-		// Prune combinations
-		System.out.println("pruning");
-		if (P > 0)
-			MLUtils.pruneCountHashMap(distinctCombinations,P);
-
-		// Check there are > 2
-		if (distinctCombinations.size() <= 1 && P > 0) {
-			// ... or try again if not ...
-			System.err.println("[Warning] You did too much pruning, setting P = P-1");
-			return PSTransformation(D,L,P-1,N);
-		}
-
-		System.out.println("transforming");
-		// Create class attribute
-		ArrayList<String> ClassValues = new ArrayList<String>();
-		for(LabelSet y : distinctCombinations.keySet()) 
-			ClassValues.add(y.toString());
-		Attribute C = new Attribute("Class", ClassValues);
-
-		System.out.println("remove attributes");
-		// Filter Remove all class attributes
-		Instances D_ = null;
-		try {
-			D_ = F.removeLabels(D,L);
-		} catch(Exception e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-
-		System.out.println("add attributes");
-		// Insert new special attribute (which has all possible combinations of labels) 
-		D_.insertAttributeAt(C,0);
-		D_.setClassIndex(0);
-
-		System.out.println("reintroing");
-		//Add class values
-		for (int i = 0; i < D.numInstances(); i++) {
-			Instance x = D.instance(i);
-			LabelSet y = new LabelSet(MLUtils.toSparseIntArray(x,L));
-			System.out.println("==="+i+" "+y);
-			String y_string = y.toString();
-
-			// add it
-			if(ClassValues.contains(y_string)) 	//if its class value exists
-				D_.instance(i).setClassValue(y_string);
-			// decomp
-			else if(N > 0) { 
-				//String d_subsets[] = getTopNSubsets(comb,distinctCombinations,N);
-				LabelSet d_subsets[] = PSUtils.getTopNSubsets(y,distinctCombinations,N);
-				//LabelSet d_subsets[] = PSUtils.cover(y,distinctCombinations);
-				//System.out.println("decomp: "+d_subsets.length);
-				for (LabelSet s : d_subsets) {
-					System.out.println(""+s);
-					//===copy===(from I=0)
-					Instance x_ = (Instance)(D_.instance(i)).copy();
-					//===assign===(the class)
-					x_.setClassValue(s.toString());
-					//===add===(to the end)
-					D_.add(x_);
-					//===remove so we can't choose this subset again!
-				}
-			}
-		}
-
-		// remove with missing class
-		D_.deleteWithMissingClass();
-
-		return D_;
-	}
-
 	public static Instance[] PSTransformation(Instance x, int L, HashMap<LabelSet,Integer> map, int n) {
 
 		int y_[] = MLUtils.toSparseIntArray(x,L);
@@ -554,6 +490,88 @@ public abstract class PSUtils {
 			}
 			return x_subsets;
 		}
+	}
+
+	/**
+	 * Transform instances into a multi-class representation.
+	 * @param D			original dataset
+	 * @param L			number of labels in that dataset
+	 * @param cname		class name for the new dataset (may want to encode the list of indices here for RAkEL-like methods)
+	 * @param p			pruning value
+	 * @param n			restoration value
+	 * @return transformed dataset
+	 */
+	public static Instances SLTransformation(Instances D, int L, String cname, int p, int n) {
+		D = new Instances(D);
+
+		// Gather combinations
+		HashMap<LabelSet,Integer> distinctCombinations = PSUtils.countCombinationsSparse(D,L);
+
+		// Prune combinations
+		if (p > 0)
+			MLUtils.pruneCountHashMap(distinctCombinations,p);
+
+		// Check there are > 2
+		if (distinctCombinations.size() <= 1 && p > 0) {
+			// ... or try again if not ...
+			System.err.println("[Warning] You did too much pruning, setting P = P-1");
+			return PSTransformation(D,L,cname,p-1,n);
+		}
+
+		// Create class attribute
+		ArrayList<String> ClassValues = new ArrayList<String>();
+		for(LabelSet y : distinctCombinations.keySet())
+			ClassValues.add(y.toString());
+		Attribute C = new Attribute(cname, ClassValues);
+
+		// Insert new special attribute (which has all possible combinations of labels)
+		D.insertAttributeAt(C,L);
+		D.setClassIndex(L);
+
+		//Add class values
+		int N = D.numInstances();
+		for (int i = 0; i < N; i++) {
+			Instance x = D.instance(i);
+			LabelSet y = new LabelSet(MLUtils.toSparseIntArray(x,L));
+			String y_string = y.toString();
+
+			// add it
+			if(ClassValues.contains(y_string)) 	//if its class value exists
+				x.setClassValue(y_string);
+				// decomp
+			else if(n > 0) {
+				//String d_subsets[] = getTopNSubsets(comb,distinctCombinations,n);
+				LabelSet d_subsets[] = PSUtils.getTopNSubsets(y,distinctCombinations,n);
+				//LabelSet d_subsets[] = PSUtils.cover(y,distinctCombinations);
+				if (d_subsets.length > 0) {
+					// fast
+					x.setClassValue(d_subsets[0].toString());
+					// additional
+					if (d_subsets.length > 1) {
+						for(int s_i = 1; s_i < d_subsets.length; s_i++) {
+							Instance x_ = (Instance)(x).copy();
+							x_.setClassValue(d_subsets[s_i].toString());
+							D.add(x_);
+						}
+					}
+				}
+				else {
+					x.setClassMissing();
+				}
+			}
+		}
+
+		// remove with missing class
+		D.deleteWithMissingClass();
+
+		try {
+			D = F.removeLabels(D,L);
+		} catch(Exception e) {
+			// should never happen
+		}
+		D.setClassIndex(0);
+
+		return D;
 	}
 
 	/**
