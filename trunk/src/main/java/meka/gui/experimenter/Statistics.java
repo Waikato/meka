@@ -23,6 +23,7 @@ package meka.gui.experimenter;
 import com.googlecode.jfilechooserbookmarks.gui.BaseScrollPane;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
 import meka.experiment.evaluationstatistics.EvaluationStatisticsUtils;
+import meka.experiment.evaluationstatistics.FileBasedEvaluationStatisticsHandler;
 import meka.experiment.events.ExecutionStageEvent;
 import meka.experiment.events.StatisticsNotificationEvent;
 import meka.experiment.events.StatisticsNotificationListener;
@@ -31,6 +32,7 @@ import meka.experiment.statisticsexporters.FileBasedMeasurementEvaluationStatist
 import meka.experiment.statisticsexporters.InMemory;
 import meka.experiment.statisticsexporters.SimpleAggregate;
 import meka.gui.choosers.EvaluationStatisticsExporterFileChooser;
+import meka.gui.choosers.EvaluationStatisticsFileChooser;
 import meka.gui.choosers.MeasurementEvaluationStatisticsExporterFileChooser;
 import meka.gui.core.*;
 import meka.gui.events.SearchEvent;
@@ -97,14 +99,14 @@ public class Statistics
 	/** the search panel. */
 	protected SearchPanel m_SearchPanel;
 
-	/** the button for saving the statistics. */
-	protected JButton m_ButtonSave;
-
 	/** the filechooser for saving the statistics. */
 	protected EvaluationStatisticsExporterFileChooser m_FileChooser;
 
 	/** the filechooser for saving the measurement statistics. */
 	protected MeasurementEvaluationStatisticsExporterFileChooser m_FileChooserMeasurement;
+
+	/** the filechooser for loading the statistics. */
+	protected EvaluationStatisticsFileChooser m_FileChooserStatistics;
 
 	/** whether to ignore changes in the UI. */
 	protected boolean m_IgnoreChanges;
@@ -118,6 +120,7 @@ public class Statistics
 
 		m_FileChooser            = new EvaluationStatisticsExporterFileChooser();
 		m_FileChooserMeasurement = new MeasurementEvaluationStatisticsExporterFileChooser();
+		m_FileChooserStatistics  = new EvaluationStatisticsFileChooser();
 		m_IgnoreChanges          = false;
 	}
 
@@ -128,7 +131,6 @@ public class Statistics
 	protected void initGUI() {
 		JPanel          panel;
 		JPanel          panelMeasurement;
-		JPanel          panelSave;
 		JLabel          label;
 		BaseScrollPane  scrollPane;
 
@@ -181,10 +183,11 @@ public class Statistics
 		panel.add(scrollPane, BorderLayout.SOUTH);
 		m_TabbedPane.addTab("Measurement", panel);
 
-		// search
+		// bottom
 		panel = new JPanel(new BorderLayout());
 		add(panel, BorderLayout.SOUTH);
 
+		// search
 		m_SearchPanel = new SearchPanel(SearchPanel.LayoutType.HORIZONTAL, true);
 		m_SearchPanel.addSearchListener(new SearchListener() {
 			@Override
@@ -193,19 +196,6 @@ public class Statistics
 			}
 		});
 		panel.add(m_SearchPanel, BorderLayout.WEST);
-
-		// save
-		panelSave = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		panel.add(panelSave, BorderLayout.EAST);
-
-		m_ButtonSave = new JButton("Save...", GUIHelper.getIcon("save.gif"));
-		m_ButtonSave.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				save();
-			}
-		});
-		panelSave.add(m_ButtonSave);
 	}
 
 	/**
@@ -216,6 +206,60 @@ public class Statistics
 	@Override
 	public String getTitle() {
 		return "Statistics";
+	}
+
+	/**
+	 * Returns an optional menu to be added to the Experimenter menu.
+	 *
+	 * @return the menu
+	 */
+	@Override
+	public JMenu getMenu() {
+		JMenu       result;
+		JMenuItem   menuitem;
+
+		result = new JMenu(getTitle());
+
+		menuitem = new JMenuItem("Open...", GUIHelper.getIcon("open.gif"));
+		menuitem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				load();
+			}
+		});
+		result.add(menuitem);
+
+		menuitem = new JMenuItem("Save as (raw)...", GUIHelper.getIcon("save.gif"));
+		menuitem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				m_TabbedPane.setSelectedIndex(TAB_RAW);
+				save();
+			}
+		});
+		result.add(menuitem);
+
+		menuitem = new JMenuItem("Save as (aggregated)...", GUIHelper.getIcon("save.gif"));
+		menuitem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				m_TabbedPane.setSelectedIndex(TAB_AGGREGATED);
+				save();
+			}
+		});
+		result.add(menuitem);
+
+		menuitem = new JMenuItem("Save as (measurement)...", GUIHelper.getIcon("save.gif"));
+		menuitem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				m_TabbedPane.setSelectedIndex(TAB_MEASUREMENT);
+				save();
+			}
+		});
+		result.add(menuitem);
+
+		return result;
 	}
 
 	/**
@@ -241,11 +285,16 @@ public class Statistics
 
 		// select output file
 		if (tab == TAB_MEASUREMENT) {
+			m_FileChooserMeasurement.setDialogTitle("Save measurement");
 			retVal = m_FileChooserMeasurement.showSaveDialog(this);
 			if (retVal != MeasurementEvaluationStatisticsExporterFileChooser.APPROVE_OPTION)
 				return;
 		}
 		else {
+			if (tab == TAB_RAW)
+				m_FileChooser.setDialogTitle("Save raw");
+			else
+				m_FileChooser.setDialogTitle("Save aggregated");
 			retVal = m_FileChooser.showSaveDialog(this);
 			if (retVal != EvaluationStatisticsExporterFileChooser.APPROVE_OPTION)
 				return;
@@ -274,6 +323,45 @@ public class Statistics
 					"Error",
 					JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	/**
+	 * Loads statistics from disk.
+	 */
+	protected void load() {
+		int                                         retVal;
+		final FileBasedEvaluationStatisticsHandler  handler;
+		SwingWorker                                 worker;
+
+		retVal = m_FileChooserStatistics.showOpenDialog(this);
+		if (retVal != EvaluationStatisticsFileChooser.APPROVE_OPTION)
+			return;
+
+		handler = m_FileChooserStatistics.getReader();
+		handler.addLogListener(getOwner());
+		handler.setFile(m_FileChooserStatistics.getSelectedFile());
+		worker = new SwingWorker() {
+			@Override
+			protected Object doInBackground() throws Exception {
+				startBusy("Loading statistics: " + handler.getFile());
+				List<EvaluationStatistics> stats = handler.read();
+				handler.removeLogListener(getOwner());
+				if (stats == null) {
+					log("Failed to read statistics from: " + m_FileChooserStatistics.getSelectedFile());
+					return null;
+				}
+				m_Statistics = stats;
+				updateView();
+				return null;
+			}
+
+			@Override
+			protected void done() {
+				super.done();
+				finishBusy("");
+			}
+		};
+		worker.execute();
 	}
 
 	/**
