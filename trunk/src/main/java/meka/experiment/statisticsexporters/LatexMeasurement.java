@@ -121,8 +121,11 @@ public class LatexMeasurement
 			bwriter.newLine();
 			bwriter.flush();
 
+			int ranks[][] = EvaluationStatisticsUtils.rankMatrix(stats,m_Measurement);
+
 			// output statistics
-			for (String relation: relations) {
+			for (int d = 0; d < relations.size(); d++) {
+				String relation = relations.get(d);
 				String name = MLUtils.getRelationName(relation);
 				name = LatexUtils.escape(name);
 				bwriter.write(String.format("%12s ", name));
@@ -131,7 +134,7 @@ public class LatexMeasurement
 					if (measurements.size() > 0) {
 						if (measurements.size() > 1)
 							log("Found " + measurements.size() + " measurements for combination " + classifiers.get(i) + "/" + relation);
-						String value = String.format("& %9.3f ", measurements.get(0));
+						String value = String.format("& %5.3f (%d) ", measurements.get(0), ranks[d][i]);
 						bwriter.write(value);
 					}
 				}

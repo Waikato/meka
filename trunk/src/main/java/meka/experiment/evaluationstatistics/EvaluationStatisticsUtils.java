@@ -21,10 +21,12 @@
 package meka.experiment.evaluationstatistics;
 
 import meka.classifiers.multilabel.MultiLabelClassifier;
+import meka.core.A;
 import meka.core.OptionUtils;
 import meka.experiment.evaluators.CrossValidation;
 import meka.experiment.evaluators.RepeatedRuns;
 import weka.core.Instances;
+import weka.core.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -145,31 +147,54 @@ public class EvaluationStatisticsUtils {
 		return result;
 	}
 
-	/**
+	/*
 	 * Nemenyi Test - NOT YET IMPLEMENTED
 	 *
 	 * @param stats         the stats to inspect
 	 * @param measurement   the measurement to run the test on
-	 * @return              the Nemenyi test results
+	 * @return              the Ranks // the Nemenyi test results
 	 */
-	public static List<String> nemenyi(List<EvaluationStatistics> stats, String measurement) {
+
+	/**
+	 * Value Matrix
+	 */
+	public static double[][] valueMatrix(List<EvaluationStatistics> stats, String measurement) {
 		List<Number>    result;
 
-		result = new ArrayList<>();
-		for (EvaluationStatistics stat: stats) {
-			if (stat.containsKey(measurement)) {
-				Number measure = stat.get(measurement);
-				String classifier = stat.getCommandLine();
-				String relation = stat.getRelation();
+		List<String> classifiers = EvaluationStatisticsUtils.commandLines(stats, true);
+		List<String> relations   = EvaluationStatisticsUtils.relations(stats, true);
 
-				// 1. add <classifier,dataset,result.add(stat.get(measurement))> tuple
+		int N = relations.size();
+		int k = classifiers.size();
+		double V[][] = new double[N][k];
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < k; j++) {
+				List<Number> measurements = EvaluationStatisticsUtils.measurements(stats, classifiers.get(j), relations.get(i), measurement);
+				V[i][j] = (double)measurements.get(0);
 			}
 		}
-		// 2. calculate ranks
-		// 3. run test
+		return V;
+	}
 
-		// not yet implemented
-		return null;
+	/**
+	 * Rank Matrix
+	 */
+	public static int[][] rankMatrix(List<EvaluationStatistics> stats, String measurement) {
+
+		double V[][] = valueMatrix(stats,measurement);
+		int N = V.length;
+		int k = V[0].length;
+
+		int R[][] = new int[N][k];
+		for (int i = 0; i < N; i++) {
+			R[i] = Utils.sort(V[i]);
+			// add 1 to each
+			for (int j = 0; j < k; j++) {
+				R[i][j]++;
+			}
+		}
+
+		return R;
 	}
 
 	/**
