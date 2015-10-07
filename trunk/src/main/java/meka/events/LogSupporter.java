@@ -41,4 +41,11 @@ public interface LogSupporter {
 	 * @param l         the listener
 	 */
 	public void removeLogListener(LogListener l);
+
+	/**
+	 * For logging messages.
+	 *
+	 * @param msg       the message to log
+	 */
+	public void log(String msg);
 }
