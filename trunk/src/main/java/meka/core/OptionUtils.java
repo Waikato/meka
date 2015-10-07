@@ -782,4 +782,26 @@ public class OptionUtils {
 				new String[]{"\\\\", "\\'", "\\t", "\\n", "\\r", "\\\""},
 				new char[]{'\\', '\'', '\t', '\n', '\r', '"'});
 	}
+
+	/**
+	 * Creates a shallow copy of the option handler, just using its options.
+	 *
+	 * @param obj           the object to copy
+	 * @return              the copy, null if failed to copy
+	 */
+	public static OptionHandler shallowCopy(OptionHandler obj) {
+		if (obj == null) {
+			System.err.println("Cannot create shallow copy of null object!");
+			return null;
+		}
+
+		try {
+			return fromCommandLine(OptionHandler.class, toCommandLine(obj));
+		}
+		catch (Exception e) {
+			System.err.println("Failed to create shallow copy of " + obj.getClass().getName() + ":");
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
