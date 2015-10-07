@@ -52,11 +52,32 @@ public abstract class MLUtils {
 	 * @return	The dataset name
 	 */
 	public static final String getDatasetName(Instances instances) {
-		String name = instances.relationName();
+		return getRelationName(instances.relationName());
+	}
+
+	/**
+	 * GetRelationName - get, e.g., 'Music' from 'Music: -C 6'
+	 * @param name	dataset name
+	 * @return relation
+	 */
+	public static final String getRelationName(String name) {
 		if(name.indexOf(':') > 0) {
 			return name.substring(0,name.indexOf(':'));
 		}
 		else return name;
+	}
+
+	/**
+	 * GetShortMethodName - get, e.g., 'BR' from 'meka.classifiers.multilabel.BR'.
+	 * @param method	long method name
+	 * @return short method name
+	 */
+	public static final String getShortMethodName(String method) {
+		String name = new String(method);
+		int idx_2 = name.indexOf(' ');
+		name = name.substring(0,idx_2);
+		int idx_1 = name.lastIndexOf('.');
+		return name.substring(idx_1+1);
 	}
 
 	/**
