@@ -407,6 +407,8 @@ public class DefaultExperiment
 
 		notifyExecutionStageListeners(ExecutionStageEvent.Stage.INITIALIZE);
 
+		ExperimentUtils.ensureThreadSafety(this);
+
 		for (LogListener l: m_LogListeners) {
 			m_DatasetProvider.addLogListener(l);
 			m_StatisticsHandler.addLogListener(l);

@@ -22,6 +22,9 @@ package meka.experiment.evaluators;
 
 import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.core.OptionUtils;
+import meka.core.ThreadLimiter;
+import meka.core.ThreadUtils;
+import meka.events.LogListener;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
 import weka.core.Instances;
 import weka.core.Option;
@@ -31,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.*;
 
 /**
  * Repeatedly executes the base evaluator.
@@ -39,7 +43,8 @@ import java.util.Vector;
  * @version $Revision$
  */
 public class RepeatedRuns
-  extends AbstractMetaEvaluator {
+		extends AbstractMetaEvaluator
+		implements ThreadLimiter {
 
 	private static final long serialVersionUID = -1230107553603089463L;
 
@@ -51,6 +56,15 @@ public class RepeatedRuns
 
 	/** the upper number of runs (included). */
 	protected int m_UpperRuns = getDefaultUpperRuns();
+
+	/** the number of threads to use for parallel execution. */
+	protected int m_NumThreads = getDefaultNumThreads();
+
+	/** the actual number of threads to use. */
+	protected int m_ActualNumThreads;
+
+	/** the executor service to use for parallel execution. */
+	protected transient ExecutorService m_Executor;
 
 	/**
 	 * Description to be displayed in the GUI.
@@ -146,6 +160,48 @@ public class RepeatedRuns
 	}
 
 	/**
+	 * Returns the default number of threads to use.
+	 *
+	 * @return 		the number of threads: -1 = # of CPUs/cores; 0/1 = sequential execution
+	 */
+	protected int getDefaultNumThreads() {
+		return 1;
+	}
+
+	/**
+	 * Sets the number of threads to use.
+	 *
+	 * @param value 	the number of threads: -1 = # of CPUs/cores; 0/1 = sequential execution
+	 */
+	public void setNumThreads(int value) {
+		if (value >= -1) {
+			m_NumThreads = value;
+		}
+		else {
+			log("Number of threads must be >= -1, provided: " + value);
+		}
+	}
+
+	/**
+	 * Returns the number of threads to use.
+	 *
+	 * @return 		the number of threads: -1 = # of CPUs/cores; 0/1 = sequential execution
+	 */
+	public int getNumThreads() {
+		return m_NumThreads;
+	}
+
+	/**
+	 * Returns the tip text for this property.
+	 *
+	 * @return 		tip text for this property suitable for
+	 * 			displaying in the GUI or for listing the options.
+	 */
+	public String numThreadsTipText() {
+		return "The number of threads to use ; -1 = number of CPUs/cores; 0 or 1 = sequential execution.";
+	}
+
+	/**
 	 * Returns an enumeration of all the available options..
 	 *
 	 * @return an enumeration of all available options.
@@ -156,6 +212,7 @@ public class RepeatedRuns
 		OptionUtils.add(result, super.listOptions());
 		OptionUtils.addOption(result, lowerRunsTipText(), "" + getDefaultLowerRuns(), "lower");
 		OptionUtils.addOption(result, upperRunsTipText(), "" + getDefaultUpperRuns(), "upper");
+		OptionUtils.addOption(result, numThreadsTipText(), "" + getDefaultNumThreads(), "num-threads");
 		return OptionUtils.toEnumeration(result);
 	}
 
@@ -169,6 +226,7 @@ public class RepeatedRuns
 	public void setOptions(String[] options) throws Exception {
 		setLowerRuns(OptionUtils.parse(options, "lower", getDefaultLowerRuns()));
 		setUpperRuns(OptionUtils.parse(options, "upper", getDefaultUpperRuns()));
+		setNumThreads(OptionUtils.parse(options, "num-threads", getDefaultNumThreads()));
 		super.setOptions(options);
 	}
 
@@ -183,18 +241,18 @@ public class RepeatedRuns
 		OptionUtils.add(result, super.getOptions());
 		OptionUtils.add(result, "lower", getLowerRuns());
 		OptionUtils.add(result, "upper", getUpperRuns());
+		OptionUtils.add(result, "num-threads", getNumThreads());
 		return OptionUtils.toArray(result);
 	}
 
 	/**
-	 * Returns the evaluation statistics generated for the dataset.
+	 * Executes the runs in sequential order.
 	 *
 	 * @param classifier    the classifier to evaluate
 	 * @param dataset       the dataset to evaluate on
 	 * @return              the statistics
 	 */
-	@Override
-	public List<EvaluationStatistics> evaluate(MultiLabelClassifier classifier, Instances dataset) {
+	protected List<EvaluationStatistics> evaluateSequential(MultiLabelClassifier classifier, Instances dataset) {
 		List<EvaluationStatistics>  result;
 		List<EvaluationStatistics>  stats;
 		int                         i;
@@ -217,9 +275,130 @@ public class RepeatedRuns
 				break;
 		}
 
+		return result;
+	}
+
+	/**
+	 * Executes the runs in sequential order.
+	 *
+	 * @param classifier    the classifier to evaluate
+	 * @param dataset       the dataset to evaluate on
+	 * @return              the statistics
+	 */
+	protected List<EvaluationStatistics> evaluateParallel(final MultiLabelClassifier classifier, final Instances dataset) {
+		List<EvaluationStatistics>                      result;
+		ArrayList<Callable<List<EvaluationStatistics>>>	jobs;
+		Callable<List<EvaluationStatistics>>		    job;
+		List<Future<List<EvaluationStatistics>>>	    results;
+		int                                             i;
+		List<EvaluationStatistics>                      jobResult;
+
+		result = new ArrayList<>();
+
+		jobs = new ArrayList<>();
+		for (i = m_LowerRuns; i <= m_UpperRuns; i++) {
+			final int index = i;
+			job = new Callable<List<EvaluationStatistics>>() {
+				public List<EvaluationStatistics> call() throws Exception {
+					log("Executing run #" + (index+1) + "...");
+					Evaluator evaluator = (Evaluator) OptionUtils.shallowCopy(m_Evaluator);
+					for (LogListener l: m_LogListeners)
+						evaluator.addLogListener(l);
+					if (evaluator instanceof Randomizable)
+						((Randomizable) evaluator).setSeed(index);
+					evaluator.initialize();
+					List<EvaluationStatistics> stats = m_Evaluator.evaluate(classifier, dataset);
+					for (LogListener l: m_LogListeners)
+						evaluator.removeLogListener(l);
+					log("...finished run #" + (index + 1) + ((stats == null) ? "" : " with error"));
+					return stats;
+				}
+			};
+			jobs.add(job);
+		}
+
+		// execute jobs
+		m_Executor = Executors.newFixedThreadPool(m_ActualNumThreads);
+		results    = null;
+		try {
+			results = m_Executor.invokeAll(jobs);
+		}
+		catch (InterruptedException e) {
+			// ignored
+		}
+		catch (RejectedExecutionException e) {
+			// ignored
+		}
+		catch (Exception e) {
+			handleException("Failed to start up jobs", e);
+		}
+		m_Executor.shutdown();
+
+		// wait for threads to finish
+		while (!m_Executor.isTerminated()) {
+			try {
+				m_Executor.awaitTermination(100, TimeUnit.MILLISECONDS);
+			}
+			catch (InterruptedException e) {
+				// ignored
+			}
+			catch (Exception e) {
+				handleException("Failed to await termination", e);
+			}
+		}
+
+		// collect results
+		if (results != null) {
+			for (i = 0; i < results.size(); i++) {
+				try {
+					jobResult = results.get(i).get();
+					if (jobResult != null)
+						result.addAll(jobResult);
+				}
+				catch (InterruptedException e) {
+					// ignored
+				}
+				catch (Exception e) {
+					handleException("Failed to get job results", e);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Returns the evaluation statistics generated for the dataset.
+	 *
+	 * @param classifier    the classifier to evaluate
+	 * @param dataset       the dataset to evaluate on
+	 * @return              the statistics
+	 */
+	@Override
+	public List<EvaluationStatistics> evaluate(MultiLabelClassifier classifier, Instances dataset) {
+		List<EvaluationStatistics>  result;
+
+		m_ActualNumThreads = ThreadUtils.getActualNumThreads(m_NumThreads, m_UpperRuns - m_LowerRuns + 1);
+
+		log("Number of threads (1 = sequential): " + m_ActualNumThreads);
+		if (m_ActualNumThreads == 1)
+			result = evaluateSequential(classifier, dataset);
+		else
+			result = evaluateParallel(classifier, dataset);
+
 		if (m_Stopped)
 			result.clear();
 
 		return result;
+	}
+
+	/**
+	 * Stops the evaluation, if possible.
+	 */
+	@Override
+	public void stop() {
+		if (m_Executor != null)
+			m_Executor.shutdownNow();
+		super.stop();
 	}
 }

@@ -29,6 +29,9 @@ import java.util.Vector;
 /**
  * Ancestor for handlers.
  *
+ * By default {@link IncrementalEvaluationStatisticsHandler} are not considered threadsafe. This
+ * classes must explicitly state that they're threadsafe.
+ *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
@@ -51,7 +54,7 @@ public abstract class AbstractEvaluationStatisticsHandler
 	 * @return      true if threadsafe
 	 */
 	public boolean isThreadSafe() {
-		return false;
+		return !(this instanceof IncrementalEvaluationStatisticsHandler);
 	}
 
 	/**
