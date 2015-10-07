@@ -36,6 +36,13 @@ public interface EvaluationStatisticsHandler
   extends OptionHandler, Serializable, LogSupporter {
 
 	/**
+	 * Returns whether the handler is threadsafe.
+	 *
+	 * @return      true if threadsafe
+	 */
+	public boolean isThreadSafe();
+
+	/**
 	 * Initializes the handler.
 	 *
 	 * @return      null if successfully initialized, otherwise error message

@@ -38,6 +38,16 @@ public class InMemory
 	protected List<EvaluationStatistics> m_Statistics = new ArrayList<>();
 
 	/**
+	 * Returns whether the handler is threadsafe.
+	 *
+	 * @return      true if threadsafe
+	 */
+	@Override
+	public boolean isThreadSafe() {
+		return true;
+	}
+
+	/**
 	 * Description to be displayed in the GUI.
 	 *
 	 * @return      the description
