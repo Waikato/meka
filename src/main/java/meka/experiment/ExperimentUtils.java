@@ -21,6 +21,8 @@
 package meka.experiment;
 
 import meka.core.ThreadLimiter;
+import meka.core.ThreadUtils;
+import meka.experiment.evaluationstatistics.OptionalIncrementalEvaluationStatisticsHandler;
 import meka.experiment.evaluators.AbstractMetaEvaluator;
 import meka.experiment.evaluators.Evaluator;
 
@@ -33,20 +35,42 @@ import meka.experiment.evaluators.Evaluator;
 public class ExperimentUtils {
 
 	/**
+	 * Checks whether an Evaluator implements {@link ThreadLimiter} and uses multi-threading.
+	 *
+	 * @param exp       the experiment to check/update
+	 * @param evaluator the current evaluator to check
+	 * @return          true if ThreadLimiter evaluator present
+	 */
+	protected static boolean isMultiThreaded(Experiment exp, Evaluator evaluator) {
+		int         numThreads;
+
+		if (evaluator instanceof ThreadLimiter) {
+			numThreads = ((ThreadLimiter) evaluator).getNumThreads();
+			if (ThreadUtils.getActualNumThreads(numThreads, ThreadUtils.getAvailableProcessors()) != ThreadUtils.SEQUENTIAL)
+				return true;
+		}
+
+		if (evaluator instanceof AbstractMetaEvaluator)
+			return isMultiThreaded(exp, ((AbstractMetaEvaluator) evaluator).getEvaluator());
+		else
+			return false;
+	}
+
+	/**
 	 * Makes sure that the experiment uses a threadsafe setup.
 	 *
 	 * @param exp       the experiment to check/update
+	 * @param evaluator the current evaluator to check
 	 */
 	protected static void ensureThreadSafety(Experiment exp, Evaluator evaluator) {
 		int         old;
 
 		if (evaluator instanceof ThreadLimiter) {
 			old = ((ThreadLimiter) evaluator).getNumThreads();
-			if (old != 1) {
-				((ThreadLimiter) evaluator).setNumThreads(1);
-				exp.log(
-						evaluator.getClass().getName() + ": changed #threads from " + old + " to 1 "
-								+ "(" + exp.getStatisticsHandler().getClass().getName() + " is not threadsafe)!");
+			if (ThreadUtils.getActualNumThreads(old, ThreadUtils.getAvailableProcessors()) != ThreadUtils.SEQUENTIAL) {
+				((ThreadLimiter) evaluator).setNumThreads(ThreadUtils.SEQUENTIAL);
+				exp.log(evaluator.getClass().getName() + ": changed #threads from " + old + " to " + ThreadUtils.SEQUENTIAL + " "
+						+ "(" + exp.getStatisticsHandler().getClass().getName() + " is not threadsafe)!");
 			}
 		}
 
@@ -60,10 +84,28 @@ public class ExperimentUtils {
 	 * @param exp       the experiment to check/update
 	 */
 	public static void ensureThreadSafety(Experiment exp) {
+		boolean     old;
+
 		// threadsafe statistics handler? don't worry then
 		if (exp.getStatisticsHandler().isThreadSafe())
 			return;
 
-		ensureThreadSafety(exp, exp.getEvaluator());
+		if (isMultiThreaded(exp, exp.getEvaluator())) {
+			// can we turn off incremental mode to take advantage of multi-threading?
+			if (exp.getStatisticsHandler() instanceof OptionalIncrementalEvaluationStatisticsHandler) {
+				OptionalIncrementalEvaluationStatisticsHandler optional = (OptionalIncrementalEvaluationStatisticsHandler) exp.getStatisticsHandler();
+				old = optional.isIncrementalDisabled();
+				optional.setIncrementalDisabled(true);
+				if (optional.isThreadSafe()) {
+					exp.log("Turned off incremental mode for " + optional.getClass().getName() + " to make use of multi-threading!");
+					return;
+				}
+				else {
+					optional.setIncrementalDisabled(old);
+				}
+			}
+
+			ensureThreadSafety(exp, exp.getEvaluator());
+		}
 	}
 }

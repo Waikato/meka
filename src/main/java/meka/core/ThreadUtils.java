@@ -28,6 +28,12 @@ package meka.core;
  */
 public class ThreadUtils {
 
+	/** whether to use all available cores. */
+	public final static int ALL = -1;
+
+	/** the number of threads used to be considered sequential. */
+	public final static int SEQUENTIAL = 1;
+
 	/**
 	 * Returns the available number of processors on the machine.
 	 *
@@ -47,12 +53,12 @@ public class ThreadUtils {
 	public static int getActualNumThreads(int numThreads, int maxThreads) {
 		int result;
 
-		if (numThreads == -1)
+		if (numThreads == ALL)
 			result = getAvailableProcessors();
-		else if (numThreads > 1)
+		else if (numThreads > SEQUENTIAL)
 			result = Math.min(numThreads, maxThreads);
 		else
-			result = 1;
+			result = SEQUENTIAL;
 		if (result > getAvailableProcessors())
 			result = getAvailableProcessors();
 

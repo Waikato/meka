@@ -90,6 +90,8 @@ public class Serialized
 	 */
 	@Override
 	public String write(List<EvaluationStatistics> stats) {
+		log("Writing " + stats.size() + " statistics to: " + m_File);
+
 		try {
 			SerializationHelper.write(m_File.getAbsolutePath(), stats);
 			return null;

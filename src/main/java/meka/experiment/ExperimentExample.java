@@ -68,16 +68,9 @@ public class ExperimentExample {
 		mdp.setProviders(new DatasetProvider[]{dp1, dp2});
 		exp.setDatasetProvider(mdp);
 		// output of metrics
-		// not-threadsafe (incremental file writing!)
 		KeyValuePairs sh = new KeyValuePairs();
 		sh.setFile(new File(tmpDir + "/mekaexp.txt"));
 		exp.setStatisticsHandler(sh);
-		// threadsafe
-		/*
-		Serialized sh = new Serialized();
-		sh.setFile(new File(tmpDir + "/mekaexp2.ser"));
-		exp.setStatisticsHandler(sh);
-		*/
 		// evaluation
 		RepeatedRuns eval = new RepeatedRuns();
 		eval.setEvaluator(new CrossValidation());

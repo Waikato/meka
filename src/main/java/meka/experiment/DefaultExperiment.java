@@ -435,9 +435,13 @@ public class DefaultExperiment
 		String                      result;
 		Instances                   dataset;
 		List<EvaluationStatistics>  stats;
+		boolean                     incremental;
 
-		result    = null;
-		m_Running = true;
+		result      = null;
+		m_Running   = true;
+		incremental = (m_StatisticsHandler instanceof IncrementalEvaluationStatisticsHandler) &&
+				(((IncrementalEvaluationStatisticsHandler) m_StatisticsHandler).supportsIncrementalUpdate());
+		log("Incremental statistics? " + incremental);
 
 		notifyExecutionStageListeners(ExecutionStageEvent.Stage.RUN);
 
@@ -455,7 +459,7 @@ public class DefaultExperiment
 			// iterate classifiers
 			for (MultiLabelClassifier classifier: m_Classifiers) {
 				// evaluation required?
-				if (m_StatisticsHandler instanceof IncrementalEvaluationStatisticsHandler) {
+				if (incremental) {
 					if (!((IncrementalEvaluationStatisticsHandler) m_StatisticsHandler).requires(classifier, dataset)) {
 						log("Already present, skipping: " + Utils.toCommandLine(classifier) + " --> " + dataset.relationName());
 						List<EvaluationStatistics> priorStats = ((IncrementalEvaluationStatisticsHandler) m_StatisticsHandler).retrieve(classifier, dataset);
@@ -497,7 +501,7 @@ public class DefaultExperiment
 					}
 					if (stats != null) {
 						m_Statistics.addAll(stats);
-						if (m_StatisticsHandler instanceof IncrementalEvaluationStatisticsHandler)
+						if (incremental)
 							((IncrementalEvaluationStatisticsHandler) m_StatisticsHandler).append(stats);
 						notifyStatisticsNotificationListeners(stats);
 					}
@@ -512,7 +516,7 @@ public class DefaultExperiment
 
 
 		if (m_Running) {
-			if (!(m_StatisticsHandler instanceof IncrementalEvaluationStatisticsHandler))
+			if (!incremental)
 				m_StatisticsHandler.write(m_Statistics);
 		}
 		if (!m_Running) {
