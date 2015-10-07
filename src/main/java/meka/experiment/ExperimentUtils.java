@@ -46,7 +46,7 @@ public class ExperimentUtils {
 
 		if (evaluator instanceof ThreadLimiter) {
 			numThreads = ((ThreadLimiter) evaluator).getNumThreads();
-			if (ThreadUtils.getActualNumThreads(numThreads, ThreadUtils.getAvailableProcessors()) != ThreadUtils.SEQUENTIAL)
+			if (ThreadUtils.isMultiThreaded(numThreads))
 				return true;
 		}
 
@@ -67,7 +67,7 @@ public class ExperimentUtils {
 
 		if (evaluator instanceof ThreadLimiter) {
 			old = ((ThreadLimiter) evaluator).getNumThreads();
-			if (ThreadUtils.getActualNumThreads(old, ThreadUtils.getAvailableProcessors()) != ThreadUtils.SEQUENTIAL) {
+			if (ThreadUtils.isMultiThreaded(old)) {
 				((ThreadLimiter) evaluator).setNumThreads(ThreadUtils.SEQUENTIAL);
 				exp.log(evaluator.getClass().getName() + ": changed #threads from " + old + " to " + ThreadUtils.SEQUENTIAL + " "
 						+ "(" + exp.getStatisticsHandler().getClass().getName() + " is not threadsafe)!");
