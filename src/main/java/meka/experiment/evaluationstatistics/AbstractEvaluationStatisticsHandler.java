@@ -46,6 +46,15 @@ public abstract class AbstractEvaluationStatisticsHandler
 	public abstract String globalInfo();
 
 	/**
+	 * Returns whether the handler is threadsafe.
+	 *
+	 * @return      true if threadsafe
+	 */
+	public boolean isThreadSafe() {
+		return false;
+	}
+
+	/**
 	 * Returns an enumeration of all the available options.
 	 *
 	 * @return an enumeration of all available options.
