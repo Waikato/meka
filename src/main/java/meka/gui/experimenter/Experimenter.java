@@ -401,6 +401,15 @@ public class Experimenter
 	}
 
 	/**
+	 * Returns the current experiment, null if not available.
+	 *
+	 * @return      the experiment, null if none available
+	 */
+	public Experiment getCurrentExperiment() {
+		return m_Experiment;
+	}
+
+	/**
 	 * Returns the filename of the currently loaded data.
 	 *
 	 * @return      the filename, null if none available
