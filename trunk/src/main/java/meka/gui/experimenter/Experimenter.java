@@ -380,6 +380,7 @@ public class Experimenter
 			for (String clsname: clsnames) {
 				try {
 					additional = (AbstractExperimenterMenuItem) Class.forName(clsname).newInstance();
+					additional.setOwner(this);
 					action     = additional.getAction();
 					m_AdditionalMenuItems.put(additional, action);
 					if (!menus.containsKey(additional.getMenu())) {

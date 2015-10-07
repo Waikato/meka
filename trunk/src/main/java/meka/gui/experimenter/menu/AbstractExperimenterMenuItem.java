@@ -40,6 +40,27 @@ public abstract class AbstractExperimenterMenuItem
 
 	private static final long serialVersionUID = -355350206100168793L;
 
+	/** the experimenter the menu item belongs to. */
+	protected Experimenter m_Owner;
+
+	/**
+	 * Sets the owner.
+	 *
+	 * @param value     the owner
+	 */
+	public void setOwner(Experimenter value) {
+		m_Owner = value;
+	}
+
+	/**
+	 * Returns the owner.
+	 *
+	 * @return          the owner
+	 */
+	public Experimenter getOwner() {
+		return m_Owner;
+	}
+
 	/**
 	 * Returns the name of the menu this menu item will get added to.
 	 *
