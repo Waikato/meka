@@ -359,7 +359,7 @@ public class CrossValidation
 			job = new Callable<List<EvaluationStatistics>>() {
 				public List<EvaluationStatistics> call() throws Exception {
 					List<EvaluationStatistics> result = new ArrayList<>();
-					log("Executing fold #" + (index) + "...");
+					log("Executing fold #" + index + "...");
 					try {
 						Result res = Evaluation.evaluateModel(current, train, test, m_TOP, m_VOP);
 						EvaluationStatistics stats = new EvaluationStatistics(classifier, dataset, res);
@@ -370,7 +370,7 @@ public class CrossValidation
 						handleException(
 								"Failed to evaluate dataset '" + dataset.relationName() + "' with classifier: " + Utils.toCommandLine(classifier), e);
 					}
-					log("...finished fold #" + (index + 1));
+					log("...finished fold #" + index);
 					return result;
 				}
 			};
