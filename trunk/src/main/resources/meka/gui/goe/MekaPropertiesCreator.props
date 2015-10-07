@@ -105,3 +105,7 @@ meka.experiment.statisticsexporters.FileBasedMeasurementEvaluationStatisticsExpo
 # The Experimenter tabs
 meka.gui.experimenter.AbstractExperimenterTab=\
   meka.gui.experimenter
+
+# The additional Experimenter menu items
+meka.gui.experimenter.menu.AbstractExperimenterMenuItem=\
+  meka.gui.experimenter.menu
