@@ -32,6 +32,7 @@ import meka.gui.choosers.ExperimentFileChooser;
 import meka.gui.core.*;
 import meka.gui.events.RecentItemEvent;
 import meka.gui.events.RecentItemListener;
+import meka.gui.experimenter.menu.AbstractExperimenterMenuItem;
 import weka.gui.ConverterFileChooser;
 import weka.gui.GenericObjectEditor;
 
@@ -43,6 +44,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Vector;
 
 /**
@@ -112,15 +114,19 @@ public class Experimenter
 	/** the current experiment. */
 	protected Experiment m_Experiment;
 
+	/** additional menu items. */
+	protected HashMap<AbstractExperimenterMenuItem, AbstractAction> m_AdditionalMenuItems;
+
 	/**
 	 * Initializes the members.
 	 */
 	@Override
 	protected void initialize() {
-		m_MenuBar     = null;
-		m_Tabs        = new ArrayList<>();
-		m_FileChooser = new ExperimentFileChooser();
-		m_Experiment  = null;
+		m_MenuBar             = null;
+		m_Tabs                = new ArrayList<>();
+		m_FileChooser         = new ExperimentFileChooser();
+		m_Experiment          = null;
+		m_AdditionalMenuItems = new HashMap<>();
 	}
 
 	/**
@@ -199,14 +205,18 @@ public class Experimenter
 	 * @return the menu bar
 	 */
 	public JMenuBar getMenuBar() {
-		JMenuBar	        result;
-		JMenu		        menu;
-		JMenu		        submenu;
-		JMenuItem	        menuitem;
-		Vector<String>      clsnames;
+		JMenuBar	                    result;
+		JMenu		                    menu;
+		JMenu		                    submenu;
+		JMenuItem	                    menuitem;
+		Vector<String>                  clsnames;
+		HashMap<String,JMenu>           menus;
+		AbstractExperimenterMenuItem    additional;
+		AbstractAction                  action;
 
 		if (m_MenuBar == null) {
 			result = new JMenuBar();
+			menus  = new HashMap<>();
 
 			// File
 			menu = new JMenu("File");
@@ -218,6 +228,7 @@ public class Experimenter
 				}
 			});
 			result.add(menu);
+			menus.put(menu.getText(), menu);
 
 			// File/New
 			submenu = new JMenu("New");
@@ -326,6 +337,7 @@ public class Experimenter
 				}
 			});
 			result.add(menu);
+			menus.put(menu.getText(), menu);
 
 			// Execution/Start
 			menuitem = new JMenuItem("Start", GUIHelper.getIcon("start.gif"));
@@ -354,8 +366,37 @@ public class Experimenter
 			// additional tabs?
 			for (AbstractExperimenterTab tab: m_Tabs) {
 				menu = tab.getMenu();
-				if (menu != null)
+				if (menu != null) {
 					result.add(menu);
+					menus.put(menu.getText(), menu);
+				}
+			}
+
+			// additional menu items?
+			m_AdditionalMenuItems.clear();
+			clsnames = AbstractExperimenterMenuItem.getMenuItems();
+			for (String clsname: clsnames) {
+				try {
+					additional = (AbstractExperimenterMenuItem) Class.forName(clsname).newInstance();
+					action     = additional.getAction();
+					m_AdditionalMenuItems.put(additional, action);
+					if (!menus.containsKey(additional.getMenu())) {
+						menu = new JMenu(additional.getMenu());
+						menu.addChangeListener(new ChangeListener() {
+							@Override
+							public void stateChanged(ChangeEvent e) {
+								updateMenu();
+							}
+						});
+						result.add(menu);
+						menus.put(menu.getText(), menu);
+					}
+					menus.get(additional.getMenu()).add(new JMenuItem(action));
+				}
+				catch (Exception e) {
+					System.err.println("Failed to instantiate additional menu item: " + clsname);
+					e.printStackTrace();
+				}
 			}
 
 			m_MenuBar = result;
@@ -389,6 +430,10 @@ public class Experimenter
 		// Execution
 		m_MenuItemExecutionStart.setEnabled(present && !running);
 		m_MenuItemExecutionStop.setEnabled(present && running);
+
+		// additional menu items
+		for (AbstractExperimenterMenuItem item : m_AdditionalMenuItems.keySet())
+			item.update(this, m_AdditionalMenuItems.get(item));
 	}
 
 	/**
