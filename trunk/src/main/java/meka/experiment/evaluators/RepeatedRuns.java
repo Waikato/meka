@@ -165,7 +165,7 @@ public class RepeatedRuns
 	 * @return 		the number of threads: -1 = # of CPUs/cores; 0/1 = sequential execution
 	 */
 	protected int getDefaultNumThreads() {
-		return 1;
+		return ThreadUtils.SEQUENTIAL;
 	}
 
 	/**
@@ -380,8 +380,8 @@ public class RepeatedRuns
 
 		m_ActualNumThreads = ThreadUtils.getActualNumThreads(m_NumThreads, m_UpperRuns - m_LowerRuns + 1);
 
-		log("Number of threads (1 = sequential): " + m_ActualNumThreads);
-		if (m_ActualNumThreads == 1)
+		log("Number of threads (" + ThreadUtils.SEQUENTIAL + " = sequential): " + m_ActualNumThreads);
+		if (m_ActualNumThreads == ThreadUtils.SEQUENTIAL)
 			result = evaluateSequential(classifier, dataset);
 		else
 			result = evaluateParallel(classifier, dataset);

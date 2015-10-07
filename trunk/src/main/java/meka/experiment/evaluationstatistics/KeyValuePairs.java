@@ -24,15 +24,14 @@ import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.core.FileUtils;
 import meka.core.OptionUtils;
 import weka.core.Instances;
+import weka.core.Option;
 import weka.core.Utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Simple plain text format. One statistics object per line, as tab-separated key-value pairs.
@@ -42,7 +41,7 @@ import java.util.List;
  */
 public class KeyValuePairs
   extends AbstractFileBasedEvaluationStatisticsHandler
-  implements IncrementalEvaluationStatisticsHandler {
+  implements OptionalIncrementalEvaluationStatisticsHandler {
 
 	private static final long serialVersionUID = -1090631157162943295L;
 
@@ -54,6 +53,9 @@ public class KeyValuePairs
 
 	/** the statistics so far. */
 	protected List<EvaluationStatistics> m_Statistics = new ArrayList<>();
+
+	/** whether the incremental mode is off. */
+	protected boolean m_IncrementalDisabled;
 
 	/**
 	 * Description to be displayed in the GUI.
@@ -84,6 +86,91 @@ public class KeyValuePairs
 	}
 
 	/**
+	 * Sets whether incremental model is turned off.
+	 *
+	 * @param value     true to turn off incremental mode
+	 */
+	public void setIncrementalDisabled(boolean value) {
+		m_IncrementalDisabled = value;
+	}
+
+	/**
+	 * Returns whether incremental mode is turned off.
+	 *
+	 * @return          true if incremental mode is pff
+	 */
+	public boolean isIncrementalDisabled() {
+		return m_IncrementalDisabled;
+	}
+
+	/**
+	 * Describes this property.
+	 *
+	 * @return          the description
+	 */
+	public String incrementalDisabledTipText() {
+		return "If enabled, incremental mode is turned off.";
+	}
+
+	/**
+	 * Returns whether the handler is threadsafe.
+	 *
+	 * @return      true if threadsafe
+	 */
+	@Override
+	public boolean isThreadSafe() {
+		return m_IncrementalDisabled;
+	}
+
+	/**
+	 * Returns whether the handler supports incremental write.
+	 *
+	 * @return      true if supported
+	 */
+	@Override
+	public boolean supportsIncrementalUpdate() {
+		return !m_IncrementalDisabled;
+	}
+
+	/**
+	 * Returns an enumeration of all the available options.
+	 *
+	 * @return an enumeration of all available options.
+	 */
+	@Override
+	public Enumeration<Option> listOptions() {
+		Vector result = new Vector();
+		OptionUtils.add(result, super.listOptions());
+		OptionUtils.addOption(result, incrementalDisabledTipText(), "no", "incremental-disabled");
+		return OptionUtils.toEnumeration(result);
+	}
+
+	/**
+	 * Sets the options.
+	 *
+	 * @param options       the options
+	 * @throws Exception    never
+	 */
+	@Override
+	public void setOptions(String[] options) throws Exception {
+		setIncrementalDisabled(Utils.getFlag("incremental-disabled", options));
+		super.setOptions(options);
+	}
+
+	/**
+	 * Returns the options.
+	 *
+	 * @return              the options
+	 */
+	@Override
+	public String[] getOptions() {
+		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, super.getOptions());
+		OptionUtils.add(result, "incremental-disabled", isIncrementalDisabled());
+		return OptionUtils.toArray(result);
+	}
+
+	/**
 	 * Initializes the handler.
 	 *
 	 * @return      null if successfully initialized, otherwise error message
@@ -96,7 +183,7 @@ public class KeyValuePairs
 
 		if (result == null) {
 			m_Statistics.clear();
-			if (m_File.exists()) {
+			if (m_File.exists() && !m_IncrementalDisabled) {
 				log("File '" + m_File + "' exists, loading...");
 				m_Statistics.addAll(read());
 			}
@@ -173,16 +260,6 @@ public class KeyValuePairs
 	}
 
 	/**
-	 * Returns whether the handler supports incremental write.
-	 *
-	 * @return      true if supported
-	 */
-	@Override
-	public boolean supportsIncrementalUpdate() {
-		return true;
-	}
-
-	/**
 	 * Checks whether the specified combination of classifier and dataset is required for evaluation
 	 * or already present from previous evaluation.
 	 *
@@ -244,6 +321,8 @@ public class KeyValuePairs
 	public String append(List<EvaluationStatistics> stats) {
 		BufferedWriter  bwriter;
 		FileWriter      fwriter;
+
+		log("Writing " + stats.size() + " statistics to: " + m_File);
 
 		bwriter = null;
 		fwriter = null;

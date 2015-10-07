@@ -193,7 +193,7 @@ public class CrossValidation
 	 * @return 		the number of threads: -1 = # of CPUs/cores; 0/1 = sequential execution
 	 */
 	protected int getDefaultNumThreads() {
-		return -1;
+		return ThreadUtils.ALL;
 	}
 
 	/**
@@ -440,8 +440,8 @@ public class CrossValidation
 
 		m_ActualNumThreads = ThreadUtils.getActualNumThreads(m_NumThreads, m_NumFolds);
 
-		log("Number of threads (1 = sequential): " + m_ActualNumThreads);
-		if (m_ActualNumThreads == 1)
+		log("Number of threads (" + ThreadUtils.SEQUENTIAL + " = sequential): " + m_ActualNumThreads);
+		if (m_ActualNumThreads == ThreadUtils.SEQUENTIAL)
 			result = evaluateSequential(classifier, dataset);
 		else
 			result = evaluateParallel(classifier, dataset);
