@@ -59,14 +59,13 @@ public class CT extends MCC implements TechnicalInformationHandler {
 		}
 
 		/*
-		 * Make the Trellis. Start with a random structure.
+		 * Make the Trellis. Start with a random structure (unless -S 0 specified, see CC.java).
 		 */
 		if (getDebug())
 			System.out.println("Make Trellis");
 
-		int indices[] = A.make_sequence(L);
-
-		A.shuffle(indices, m_R);
+		prepareChain(L);
+		int indices[] = retrieveChain();
 
 		trel = new Trellis(indices, width, m_Density);
 
