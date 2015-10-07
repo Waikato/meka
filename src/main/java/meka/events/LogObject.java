@@ -73,7 +73,7 @@ public class LogObject
 	 *
 	 * @param msg       the message to output
 	 */
-	protected synchronized void log(String msg) {
+	public synchronized void log(String msg) {
 		LogEvent e;
 
 		if (getLogListeners().size() == 0) {
