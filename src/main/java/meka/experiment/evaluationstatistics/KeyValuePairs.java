@@ -183,7 +183,7 @@ public class KeyValuePairs
 
 		if (result == null) {
 			m_Statistics.clear();
-			if (m_File.exists() && !m_IncrementalDisabled) {
+			if (m_File.exists()) {
 				log("File '" + m_File + "' exists, loading...");
 				m_Statistics.addAll(read());
 			}
@@ -230,7 +230,7 @@ public class KeyValuePairs
 				}
 				if (raw.containsKey(KEY_CLASSIFIER) && raw.containsKey(KEY_RELATION)) {
 					stat = new EvaluationStatistics(
-							(MultiLabelClassifier) OptionUtils.fromCommandLine(MultiLabelClassifier.class, raw.get(KEY_CLASSIFIER)),
+							OptionUtils.fromCommandLine(MultiLabelClassifier.class, raw.get(KEY_CLASSIFIER)),
 							raw.get(KEY_RELATION),
 							null);
 					for (String key: raw.keySet()) {
