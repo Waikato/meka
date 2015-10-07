@@ -64,4 +64,14 @@ public class ThreadUtils {
 
 		return result;
 	}
+
+	/**
+	 * Returns whether the number of threads represent a multi-threaded setup.
+	 *
+	 * @param numThreads        the number of threads
+	 * @return                  true if multi-threaded
+	 */
+	public static boolean isMultiThreaded(int numThreads) {
+		return (ThreadUtils.getActualNumThreads(numThreads, ThreadUtils.getAvailableProcessors()) != ThreadUtils.SEQUENTIAL);
+	}
 }
