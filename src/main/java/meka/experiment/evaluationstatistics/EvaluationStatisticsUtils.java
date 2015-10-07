@@ -28,10 +28,7 @@ import meka.experiment.evaluators.RepeatedRuns;
 import weka.core.Instances;
 import weka.core.Utils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Helper class for stats related operations.
@@ -182,17 +179,20 @@ public class EvaluationStatisticsUtils {
 	public static int[][] rankMatrix(List<EvaluationStatistics> stats, String measurement) {
 
 		double V[][] = valueMatrix(stats,measurement);
+
+
 		int N = V.length;
 		int k = V[0].length;
 
 		int R[][] = new int[N][k];
 		for (int i = 0; i < N; i++) {
-			R[i] = Utils.sort(V[i]);
+			int indices[] = Utils.sort(V[i]);
 			// add 1 to each
 			for (int j = 0; j < k; j++) {
-				R[i][j]++;
+				R[i][indices[j]] = (j+1);
 			}
 		}
+
 
 		return R;
 	}
