@@ -146,6 +146,33 @@ public class EvaluationStatisticsUtils {
 	}
 
 	/**
+	 * Nemenyi Test - NOT YET IMPLEMENTED
+	 *
+	 * @param stats         the stats to inspect
+	 * @param measurement   the measurement to run the test on
+	 * @return              the Nemenyi test results
+	 */
+	public static List<String> nemenyi(List<EvaluationStatistics> stats, String measurement) {
+		List<Number>    result;
+
+		result = new ArrayList<>();
+		for (EvaluationStatistics stat: stats) {
+			if (stat.containsKey(measurement)) {
+				Number measure = stat.get(measurement);
+				String classifier = stat.getCommandLine();
+				String relation = stat.getRelation();
+
+				// 1. add <classifier,dataset,result.add(stat.get(measurement))> tuple
+			}
+		}
+		// 2. calculate ranks
+		// 3. run test
+
+		// not yet implemented
+		return null;
+	}
+
+	/**
 	 * Returns all available measurements.
 	 *
 	 * @param stats         the stats to inspect
