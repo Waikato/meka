@@ -300,7 +300,7 @@ public class RepeatedRuns
 			final int index = i;
 			job = new Callable<List<EvaluationStatistics>>() {
 				public List<EvaluationStatistics> call() throws Exception {
-					log("Executing run #" + (index+1) + "...");
+					log("Executing run #" + index + "...");
 					Evaluator evaluator = (Evaluator) OptionUtils.shallowCopy(m_Evaluator);
 					for (LogListener l: m_LogListeners)
 						evaluator.addLogListener(l);
@@ -310,7 +310,7 @@ public class RepeatedRuns
 					List<EvaluationStatistics> stats = m_Evaluator.evaluate(classifier, dataset);
 					for (LogListener l: m_LogListeners)
 						evaluator.removeLogListener(l);
-					log("...finished run #" + (index + 1) + ((stats == null) ? "" : " with error"));
+					log("...finished run #" + index + ((stats == null) ? "" : " with error"));
 					return stats;
 				}
 			};
