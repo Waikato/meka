@@ -342,6 +342,7 @@ public class Experimenter
 			// Execution/Start
 			menuitem = new JMenuItem("Start", GUIHelper.getIcon("start.gif"));
 			menuitem.setMnemonic('S');
+			menuitem.setAccelerator(KeyStroke.getKeyStroke("ctrl pressed X"));
 			menuitem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -353,7 +354,8 @@ public class Experimenter
 
 			// Execution/Stop
 			menuitem = new JMenuItem("Stop", GUIHelper.getIcon("stop.gif"));
-			menuitem.setMnemonic('S');
+			menuitem.setMnemonic('o');
+			menuitem.setAccelerator(KeyStroke.getKeyStroke("ctrl shift pressed X"));
 			menuitem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
