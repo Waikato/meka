@@ -45,7 +45,7 @@ public class CC extends ProblemTransformationMethod
 
 	protected CNode nodes[] = null;
 
-	protected int m_S = 0;
+	protected int m_S = getDefaultSeed();
 
 	protected Random m_R = null;
 
@@ -249,6 +249,10 @@ public class CC extends ProblemTransformationMethod
 	public void rebuildClassifier(int new_chain[], Instances D) throws Exception {
 	}
 
+	public int getDefaultSeed() {
+		return 0;
+	}
+
 	@Override
 	public int getSeed() {
 		return m_S;
@@ -266,14 +270,14 @@ public class CC extends ProblemTransformationMethod
 	@Override
 	public Enumeration listOptions() {
 		Vector result = new Vector();
-		OptionUtils.addOption(result, seedTipText(), "0", 'S');
+		OptionUtils.addOption(result, seedTipText(), "" + getDefaultSeed(), 'S');
 		OptionUtils.add(result, super.listOptions());
 		return OptionUtils.toEnumeration(result);
 	}
 
 	@Override
 	public void setOptions(String[] options) throws Exception {
-		setSeed(OptionUtils.parse(options, 'S', 0));
+		setSeed(OptionUtils.parse(options, 'S', getDefaultSeed()));
 		super.setOptions(options);
 	}
 
