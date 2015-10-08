@@ -405,6 +405,8 @@ public class DefaultExperiment
 	public String initialize() {
 		String      result;
 
+		debug("pre: init");
+
 		notifyExecutionStageListeners(ExecutionStageEvent.Stage.INITIALIZE);
 
 		ExperimentUtils.ensureThreadSafety(this);
@@ -423,6 +425,8 @@ public class DefaultExperiment
 		if (result != null)
 			log(result);
 
+		debug("post: finish");
+
 		return result;
 	}
 
@@ -437,17 +441,21 @@ public class DefaultExperiment
 		List<EvaluationStatistics>  stats;
 		boolean                     incremental;
 
+		debug("pre: run");
+
 		result      = null;
 		m_Running   = true;
 		incremental = (m_StatisticsHandler instanceof IncrementalEvaluationStatisticsHandler) &&
 				(((IncrementalEvaluationStatisticsHandler) m_StatisticsHandler).supportsIncrementalUpdate());
-		log("Incremental statistics? " + incremental);
+		debug("Incremental statistics? " + incremental);
 
 		notifyExecutionStageListeners(ExecutionStageEvent.Stage.RUN);
 
 		while (m_DatasetProvider.hasNext()) {
 			// next dataset
+			debug("pre: next-datasaet");
 			dataset = m_DatasetProvider.next();
+			debug("post: next-datasaet");
 			if (dataset == null) {
 				result = "Failed to obtain next dataset!";
 				log(result);
@@ -485,13 +493,17 @@ public class DefaultExperiment
 					log("Using classifier: " + OptionUtils.toCommandLine(classifier));
 
 					// perform evaluation
+					debug("pre: evaluator init");
 					result = m_Evaluator.initialize();
+					debug("post: evaluator init");
 					if (result != null) {
 						m_Running = false;
 						break;
 					}
 					try {
+						debug("pre: evaluator evaluate");
 						stats = m_Evaluator.evaluate(classifier, dataset);
+						debug("post: evaluator evaluate");
 					}
 					catch (Exception e) {
 						result = handleException("Failed to evaluate dataset '" + dataset.relationName() + "' with classifier: " + Utils.toCommandLine(classifier), e);
@@ -531,6 +543,8 @@ public class DefaultExperiment
 
 		m_Running = false;
 
+		debug("pre: run");
+
 		return result;
 	}
 
@@ -541,6 +555,8 @@ public class DefaultExperiment
 	 */
 	public String finish() {
 		String      result;
+
+		debug("pre: finish");
 
 		result = handleError(m_DatasetProvider, m_DatasetProvider.finish());
 		if (result != null)
@@ -556,6 +572,8 @@ public class DefaultExperiment
 		}
 
 		notifyExecutionStageListeners(ExecutionStageEvent.Stage.FINISH);
+
+		debug("post: finish");
 
 		return result;
 	}
@@ -573,6 +591,7 @@ public class DefaultExperiment
 	 * Stops the experiment if still running.
 	 */
 	public void stop() {
+		debug("stop");
 		m_Evaluator.stop();
 		m_Running = false;
 	}
