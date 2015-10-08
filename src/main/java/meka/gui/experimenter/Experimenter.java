@@ -686,6 +686,7 @@ public class Experimenter
 	 */
 	public void logMessage(LogEvent e) {
 		log(null, e.getSource().getClass().getName() + ": " + e.getMessage());
+		System.err.println(e.getSource().getClass().getName() + ": " + e.getMessage());
 	}
 
 	/**
