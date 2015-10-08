@@ -26,7 +26,8 @@ import java.io.Serializable;
 import java.util.HashSet;
 
 /**
- * Ancestor for objects that support logging..
+ * Ancestor for objects that support logging.
+ * Debug mode can be enabled using boolean system property 'meka.exec.debug'.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
@@ -35,6 +36,9 @@ public class LogObject
   implements Serializable, LogSupporter {
 
 	private static final long serialVersionUID = -3814825277914734502L;
+
+	/** whether to run code in DEBUG mode */
+	protected boolean m_Debug = System.getProperty("meka.exec.debug", "false").equals("true");
 
 	/** the listeners. */
 	protected transient HashSet<LogListener> m_LogListeners;
@@ -76,6 +80,8 @@ public class LogObject
 	public synchronized void log(String msg) {
 		LogEvent e;
 
+		debug(msg);
+
 		if (getLogListeners().size() == 0) {
 			System.err.println(msg);
 			return;
@@ -84,6 +90,16 @@ public class LogObject
 		e = new LogEvent(this, msg);
 		for (LogListener l: getLogListeners())
 			l.logMessage(e);
+	}
+
+	/**
+	 * For debugging messages. Uses stderr.
+	 *
+	 * @param msg       the message to output
+	 */
+	public synchronized void debug(String msg) {
+		if (m_Debug)
+			System.err.println("[DEBUG] " + getClass().getName() + " - " + msg);
 	}
 
 	/**
