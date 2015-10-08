@@ -54,10 +54,10 @@ public class PercentageSplit
 	protected int m_Seed = getDefaultSeed();
 
 	/** the threshold option. */
-	protected String m_TOP = "PCut1";
+	protected String m_Threshold = getDefaultThreshold();
 
 	/** the verbosity option. */
-	protected String m_VOP = "3";
+	protected String m_Verbosity = getDefaultVerbosity();
 
 	/**
 	 * Description to be displayed in the GUI.
@@ -173,6 +173,78 @@ public class PercentageSplit
 	}
 
 	/**
+	 * Gets the default threshold option.
+	 *
+	 * @return the defaut
+	 */
+	protected String getDefaultThreshold() {
+		return "PCut1";
+	}
+
+	/**
+	 * Set the threshold option.
+	 *
+	 * @param value the option
+	 */
+	public void setThreshold(String value) {
+		m_Threshold = value;
+	}
+
+	/**
+	 * Gets the threshold option.
+	 *
+	 * @return the option
+	 */
+	public String getThreshold() {
+		return m_Threshold;
+	}
+
+	/**
+	 * Describes this property.
+	 *
+	 * @return          the description
+	 */
+	public String thresholdTipText() {
+		return "The threshold option.";
+	}
+
+	/**
+	 * Gets the default threshold option.
+	 *
+	 * @return the defaut
+	 */
+	protected String getDefaultVerbosity() {
+		return "3";
+	}
+
+	/**
+	 * Set the verbosity option.
+	 *
+	 * @param value the option
+	 */
+	public void setVerbosity(String value) {
+		m_Verbosity = value;
+	}
+
+	/**
+	 * Gets the verbosity option.
+	 *
+	 * @return the option
+	 */
+	public String getVerbosity() {
+		return m_Verbosity;
+	}
+
+	/**
+	 * Describes this property.
+	 *
+	 * @return          the description
+	 */
+	public String verbosityTipText() {
+		return "The verbosity option.";
+	}
+
+	/**
 	 * Returns an enumeration of all the available options..
 	 *
 	 * @return an enumeration of all available options.
@@ -184,6 +256,8 @@ public class PercentageSplit
 		OptionUtils.addOption(result, trainPercentageTipText(), "" + getDefaultTrainPercentage(), 'P');
 		OptionUtils.addFlag(result, preserveOrderTipText(), 'O');
 		OptionUtils.addOption(result, seedTipText(), "" + getDefaultSeed(), 'S');
+		OptionUtils.addOption(result, thresholdTipText(), "" + getDefaultThreshold(), 'T');
+		OptionUtils.addOption(result, verbosityTipText(), "" + getDefaultVerbosity(), 'V');
 		return OptionUtils.toEnumeration(result);
 	}
 
@@ -198,6 +272,8 @@ public class PercentageSplit
 		setTrainPercentage(OptionUtils.parse(options, 'P', getDefaultTrainPercentage()));
 		setPreserveOrder(Utils.getFlag('O', options));
 		setSeed(OptionUtils.parse(options, 'S', getDefaultSeed()));
+		setThreshold(OptionUtils.parse(options, 'T', getDefaultThreshold()));
+		setVerbosity(OptionUtils.parse(options, 'V', getDefaultVerbosity()));
 		super.setOptions(options);
 	}
 
@@ -213,6 +289,8 @@ public class PercentageSplit
 		OptionUtils.add(result, 'P', getTrainPercentage());
 		OptionUtils.add(result, 'O', getPreserveOrder());
 		OptionUtils.add(result, 'S', getSeed());
+		OptionUtils.add(result, 'T', getThreshold());
+		OptionUtils.add(result, 'V', getVerbosity());
 		return OptionUtils.toArray(result);
 	}
 
@@ -240,7 +318,7 @@ public class PercentageSplit
 		train     = new Instances(dataset, 0, trainSize);
 		test      = new Instances(dataset, trainSize, dataset.numInstances() - trainSize);
 		try {
-			res = Evaluation.evaluateModel(classifier, train, test, m_TOP, m_VOP);
+			res = Evaluation.evaluateModel(classifier, train, test, m_Threshold, m_Verbosity);
 			result.add(new EvaluationStatistics(classifier, dataset, res));
 		}
 		catch (Exception e) {
