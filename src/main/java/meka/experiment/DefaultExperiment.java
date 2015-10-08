@@ -472,9 +472,9 @@ public class DefaultExperiment
 
 		while (m_DatasetProvider.hasNext()) {
 			// next dataset
-			debug("pre: next-datasaet");
+			debug("pre: next-dataset");
 			dataset = m_DatasetProvider.next();
-			debug("post: next-datasaet");
+			debug("post: next-dataset");
 			if (dataset == null) {
 				result = "Failed to obtain next dataset!";
 				log(result);
