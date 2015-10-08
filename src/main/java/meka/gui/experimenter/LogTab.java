@@ -21,6 +21,7 @@ package meka.gui.experimenter;
 
 import com.googlecode.jfilechooserbookmarks.gui.BaseScrollPane;
 import meka.core.FileUtils;
+import meka.experiment.events.ExecutionStageEvent;
 import meka.gui.choosers.MekaFileChooser;
 import meka.gui.core.GUIHelper;
 import weka.gui.ExtensionFileFilter;
@@ -49,6 +50,9 @@ public class LogTab
 
 	/** the panel for visualizing the data. */
 	protected JTextArea m_TextArea;
+
+	/** whether to clear before each run. */
+	protected JCheckBox m_CheckBoxClear;
 
 	/** the button for clearing the log. */
 	protected JButton m_ButtonClear;
@@ -85,6 +89,7 @@ public class LogTab
 	@Override
 	protected void initGUI() {
 		JPanel      panel;
+		JPanel      panelBottom;
 
 		super.initGUI();
 
@@ -93,8 +98,20 @@ public class LogTab
 		m_TextArea.setEditable(false);
 		add(new BaseScrollPane(m_TextArea), BorderLayout.CENTER);
 
+		panelBottom = new JPanel(new BorderLayout());
+		add(panelBottom, BorderLayout.SOUTH);
+
+		// clear
+		panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		panelBottom.add(panel, BorderLayout.WEST);
+
+		m_CheckBoxClear = new JCheckBox("Clear before run");
+		m_CheckBoxClear.setSelected(true);
+		panel.add(m_CheckBoxClear);
+
+		// buttons
 		panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		add(panel, BorderLayout.SOUTH);
+		panelBottom.add(panel, BorderLayout.EAST);
 
 		m_ButtonClear = new JButton("Clear", GUIHelper.getIcon("new.gif"));
 		m_ButtonClear.addActionListener(new ActionListener() {
@@ -105,7 +122,7 @@ public class LogTab
 		});
 		panel.add(m_ButtonClear);
 
-		m_ButtonSave = new JButton("Save", GUIHelper.getIcon("save.gif"));
+		m_ButtonSave = new JButton("Save...", GUIHelper.getIcon("save.gif"));
 		m_ButtonSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -181,5 +198,17 @@ public class LogTab
 			m_TextArea.append(msg);
 		m_TextArea.append("\n");
 		m_TextArea.setCaretPosition(m_TextArea.getDocument().getLength());
+	}
+
+	/**
+	 * Gets called when the experiment enters a new stage.
+	 *
+	 * @param e         the event
+	 */
+	@Override
+	public void experimentStage(ExecutionStageEvent e) {
+		super.experimentStage(e);
+		if (m_CheckBoxClear.isSelected() && (e.getStage() == ExecutionStageEvent.Stage.INITIALIZING))
+			clear();
 	}
 }
