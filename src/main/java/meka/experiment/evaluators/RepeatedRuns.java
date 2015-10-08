@@ -84,7 +84,7 @@ public class RepeatedRuns
 	 */
 	@Override
 	protected Evaluator getDefaultEvaluator() {
-		return new PercentageSplit();  // TODO
+		return new CrossValidation();
 	}
 
 	/**
