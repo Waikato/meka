@@ -536,37 +536,73 @@ public abstract class Metrics {
 		return loss / (double)N;
 	}
 
-	/** Levenshtein Distance. Multi-target compatible */
+	/** Levenshtein Distance divided by the number of labels. Multi-target compatible */
 	public static double L_LevenshteinDistance(int y[], int p[]) {
 		int L = y.length;
-		return (LevenshteinDistance(y, y.length, p, p.length) / (double)L);
+		return (getLevenshteinDistance(y, p) / (double)L);
 	}
 
-	private static int LevenshteinDistance(int y[], int len_y, int p[], int len_p) {
+	/*
+	 * Levenshtein Distance.
+	 * Given true labels y, and pRedicted labels r.
+	 * based on http://www.merriampark.com/ldjava.htm
+	 */
+	private static int getLevenshteinDistance(int y[], int r[]) {
+
+		int n = y.length;
+		int m = r.length;
+
+		if (n == 0) {
+			return m;
+		} else if (m == 0) {
+			return n;
+		}
+
+		if (n > m) {
+			final int[] tmp = y;
+			y = r;
+			r = tmp;
+			n = m;
+			m = r.length;
+		}
+
+		int p[] = new int[n + 1];
+		int d[] = new int[n + 1];
+		int _d[];
+
+		int i;
+		int j;
+
+		int r_j;
+
 		int cost;
 
-		// base case: empty strings
-		if (len_y == 0) return len_p;
-		if (len_p == 0) return len_y;
+		for (i = 0; i <= n; i++) {
+			p[i] = i;
+		}
 
-		// test if last characters of the strings match
-		if (y[len_y-1] == p[len_p-1])
-			cost = 0;
-		else
-			cost = 1;
+		for (j = 1; j <= m; j++) {
+			r_j = r[j - 1];
+			d[0] = j;
 
-		// return minimum of delete char from y, delete char from p, and delete char from both
-		return A.min(new int[]{
-						LevenshteinDistance(y, len_y - 1, p, len_p) + 1,
-						LevenshteinDistance(y, len_y, p, len_p - 1) + 1,
-						LevenshteinDistance(y, len_y - 1, p, len_p - 1) + cost
-				}
-		);
+			for (i = 1; i <= n; i++) {
+				cost = y[i - 1] == r_j ? 0 : 1;
+				d[i] = Math.min(Math.min(d[i - 1] + 1, p[i] + 1), p[i - 1] + cost);
+			}
+
+			_d = p;
+			p = d;
+			d = _d;
+		}
+
+		return p[n];
 	}
 
-   /** Log Likelihood */
-   public double P_LogLikelihood(int y[], double p[]) {
-	   int L = y.length;
+
+
+	/** Log Likelihood */
+	public double P_LogLikelihood(int y[], double p[]) {
+		int L = y.length;
 
 	   double l = 0.0;                              // likelihood
 	   for(int j = 0; j < L; j++) {
@@ -674,5 +710,6 @@ public abstract class Metrics {
 		   //{1}
 	   };
 	   System.out.println("0.533333333... = "+P_FmacroAvgD(Y,Ypred));
+	   System.out.println("LD = "+L_LevenshteinDistance(Y,Ypred));
    }
 }
