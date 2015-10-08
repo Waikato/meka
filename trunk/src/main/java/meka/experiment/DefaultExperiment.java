@@ -435,7 +435,7 @@ public class DefaultExperiment
 			log(result);
 
 		m_Initializing = false;
-		debug("post: finish");
+		debug("post: init");
 
 		return result;
 	}
@@ -563,7 +563,7 @@ public class DefaultExperiment
 		m_Running  = false;
 		m_Stopping = false;
 
-		debug("pre: run");
+		debug("post: run");
 
 		return result;
 	}
@@ -581,7 +581,8 @@ public class DefaultExperiment
 	 * Stops the experiment if running.
 	 */
 	public void stop() {
-		debug("stop");
+		debug("pre: stop");
+
 		m_Stopping     = true;
 		m_Initializing = false;
 		m_Running      = false;
@@ -589,6 +590,8 @@ public class DefaultExperiment
 		notifyExecutionStageListeners(ExecutionStageEvent.Stage.STOPPING);
 
 		m_Evaluator.stop();
+
+		debug("post: stop");
 	}
 
 	/**
