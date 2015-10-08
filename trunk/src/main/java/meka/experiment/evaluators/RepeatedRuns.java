@@ -286,20 +286,19 @@ public class RepeatedRuns
 	 * @return              the statistics
 	 */
 	protected List<EvaluationStatistics> evaluateParallel(final MultiLabelClassifier classifier, final Instances dataset) {
-		List<EvaluationStatistics>                      result;
-		ArrayList<Callable<List<EvaluationStatistics>>>	jobs;
-		Callable<List<EvaluationStatistics>>		    job;
-		List<Future<List<EvaluationStatistics>>>	    results;
-		int                                             i;
-		List<EvaluationStatistics>                      jobResult;
+		List<EvaluationStatistics>      result;
+		ArrayList<EvaluatorJob>	        jobs;
+		EvaluatorJob		            job;
+		int                             i;
 
 		result = new ArrayList<>();
 
+		debug("pre: create jobs");
 		jobs = new ArrayList<>();
 		for (i = m_LowerRuns; i <= m_UpperRuns; i++) {
 			final int index = i;
-			job = new Callable<List<EvaluationStatistics>>() {
-				public List<EvaluationStatistics> call() throws Exception {
+			job = new EvaluatorJob() {
+				protected List<EvaluationStatistics> doCall() throws Exception {
 					log("Executing run #" + index + "...");
 					Evaluator evaluator = (Evaluator) OptionUtils.shallowCopy(m_Evaluator);
 					for (LogListener l: m_LogListeners)
@@ -316,15 +315,14 @@ public class RepeatedRuns
 			};
 			jobs.add(job);
 		}
+		debug("post: create jobs");
 
 		// execute jobs
 		m_Executor = Executors.newFixedThreadPool(m_ActualNumThreads);
-		results    = null;
+		debug("pre: submit");
 		try {
-			results = m_Executor.invokeAll(jobs);
-		}
-		catch (InterruptedException e) {
-			// ignored
+			for (i = 0; i < jobs.size(); i++)
+				m_Executor.submit(jobs.get(i));
 		}
 		catch (RejectedExecutionException e) {
 			// ignored
@@ -332,9 +330,14 @@ public class RepeatedRuns
 		catch (Exception e) {
 			handleException("Failed to start up jobs", e);
 		}
+		debug("post: submit");
+
+		debug("pre: shutdown");
 		m_Executor.shutdown();
+		debug("post: shutdown");
 
 		// wait for threads to finish
+		debug("pre: wait");
 		while (!m_Executor.isTerminated()) {
 			try {
 				m_Executor.awaitTermination(100, TimeUnit.MILLISECONDS);
@@ -346,23 +349,13 @@ public class RepeatedRuns
 				handleException("Failed to await termination", e);
 			}
 		}
+		debug("post: wait");
 
 		// collect results
-		if (results != null) {
-			for (i = 0; i < results.size(); i++) {
-				try {
-					jobResult = results.get(i).get();
-					if (jobResult != null)
-						result.addAll(jobResult);
-				}
-				catch (InterruptedException e) {
-					// ignored
-				}
-				catch (Exception e) {
-					handleException("Failed to get job results", e);
-				}
-			}
-		}
+		debug("pre: collect");
+		for (i = 0; i < jobs.size(); i++)
+			result.addAll(jobs.get(i).getResult());
+		debug("post: collect");
 
 		return result;
 	}
@@ -397,8 +390,11 @@ public class RepeatedRuns
 	 */
 	@Override
 	public void stop() {
-		if (m_Executor != null)
+		if (m_Executor != null) {
+			debug("pre: shutdownNow");
 			m_Executor.shutdownNow();
+			debug("post: shutdownNow");
+		}
 		super.stop();
 	}
 }
