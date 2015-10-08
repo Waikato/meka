@@ -69,10 +69,10 @@ public class CrossValidation
 	protected transient ExecutorService m_Executor;
 
 	/** the threshold option. */
-	protected String m_TOP = "PCut1";
+	protected String m_Threshold = getDefaultThreshold();
 
 	/** the verbosity option. */
-	protected String m_VOP = "3";
+	protected String m_Verbosity = getDefaultVerbosity();
 
 	/**
 	 * Description to be displayed in the GUI.
@@ -230,6 +230,78 @@ public class CrossValidation
 	}
 
 	/**
+	 * Gets the default threshold option.
+	 *
+	 * @return the defaut
+	 */
+	protected String getDefaultThreshold() {
+		return "PCut1";
+	}
+
+	/**
+	 * Set the threshold option.
+	 *
+	 * @param value the option
+	 */
+	public void setThreshold(String value) {
+		m_Threshold = value;
+	}
+
+	/**
+	 * Gets the threshold option.
+	 *
+	 * @return the option
+	 */
+	public String getThreshold() {
+		return m_Threshold;
+	}
+
+	/**
+	 * Describes this property.
+	 *
+	 * @return          the description
+	 */
+	public String thresholdTipText() {
+		return "The threshold option.";
+	}
+
+	/**
+	 * Gets the default threshold option.
+	 *
+	 * @return the defaut
+	 */
+	protected String getDefaultVerbosity() {
+		return "3";
+	}
+
+	/**
+	 * Set the verbosity option.
+	 *
+	 * @param value the option
+	 */
+	public void setVerbosity(String value) {
+		m_Verbosity = value;
+	}
+
+	/**
+	 * Gets the verbosity option.
+	 *
+	 * @return the option
+	 */
+	public String getVerbosity() {
+		return m_Verbosity;
+	}
+
+	/**
+	 * Describes this property.
+	 *
+	 * @return          the description
+	 */
+	public String verbosityTipText() {
+		return "The verbosity option.";
+	}
+
+	/**
 	 * Returns an enumeration of all the available options..
 	 *
 	 * @return an enumeration of all available options.
@@ -241,6 +313,8 @@ public class CrossValidation
 		OptionUtils.addOption(result, numFoldsTipText(), "" + getDefaultNumFolds(), 'F');
 		OptionUtils.addFlag(result, preserveOrderTipText(), 'O');
 		OptionUtils.addOption(result, seedTipText(), "" + getDefaultSeed(), 'S');
+		OptionUtils.addOption(result, thresholdTipText(), "" + getDefaultThreshold(), 'T');
+		OptionUtils.addOption(result, verbosityTipText(), "" + getDefaultVerbosity(), 'V');
 		OptionUtils.addOption(result, numThreadsTipText(), "" + getDefaultNumThreads(), "num-threads");
 		return OptionUtils.toEnumeration(result);
 	}
@@ -256,6 +330,8 @@ public class CrossValidation
 		setNumFolds(OptionUtils.parse(options, 'F', getDefaultNumFolds()));
 		setPreserveOrder(Utils.getFlag('O', options));
 		setSeed(OptionUtils.parse(options, 'S', getDefaultSeed()));
+		setThreshold(OptionUtils.parse(options, 'T', getDefaultThreshold()));
+		setVerbosity(OptionUtils.parse(options, 'V', getDefaultVerbosity()));
 		setNumThreads(OptionUtils.parse(options, "num-threads", getDefaultNumThreads()));
 		super.setOptions(options);
 	}
@@ -272,6 +348,8 @@ public class CrossValidation
 		OptionUtils.add(result, 'F', getNumFolds());
 		OptionUtils.add(result, 'O', getPreserveOrder());
 		OptionUtils.add(result, 'S', getSeed());
+		OptionUtils.add(result, 'T', getThreshold());
+		OptionUtils.add(result, 'V', getVerbosity());
 		OptionUtils.add(result, "num-threads", getNumThreads());
 		return OptionUtils.toArray(result);
 	}
@@ -304,7 +382,7 @@ public class CrossValidation
 			test = dataset.testCV(m_NumFolds, i - 1);
 			try {
 				current = (MultiLabelClassifier) OptionUtils.shallowCopy(classifier);
-				res = Evaluation.evaluateModel(current, train, test, m_TOP, m_VOP);
+				res = Evaluation.evaluateModel(current, train, test, m_Threshold, m_Verbosity);
 				stats = new EvaluationStatistics(classifier, dataset, res);
 				stats.put(KEY_FOLD, i);
 				result.add(stats);
@@ -360,7 +438,7 @@ public class CrossValidation
 					List<EvaluationStatistics> result = new ArrayList<>();
 					log("Executing fold #" + index + "...");
 					try {
-						Result res = Evaluation.evaluateModel(current, train, test, m_TOP, m_VOP);
+						Result res = Evaluation.evaluateModel(current, train, test, m_Threshold, m_Verbosity);
 						EvaluationStatistics stats = new EvaluationStatistics(classifier, dataset, res);
 						stats.put(KEY_FOLD, index);
 						result.add(stats);
