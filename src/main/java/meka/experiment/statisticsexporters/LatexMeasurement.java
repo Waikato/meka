@@ -20,11 +20,10 @@
 
 package meka.experiment.statisticsexporters;
 
-import meka.core.FileUtils;
-import meka.core.LatexUtils;
-import meka.core.MLUtils;
+import meka.core.*;
 import meka.experiment.evaluationstatistics.EvaluationStatistics;
 import meka.experiment.evaluationstatistics.EvaluationStatisticsUtils;
+import weka.core.Utils;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -142,6 +141,15 @@ public class LatexMeasurement
 				bwriter.newLine();
 				bwriter.flush();
 			}
+			bwriter.write("\\hline");
+			bwriter.newLine();
+			bwriter.write(String.format("%12s ", "Avg.\\ Rank"));
+			for (i = 0; i < classifiers.size(); i++) {
+				String value = String.format("& %5.3f      ", Utils.mean(A.toDoubleArray(M.getCol(ranks, i))));
+				bwriter.write(value);
+			}
+			bwriter.write(" \\\\");
+			bwriter.newLine();
 			bwriter.write("\\hline");
 			bwriter.newLine();
 			bwriter.write("\\end{tabular}");
