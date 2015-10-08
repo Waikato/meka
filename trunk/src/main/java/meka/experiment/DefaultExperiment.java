@@ -64,8 +64,14 @@ public class DefaultExperiment
 	/** the statistics handler. */
 	protected EvaluationStatisticsHandler m_StatisticsHandler = getDefaultStatisticsHandler();
 
-	/** whether the experiment is still running. */
+	/** whether the experiment is initializing. */
+	protected boolean m_Initializing;
+
+	/** whether the experiment is running. */
 	protected boolean m_Running;
+
+	/** whether the experiment is stopping. */
+	protected boolean m_Stopping;
 
 	/** the listeners for execution stages.  */
 	protected transient HashSet<ExecutionStageListener> m_ExecutionStageListeners;
@@ -406,8 +412,11 @@ public class DefaultExperiment
 		String      result;
 
 		debug("pre: init");
+		m_Initializing = true;
+		m_Running      = false;
+		m_Stopping     = false;
 
-		notifyExecutionStageListeners(ExecutionStageEvent.Stage.INITIALIZE);
+		notifyExecutionStageListeners(ExecutionStageEvent.Stage.INITIALIZING);
 
 		ExperimentUtils.ensureThreadSafety(this);
 
@@ -425,9 +434,19 @@ public class DefaultExperiment
 		if (result != null)
 			log(result);
 
+		m_Initializing = false;
 		debug("post: finish");
 
 		return result;
+	}
+
+	/**
+	 * Returns whether the experiment is initializing.
+	 *
+	 * @return          true if initializing
+	 */
+	public boolean isInitializing() {
+		return m_Initializing;
 	}
 
 	/**
@@ -449,7 +468,7 @@ public class DefaultExperiment
 				(((IncrementalEvaluationStatisticsHandler) m_StatisticsHandler).supportsIncrementalUpdate());
 		debug("Incremental statistics? " + incremental);
 
-		notifyExecutionStageListeners(ExecutionStageEvent.Stage.RUN);
+		notifyExecutionStageListeners(ExecutionStageEvent.Stage.RUNNING);
 
 		while (m_DatasetProvider.hasNext()) {
 			// next dataset
@@ -487,7 +506,7 @@ public class DefaultExperiment
 					break;
 				}
 
-				if (m_Running) {
+				if (m_Running && !m_Stopping) {
 					// notify listeners
 					notifyIterationNotificationListeners(classifier, dataset);
 					log("Using classifier: " + OptionUtils.toCommandLine(classifier));
@@ -519,15 +538,15 @@ public class DefaultExperiment
 					}
 				}
 
-				if (!m_Running)
+				if (!m_Running || m_Stopping)
 					break;
 			}
-			if (!m_Running)
+			if (!m_Running || m_Stopping)
 				break;
 		}
 
 
-		if (m_Running) {
+		if (m_Running && !m_Stopping) {
 			if (!incremental)
 				m_StatisticsHandler.write(m_Statistics);
 		}
@@ -541,11 +560,44 @@ public class DefaultExperiment
 		if (result != null)
 			log(result);
 
-		m_Running = false;
+		m_Running  = false;
+		m_Stopping = false;
 
 		debug("pre: run");
 
 		return result;
+	}
+
+	/**
+	 * Returns whether the experiment is running.
+	 *
+	 * @return          true if running
+	 */
+	public boolean isRunning() {
+		return m_Running;
+	}
+
+	/**
+	 * Stops the experiment if running.
+	 */
+	public void stop() {
+		debug("stop");
+		m_Stopping     = true;
+		m_Initializing = false;
+		m_Running      = false;
+
+		notifyExecutionStageListeners(ExecutionStageEvent.Stage.STOPPING);
+
+		m_Evaluator.stop();
+	}
+
+	/**
+	 * Returns whether the experiment is stopping.
+	 *
+	 * @return          true if stopping
+	 */
+	public boolean isStopping() {
+		return m_Stopping;
 	}
 
 	/**
@@ -571,29 +623,15 @@ public class DefaultExperiment
 			m_Evaluator.removeLogListener(l);
 		}
 
+		m_Stopping     = false;
+		m_Initializing = false;
+		m_Running      = false;
+
 		notifyExecutionStageListeners(ExecutionStageEvent.Stage.FINISH);
 
 		debug("post: finish");
 
 		return result;
-	}
-
-	/**
-	 * Returns whether the experiment is still running.
-	 *
-	 * @return          true if still running
-	 */
-	public boolean isRunning() {
-		return m_Running;
-	}
-
-	/**
-	 * Stops the experiment if still running.
-	 */
-	public void stop() {
-		debug("stop");
-		m_Evaluator.stop();
-		m_Running = false;
 	}
 
 	/**

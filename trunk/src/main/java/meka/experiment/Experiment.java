@@ -177,6 +177,13 @@ public interface Experiment
 	public String initialize();
 
 	/**
+	 * Returns whether the experiment is initializing.
+	 *
+	 * @return          true if initializing
+	 */
+	public boolean isInitializing();
+
+	/**
 	 * Runs the experiment.
 	 *
 	 * @return          null if successfully run, otherwise error message
@@ -184,16 +191,9 @@ public interface Experiment
 	public String run();
 
 	/**
-	 * Finishes the experiment.
+	 * Returns whether the experiment is running.
 	 *
-	 * @return          null if successfully finished, otherwise error message
-	 */
-	public String finish();
-
-	/**
-	 * Returns whether the experiment is still running.
-	 *
-	 * @return          true if still running
+	 * @return          true if running
 	 */
 	public boolean isRunning();
 
@@ -201,6 +201,20 @@ public interface Experiment
 	 * Stops the experiment if still running.
 	 */
 	public void stop();
+
+	/**
+	 * Returns whether the experiment is stopping.
+	 *
+	 * @return          true if stopping
+	 */
+	public boolean isStopping();
+
+	/**
+	 * Finishes the experiment.
+	 *
+	 * @return          null if successfully finished, otherwise error message
+	 */
+	public String finish();
 
 	/**
 	 * Returns the current statistics.

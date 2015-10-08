@@ -415,23 +415,29 @@ public class Experimenter
 	 */
 	protected void updateMenu() {
 		boolean     present;
+		boolean     initializing;
 		boolean     running;
+		boolean     stopping;
+		boolean     active;
 
 		if (m_MenuBar == null)
 			return;
 
-		present = (m_Experiment != null);
-		running = present && m_Experiment.isRunning();
+		present      = (m_Experiment != null);
+		initializing = present && m_Experiment.isInitializing();
+		running      = present && m_Experiment.isRunning();
+		stopping     = present && m_Experiment.isStopping();
+		active       = initializing || running || stopping;
 
 		// File
-		m_MenuItemFileNew.setEnabled(!running);
-		m_MenuItemFileOpen.setEnabled(!running);
+		m_MenuItemFileNew.setEnabled(!active);
+		m_MenuItemFileOpen.setEnabled(!active);
 		m_MenuItemFileSave.setEnabled(present && (getCurrentFile() != null));
 		m_MenuItemFileSaveAs.setEnabled(present);
-		m_MenuItemFileClose.setEnabled(!running);
+		m_MenuItemFileClose.setEnabled(!active);
 
 		// Execution
-		m_MenuItemExecutionStart.setEnabled(present && !running);
+		m_MenuItemExecutionStart.setEnabled(present && !active);
 		m_MenuItemExecutionStop.setEnabled(present && running);
 
 		// additional menu items
@@ -708,14 +714,18 @@ public class Experimenter
 	 */
 	public void experimentStage(ExecutionStageEvent e) {
 		log(null, e.getExperiment().getClass().getName() + ": " + e.getStage());
-		for (AbstractExperimenterTab tab: m_Tabs) {
-			if (tab instanceof ExecutionStageListener)
-				((ExecutionStageListener) tab).experimentStage(e);
-		}
+		for (AbstractExperimenterTab tab: m_Tabs)
+			tab.experimentStage(e);
 
 		switch (e.getStage()) {
-			case RUN:
+			case INITIALIZING:
+				m_StatusBar.startBusy("Initializing...");
+				break;
+			case RUNNING:
 				m_StatusBar.startBusy("Running...");
+				break;
+			case STOPPING:
+				m_StatusBar.startBusy("Stopping...");
 				break;
 			case FINISH:
 				m_StatusBar.finishBusy("");

@@ -394,7 +394,7 @@ public class Statistics
 	 * @param e         the event
 	 */
 	public void experimentStage(ExecutionStageEvent e) {
-		if (e.getStage() == ExecutionStageEvent.Stage.INITIALIZE) {
+		if (e.getStage() == ExecutionStageEvent.Stage.INITIALIZING) {
 			m_Statistics = new ArrayList<>();
 			updateView();
 		}

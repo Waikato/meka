@@ -42,8 +42,9 @@ public class ExecutionStageEvent
 	 * @version $Revision$
 	 */
 	public enum Stage {
-		INITIALIZE,
-		RUN,
+		INITIALIZING,
+		RUNNING,
+		STOPPING,
 		FINISH
 	}
 
