@@ -39,8 +39,8 @@ public abstract class MLEvalUtils {
 		else if (top.equals("PCutL") || top.equals("C")) {		// Proportional Cut thresholds (one for each Label)
 			return Arrays.toString(ThresholdUtils.calibrateThresholds(Y,MLUtils.labelCardinalities(D)));
 		}
-		else { 								// Set our own threshold (we assume top = "0.5" or top = "[0.1,...,0.3]"
-											// (we make no checks here!) // X return String.valueOf(Double.parseDouble(top));
+		else {
+			// Set our own threshold (we assume top = "0.5" or top = "[0.1,...,0.3]" (we make no checks here!)
 			return top;
 		}
 	}
@@ -50,19 +50,11 @@ public abstract class MLEvalUtils {
 	 * @param	Rpred	predictions (may be real-valued confidences)
 	 * @param	Y   	corresponding true values
 	 * @param	t		a threshold string, e.g. "0.387"
+	 * @param	vop		the verbosity option, e.g. "5"
 	 * @return	        the evaluation statistics
 	 */
 	public static HashMap<String,Object> getMLStats(double Rpred[][], int Y[][], String t, String vop) {
 		double ts[] = ThresholdUtils.thresholdStringToArray(t,Y[0].length);
-		/*
-		if (t.startsWith("[")) {
-			ts = MLUtils.toDoubleArray(t);							// threshold vector       [t1 t2 ... tL]]
-		}
-		else {
-			ts = new double[Y[0].length];
-			Arrays.fill(ts,Double.parseDouble(t));					// make a threshold vector [t t t ... t]
-		}
-		*/
 		return getMLStats(Rpred,Y,ts,vop);
 	}
 
@@ -112,6 +104,8 @@ public abstract class MLEvalUtils {
 			results.put("AUROC (macro averaged)"		    ,Metrics.P_macroAUROC(Y,Rpred));
 			// This will not be displayed to text output, rather as a graph
 			results.put("Curve Data"		                ,Metrics.curveData(Y,Rpred));
+			//results.put("Macro Curve Data"		            ,Metrics.curveDataMacroAveraged(Y,Rpred));
+			results.put("Micro Curve Data"		            ,Metrics.curveDataMicroAveraged(Y,Rpred));
 
 			if (V > 2) {
 				results.put("Label indices              "	,A.make_sequence(L));
@@ -134,8 +128,9 @@ public abstract class MLEvalUtils {
 			}
 
 			if (V > 2) {
-				results.put("Empty labelvectors (predicted)"				,MLUtils.emptyVectors(Ypred));
+				results.put("Empty labelvectors (predicted)"	,MLUtils.emptyVectors(Ypred));
 				results.put("Label cardinality (predicted)"		,MLUtils.labelCardinality(Ypred));
+				results.put("Levenshtein distance", Metrics.L_LevenshteinDistance(Y, Ypred));
 				if (V > 3) {
 					// Label cardinality
 					results.put("Label cardinality (difference)"		,MLUtils.labelCardinality(Y)-MLUtils.labelCardinality(Ypred));
@@ -182,7 +177,7 @@ public abstract class MLEvalUtils {
 			output.put("ZeroOne loss"		,Metrics.L_ZeroOne(Y,Ypred));
 		}
 		if (V > 2) {
-			output.put("Levenshtein distance"	        ,Metrics.L_LevenshteinDistance(Y,Ypred));
+			output.put("Levenshtein distance", Metrics.L_LevenshteinDistance(Y, Ypred));
 
 			double HL[] = new double[L];
 			for(int j = 0; j < L; j++) {
@@ -191,9 +186,18 @@ public abstract class MLEvalUtils {
 			output.put("Label indices              "	,A.make_sequence(L));
 			output.put("Accuracy (per label)"	        ,HL);
 		}
+		if (V > 3) {
+			//output.put("Levenshtein distance", Metrics.L_LevenshteinDistance(Y, Ypred));
+		}
 		return output;
 	}
 
+	/**
+	 * Combine Predictions - Combine together various results (for example, from cross-validation)
+	 * into one, simply by appending predictions and true values together, and averaging together their 'vals'.
+	 * @param folds	an array of Results
+	 * @return a combined Result
+	 */
 	public static Result combinePredictions(Result folds[]) { 
 		Result r = new Result();
 
@@ -226,6 +230,7 @@ public abstract class MLEvalUtils {
 	 * @param	folds	array of Results (e.g., from CV-validation)
 	 * @return	A result reporting the average of these folds.
 	 */
+	@Deprecated
 	public static Result averageResults(Result folds[]) { 
 		Result r = new Result();
 		// info (should be the same across folds).
