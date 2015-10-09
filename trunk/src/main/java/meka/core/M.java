@@ -178,6 +178,20 @@ public abstract class M {
 		return v;
 	}
 
+	/**
+	 * Flatten - turn Matrix [0. 1.; 2. 3.] into vector [0. 1. 2. 3.].
+	 */
+	public static double[] flatten(double M[][]) {
+		double v[] = new double[M.length * M[0].length];
+		int k = 0;
+		for(int i = 0; i < M.length; i++) {
+			for(int j = 0; j < M[i].length; j++) {
+				v[k++] = M[i][j];
+			}
+		}
+		return v;
+	}
+
 	public static double[][] subtract(double[][] A, double[][] B) {
 		//if (A.length != bRows) // no can do
 		//	throw new IllegalArgumentException(" A.cols ("+aCols+") != B.rows ("+bRows+") ");
