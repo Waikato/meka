@@ -513,15 +513,68 @@ public abstract class Metrics {
 	   return Utils.mean(AUC);
    }
 
+	/** Get Data for Plotting PR and ROC curves. */
+	public static Instances curveDataMicroAveraged(int Y[][], double P[][]) {
+		int y[] = M.flatten(Y);
+		double p[] = M.flatten(P);
+		ThresholdCurve curve = new ThresholdCurve();
+		return curve.getCurve(MLUtils.toWekaPredictions(y,p));
+	}
+
+	/** Get Data for Plotting PR and ROC curves. */
+    public static Instances curveDataMacroAveraged(int Y[][], double P[][]) {
+
+		Instances curveData[] = curveData(Y,P);
+		int L = curveData.length;
+
+		for(int j = 0; j < L; j++) {
+			System.out.println(curveData[j]);
+		}
+		System.out.println("----------");
+		System.exit(1);
+
+		int N = curveData[0].numInstances();
+		int D = curveData[0].numAttributes();
+		System.out.printf("%d %d %d\n", L, N, D);
+		Instances avgCurve = new Instances(curveData[0]);
+		for(int j = 1; j < L; j++) {
+			for(int i = 0; i < N; i++) {
+				System.out.println(avgCurve.instance(i));
+				System.out.println(curveData[j].instance(i));
+				//System.out.printf("%d %d %d\n", j, i, a);
+				for (int a = 0; a < D; a++) {
+					//System.out.printf("%d %d %d\n", j, i, a);
+					double v = curveData[j].instance(i).value(a);
+					double o = avgCurve.instance(i).value(a);
+					avgCurve.instance(i).setValue(a, o + v);
+				}
+			}
+		}
+		for(int j = 0; j < L; j++) {
+			for (int i = 0; i < N; i++) {
+				for (int a = 0; a < D; a++) {
+					double o = avgCurve.instance(i).value(a);
+					avgCurve.instance(i).setValue(a, o / L);
+				}
+			}
+		}
+		return avgCurve;
+	}
+
+	/** Get Data for Plotting PR and ROC curves. */
+	public static Instances curveData(int y[], double p[]) {
+
+		ThresholdCurve curve = new ThresholdCurve();
+		return curve.getCurve(MLUtils.toWekaPredictions(y,p));
+	}
+
    /** Get Data for Plotting PR and ROC curves. */
    public static Instances[] curveData(int Y[][], double P[][]) {
-
 
 	   int L = Y[0].length;
 	   Instances curveData[] = new Instances[L];
 	   for(int j = 0; j < L; j++) {
-		   ThresholdCurve curve = new ThresholdCurve();
-		   curveData[j] = curve.getCurve(MLUtils.toWekaPredictions(M.getCol(Y,j),M.getCol(P,j)));
+		   curveData[j] = curveData(M.getCol(Y, j), M.getCol(P, j));
 	   }
 	   return curveData;
    }
@@ -711,5 +764,7 @@ public abstract class Metrics {
 	   };
 	   System.out.println("0.533333333... = "+P_FmacroAvgD(Y,Ypred));
 	   System.out.println("LD = "+L_LevenshteinDistance(Y,Ypred));
+	   System.out.println("MA = \n"+curveDataMacroAveraged(Y,P));
+	   //System.out.println("\nMi = \n"+curveDataMicroAveraged(Y,P));
    }
 }
