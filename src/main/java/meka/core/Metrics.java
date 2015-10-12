@@ -293,6 +293,47 @@ public abstract class Metrics {
 	/**
 	 * P_Precision - (retrieved AND relevant) / retrieved
 	 */
+	public static double P_PrecisionMacro(int Y[][], int Ypred[][]) {
+
+		int L = Y[0].length;
+		double m = 0.0;
+		for (int j = 0; j < L; j++) {
+			m += (P_Precision(M.getCol(Y,j),M.getCol(Ypred,j)) * 1./L);
+		}
+
+		return m;
+	}
+
+	/**
+	 * P_Recall - (retrieved AND relevant) / relevant
+	 */
+	public static double P_RecallMacro(int Y[][], int Ypred[][]) {
+
+		int L = Y[0].length;
+		double m = 0.0;
+		for (int j = 0; j < L; j++) {
+			m += (P_Recall(M.getCol(Y,j),M.getCol(Ypred,j)) * 1./L);
+		}
+
+		return m;
+	}
+
+	/**
+	 * P_Precision - (retrieved AND relevant) / retrieved
+	 */
+	public static double P_PrecisionMicro(int Y[][], int Ypred[][]) {
+		return P_Precision(M.flatten(Y),M.flatten(Ypred));
+	}
+
+	/**
+	 * P_Recall - (retrieved AND relevant) / relevant
+	 */
+	public static double P_RecallMicro(int Y[][], int Ypred[][]) {
+		return P_Recall(M.flatten(Y),M.flatten(Ypred));
+	}
+	/**
+	 * P_Precision - (retrieved AND relevant) / retrieved
+	 */
 	public static double P_Precision(int Y[][], int Ypred[][], int j) {
 		return P_Precision(M.getCol(Y,j),M.getCol(Ypred,j));
 		//int retrieved = M.sum(M.sum(Ypred));
@@ -524,40 +565,51 @@ public abstract class Metrics {
 	/** Get Data for Plotting PR and ROC curves. */
     public static Instances curveDataMacroAveraged(int Y[][], double P[][]) {
 
+		// Note: 'Threshold' contains the probability threshold that gives rise to the previous performance values.
+
 		Instances curveData[] = curveData(Y,P);
 		int L = curveData.length;
 
-		for(int j = 0; j < L; j++) {
-			System.out.println(curveData[j]);
-		}
-		System.out.println("----------");
-		System.exit(1);
+		Instances avgCurve = new Instances(curveData[0],0);
+		int D = avgCurve.numAttributes();
 
-		int N = curveData[0].numInstances();
-		int D = curveData[0].numAttributes();
-		System.out.printf("%d %d %d\n", L, N, D);
-		Instances avgCurve = new Instances(curveData[0]);
-		for(int j = 1; j < L; j++) {
-			for(int i = 0; i < N; i++) {
-				System.out.println(avgCurve.instance(i));
-				System.out.println(curveData[j].instance(i));
-				//System.out.printf("%d %d %d\n", j, i, a);
-				for (int a = 0; a < D; a++) {
-					//System.out.printf("%d %d %d\n", j, i, a);
-					double v = curveData[j].instance(i).value(a);
-					double o = avgCurve.instance(i).value(a);
-					avgCurve.instance(i).setValue(a, o + v);
+		for (double t = 0.0; t < 1.; t+=0.01) {
+			Instance x = (Instance)curveData[0].instance(0).copy();
+			//System.out.println("x1\n"+x);
+			for(int j = 0; j < L; j++) {
+				int i = ThresholdCurve.getThresholdInstance(curveData[j],t);
+				if (j==0) {
+					// reset
+					for (int a = 0; a < D; a++) {
+						x.setValue(a,curveData[j].instance(i).value(a) * 1./L);
+					}
+				}
+				else {
+					// add
+					for (int a = 0; a < D; a++) {
+						double v = x.value(a);
+						x.setValue(a,v + curveData[j].instance(i).value(a) * 1./L);
+					}
 				}
 			}
+			//System.out.println("x2\n"+x);
+			avgCurve.add(x);
 		}
-		for(int j = 0; j < L; j++) {
-			for (int i = 0; i < N; i++) {
+
+		/*
+		System.out.println(avgCurve);
+		System.exit(1);
+
+		// Average everything
+		for (int i = 0; i < avgCurve.numInstances(); i++) {
+			for(int j = 0; j < L; j++) {
 				for (int a = 0; a < D; a++) {
 					double o = avgCurve.instance(i).value(a);
 					avgCurve.instance(i).setValue(a, o / L);
 				}
 			}
 		}
+		*/
 		return avgCurve;
 	}
 
