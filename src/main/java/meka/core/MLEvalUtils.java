@@ -93,10 +93,12 @@ public abstract class MLEvalUtils {
 			results.put("Avg precision"		,Metrics.P_AveragePrecision(Y,Rpred));
 			results.put("Log Loss (lim. L)"	,Metrics.L_LogLossL(Y,Rpred));
 			results.put("Log Loss (lim. D)"	,Metrics.L_LogLossD(Y,Rpred));
-			//if (V > 3) {
-			//	results.put("Precision"		    ,Metrics.P_Precision(Y,Ypred));
-			//	results.put("Recall"			,Metrics.P_Recall(Y,Ypred));
-			//}
+			if (V > 3) {
+				results.put("Micro Precision"		,Metrics.P_PrecisionMicro(Y,Ypred));
+				results.put("Micro Recall"			,Metrics.P_RecallMicro(Y,Ypred));
+				results.put("Macro Precision"		,Metrics.P_PrecisionMacro(Y,Ypred));
+				results.put("Macro Recall"			,Metrics.P_RecallMacro(Y,Ypred));
+			}
 			results.put("F1 (micro averaged)"				,Metrics.P_FmicroAvg(Y,Ypred));
 			results.put("F1 (macro averaged by example)"	,Metrics.P_FmacroAvgD(Y,Ypred));
 			results.put("F1 (macro averaged by label)"		,Metrics.P_FmacroAvgL(Y,Ypred));
@@ -104,7 +106,7 @@ public abstract class MLEvalUtils {
 			results.put("AUROC (macro averaged)"		    ,Metrics.P_macroAUROC(Y,Rpred));
 			// This will not be displayed to text output, rather as a graph
 			results.put("Curve Data"		                ,Metrics.curveData(Y,Rpred));
-			//results.put("Macro Curve Data"		            ,Metrics.curveDataMacroAveraged(Y,Rpred));
+			results.put("Macro Curve Data"		            ,Metrics.curveDataMacroAveraged(Y,Rpred));
 			results.put("Micro Curve Data"		            ,Metrics.curveDataMicroAveraged(Y,Rpred));
 
 			if (V > 2) {
