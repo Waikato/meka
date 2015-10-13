@@ -34,7 +34,7 @@ Improvements since the last version are as follows:
 	
 		- The Classify tab now automatically discovers its result history plugins at runtime. 
 		- These have to be derived from `meka.gui.explorer.classify.AbstractClassifyResultHistoryPlugin` and placed in the `meka.gui.explorer.classify` package. 
-		- New functionality (Show Graph, Save Graph, Save Model, Save CSV, Incremental Performance, Show ROC, etc.) is using this architecture
+		- New functionality (Show Graph, Save Graph, Save Model, Save CSV, Incremental Performance, Show ROC, Show PRC, etc.) is using this architecture
 
 	* The Explorer tabs are now plugins and get discovered dynamically at runtime. 
 	
@@ -48,7 +48,9 @@ Improvements since the last version are as follows:
 			- They need to be derived from `meka.gui.guichooser.AbstractMenuItemDefinition` and placed in package `meka.gui.guichooser`. 
 			- If you want a "shortcut" button like the Explorer menu definition has, simply let the `isShortcutButton()` method return true.
 
-	* Experimenter in development
+	* Meka now has an Experimenter
+
+		- 
 
 	* The `MultilabelClassifier` class is now (more appropriately) renamed `ProblemTransformationMethod`, and there is now a `MultiLabelClassifier` Interface.
 
