@@ -7,7 +7,7 @@
 \newcommand{\MOA}{Moa}
 \newcommand{\WEKA}{Weka}
 \newcommand{\MULAN}{Mulan}
-\def\version{{\tt 2.0.0}}
+\def\version{{\tt 1.9.0}}
 \usepackage{listings}
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
@@ -80,34 +80,29 @@ This tutorial applies to \framework{\MEKA} version {\version}.
 
 \section{Getting Started}
 
-\framework{\MEKA} can be download from: \url{http://sourceforge.net/projects/meka/files/}. This tutorial is written for version \version; and assumes that you have downloaded and extracted {\green the \texttt{meka-release-\version} and that \texttt{meka-\version}, found within, is your current working directory.
-}
+\framework{\MEKA} can be download from: \url{http://sourceforge.net/projects/meka/files/}. This tutorial is written for version \version; and assumes that you have downloaded and extracted the \texttt{meka-release-\version.zip} and that the \texttt{meka-\version/}, found within, is your current working directory.
 
 \subsection{Requirements}
 
 \framework{\MEKA} requires:
 
 \begin{itemize}
-	 \item Java version 1.6 or above
+	 \item Java version 1.7 or above
 \end{itemize}
 
 %\subsection{Downloading}
-{\green
-\framework{\MEKA} comes bundled with other packages such as \framework{\WEKA}'s \texttt{weka.jar}, and also \framework{\MULAN}'s \texttt{mulan.jar} for running classifiers from this framework. % If \framework{\WEKA} is already installed on your system, it must be at least version release (\texttt{3.7.X}) to be compatible with \texttt{\MEKA}.
-These files are found in the \texttt{lib} directory. See \texttt{lib/README.txt} for version information.
-}
-
+\framework{\MEKA} comes bundled with other packages such as \framework{\WEKA}'s and \framework{\MULAN}'s \texttt{mulan.jar}.% for running classifiers from this framework. % If \framework{\WEKA} is already installed on your system, it must be at least version release (\texttt{3.7.X}) to be compatible with \texttt{\MEKA}.
+These files are found in the \texttt{lib/} directory. %See \texttt{lib/README.txt} for version information.
 
 %\framework{\MEKA}'s incremental classification extension (\texttt{mice.jar}) comes packaged in a separate jar file. 
 
 \subsection{Running}
 \label{sec:running}
 
-\framework{\MEKA} can be used very easily from the command line. For example, to run the Binary Relevance (BR) classifier on the \textit{Music} dataset; {\green type:
+\framework{\MEKA} can be used very easily from the command line. For example, to run the Binary Relevance (BR) classifier on the \textit{Music} dataset; type:
 \begin{lstlisting}
 java -cp "./lib/*" meka.classifiers.multilabel.BR -t data/Music.arff
 \end{lstlisting}
-}
 
 If you are on a Microsoft Windows system, you need to use back slashes instead of forward slashes (\texttt{.\textbackslash lib\textbackslash*}). If you add the \texttt{jar} files to the system's \texttt{CLASSPATH}, you do not need to supply the \texttt{-cp} option at runtime. For the remainder of examples in this tutorial we will assume that this is the case.
 
@@ -193,7 +188,7 @@ java meka.classifiers.multilabel.BR -t data/Music.arff \
 
 \subsubsection{\label{sec:evaluation}Evaluation}
 
-Running \texttt{BR} {\green with \texttt{NaiveBayes}} on the \textit{Music} data will output the following:
+Running \texttt{BR} with \texttt{NaiveBayes} on the \textit{Music} data will output the following:
 
 %\lstinputlisting{eval.txt}
 \begin{center}
@@ -336,7 +331,7 @@ java meka.classifiers.multilabel.meta.EM -t data-train.arff \
 %java -cp meka.jar:weka.jar weka.classifiers.multitarget.meta.BaggingMT -x 5 -R -t data/solar_flare.arff -W weka.%classifiers.multitarget.C    C -- -W weka.classifiers.functions.Logistic
 %\end{lstlisting}
 
-{\green Note that the training set is required again in the second command because when \texttt{PCutL} is used (currently the default) it is necessary to know the label cardinality of the training data in order to calibrate a threshold.}
+Note that the training set is required again in the second command because when \texttt{PCutL} is used (currently the default) it is necessary to know the label cardinality of the training data in order to calibrate a threshold for the test data.
 
 \subsection{Graphical User Interface}
 
@@ -355,7 +350,7 @@ You will see a number of tabs: \textsf{Preprocess}, \textsf{Classify}, \textsf{V
 	\item In the \textsf{Evaluation} panel you configure what type of evaluation you want to do, and some of the options given in the previous section are available here. For example, a 55/45 train/test split, with \texttt{PCutL} threshold calibration, as being specified in \Fig{screen:split}.
 	\item When you click \textsf{Start} the experiment will be run. When finished, the result will appear in the \textsf{History} panel, as in \Fig{screen:result}. This is the same output as would be seen on the command line, and explained in the following section. The verbosity of the results is controlled by the \textsf{Verbosity} option (see \Sec{sec:evaluation})
 	%\item You can export results to text, or copy of paste it.
-	\item (Optional) View the Precision-Recall curves by right-clicking on the results and selecting \textsf{Show Precision-Recall}. {\green See \Fig{fig:curves}}
+	\item (Optional) View the Precision-Recall curves by right-clicking on the results and selecting \textsf{Show Precision-Recall}. See \Fig{screen:curves}
 	\item (Optional) If you chose a \texttt{MultiLabelDrawable} classifier (such as \texttt{BR}, \texttt{CC}, \texttt{LP}, or any derivatives) and a \texttt{Drawable} base classifier such as \texttt{J48}, you can right click on the results and select \textsf{Show Graphs}. See \Fig{screen:graphs}
 	\item (Optional) Click on the \textsf{Visualize} tab inspect the dataset.
 	\item (Optional) To remember later what you have done, \textsf{Save} the log from under the \textsf{Log} tab. 
@@ -377,7 +372,7 @@ You will see a number of tabs: \textsf{Preprocess}, \textsf{Classify}, \textsf{V
 
 \begin{figure}
 	\centering
-	\includegraphics[height=0.95\textwidth]{GUI04.png}
+	\includegraphics[height=0.60\textwidth]{GUI04.png}
 	\caption{\label{screen:result} \framework{MEKA}'s GUI interface; results.}
 \end{figure}
 
@@ -385,7 +380,14 @@ You will see a number of tabs: \textsf{Preprocess}, \textsf{Classify}, \textsf{V
 
 \begin{figure}
 	\centering
-	\includegraphics[height=0.75\textwidth]{GUI05.png}
+	\includegraphics[height=0.30\textwidth]{GUI06.png}
+	\includegraphics[height=0.30\textwidth]{GUI07.png}
+	\caption{\label{screen:curves} \framework{MEKA}'s GUI interface; viewing incremental performance over time (left) and a ROC curve (right).}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[height=0.55\textwidth]{GUI05.png}
 	\caption{\label{screen:graphs} \framework{MEKA}'s GUI interface; viewing a Decision Tree model of \texttt{CC}.}
 \end{figure}
 
@@ -413,6 +415,8 @@ As in the Explorer, you will see a number of tabs. The following process will gu
 	\item Click $\textsf{Statistics}\rightarrow\textsf{Save as (measurement)}$ to save this table as either a \texttt{tsv} or \texttt{tex} file
 	\item A \texttt{tex} file can be imported directly into a latex document with the \texttt{$\backslash$input} command
 \end{enumerate}
+
+If you wish to carry out this process from within Java code, you can inspect the file \texttt{./src/main/java/meka/experiment/ExperimentExample.java} to see how it can be done.
 
 \section{Development}
 \label{development}
