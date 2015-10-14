@@ -26,6 +26,12 @@ import java.util.*;
  */
 public abstract class A {
 
+	/** Set */
+	public static double[] set(double a[], int j, double k) {
+		a[j] = k;
+		return a;
+	}
+
 	// join 'a' and 'b' together into 'c' [1,2],[3] -> [1,2,3]
 	public static final int[] join(int a[], int b[]) {
 		int c[] = new int[a.length+b.length];
@@ -94,6 +100,24 @@ public abstract class A {
 		return sb.toString();
 	}
 
+	/** Multiply a vector with a constant. */
+	public static double[] multiply(double a[], double w) {
+		double c[] = new double[a.length];
+		for (int j = 0; j < a.length; j++) {
+			c[j] = a[j] * w;
+		}
+		return c;
+	}
+
+	/** Multiply two vectors (element-wise) together. */
+	public static double[] multiply(double a[], double w[]) {
+		double c[] = new double[a.length];
+		for (int j = 0; j < a.length; j++) {
+			c[j] = a[j] * w[j];
+		}
+		return c;
+	}
+
 	// product
 	public static final double product(double v[]) {
 		double p = 1.0;
@@ -121,6 +145,12 @@ public abstract class A {
 		return p;
 	}
 
+	/** Normalize (to sum to 1) */
+	public static double[] norm(double a[]) {
+		double s = A.sum(a);
+		return A.multiply(a,1/s);
+	}
+
 	/** Minimum */
 	public static int min(int a[]) {
 		int min = Integer.MAX_VALUE;
@@ -129,6 +159,29 @@ public abstract class A {
 				min = a_;
 		}
 		return min;
+	}
+
+	/** Max */
+	public static double max(double a[]) {
+		double max = Double.MIN_VALUE;
+		for (double a_ : a) {
+			if (a_ > max)
+				max = a_;
+		}
+		return max;
+	}
+
+	/** Argmax */
+	public static int argmax(double a[]) {
+		double max = a[0];
+		int arg = 0;
+        for (int i = 1; i < a.length; i++) {
+			if (a[i] > max) {
+				max = a[i];
+				arg = i;
+			}
+		}
+		return arg;
 	}
 
 	/** Mode */

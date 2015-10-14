@@ -413,10 +413,7 @@ public class SCC extends NSR implements Randomizable, MultiTargetClassifier, Tec
 	public String [] getOptions() {
 		List<String> result = new ArrayList<>();
 		OptionUtils.add(result, 'I', getI());
-		OptionUtils.add(result, 'L', getN());
 		OptionUtils.add(result, 'V', getIv());
-		OptionUtils.add(result, 'P', getP());
-		OptionUtils.add(result, 'S', getSeed());
 		OptionUtils.add(result, super.getOptions());
 		return OptionUtils.toArray(result);
 	}

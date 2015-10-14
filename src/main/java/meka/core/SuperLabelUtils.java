@@ -92,22 +92,23 @@ public abstract class SuperLabelUtils {
 	}
 
 	/** 
-	 * generatePartition.
+	 * Generate a random Partition.
 	 * <br>
 	 * TODO can generate 'indices' inside, given L
 	 * <br>
 	 * Get a random layout of 'num' sets of 'indices'.
-	 * @param	indices		[1,2,...,L]
+	 * @param	indices		[0,1,2,...,L-1]
 	 * @param	num			number of super-nodes to generate (between 1 and L)
-	 * @param	r			Random
+	 * @param	r			Random, if == null, then don't randomize
 	 * @return	partition
 	 */
 	public static int[][] generatePartition(int indices[], int num, Random r) {
 
 		int L = indices.length;
 
-		// shuffle indices
-		A.shuffle(indices, r);
+		if (r != null)
+			// shuffle indices
+            A.shuffle(indices, r);
 
 		// we have a minimum of 'num' groups
 		ArrayList<Integer> selection[] = new ArrayList[num];
@@ -132,15 +133,24 @@ public abstract class SuperLabelUtils {
 		return partition;
 	}
 
-	// returns SORTED partition
+
+	/**
+	 * Generate Random Partition
+	 * @param indices	label indices
+	 * @param num		the number of partitions
+	 * @param	r			Random, if == null, then don't randomize
+	 * @param balanced	indicate if balanced (same number of labels in each set) or not
+	 * @return SORTED partition
+	 */
 	public static int[][] generatePartition(int indices[], int num, Random r, boolean balanced) {
 		if (!balanced) 
 			return generatePartition(indices,num,r);
 
 		int L = indices.length;
 
-		// shuffle indices
-		A.shuffle(indices, r);
+		if (r != null)
+			// shuffle indices
+			A.shuffle(indices, r);
 
 		int partition[][] = new int[num][];
 		int k = L / num;
@@ -205,8 +215,8 @@ public abstract class SuperLabelUtils {
 	}
 	*/
 
-	// @TODO try and do without this in the future.
-	private static final int[][] convertListArrayTo2DArray(ArrayList<Integer> listArray[]) {
+	public static final int[][] convertListArrayTo2DArray(ArrayList<Integer> listArray[]) {
+		// TODO try and do without this in the future.
 		int num_partitions = listArray.length;
 		int array[][] = new int[num_partitions][];
 		for(int i = 0; i < listArray.length; i++) {
