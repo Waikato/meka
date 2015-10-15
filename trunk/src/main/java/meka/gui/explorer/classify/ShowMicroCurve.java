@@ -14,20 +14,20 @@
  */
 
 /**
- * ShowPrecisionRecall.java
+ * IncrementalPerformance.java
  * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
 
 package meka.gui.explorer.classify;
 
 import meka.classifiers.multilabel.MultiLabelClassifier;
+import weka.classifiers.evaluation.ThresholdCurve;
 import meka.core.Result;
 import meka.gui.core.ResultHistoryList;
-import weka.classifiers.evaluation.ThresholdCurve;
 import weka.core.Instances;
 import weka.gui.visualize.PlotData2D;
-import weka.gui.visualize.VisualizePanel;
 import weka.gui.visualize.ThresholdVisualizePanel;
+import weka.gui.visualize.VisualizePanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,16 +35,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Allows the user to display the precision recall curves per label.
+ * Allows the user to displays graphs of the performance of an incremental classifier if available.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
-public class ShowMacroPrecisionRecall
-        extends AbstractClassifyResultHistoryPlugin {
-
+public class ShowMicroCurve
+		extends AbstractClassifyResultHistoryPlugin {
 	private static final long serialVersionUID = -1152575716154907544L;
-	public static final String CURVE_DATA_MICRO = "Macro Curve Data";
+	public static final String CURVE_DATA_MICRO = "Micro Curve Data";
 	public static final String SAMPLES = "Samples";
 	public static final String ACCURACY = "Accuracy";
 
@@ -64,7 +63,7 @@ public class ShowMacroPrecisionRecall
 	 */
 	@Override
 	public String getName() {
-		return "Show Macro Avg Precision-Recall";
+		return "Show Micro-Averaged Curve";
 	}
 
 	/**
@@ -94,7 +93,8 @@ public class ShowMacroPrecisionRecall
 	 */
 	@Override
 	public boolean handles(ResultHistoryList history, int index) {
-		return (getClassifier(history, index) instanceof MultiLabelClassifier);
+		return (getClassifier(history, index) instanceof MultiLabelClassifier)
+				&& (history.getResultAt(index).getMeasurement(CURVE_DATA_MICRO) != null);
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class ShowMacroPrecisionRecall
 	protected VisualizePanel createPanel(Instances data) throws Exception {
 		VisualizePanel result = new ThresholdVisualizePanel();
 		PlotData2D plot = new PlotData2D(data);
-		plot.setPlotName("Macro-averaged Performance");
+		plot.setPlotName("Micro-averaged Performance");
 		plot.m_displayAllPoints = true;
 		boolean[] connectPoints = new boolean [data.numInstances()];
 		for (int cp = 1; cp < connectPoints.length; cp++)
