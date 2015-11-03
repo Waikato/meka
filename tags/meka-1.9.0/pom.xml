@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>net.sf.meka</groupId>
+  <artifactId>meka</artifactId>
+  <version>1.9.0</version>
+  <packaging>jar</packaging>
+
+  <name>meka</name>
+  <description>The MEKA project provides an open source implementation of methods for multi-label classification and evaluation. It is based on the WEKA Machine Learning Toolkit. Several benchmark methods are also included, as well as the pruned sets and classifier chains methods, other methods from the scientific literature, and a wrapper to the MULAN framework.</description>
+  <url>http://meka.sourceforge.net/</url>
+  <licenses>
+    <license>
+      <name>GNU General Public License 3</name>
+      <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>jread</id>
+      <name>Jesse Read</name>
+      <url>http://users.ics.aalto.fi/jesse/</url>
+      <organization>Aalto University, Espoo, Finland</organization>
+      <organizationUrl>http://ics.aalto.fi/en/</organizationUrl>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>fracpete</id>
+      <name>Peter Reutemann</name>
+      <url>http://www.cms.waikato.ac.nz/~fracpete/</url>
+      <organization>University of Waikato, NZ</organization>
+      <organizationUrl>http://www.waikato.ac.nz/</organizationUrl>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
+  <scm>
+    <connection>scm:svn:svn+ssh://svn.code.sf.net/p/meka/code/tags/meka-1.9.0</connection>
+    <developerConnection>scm:svn:svn+ssh://svn.code.sf.net/p/meka/code/tags/meka-1.9.0</developerConnection>
+    <url>https://svn.code.sf.net/p/meka/code/tags/meka-1.9.0</url>
+  </scm>
+
+  <mailingLists>
+    <mailingList>
+      <name>meka-list</name>
+      <subscribe>https://lists.sourceforge.net/lists/listinfo/meka-list</subscribe>
+      <unsubscribe>https://lists.sourceforge.net/lists/listinfo/meka-list</unsubscribe>
+      <archive>http://sourceforge.net/p/meka/mailman/meka-list/</archive>
+    </mailingList>
+  </mailingLists>
+
+  <dependencies>
+    <dependency>
+      <groupId>nz.ac.waikato.cms.weka</groupId>
+      <artifactId>weka-dev</artifactId>
+      <version>3.7.12</version>
+      <scope>test</scope>
+      <type>test-jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>nz.ac.waikato.cms.weka</groupId>
+      <artifactId>weka-dev</artifactId>
+      <version>3.7.12</version>
+    </dependency>
+
+    <dependency>
+      <groupId>nz.ac.waikato.cms.moa</groupId>
+      <artifactId>moa</artifactId>
+      <version>2014.04</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sf.meka.thirdparty</groupId>
+      <artifactId>mulan</artifactId>
+      <version>1.4.0</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>net.sf.meka.thirdparty</groupId>
+      <artifactId>mst</artifactId>
+      <version>4.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.googlecode.jfilechooser-bookmarks</groupId>
+      <artifactId>jfilechooser-bookmarks</artifactId>
+      <version>0.1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>gov.nist.math</groupId>
+      <artifactId>jama</artifactId>
+      <version>1.0.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sf.trove4j</groupId>
+      <artifactId>trove4j</artifactId>
+      <version>3.0.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>release-sign-artifacts</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.1</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <!-- used for skipping tests -->
+      <id>no-tests</id>
+      <properties>
+        <skipTests>true</skipTests>
+      </properties>
+    </profile>
+  </profiles>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+        <excludes>
+          <exclude>**/version.txt</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/version.txt</include>
+        </includes>
+      </resource>
+    </resources>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.0.2</version>
+          <configuration>
+            <source>1.7</source>
+            <target>1.7</target>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.4.1</version>
+          <configuration>
+            <useReleaseProfile>false</useReleaseProfile>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.15</version>
+          <configuration>
+            <includes>
+              <include>**/*Test.java</include>
+            </includes>
+            <disableXmlReport>true</disableXmlReport>
+            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+            <forkMode>never</forkMode>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>com.github.fracpete</groupId>
+          <artifactId>latex-maven-plugin</artifactId>
+          <version>1.4.0</version>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>latex</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <forceBuild>true</forceBuild>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.7</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>2.4.1</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>.</directory>
+              <includes>
+                <include>**/*~</include>
+                <include>**/.attach_pid*</include>
+                <include>**/hs_err_pid*</include>
+        	    <include>temp_Testdata_*.arff</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>out</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.2</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <excludeResources>true</excludeResources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.8.1</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <show>protected</show>
+          <nohelp>true</nohelp>
+          <!-- avoids "-SNAPSHOT" in title when using the release.xml configuration -->
+          <doctitle>${project.name}</doctitle>
+          <additionalparam>-Xdoclint:none</additionalparam>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.fracpete</groupId>
+        <artifactId>latex-maven-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+      </plugin>
+
+      <!-- for starting up the GUI: mvn exec:exec -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <executions>
+          <execution>
+            <id>gui</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>br-help</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-classpath</argument>
+                <classpath />
+                <argument>meka.classifiers.multilabel.BR</argument>
+              </arguments>
+              <outputFile>src/main/latex/Tutorial/help.txt</outputFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>br-run</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-classpath</argument>
+                <classpath />
+                <argument>meka.classifiers.multilabel.BR</argument>
+                <argument>-t</argument>
+                <argument>src/main/data/Music.arff</argument>
+                <argument>-W</argument>
+                <argument>weka.classifiers.bayes.NaiveBayes</argument>
+              </arguments>
+              <outputFile>src/main/latex/Tutorial/eval.txt</outputFile>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <executable>java</executable>
+          <arguments>
+            <argument>-Xmx2g</argument>
+            <argument>-classpath</argument>
+            <classpath />
+            <argument>meka.gui.guichooser.GUIChooser</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

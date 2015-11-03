@@ -1,0 +1,111 @@
+# Customises the list of options given by the GenericObjectEditor
+# for various superclasses.
+#
+# Version: $Revision$
+
+# Packages with MultiLabelClassifier implementations
+meka.classifiers.multilabel.MultiLabelClassifier=\
+ meka.classifiers.multilabel,\
+ meka.classifiers.multilabel.meta,\
+ meka.classifiers.multitarget,\
+ meka.classifiers.multitarget.meta,\
+ meka.classifiers.multilabel.incremental,\
+ meka.classifiers.multilabel.incremental.meta
+
+# Packages with MultiTargetClassifier implementations
+meka.classifiers.multitarget.MultiTargetClassifier=\
+ meka.classifiers.multitarget,\
+ meka.classifiers.multitarget.meta
+
+# Packages with SemisupervisedClassifier implementations
+meka.classifiers.multilabel.SemisupervisedClassifier=\
+ meka.classifiers.multilabel,\
+ meka.classifiers.multilabel.meta
+
+# Packages with incremenal MultiLabelClassifier implementations
+meka.classifiers.multilabel.IncrementalMultiLabelClassifier=\
+ meka.classifiers.multilabel.incremental,\
+ meka.classifiers.multilabel.incremental.meta
+
+# Lists the Classifier-Packages that should be added to WEKA's
+# GenericObjectEditor
+weka.classifiers.Classifier=\
+ meka.classifiers.multilabel,\
+ meka.classifiers.multilabel.meta,\
+ meka.classifiers.multilabel.incremental,\
+ meka.classifiers.multilabel.incremental.meta,\
+ meka.classifiers.multitarget,\
+ meka.classifiers.multitarget.meta
+
+# Lists the Filters-Packages I want to choose from
+weka.filters.Filter= \
+ meka.filters.multilabel, \
+ meka.filters.supervised.attribute, \
+ meka.filters.supervised.instance, \
+ meka.filters.unsupervised.attribute, \
+ meka.filters.unsupervised.instance
+
+# Lists the UnsupervisedFilters-Packages I want to choose from
+weka.filters.UnsupervisedFilter = \
+ meka.filters.unsupervised.attribute, \
+ meka.filters.unsupervised.instance
+
+# The Explorer tabs
+meka.gui.explorer.AbstractExplorerTab=\
+  meka.gui.explorer
+
+# Explorer plugins for the Classify result history
+meka.gui.explorer.classify.AbstractClassifyResultHistoryPlugin=\
+  meka.gui.explorer.classify
+
+# the menu items of the GUIChooser
+meka.gui.guichooser.AbstractMenuItemDefinition=\
+  meka.gui.guichooser
+
+# the renderers of the model viewer
+meka.gui.modelviewer.renderers.AbstractObjectRenderer=\
+  meka.gui.modelviewer.renderers
+
+# the types of experiment
+meka.experiment.Experiment=\
+  meka.experiment
+
+# the dataset providers
+meka.experiment.datasetproviders.DatasetProvider=\
+  meka.experiment.datasetproviders
+
+# the evaluators
+meka.experiment.evaluators.Evaluator=\
+  meka.experiment.evaluators
+
+# the evaluation statistics handlers
+meka.experiment.evaluationstatistics.EvaluationStatisticsHandler=\
+  meka.experiment.evaluationstatistics
+
+# the file-based evaluation statistics handlers
+meka.experiment.evaluationstatistics.FileBasedEvaluationStatisticsHandler=\
+  meka.experiment.evaluationstatistics
+
+# the experiment file handlers
+meka.experiment.filehandlers.ExperimentFileHandler=\
+  meka.experiment.filehandlers
+
+# the statistics exporters
+meka.experiment.statisticsexporters.EvaluationStatisticsExporter=\
+  meka.experiment.statisticsexporters
+
+# the file-based statistics exporters
+meka.experiment.statisticsexporters.FileBasedEvaluationStatisticsExporter=\
+  meka.experiment.statisticsexporters
+
+# the file-based statistics exporters for a single measurement
+meka.experiment.statisticsexporters.FileBasedMeasurementEvaluationStatisticsExporter=\
+  meka.experiment.statisticsexporters
+
+# The Experimenter tabs
+meka.gui.experimenter.AbstractExperimenterTab=\
+  meka.gui.experimenter
+
+# The additional Experimenter menu items
+meka.gui.experimenter.menu.AbstractExperimenterMenuItem=\
+  meka.gui.experimenter.menu

@@ -1,0 +1,26 @@
+RELEASE
+=======
+
+The release making process is a two-stage process:
+
+1. Deploy artifacts to Maven Central
+2. Create release archive
+
+Deploying artifacts
+-------------------
+
+- Ensure all changes have been committed and all tests succeed
+- run the following command (and accept or change the version numbers):
+  mvn release:prepare release:perform
+
+
+Release archive
+---------------
+
+- update the version in the "release.xml" file to match the version of the just
+  released Meka artifacts (also remove the -SNAPSHOT suffix) and commit changes
+- run the following command to create the release archive in the "target" directory:
+  mvn -f release.xml clean install
+- update the version in the "release.xml" to the new "-SNAPSHOT" version of the
+  "pom.xml" file and commit changes
+

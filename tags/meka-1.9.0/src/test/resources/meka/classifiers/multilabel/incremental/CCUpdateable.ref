@@ -1,0 +1,22 @@
+== Model info
+
+Model                          No model built yet
+== Evaluation Info
+
+Classifier                     meka.classifiers.multilabel.incremental.CCUpdateable
+Options                        [-S, 0, -W, weka.classifiers.trees.HoeffdingTree, --, -L, 2, -S, 1, -E, 1.0E-7, -H, 0.05, -M, 0.01, -G, 200.0, -N, 0.0]
+Additional Info                null
+Dataset                        Music
+Number of labels (L)           6
+
+
+== Predictive Performance
+
+
+
+== Additional Measurements
+
+Number of training instances   491
+Number of test instances       101
+Label cardinality (train set)  1.855
+Label cardinality (test set)   1.941

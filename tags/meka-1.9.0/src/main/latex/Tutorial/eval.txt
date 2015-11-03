@@ -1,0 +1,33 @@
+== Evaluation Info
+
+Classifier                     meka.classifiers.multilabel.BR
+Options                        [-W, weka.classifiers.bayes.NaiveBayes]
+Additional Info                
+Dataset                        Music
+Number of labels (L)           6
+Type                           ML
+Threshold                      0.9974578524138343
+Verbosity                      1
+
+
+== Predictive Performance
+
+Number of test instances (N)   
+Accuracy                       0.436
+Jaccard index                  0.436
+Hamming score                  0.745
+Exact match                    0.215
+
+
+== Additional Measurements
+
+Number of training instances   355
+Number of test instances       237
+Label cardinality (train set)  1.789
+Label cardinality (test set)   1.992
+Build Time                     0.127
+Test Time                      0.11 
+Total Time                     0.237
+
+
+
