@@ -5,7 +5,7 @@
 
   <groupId>net.sf.meka</groupId>
   <artifactId>meka</artifactId>
-  <version>1.9.0-SNAPSHOT</version>
+  <version>1.9.0</version>
   <packaging>jar</packaging>
 
   <name>meka</name>
@@ -50,9 +50,9 @@
   </parent>
 
   <scm>
-    <connection>scm:svn:svn+ssh://svn.code.sf.net/p/meka/code/trunk</connection>
-    <developerConnection>scm:svn:svn+ssh://svn.code.sf.net/p/meka/code/trunk</developerConnection>
-    <url>https://svn.code.sf.net/p/meka/code/trunk</url>
+    <connection>scm:svn:svn+ssh://svn.code.sf.net/p/meka/code/tags/meka-1.9.0</connection>
+    <developerConnection>scm:svn:svn+ssh://svn.code.sf.net/p/meka/code/tags/meka-1.9.0</developerConnection>
+    <url>https://svn.code.sf.net/p/meka/code/tags/meka-1.9.0</url>
   </scm>
 
   <mailingLists>
@@ -339,7 +339,7 @@
               <executable>java</executable>
               <arguments>
                 <argument>-classpath</argument>
-                <classpath/>
+                <classpath />
                 <argument>meka.classifiers.multilabel.BR</argument>
               </arguments>
               <outputFile>src/main/latex/Tutorial/help.txt</outputFile>
@@ -355,7 +355,7 @@
               <executable>java</executable>
               <arguments>
                 <argument>-classpath</argument>
-                <classpath/>
+                <classpath />
                 <argument>meka.classifiers.multilabel.BR</argument>
                 <argument>-t</argument>
                 <argument>src/main/data/Music.arff</argument>
@@ -371,7 +371,7 @@
           <arguments>
             <argument>-Xmx2g</argument>
             <argument>-classpath</argument>
-            <classpath/>
+            <classpath />
             <argument>meka.gui.guichooser.GUIChooser</argument>
           </arguments>
         </configuration>
