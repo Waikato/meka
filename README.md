@@ -1,4 +1,4 @@
-Meka Version 1.9.0
+Meka
 ===========================
 
 See the Tutorial.pdf for detailed information on obtaining, using and extending MEKA.
@@ -19,6 +19,7 @@ Release Notes, Version 1.9.0
 * The Evaluation framework has been heavily reworked
 
 	- Evaluation output has been improved, as much in the code as the visual text output (now prettier!). 
+	- Macro and Micro Precision and Recall are added as evaluation metrics
 	- AUPRC and AUROC are added as evaluation metrics
 	- AUPRC and AUROC can be visualised with the 'Show ...' options under the right-click menu of the History panel.
 	- Objects like `doubles[]` can be stored in `Results`, rather than just `Strings` and `Doubles`.
