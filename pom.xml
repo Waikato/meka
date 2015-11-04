@@ -50,9 +50,10 @@
   </parent>
 
   <scm>
-    <connection>scm:svn:svn+ssh://svn.code.sf.net/p/meka/code/trunk</connection>
-    <developerConnection>scm:svn:svn+ssh://svn.code.sf.net/p/meka/code/trunk</developerConnection>
-    <url>https://svn.code.sf.net/p/meka/code/trunk</url>
+    <connection>scm:git:https://github.com/waikato/meka</connection>
+    <developerConnection>scm:git:https://github.com/waikato/meka</developerConnection>
+    <url>https://github.com/waikato/meka</url>
+    <tag>HEAD</tag>
   </scm>
 
   <mailingLists>
