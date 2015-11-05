@@ -18,9 +18,11 @@ package meka.classifiers.multilabel;
 import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.UpdateableClassifier;
-import weka.classifiers.trees.J48;
-import weka.core.*;
-import weka.core.Capabilities.Capability;
+import weka.core.Attribute;
+import weka.core.Capabilities;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.SerializedObject;
 
 /**
  *  A Multilabel Classifier.
@@ -89,15 +91,15 @@ public abstract class AbstractMultiLabelClassifier extends AbstractClassifier im
 	 * @return an array of classifiers.
 	 * @exception Exception if an error occurs
 	 */
-	public static AbstractMultiLabelClassifier[] makeCopies(AbstractMultiLabelClassifier model, int num) throws Exception {
+	public static MultiLabelClassifier[] makeCopies(MultiLabelClassifier model, int num) throws Exception {
 
 		if (model == null) {
 			throw new Exception("No model classifier set");
 		}
-		AbstractMultiLabelClassifier classifiers[] = new AbstractMultiLabelClassifier[num];
+		MultiLabelClassifier classifiers[] = new MultiLabelClassifier[num];
 		SerializedObject so = new SerializedObject(model);
 		for(int i = 0; i < classifiers.length; i++) {
-			classifiers[i] = (AbstractMultiLabelClassifier) so.getObject();
+			classifiers[i] = (MultiLabelClassifier) so.getObject();
 		}
 		return classifiers;
 	}
@@ -108,7 +110,7 @@ public abstract class AbstractMultiLabelClassifier extends AbstractClassifier im
 	 * @param	h		A classifier
 	 * @param	args	Command-line options.
 	 */
-	public static void evaluation(AbstractMultiLabelClassifier h, String args[]) {
+	public static void evaluation(MultiLabelClassifier h, String args[]) {
 		runClassifier(h,args);
 	}
 
@@ -117,7 +119,7 @@ public abstract class AbstractMultiLabelClassifier extends AbstractClassifier im
 	 * @param	h		A classifier
 	 * @param	args	Command-line options.
 	 */
-	public static void runClassifier(AbstractMultiLabelClassifier h, String args[]) {
+	public static void runClassifier(MultiLabelClassifier h, String args[]) {
 			if (h instanceof UpdateableClassifier) {
 				try {
 					IncrementalEvaluation.runExperiment(h,args);
