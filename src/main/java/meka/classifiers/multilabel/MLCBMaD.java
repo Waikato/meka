@@ -218,7 +218,7 @@ public class MLCBMaD extends LabelTransformationClassifier implements TechnicalI
 
 	tmpInst.delete();
 	tmpInst.add(x);
-
+	
 	Instances features = this.extractPart(tmpInst, false);
 
 	Instances pseudoLabels = new Instances(this.compressedMatrix);
@@ -234,6 +234,7 @@ public class MLCBMaD extends LabelTransformationClassifier implements TechnicalI
 	Instances newDataSet = Instances.mergeInstances(pseudoLabels, features);
 	newDataSet.setClassIndex(this.size);
 
+	
 	return newDataSet.instance(0);
     }
 
@@ -261,15 +262,17 @@ public class MLCBMaD extends LabelTransformationClassifier implements TechnicalI
 	byte[] yByteArray = new byte[y.length];
 
 	for(int i = 0; i < y.length; i++){
-	    yByteArray[i] = y[i]>0.5 ? BooleanMatrix.TRUE:BooleanMatrix.FALSE;
+	    yByteArray[i] = y[i]>=0.5 ? BooleanMatrix.TRUE:BooleanMatrix.FALSE;
 	}
 
 	BooleanMatrix yMatrix =
 			new BooleanMatrix( new byte[][]{yByteArray});
 	BooleanMatrix reconstruction =
 			yMatrix.booleanProduct(new BooleanMatrix(this.uppermatrix));
+
 	
-	double[] result = new double[y.length];
+	
+	double[] result = new double[reconstruction.getWidth()];
 	
 	for(int i = 0; i < y.length; i++){
 	    result[i] = reconstruction.apply(0,i) == BooleanMatrix.TRUE  ? 1.0:0.0;

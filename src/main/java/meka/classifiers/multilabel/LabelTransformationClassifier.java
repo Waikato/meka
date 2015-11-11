@@ -112,8 +112,9 @@ public abstract class LabelTransformationClassifier
      */
     protected Instances extractPart(Instances inst, boolean labels) throws Exception{
 	//TODO Maybe alreade exists somewhere in Meka?
+	
 	Remove remove = new Remove();
-	remove.setAttributeIndices("1-"+(inst.classIndex()+1));
+	remove.setAttributeIndices("first-"+(inst.classIndex()));
 	remove.setInvertSelection(labels);
 	remove.setInputFormat(inst);
 	return Filter.useFilter(inst, remove);
