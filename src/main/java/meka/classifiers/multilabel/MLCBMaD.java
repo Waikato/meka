@@ -246,14 +246,15 @@ public class MLCBMaD extends LabelTransformationClassifier implements TechnicalI
 
 	BooleanMatrixDecomposition bmd =
 			BooleanMatrixDecomposition.BEST_CONFIGURED(this.threshold);
-	Tuple<Instances, Instances> res = bmd.decompose(D, this.size);
+	Tuple<Instances, Instances> res = bmd.decompose(labels, this.size);
 	
 	this.compressedMatrix = res._1;
 	this.uppermatrix = res._2;
 	
 	Instances result= Instances.mergeInstances(compressedMatrix,
 						   features);
-	result.setClassIndex(this.size);
+	result.setClassIndex(this.getSize());
+
 	return result;
     }
 
@@ -271,12 +272,13 @@ public class MLCBMaD extends LabelTransformationClassifier implements TechnicalI
 			yMatrix.booleanProduct(new BooleanMatrix(this.uppermatrix));
 
 	
-	
 	double[] result = new double[reconstruction.getWidth()];
 	
-	for(int i = 0; i < y.length; i++){
+	for(int i = 0; i < reconstruction.getWidth(); i++){
 	    result[i] = reconstruction.apply(0,i) == BooleanMatrix.TRUE  ? 1.0:0.0;
+
 	}
+
 	
 	return result;
     }
