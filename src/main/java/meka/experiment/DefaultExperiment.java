@@ -52,6 +52,9 @@ public class DefaultExperiment
 
 	private static final long serialVersionUID = 8654760249461885158L;
 
+	/** the notes. */
+	protected String m_Notes = "";
+
 	/** the classifiers to evaluate. */
 	protected MultiLabelClassifier[] m_Classifiers = new MultiLabelClassifier[0];
 
@@ -84,6 +87,33 @@ public class DefaultExperiment
 
 	/** the collected statistics. */
 	protected List<EvaluationStatistics> m_Statistics = new ArrayList<>();
+
+	/**
+	 * Sets the notes.
+	 *
+	 * @param value         the notes
+	 */
+	public void setNotes(String value) {
+		m_Notes = value;
+	}
+
+	/**
+	 * Returns the notes.
+	 *
+	 * @return              the notes
+	 */
+	public String getNotes() {
+		return m_Notes;
+	}
+
+	/**
+	 * Describes this property.
+	 *
+	 * @return          the description
+	 */
+	public String notesTipText() {
+		return "The (optional) notes for this experiment in Markdown.";
+	}
 
 	/**
 	 * Sets the classifiers to be evaluated.
@@ -352,6 +382,7 @@ public class DefaultExperiment
 	@Override
 	public Enumeration<Option> listOptions() {
 		Vector result = new Vector();
+		OptionUtils.addOption(result, notesTipText(), "", "notes");
 		OptionUtils.addOption(result, classifiersTipText(), "none", 'C');
 		OptionUtils.addOption(result, datasetProviderTipText(), getDefaultDatasetProvider().getClass().getName(), 'D');
 		OptionUtils.addOption(result, evaluatorTipText(), getDefaultEvaluator().getClass().getName(), 'E');
@@ -367,6 +398,7 @@ public class DefaultExperiment
 	 */
 	@Override
 	public void setOptions(String[] options) throws Exception {
+		setNotes(OptionUtils.parse(options, "notes", ""));
 		setClassifiers(OptionUtils.parse(options, 'C', MultiLabelClassifier.class));
 		setDatasetProvider((DatasetProvider) OptionUtils.parse(options, 'D', getDefaultDatasetProvider()));
 		setEvaluator((Evaluator) OptionUtils.parse(options, 'E', getDefaultEvaluator()));
@@ -381,6 +413,7 @@ public class DefaultExperiment
 	@Override
 	public String[] getOptions() {
 		List<String> result = new ArrayList<>();
+		OptionUtils.add(result, "notes", getNotes());
 		OptionUtils.add(result, 'C', getClassifiers());
 		OptionUtils.add(result, 'D', getDatasetProvider());
 		OptionUtils.add(result, 'E', getEvaluator());
