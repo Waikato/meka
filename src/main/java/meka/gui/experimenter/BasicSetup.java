@@ -35,15 +35,32 @@ import meka.experiment.evaluators.PercentageSplit;
 import meka.experiment.evaluators.RepeatedRuns;
 import meka.gui.core.GUIHelper;
 import meka.gui.core.ListWithButtons;
+import meka.gui.core.MarkdownDialog;
 import meka.gui.core.ParameterPanel;
 import meka.gui.goe.GenericObjectEditor;
 import meka.gui.goe.GenericObjectEditorDialog;
 import weka.gui.ConverterFileChooser;
 import weka.gui.JListHelper;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.BorderLayout;
+import java.awt.Dialog.ModalityType;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -129,6 +146,12 @@ public class BasicSetup
 
 	/** the GOE for the statistics handler. */
 	protected GenericObjectEditor m_GOEStatisticsHandler;
+
+	/** the button for the notes. */
+	protected JButton m_ButtonNotes;
+
+	/** the notes. */
+	protected String m_Notes;
 
 	/**
 	 * Initializes the member variables.
@@ -376,6 +399,15 @@ public class BasicSetup
 			}
 		});
 		m_ParameterPanel.addParameter("Statistics", setPreferredSize(m_GOEStatisticsHandler.getCustomPanel()));
+
+		m_ButtonNotes = new JButton("...");
+		m_ButtonNotes.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				editNotes();
+			}
+		});
+		m_ParameterPanel.addParameter("Notes", m_ButtonNotes);
 	}
 
 	/**
@@ -418,6 +450,9 @@ public class BasicSetup
 		m_ButtonRemoveAllDatasets.setEnabled(editable && (m_ModelDatasets.getSize() > 0));
 		m_ButtonMoveUpDataset.setEnabled(editable && JListHelper.canMoveUp(m_ListDatasets.getList()));
 		m_ButtonMoveDownDataset.setEnabled(editable && JListHelper.canMoveDown(m_ListDatasets.getList()));
+
+		// other
+		m_ButtonNotes.setEnabled(editable);
 	}
 
 	/**
@@ -524,6 +559,28 @@ public class BasicSetup
 	}
 
 	/**
+	 * Displays dialog for entering notes in Markdown.
+	 */
+	protected void editNotes() {
+		MarkdownDialog dialog;
+
+		if (getParentDialog() != null)
+			dialog = new MarkdownDialog(getParentDialog(), ModalityType.DOCUMENT_MODAL);
+		else
+			dialog = new MarkdownDialog(getParentFrame(), true);
+		dialog.setTitle("Edit notes");
+		dialog.setMarkdown(m_Notes);
+		dialog.setSize(600, 400);
+		dialog.setLocationRelativeTo(null);
+		dialog.setVisible(true);
+		if (dialog.getOption() != MarkdownDialog.APPROVE_OPTION)
+			return;
+		m_Notes = dialog.getMarkdown();
+		setModified(true);
+		updateButtons();
+	}
+
+	/**
 	 * Resets the interface.
 	 */
 	protected void clear() {
@@ -534,6 +591,7 @@ public class BasicSetup
 		m_CheckBoxPreserveOrder.setSelected(false);
 		m_TextPercentage.setText("66.6");
 		m_GOEStatisticsHandler.setValue(new KeyValuePairs());
+		m_Notes = "";
 	}
 
 	/**
@@ -604,6 +662,9 @@ public class BasicSetup
 
 		// statistics
 		m_GOEStatisticsHandler.setValue(m_Experiment.getStatisticsHandler());
+
+		// notes
+		m_Notes = m_Experiment.getNotes();
 	}
 
 	/**
@@ -681,6 +742,9 @@ public class BasicSetup
 
 		// statistics
 		result.setStatisticsHandler((EvaluationStatisticsHandler) m_GOEStatisticsHandler.getValue());
+
+		// notes
+		result.setNotes(m_Notes);
 
 		return result;
 	}
