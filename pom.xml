@@ -123,6 +123,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.markdownj</groupId>
+      <artifactId>markdownj-core</artifactId>
+      <version>0.4</version>
+    </dependency>
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.2</version>
