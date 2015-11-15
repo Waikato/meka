@@ -51,7 +51,9 @@ public class MLCBMaDTest
    */
   @Override
   public Classifier getClassifier() {
-    return new MLCBMaD();
+    MLCBMaD mlcbmad =  new MLCBMaD();
+    mlcbmad.setSize(5);
+    return mlcbmad;
   }
 
   public void testEvaluation() {
