@@ -526,13 +526,31 @@ public abstract class Metrics {
      * P_Precision - (retrieved AND relevant) / retrieved
      */
     public static double P_PrecisionMacro(int Y[][], int Ypred[][]) {
-
+	// works with missing
 	int L = Y[0].length;
 	double m = 0.0;
 	for (int j = 0; j < L; j++) {
-	    m += (P_Precision(M.getCol(Y,j),M.getCol(Ypred,j)) * 1./L);
-	}
+	    int[] y_j = M.getCol(Y, j);
+            int[] p_j = M.getCol(Ypred, j);
 
+            if (allMissing(y_j)) {
+                continue;
+            }
+
+            int[][] aligned = align(y_j, p_j);
+
+            int[] y_jAligned = aligned[0];
+            int[] p_jAligned = aligned[1];
+
+            double curPrec = P_Precision(y_jAligned, p_jAligned) * 1. / y_jAligned.length;
+
+            if (Double.isNaN(curPrec)) {
+                continue;
+            }
+
+            m += curPrec;
+
+	}
 	return m;
     }
 
@@ -540,11 +558,29 @@ public abstract class Metrics {
      * P_Recall - (retrieved AND relevant) / relevant
      */
     public static double P_RecallMacro(int Y[][], int Ypred[][]) {
-
+	//works with missing
 	int L = Y[0].length;
 	double m = 0.0;
 	for (int j = 0; j < L; j++) {
-	    m += (P_Recall(M.getCol(Y,j),M.getCol(Ypred,j)) * 1./L);
+            int[] y_j = M.getCol(Y, j);
+            int[] p_j = M.getCol(Ypred, j);
+
+            if (allMissing(y_j)) {
+                continue;
+            }
+
+            int[][] aligned = align(y_j, p_j);
+
+            int[] y_jAligned = aligned[0];
+            int[] p_jAligned = aligned[1];
+
+            double curRecall = recall(y_jAligned, p_jAligned) * 1. / y_jAligned.length;
+
+            if (Double.isNaN(curRecall)) {
+                continue;
+            }
+
+            m += curRecall;
 	}
 
 	return m;
@@ -554,6 +590,7 @@ public abstract class Metrics {
      * P_Precision - (retrieved AND relevant) / retrieved
      */
     public static double P_PrecisionMicro(int Y[][], int Ypred[][]) {
+	// works with missing
 	return P_Precision(M.flatten(Y),M.flatten(Ypred));
     }
 
@@ -561,12 +598,14 @@ public abstract class Metrics {
      * P_Recall - (retrieved AND relevant) / relevant
      */
     public static double P_RecallMicro(int Y[][], int Ypred[][]) {
+	// works with missing
 	return P_Recall(M.flatten(Y),M.flatten(Ypred));
     }
     /**
      * P_Precision - (retrieved AND relevant) / retrieved
      */
     public static double P_Precision(int Y[][], int Ypred[][], int j) {
+	// works with missing
 	return P_Precision(M.getCol(Y,j),M.getCol(Ypred,j));
 	//int retrieved = M.sum(M.sum(Ypred));
 	//int correct = M.sum(M.sum(M.multiply(Y,Ypred)));
@@ -577,6 +616,7 @@ public abstract class Metrics {
      * P_Recall - (retrieved AND relevant) / relevant
      */
     public static double P_Recall(int Y[][], int Ypred[][], int j) {
+	// works with missing
 	return P_Recall(M.getCol(Y,j),M.getCol(Ypred,j));
 	//int relevant = M.sum(M.sum(Y));
 	//int correct = M.sum(M.sum(M.multiply(Y,Ypred)));
@@ -587,6 +627,7 @@ public abstract class Metrics {
      * P_FmicroAvg - Micro Averaged F-measure (F1, as if all labels in the dataset formed a single vector)
      */
     public static double P_FmicroAvg(int Y[][], int Ypred[][]) {
+	// works with missing
 	return F1(M.flatten(Y),M.flatten(Ypred));
 	//double precision = P_Precision(M.flatten(Y),M.flatten(Ypred));
 	//double recall = P_Recall(M.flatten(Y),M.flatten(Ypred));
@@ -598,17 +639,19 @@ public abstract class Metrics {
      * F-Measure Macro Averaged by L - The 'standard' macro average.
      */
     public static double P_FmacroAvgL(int Y[][], int Ypred[][]) {
-
+	// works with missing
+	
 	int L = Y[0].length;
 
 	double TP[] = new double[L];
 	double FP[] = new double[L];
 	double FN[] = new double[L];
-	double F[] = new double[L];                                                                                                                        
+	double F[] = new double[L];
 
-	for (int j = 0; j < L; j++) {                                                                                                                        
+	for (int j = 0; j < L; j++) {                                                                                                                       
 	    int y_j[] = M.getCol(Y,j);
 	    int ypred_j[] = M.getCol(Ypred,j);
+	    
 	    TP[j] = P_TruePositives(y_j,ypred_j);
 	    FP[j] = P_FalsePositives(y_j,ypred_j);
 	    FN[j] = P_FalseNegatives(y_j,ypred_j);

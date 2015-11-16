@@ -267,7 +267,12 @@ public abstract class MLUtils {
 	public static final int[] toIntArray(Instance x, int L) {
 		int y[] = new int[L];
 		for(int j = 0; j < L; j++) {
+		    // added the following if-statement to change missing values to -1 
+		    if(x.isMissing(j)){
+			y[j] = -1;
+		    } else{
 			y[j] = (int)Math.round(x.value(j));
+		    }
 		}
 		return y;
 	}
