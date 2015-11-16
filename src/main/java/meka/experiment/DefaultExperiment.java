@@ -398,7 +398,7 @@ public class DefaultExperiment
 	 */
 	@Override
 	public void setOptions(String[] options) throws Exception {
-		setNotes(OptionUtils.parse(options, "notes", ""));
+		setNotes(Utils.unbackQuoteChars(OptionUtils.parse(options, "notes", "")));
 		setClassifiers(OptionUtils.parse(options, 'C', MultiLabelClassifier.class));
 		setDatasetProvider((DatasetProvider) OptionUtils.parse(options, 'D', getDefaultDatasetProvider()));
 		setEvaluator((Evaluator) OptionUtils.parse(options, 'E', getDefaultEvaluator()));
@@ -413,7 +413,7 @@ public class DefaultExperiment
 	@Override
 	public String[] getOptions() {
 		List<String> result = new ArrayList<>();
-		OptionUtils.add(result, "notes", getNotes());
+		OptionUtils.add(result, "notes", Utils.backQuoteChars(getNotes()));
 		OptionUtils.add(result, 'C', getClassifiers());
 		OptionUtils.add(result, 'D', getDatasetProvider());
 		OptionUtils.add(result, 'E', getEvaluator());
