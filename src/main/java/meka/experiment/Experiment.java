@@ -44,6 +44,20 @@ public interface Experiment
   extends OptionHandler, Serializable, LogSupporter {
 
 	/**
+	 * Sets the notes.
+	 *
+	 * @param value         the notes
+	 */
+	public void setNotes(String value);
+
+	/**
+	 * Returns the notes.
+	 *
+	 * @return              the notes
+	 */
+	public String getNotes();
+
+	/**
 	 * Sets the classifiers to be evaluated.
 	 *
 	 * @param value         the classifiers

@@ -32,6 +32,7 @@ import meka.experiment.evaluationstatistics.KeyValuePairs;
 import meka.experiment.evaluators.Evaluator;
 import meka.experiment.evaluators.RepeatedRuns;
 import meka.gui.core.ListWithButtons;
+import meka.gui.core.MarkdownDialog;
 import meka.gui.core.ParameterPanel;
 import meka.gui.goe.GenericObjectEditor;
 import meka.gui.goe.GenericObjectEditorDialog;
@@ -41,6 +42,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -92,6 +94,12 @@ public class ExpertSetup
 
 	/** the GOE for the statistics handler. */
 	protected GenericObjectEditor m_GOEStatisticsHandler;
+
+	/** the button for the notes. */
+	protected JButton m_ButtonNotes;
+
+	/** the notes. */
+	protected String m_Notes;
 
 	/**
 	 * Initializes the widgets.
@@ -211,6 +219,15 @@ public class ExpertSetup
 			}
 		});
 		m_ParameterPanel.addParameter("Statistics", setPreferredSize(m_GOEStatisticsHandler.getCustomPanel()));
+
+		m_ButtonNotes = new JButton("...");
+		m_ButtonNotes.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				editNotes();
+			}
+		});
+		m_ParameterPanel.addParameter("Notes", m_ButtonNotes);
 	}
 
 	/**
@@ -246,6 +263,9 @@ public class ExpertSetup
 		m_ButtonEditClassifier.setEnabled(editable && (m_ListClassifiers.getList().getSelectedIndices().length == 1));
 		m_ButtonMoveUpClassifier.setEnabled(editable && JListHelper.canMoveUp(m_ListClassifiers.getList()));
 		m_ButtonMoveDownClassifier.setEnabled(editable && JListHelper.canMoveDown(m_ListClassifiers.getList()));
+
+		// other
+		m_ButtonNotes.setEnabled(editable);
 	}
 
 	/**
@@ -318,6 +338,28 @@ public class ExpertSetup
 	}
 
 	/**
+	 * Displays dialog for entering notes in Markdown.
+	 */
+	protected void editNotes() {
+		MarkdownDialog dialog;
+
+		if (getParentDialog() != null)
+			dialog = new MarkdownDialog(getParentDialog(), ModalityType.DOCUMENT_MODAL);
+		else
+			dialog = new MarkdownDialog(getParentFrame(), true);
+		dialog.setTitle("Edit notes");
+		dialog.setMarkdown(m_Notes);
+		dialog.setSize(600, 400);
+		dialog.setLocationRelativeTo(null);
+		dialog.setVisible(true);
+		if (dialog.getOption() != MarkdownDialog.APPROVE_OPTION)
+			return;
+		m_Notes = dialog.getMarkdown();
+		setModified(true);
+		updateButtons();
+	}
+
+	/**
 	 * Resets the interface.
 	 */
 	protected void clear() {
@@ -348,6 +390,7 @@ public class ExpertSetup
 		m_GOEDatasets.setValue(m_Experiment.getDatasetProvider());
 		m_GOEEvaluator.setValue(m_Experiment.getEvaluator());
 		m_GOEStatisticsHandler.setValue(m_Experiment.getStatisticsHandler());
+		m_Notes = m_Experiment.getNotes();
 	}
 
 	/**
@@ -375,6 +418,7 @@ public class ExpertSetup
 		result.setDatasetProvider((DatasetProvider) m_GOEDatasets.getValue());
 		result.setEvaluator((Evaluator) m_GOEEvaluator.getValue());
 		result.setStatisticsHandler((EvaluationStatisticsHandler) m_GOEStatisticsHandler.getValue());
+		result.setNotes(m_Notes);
 
 		return result;
 	}
