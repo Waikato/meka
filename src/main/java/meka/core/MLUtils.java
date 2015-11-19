@@ -355,10 +355,15 @@ public abstract class MLUtils {
 		int L = D.classIndex();
 		double lc[] = new double[L];
 		for(int j = 0; j < L; j++) {
+		    int count = 0;
 			for(int i = 0; i < D.numInstances(); i++) {
+			    //if for missing valueses
+			    if(!D.instance(i).isMissing(j)){
 				lc[j] += D.instance(i).value(j);
+				count ++;
+			    }
 			}
-			lc[j] /= D.numInstances();
+			lc[j] /= count; //D.numInstances();
 		}
 		return lc;
 	}
@@ -367,23 +372,29 @@ public abstract class MLUtils {
 	 * LabelCardinalities - return the frequency of each label of dataset D.
 	 */
 	public static final double[] labelCardinalities(ArrayList<int[]> Y) {
-		int L = ((int[]) Y.get(0)).length;
-		double lc[] = new double[L];
-		for(int y[] : Y) {
-			for(int j = 0; j < L; j++) {
-				lc[j] += y[j];
-			}
-		}
+	    // TODO what about missing values here? Seems like only used with predictions?
+	    int L = ((int[]) Y.get(0)).length;
+	    double lc[] = new double[L];
+	    int[] count = new int[L];
+	    for(int y[] : Y) {
 		for(int j = 0; j < L; j++) {
-			lc[j] /= Y.size();
+		    //if for missing values
+		    if(lc[j] <= 0){
+			lc[j] += y[j];
+			count[j]++;
+		    }
 		}
-		return lc;
+	    }
+	    for(int j = 0; j < L; j++) {
+		lc[j] /= count[j];//Y.size();
+	    }
+	    return lc;
 	}
 
 	/** 
 	 * EmptyVectors - percentage of empty vectors sum(y[i])==0 in Y.
 	 */
-	public static final double emptyVectors(int Y[][]) {
+	 public static final double emptyVectors(int Y[][]) {
 		int N = Y.length;
 		int L = Y[0].length;
 		double sum = 0.0;

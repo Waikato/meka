@@ -119,6 +119,7 @@ public class Result implements Serializable {
 	public void addResult(double pred[], Instance real) {
 		predictions.add(pred);
 		actuals.add(MLUtils.toIntArray(real,pred.length));
+		
 	}
 
 	/**

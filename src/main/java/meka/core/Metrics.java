@@ -574,7 +574,7 @@ public abstract class Metrics {
             int[] y_jAligned = aligned[0];
             int[] p_jAligned = aligned[1];
 
-            double curRecall = recall(y_jAligned, p_jAligned) * 1. / y_jAligned.length;
+            double curRecall = P_Recall(y_jAligned, p_jAligned) * 1. / y_jAligned.length;
 
             if (Double.isNaN(curRecall)) {
                 continue;
@@ -648,7 +648,12 @@ public abstract class Metrics {
 	double FN[] = new double[L];
 	double F[] = new double[L];
 
-	for (int j = 0; j < L; j++) {                                                                                                                       
+	for (int j = 0; j < L; j++) {
+	    if(allMissing(Y[j])){
+		L--;
+		continue;
+	    }
+
 	    int y_j[] = M.getCol(Y,j);
 	    int ypred_j[] = M.getCol(Ypred,j);
 	    
@@ -656,12 +661,12 @@ public abstract class Metrics {
 	    FP[j] = P_FalsePositives(y_j,ypred_j);
 	    FN[j] = P_FalseNegatives(y_j,ypred_j);
 	    if (TP[j] <= 0)
-		F[j] = 0.0;                                                                                                                                  
+		F[j] = 0.0;
 	    else {
-		double prec = (double)TP[j] / ((double)TP[j]+(double)FP[j]);                                                          
-		double recall = (double)TP[j] / ((double)TP[j]+(double)FN[j]);                                                          
-		F[j] = 2 * ((prec*recall) / (prec+recall));                                                                                                                  
-	    }                                                                                                                                                  
+		double prec = (double)TP[j] / ((double)TP[j]+(double)FP[j]);
+		double recall = (double)TP[j] / ((double)TP[j]+(double)FN[j]);
+		F[j] = 2 * ((prec*recall) / (prec+recall));
+	    }
 	}
 
 	return (double) A.sum(F) / (double) L;
@@ -673,11 +678,15 @@ public abstract class Metrics {
      * The Jaccard index is also averaged this way.
      */
     public static double P_FmacroAvgD(int Y[][], int Ypred[][]) {
-
+	// works with missing
 	int N = Y.length;
 
 	double F1_macro_D = 0.0;
 	for(int i = 0; i < N; i++) {
+	    if(allMissing(Y[i])){
+		N--;
+		continue;
+	    }
 	    F1_macro_D += F1(Y[i],Ypred[i]);
 	}
 
@@ -688,10 +697,15 @@ public abstract class Metrics {
      * OneError - 
      */
     public static double L_OneError(int Y[][], double Rpred[][]) {
+	// works with missing
 	int N = Y.length;
 	int one_error = 0;
 	
 	for(int i = 0; i < N; i++) {
+	    if(allMissing(Y[i])){
+		N--;
+		continue;
+	    }
 	    if(Y[i][Utils.maxIndex(Rpred[i])] <= 0)
 		one_error++;
 	}
@@ -699,11 +713,19 @@ public abstract class Metrics {
     }
     
     public static double P_AveragePrecision(int Y[][], double Rpred[][]) {
+	// works with missing
+	int N = Y.length;
+	
 	double loss = 0.0;
 	for(int i = 0; i < Y.length; i++) {
+	    if(allMissing(Y[i])){
+		N--;
+		continue;
+	    }
+
 	    loss += P_AveragePrecision(Y[i],Rpred[i]);
 	}
-	return loss/(double)Y.length;
+	return loss/(double)N;
     }
 
     public static double P_AveragePrecision(int y[], double rpred[]) {
@@ -718,9 +740,9 @@ public abstract class Metrics {
      * @return	Average Precision
      */
     public static double P_AveragePrecision(int y[], int r[]) {
-
+	// works with missing
         double avg_prec = 0;
-
+	
         int L = y.length;
 
         List<Integer> ones = new ArrayList<Integer>();
@@ -749,14 +771,23 @@ public abstract class Metrics {
     }
 
     public static double L_RankLoss(int Y[][], double Rpred[][]) {
+	// works with missing
+	int N = Y.length;
 	double loss = 0.0;
 	for(int i = 0; i < Y.length; i++) {
+	    if(allMissing(Y[i])){
+		N--;
+		continue;
+	    }
+
 	    loss += L_RankLoss(Y[i],Rpred[i]);
 	}
-	return loss/(double)Y.length;
+	return loss/(double)N;
     }
 
     public static double L_RankLoss(int y[], double rpred[]) {
+	// works with missing
+	
 	int r[] = Utils.sort(rpred);
 	return L_RankLoss(y,r);
     }
@@ -769,6 +800,12 @@ public abstract class Metrics {
      * @return	Ranking Loss
      */
     public static double L_RankLoss(int y[], int r[]) {
+	// works with missing
+	int[][] aligned = align(y, r);
+
+	y = aligned[0];
+	r = aligned[1];
+	
 	int L = y.length;
 	ArrayList<Integer> tI = new ArrayList<Integer>();
 	ArrayList<Integer> fI = new ArrayList<Integer>();
@@ -804,10 +841,14 @@ public abstract class Metrics {
 
     /** Calculate AUPRC: Area Under the Precision-Recall curve. */
     public static double P_macroAUPRC(int Y[][], double P[][]) {
-
+	// works with missing
 	int L = Y[0].length;
 	double AUC[] = new double[L];
 	for(int j = 0; j < L; j++) {
+	    if(allMissing(Y[j])){
+		L--;
+		continue;
+	    }
 	    ThresholdCurve curve = new ThresholdCurve();
 	    Instances result = curve.getCurve(MLUtils.toWekaPredictions(M.getCol(Y,j),M.getCol(P,j)));
 	    AUC[j] = ThresholdCurve.getPRCArea(result);
@@ -817,10 +858,14 @@ public abstract class Metrics {
 
     /** Calculate AUROC: Area Under the ROC curve. */
     public static double P_macroAUROC(int Y[][], double P[][]) {
-
+	// works with missing
 	int L = Y[0].length;
 	double AUC[] = new double[L];
 	for(int j = 0; j < L; j++) {
+	    if(allMissing(Y[j])){
+		L--;
+		continue;
+	    }
 	    ThresholdCurve curve = new ThresholdCurve();
 	    Instances result = curve.getCurve(MLUtils.toWekaPredictions(M.getCol(Y,j),M.getCol(P,j)));
 	    AUC[j] = ThresholdCurve.getROCArea(result);
@@ -830,15 +875,23 @@ public abstract class Metrics {
 
     /** Get Data for Plotting PR and ROC curves. */
     public static Instances curveDataMicroAveraged(int Y[][], double P[][]) {
+	//works with missing
+	
 	int y[] = M.flatten(Y);
 	double p[] = M.flatten(P);
+
+	double[][] aligned = align(y, p);
+
+	y = toIntArray(aligned[0]);
+	p = aligned[1];
+	
 	ThresholdCurve curve = new ThresholdCurve();
 	return curve.getCurve(MLUtils.toWekaPredictions(y,p));
     }
 
     /** Get Data for Plotting PR and ROC curves. */
     public static Instances curveDataMacroAveraged(int Y[][], double P[][]) {
-
+	
 	// Note: 'Threshold' contains the probability threshold that gives rise to the previous performance values.
 
 	Instances curveData[] = curveData(Y,P);
@@ -889,14 +942,21 @@ public abstract class Metrics {
 
     /** Get Data for Plotting PR and ROC curves. */
     public static Instances curveData(int y[], double p[]) {
+	// works with missing
+	double[][] aligned = align(y, p);
 
+	y = toIntArray(aligned[0]);
+	p = aligned[1];
+
+
+	
 	ThresholdCurve curve = new ThresholdCurve();
 	return curve.getCurve(MLUtils.toWekaPredictions(y,p));
     }
 
     /** Get Data for Plotting PR and ROC curves. */
     public static Instances[] curveData(int Y[][], double P[][]) {
-
+	// works with missing
 	int L = Y[0].length;
 	Instances curveData[] = new Instances[L];
 	for(int j = 0; j < L; j++) {
