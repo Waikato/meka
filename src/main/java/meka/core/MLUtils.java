@@ -311,12 +311,15 @@ public abstract class MLUtils {
 	 */
 	public static final double labelCardinality(Instances D, int L) {
 		double sum = 0.0;
+		double numInstances = (double)D.numInstances();
 		for(int i = 0; i < D.numInstances(); i++) {
-			for(int j = 0; j < L; j++) {
-				sum += D.instance(i).value(j);
+		    for(int j = 0; j < L; j++) {
+			if (!D.instance(i).isMissing(j)) {
+			    sum += D.instance(i).value(j);
 			}
+		    }
 		}
-		return (double)sum/(double)D.numInstances();
+		return (double)sum/ numInstances;
 	}
 
 	/**

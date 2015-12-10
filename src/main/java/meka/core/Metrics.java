@@ -788,8 +788,13 @@ public abstract class Metrics {
     public static double L_RankLoss(int y[], double rpred[]) {
 	// works with missing
 	
-	int r[] = Utils.sort(rpred);
-	return L_RankLoss(y,r);
+        double[][] aligned = align(y, rpred);
+
+        y = toIntArray(aligned[0]);
+        rpred = aligned[1];
+
+        int r[] = Utils.sort(rpred);
+        return L_RankLoss(y, r);
     }
 
     /**
@@ -800,12 +805,8 @@ public abstract class Metrics {
      * @return	Ranking Loss
      */
     public static double L_RankLoss(int y[], int r[]) {
-	// works with missing
-	int[][] aligned = align(y, r);
-
-	y = aligned[0];
-	r = aligned[1];
 	
+
 	int L = y.length;
 	ArrayList<Integer> tI = new ArrayList<Integer>();
 	ArrayList<Integer> fI = new ArrayList<Integer>();
@@ -895,21 +896,40 @@ public abstract class Metrics {
 	// Note: 'Threshold' contains the probability threshold that gives rise to the previous performance values.
 
 	Instances curveData[] = curveData(Y,P);
+
 	int L = curveData.length;
 
+	for (int i = 0; i < curveData.length; i++) {
+	    if (curveData[i] == null) {
+		L--;
+	    }
+
+	}
+
+	
+	
 	Instances avgCurve = new Instances(curveData[0],0);
 	int D = avgCurve.numAttributes();
 
 	for (double t = 0.0; t < 1.; t+=0.01) {
 	    Instance x = (Instance)curveData[0].instance(0).copy();
 	    //System.out.println("x1\n"+x);
+	    boolean firstloop = true;
 	    for(int j = 0; j < L; j++) {
+
+		// if there are only missing values in a column, curveData[j] is null
+		
+		if (curveData[j] == null) {
+		    continue;
+		}
+
 		int i = ThresholdCurve.getThresholdInstance(curveData[j],t);
-		if (j==0) {
+		if (firstloop) {
 		    // reset
 		    for (int a = 0; a < D; a++) {
 			x.setValue(a,curveData[j].instance(i).value(a) * 1./L);
 		    }
+		    firstloop = false;
 		}
 		else {
 		    // add
@@ -960,7 +980,8 @@ public abstract class Metrics {
 	int L = Y[0].length;
 	Instances curveData[] = new Instances[L];
 	for(int j = 0; j < L; j++) {
-	    curveData[j] = curveData(M.getCol(Y, j), M.getCol(P, j));
+	    Instances cd = curveData(M.getCol(Y, j), M.getCol(P, j));
+	    curveData[j] = cd; 
 	}
 	return curveData;
     }
