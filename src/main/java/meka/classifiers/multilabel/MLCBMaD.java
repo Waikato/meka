@@ -70,6 +70,8 @@ public class MLCBMaD extends LabelTransformationClassifier implements TechnicalI
 
     /**
      * Default threshold = 0.5, has to be in at least half of the rows.
+     *
+     * @return the default threshold.
      */
     protected double getDefaultThreshold(){
 	return 0.5;
@@ -77,6 +79,8 @@ public class MLCBMaD extends LabelTransformationClassifier implements TechnicalI
 
     /**
      * Default size = 20, seems to be a good choice for most data sets. 
+     * 
+     * @return the tooltip
      */
     protected int getDefaultSize(){
 	return 20;

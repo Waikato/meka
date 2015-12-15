@@ -26,13 +26,12 @@ import weka.classifiers.Classifier;
 import weka.core.Instances;
 
 /**
- * Tests MLCBMaD. Run from the command line with:<p/>
- * java meka.classifiers.multilabel.MLCBMaDTest
+ * Tests PLST. Run from the command line with:<p/>
+ * java meka.classifiers.multilabel.PLSTTest
  *
- * @author FracPete (fracpete at waikato dot ac dot nz)
- * @version $Revision: 117 $
+ * @author Joerg Wicker (wicker@uni-mainz.de)
  */
-public class MLCBMaDTest 
+public class PLSTTest 
   extends AbstractMekaClassifierTest {
 
   /**
@@ -40,7 +39,7 @@ public class MLCBMaDTest
    * 
    * @param name the name of the test
    */
-  public MLCBMaDTest(String name) { 
+  public PLSTTest(String name) { 
     super(name);  
   }
 
@@ -51,9 +50,9 @@ public class MLCBMaDTest
    */
   @Override
   public Classifier getClassifier() {
-    MLCBMaD mlcbmad =  new MLCBMaD();
-    mlcbmad.setSize(5);
-    return mlcbmad;
+    PLST plst =  new PLST();
+    plst.setSize(5);
+    return plst;
   }
 
   public void testEvaluation() {
@@ -69,7 +68,7 @@ public class MLCBMaDTest
   }
 
   public static Test suite() {
-    return new TestSuite(MLCBMaDTest.class);
+    return new TestSuite(PLSTTest.class);
   }
 
   public static void main(String[] args){
