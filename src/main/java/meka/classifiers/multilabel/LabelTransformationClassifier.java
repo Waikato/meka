@@ -85,12 +85,16 @@ public abstract class LabelTransformationClassifier
      * Default constructor using BR.
      */
     protected LabelTransformationClassifier() {
-	m_Classifier = new BR();
+	m_Classifier = getDefaultClassifier();
+    }
+
+    protected Classifier getDefaultClassifier() {
+        return new BR();
     }
 
     @Override
     protected String defaultClassifierString() {
-	return BR.class.getName();
+	return getDefaultClassifier().getClass().getName();
     }
     
     @Override
