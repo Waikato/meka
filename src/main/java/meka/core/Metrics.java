@@ -899,16 +899,26 @@ public abstract class Metrics {
 
 	int L = curveData.length;
 
+	int noNullIndex = -1;
+
+	
 	for (int i = 0; i < curveData.length; i++) {
 	    if (curveData[i] == null) {
 		L--;
+	    } else {
+		if (noNullIndex == -1) {
+		    // checking for the first curveData that is not null (=does not consist of
+		    // only missing values or 0s)
+		    noNullIndex = i;
+		}
+
 	    }
+
 
 	}
 
 	
-	
-	Instances avgCurve = new Instances(curveData[0],0);
+	Instances avgCurve = new Instances(curveData[noNullIndex],0);
 	int D = avgCurve.numAttributes();
 
 	for (double t = 0.0; t < 1.; t+=0.01) {
