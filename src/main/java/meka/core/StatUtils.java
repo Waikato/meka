@@ -687,7 +687,7 @@ public abstract class StatUtils {
 		int L = D.classIndex();
 		int N = D.numInstances();
 		double T[][] = MLUtils.getYfromD(D);						// Output (TEACHER)
-		double Y[][] = M.threshold(result.allPredictions(),0.5);	// Output (PREDICTED)
+		double Y[][] = MatrixUtils.threshold(result.allPredictions(), 0.5);	// Output (PREDICTED)
 		result.output = Result.getStats(result,"6");	            // <-- high verbosity, because we need individual accuracies				
 		double E[] = fillError(result, L);							// Errors (EXPECTED)
 		double F[][][] = new double[3][L][L];						// Errors (ACTUAL)
@@ -736,9 +736,9 @@ public abstract class StatUtils {
 		int L = D.classIndex();
 		int N = D.numInstances();
 		double Y[][] = MLUtils.getYfromD(D);						// Real
-		double Y_[][] = M.threshold(result.allPredictions(),0.5);	// Predicted
+		double Y_[][] = MatrixUtils.threshold(result.allPredictions(), 0.5);	// Predicted
 		// Error
-		double E[][] = M.subtract(Y,Y_); 
+		double E[][] = MatrixUtils.subtract(Y, Y_);
 		// Expected (for each j)
 		double X[][] = new double[L][L];
 
@@ -772,10 +772,10 @@ public abstract class StatUtils {
 
 		// Extract true labels from D, predicted labels from R
 		double Ytrue[][] = MLUtils.getYfromD(D);						// True
-		double Ypred[][] = M.threshold(R.allPredictions(),0.5);			// Predicted
+		double Ypred[][] = MatrixUtils.threshold(R.allPredictions(), 0.5);			// Predicted
 
 		// Make Error matrix
-		double E[][] = M.abs(M.subtract(Ytrue,Ypred)); 
+		double E[][] = MatrixUtils.abs(MatrixUtils.subtract(Ytrue, Ypred));
 
 		// Replace labels with errors
 		Instances D_E = MLUtils.replaceZasClasses(new Instances(D),E,L);
@@ -836,7 +836,7 @@ public abstract class StatUtils {
 		else {
 			CD = StatUtils.margDepMatrix(D,args[2]);
 		}
-		System.out.println(M.toString(CD,"M"+args[2]));
+		System.out.println(MatrixUtils.toString(CD, "M" + args[2]));
 	}
 
 }

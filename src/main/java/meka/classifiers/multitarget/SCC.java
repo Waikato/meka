@@ -260,7 +260,7 @@ public class SCC extends NSR implements Randomizable, MultiTargetClassifier, Tec
 		// 2. SELECT / MODIFY INDICES (using LEAD technique)
 		if (getDebug()) System.out.println("2. GET ERR-CHI-SQUARED MATRIX: ");
 		double MER[][] = StatUtils.condDepMatrix(D_test, result_1);
-		if (getDebug()) System.out.println(M.toString(MER));
+		if (getDebug()) System.out.println(MatrixUtils.toString(MER));
 
 		/*
 		 * 3. SIMULATED ANNEALING
@@ -271,7 +271,7 @@ public class SCC extends NSR implements Randomizable, MultiTargetClassifier, Tec
 		if (getDebug()) System.out.println("@0 : "+SuperLabelUtils.toString(partition)+ "\t("+w+")");
 
 		for(int i = 0; i < m_I; i++) {
-			int partition_[][] = mutateCombinations(M.deep_copy(partition),rand);
+			int partition_[][] = mutateCombinations(MatrixUtils.deep_copy(partition),rand);
 			double w_ = rating(partition_,MER); // this is really p_MER(partition_)
 			 if (w_ > w) {
 				 // ACCEPT
@@ -305,7 +305,7 @@ public class SCC extends NSR implements Randomizable, MultiTargetClassifier, Tec
 			w = (Double)result_1.getMeasurement(i_ErrFn);
 			if (getDebug()) System.out.println("@0 : "+SuperLabelUtils.toString(partition)+ "\t("+w+")");
 			for(int i = 0; i < m_Iv; i++) {
-				int partition_[][] = mutateCombinations(M.deep_copy(partition),rand);
+				int partition_[][] = mutateCombinations(MatrixUtils.deep_copy(partition),rand);
 				// Build the classifier with the new combination
 				trainClassifier(m_Classifier,D_train,partition);
 				// Evaluate on D_test

@@ -15,11 +15,13 @@
 
 package meka.core;
 
-import weka.core.*;
-import java.util.*;
 import weka.classifiers.evaluation.ThresholdCurve;
-import weka.classifiers.evaluation.NominalPrediction;
-import weka.classifiers.evaluation.Prediction;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Metrics.java - Evaluation Metrics. 
@@ -253,8 +255,8 @@ public abstract class Metrics {
     /** Hamming score aka label accuracy. */
     public static double P_Hamming(int Y[][], int Ypred[][], int j) {
 	// works with missing
-	int y_j[] = M.getCol(Y,j);
-	int ypred_j[] = M.getCol(Ypred,j);
+	int y_j[] = MatrixUtils.getCol(Y, j);
+	int ypred_j[] = MatrixUtils.getCol(Ypred, j);
 
 	int[][] aligned = align(y_j, ypred_j);
 
@@ -291,8 +293,8 @@ public abstract class Metrics {
     /** Harmonic Accuracy -- for the j-th label. Multi-label only. */
     public static double P_Harmonic(int Y[][], int Ypred[][], int j) {
 	// works with missing
-	int y_j[] = M.getCol(Y,j);
-	int ypred_j[] = M.getCol(Ypred,j);
+	int y_j[] = MatrixUtils.getCol(Y, j);
+	int ypred_j[] = MatrixUtils.getCol(Ypred, j);
 	return P_Harmonic(y_j,ypred_j);
     }
 
@@ -530,8 +532,8 @@ public abstract class Metrics {
 	int L = Y[0].length;
 	double m = 0.0;
 	for (int j = 0; j < L; j++) {
-	    int[] y_j = M.getCol(Y, j);
-            int[] p_j = M.getCol(Ypred, j);
+	    int[] y_j = MatrixUtils.getCol(Y, j);
+            int[] p_j = MatrixUtils.getCol(Ypred, j);
 
             if (allMissing(y_j)) {
                 continue;
@@ -562,8 +564,8 @@ public abstract class Metrics {
 	int L = Y[0].length;
 	double m = 0.0;
 	for (int j = 0; j < L; j++) {
-            int[] y_j = M.getCol(Y, j);
-            int[] p_j = M.getCol(Ypred, j);
+            int[] y_j = MatrixUtils.getCol(Y, j);
+            int[] p_j = MatrixUtils.getCol(Ypred, j);
 
             if (allMissing(y_j)) {
                 continue;
@@ -591,7 +593,7 @@ public abstract class Metrics {
      */
     public static double P_PrecisionMicro(int Y[][], int Ypred[][]) {
 	// works with missing
-	return P_Precision(M.flatten(Y),M.flatten(Ypred));
+	return P_Precision(MatrixUtils.flatten(Y), MatrixUtils.flatten(Ypred));
     }
 
     /**
@@ -599,14 +601,14 @@ public abstract class Metrics {
      */
     public static double P_RecallMicro(int Y[][], int Ypred[][]) {
 	// works with missing
-	return P_Recall(M.flatten(Y),M.flatten(Ypred));
+	return P_Recall(MatrixUtils.flatten(Y), MatrixUtils.flatten(Ypred));
     }
     /**
      * P_Precision - (retrieved AND relevant) / retrieved
      */
     public static double P_Precision(int Y[][], int Ypred[][], int j) {
 	// works with missing
-	return P_Precision(M.getCol(Y,j),M.getCol(Ypred,j));
+	return P_Precision(MatrixUtils.getCol(Y, j), MatrixUtils.getCol(Ypred, j));
 	//int retrieved = M.sum(M.sum(Ypred));
 	//int correct = M.sum(M.sum(M.multiply(Y,Ypred)));
 	//return (double)correct / (double)predicted;
@@ -617,7 +619,7 @@ public abstract class Metrics {
      */
     public static double P_Recall(int Y[][], int Ypred[][], int j) {
 	// works with missing
-	return P_Recall(M.getCol(Y,j),M.getCol(Ypred,j));
+	return P_Recall(MatrixUtils.getCol(Y, j), MatrixUtils.getCol(Ypred, j));
 	//int relevant = M.sum(M.sum(Y));
 	//int correct = M.sum(M.sum(M.multiply(Y,Ypred)));
 	//return (double)correct / (double)relevant;
@@ -628,7 +630,7 @@ public abstract class Metrics {
      */
     public static double P_FmicroAvg(int Y[][], int Ypred[][]) {
 	// works with missing
-	return F1(M.flatten(Y),M.flatten(Ypred));
+	return F1(MatrixUtils.flatten(Y), MatrixUtils.flatten(Ypred));
 	//double precision = P_Precision(M.flatten(Y),M.flatten(Ypred));
 	//double recall = P_Recall(M.flatten(Y),M.flatten(Ypred));
 	//return (2.0 * precision * recall) / (precision + recall);
@@ -654,8 +656,8 @@ public abstract class Metrics {
 		continue;
 	    }
 
-	    int y_j[] = M.getCol(Y,j);
-	    int ypred_j[] = M.getCol(Ypred,j);
+	    int y_j[] = MatrixUtils.getCol(Y, j);
+	    int ypred_j[] = MatrixUtils.getCol(Ypred, j);
 	    
 	    TP[j] = P_TruePositives(y_j,ypred_j);
 	    FP[j] = P_FalsePositives(y_j,ypred_j);
@@ -851,7 +853,7 @@ public abstract class Metrics {
 		continue;
 	    }
 	    ThresholdCurve curve = new ThresholdCurve();
-	    Instances result = curve.getCurve(MLUtils.toWekaPredictions(M.getCol(Y,j),M.getCol(P,j)));
+	    Instances result = curve.getCurve(MLUtils.toWekaPredictions(MatrixUtils.getCol(Y, j), MatrixUtils.getCol(P, j)));
 	    AUC[j] = ThresholdCurve.getPRCArea(result);
 	}
 	return Utils.mean(AUC);
@@ -868,7 +870,7 @@ public abstract class Metrics {
 		continue;
 	    }
 	    ThresholdCurve curve = new ThresholdCurve();
-	    Instances result = curve.getCurve(MLUtils.toWekaPredictions(M.getCol(Y,j),M.getCol(P,j)));
+	    Instances result = curve.getCurve(MLUtils.toWekaPredictions(MatrixUtils.getCol(Y, j), MatrixUtils.getCol(P, j)));
 	    AUC[j] = ThresholdCurve.getROCArea(result);
 	}
 	return Utils.mean(AUC);
@@ -878,8 +880,8 @@ public abstract class Metrics {
     public static Instances curveDataMicroAveraged(int Y[][], double P[][]) {
 	//works with missing
 	
-	int y[] = M.flatten(Y);
-	double p[] = M.flatten(P);
+	int y[] = MatrixUtils.flatten(Y);
+	double p[] = MatrixUtils.flatten(P);
 
 	double[][] aligned = align(y, p);
 
@@ -990,7 +992,7 @@ public abstract class Metrics {
 	int L = Y[0].length;
 	Instances curveData[] = new Instances[L];
 	for(int j = 0; j < L; j++) {
-	    Instances cd = curveData(M.getCol(Y, j), M.getCol(P, j));
+	    Instances cd = curveData(MatrixUtils.getCol(Y, j), MatrixUtils.getCol(P, j));
 	    curveData[j] = cd; 
 	}
 	return curveData;

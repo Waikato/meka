@@ -17,8 +17,8 @@ package meka.classifiers.multilabel;
 
 import Jama.Matrix;
 import meka.classifiers.multilabel.NN.AbstractNeuralNet;
-import meka.core.M;
 import meka.core.MLUtils;
+import meka.core.MatrixUtils;
 import rbms.Mat;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -215,7 +215,7 @@ public class BPNN extends AbstractNeuralNet {
 		Matrix Z[] = new Matrix[numW+1];
 
 		// input activations
-		Z[0] = new Matrix(M.addBias(X_));
+		Z[0] = new Matrix(MatrixUtils.addBias(X_));
 
 		// hidden layer(s)
 		int i = 1;
@@ -224,8 +224,8 @@ public class BPNN extends AbstractNeuralNet {
 				System.out.print("DO: ["+i+"] "+Mat.getDim(Z[i-1].getArray())+" * "+Mat.getDim(W[i-1].getArray())+" => ");
 
 			Matrix A_z = Z[i-1].times(W[i-1]);									// 					A = X * W1 		= Z[n-1] * W[n-1]	 
-			Z[i] = M.sigma(A_z);
-			Z[i] = M.addBias(Z[i]);											// ACTIVATIONS      Z[n] = sigma(A)	=  
+			Z[i] = MatrixUtils.sigma(A_z);
+			Z[i] = MatrixUtils.addBias(Z[i]);											// ACTIVATIONS      Z[n] = sigma(A)	=
 
 			if (getDebug())
 				System.out.println("==: "+Mat.getDim(A_z.getArray()));
@@ -237,7 +237,7 @@ public class BPNN extends AbstractNeuralNet {
 		Matrix A_y = Z[i-1].times(W[i-1]);			// 					A = X * W1 		= Z[n-1] * W[n-1]	 
 		if (getDebug())
 			System.out.println("==: "+Mat.getDim(A_y.getArray()));
-		Z[numW] = M.sigma(A_y);					// ACTIVATIONS      Z[n] = sigma(A)	=  
+		Z[numW] = MatrixUtils.sigma(A_y);					// ACTIVATIONS      Z[n] = sigma(A)	=
 
 		return Z;
 	}
@@ -273,13 +273,13 @@ public class BPNN extends AbstractNeuralNet {
 		// Error terms (output)
 		Matrix E_y = T.minus(Z[nW]);												// ERROR
 
-		dZ[nW] = M.dsigma(Z[nW]).arrayTimes(E_y);
+		dZ[nW] = MatrixUtils.dsigma(Z[nW]).arrayTimes(E_y);
 
 		// Error terms (hidden) *NEW*
 		for(int i = nW-1; i > 0; i--) {
 			Matrix E = dZ[i+1].times(W[i].transpose());
-			dZ[i] = M.dsigma(Z[i]).arrayTimes(E); 
-			dZ[i] = new Matrix(M.removeBias(dZ[i].getArray()));
+			dZ[i] = MatrixUtils.dsigma(Z[i]).arrayTimes(E);
+			dZ[i] = new Matrix(MatrixUtils.removeBias(dZ[i].getArray()));
 		}
 
 		// Error terms (hidden)

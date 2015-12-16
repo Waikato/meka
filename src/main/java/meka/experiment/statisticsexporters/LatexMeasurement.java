@@ -145,7 +145,7 @@ public class LatexMeasurement
 			bwriter.newLine();
 			bwriter.write(String.format("%12s ", "Avg.\\ Rank"));
 			for (i = 0; i < classifiers.size(); i++) {
-				String value = String.format("& %5.3f      ", Utils.mean(A.toDoubleArray(M.getCol(ranks, i))));
+				String value = String.format("& %5.3f      ", Utils.mean(A.toDoubleArray(MatrixUtils.getCol(ranks, i))));
 				bwriter.write(value);
 			}
 			bwriter.write(" \\\\");
