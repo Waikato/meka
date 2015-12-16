@@ -16,6 +16,7 @@
 package rbms;
 
 import Jama.Matrix;
+import meka.core.MatrixUtils;
 import weka.core.*;
 
 import java.util.*;
@@ -114,9 +115,9 @@ public class RBM {
 	 * @return	z (without bias)
 	 */
 	public double[] prob_z(double x_[]) {
-		Matrix x = new Matrix(Mat.addBias(x_),1);
-		double z[] = Mat.sigma(x.times(W).getArray()[0]);
-		return Mat.removeBias(z);
+		Matrix x = new Matrix(MatrixUtils.addBias(x_),1);
+		double z[] = MatrixUtils.sigma(x.times(W).getArray()[0]);
+		return MatrixUtils.removeBias(z);
 	}
 
 	/**
@@ -126,8 +127,8 @@ public class RBM {
 	 * @return	P(Z|X) 
 	 */
 	public double[][] prob_Z(double X_[][]) {
-		Matrix X = new Matrix(Mat.addBias(X_));
-		return Mat.removeBias(prob_Z(X).getArray()); 
+		Matrix X = new Matrix(MatrixUtils.addBias(X_));
+		return MatrixUtils.removeBias(prob_Z(X).getArray());
 	}
 
 	/**
@@ -137,8 +138,8 @@ public class RBM {
 	 * @return	P(Z|X) 
 	 */
 	public Matrix prob_Z(Matrix X) {
-		Matrix P_Z = Mat.sigma( X.times(W) );     // (this is the activation function)
-		Mat.fillCol(P_Z.getArray(),0,1.0); 	  	  // fix bias ... set first col to 1.0
+		Matrix P_Z = MatrixUtils.sigma( X.times(W) );     // (this is the activation function)
+		MatrixUtils.fillCol(P_Z.getArray(), 0, 1.0); 	  	  // fix bias ... set first col to 1.0
 		return P_Z;
 	}
 
@@ -149,7 +150,7 @@ public class RBM {
 	 * @return	1 if P(Z|X) greater than 0.5 
 	 */
 	public double[][] propUp(double X_[][]) {
-		return Mat.threshold(prob_Z(X_),0.5);								// ... or just go down
+		return MatrixUtils.threshold(prob_Z(X_),0.5);								// ... or just go down
 	}
 	
 
@@ -161,7 +162,7 @@ public class RBM {
 	 */
 	public Matrix sample_Z(Matrix X) {
 		Matrix P_Z = prob_Z(X);
-		return Mat.sample(P_Z,m_R);
+		return MatrixUtils.sample(P_Z, m_R);
 	}
 
 	/**
@@ -172,7 +173,7 @@ public class RBM {
 	 */
 	public double[] sample_z(double x_[]) {
 		double p[] = prob_z(x_);
-		return Mat.sample(p,m_R);
+		return MatrixUtils.sample(p, m_R);
 	}
 
 	/**
@@ -183,7 +184,7 @@ public class RBM {
 	 */
 	public double[] sample_x(double z_[]) {
 		double p_x[] = prob_x(z_);
-		return Mat.sample(p_x,m_R);
+		return MatrixUtils.sample(p_x, m_R);
 	}
 
 	/**
@@ -194,7 +195,7 @@ public class RBM {
 	 */
 	public Matrix sample_X(Matrix Z) {
 		Matrix P_X = prob_X(Z);
-		return Mat.sample(P_X,m_R);
+		return MatrixUtils.sample(P_X, m_R);
 	}
 
 	/**
@@ -204,9 +205,9 @@ public class RBM {
 	 * @return	x (without bias)
 	 */
 	public double[] prob_x(double z_[]) {
-		Matrix z = new Matrix(Mat.addBias(z_),1);
-		double x[] = Mat.sigma(z.times(W.transpose()).getArray()[0]);
-		return Mat.removeBias(x);
+		Matrix z = new Matrix(MatrixUtils.addBias(z_),1);
+		double x[] = MatrixUtils.sigma(z.times(W.transpose()).getArray()[0]);
+		return MatrixUtils.removeBias(x);
 	}
 
 	/**
@@ -216,8 +217,8 @@ public class RBM {
 	 * @return	P(X|Z) 
 	 */
 	public Matrix prob_X(Matrix Z) {
-		Matrix X = new Matrix(Mat.sigma(Z.times(W.transpose()).getArray()));   // (this is the activation function)
-		Mat.fillCol(X.getArray(),0,1.0);											// fix bias - set first col to 1.0
+		Matrix X = new Matrix(MatrixUtils.sigma(Z.times(W.transpose()).getArray()));   // (this is the activation function)
+		MatrixUtils.fillCol(X.getArray(), 0, 1.0);											// fix bias - set first col to 1.0
 		return X;
 	}
 
@@ -230,9 +231,9 @@ public class RBM {
 	 * @return	W
 	 */
 	public static Matrix makeW(int d, int h, Random r) {
-		double W_[][] = Mat.multiply(Mat.randn(d+1,h+1,r),0.20); // ~ N(0.0,0.01)
-		Mat.fillRow(W_,0,0.0); 	// set the first row to 0 for bias
-		Mat.fillCol(W_,0,0.0);	// set the first col to 0 for bias
+		double W_[][] = MatrixUtils.multiply(MatrixUtils.randn(d + 1, h + 1, r),0.20); // ~ N(0.0,0.01)
+		MatrixUtils.fillRow(W_, 0, 0.0); 	// set the first row to 0 for bias
+		MatrixUtils.fillCol(W_, 0, 0.0);	// set the first col to 0 for bias
 		return new Matrix(W_); 
 	}
 
@@ -307,7 +308,7 @@ public class RBM {
 	 * @param	X_ 	raw double[][] data (with no bias column)
 	 */
 	public void update(double X_[][]) {
-		Matrix X = new Matrix(Mat.addBias(X_));
+		Matrix X = new Matrix(MatrixUtils.addBias(X_));
 		update(X);
 	}
 
@@ -325,7 +326,7 @@ public class RBM {
 	 * @param	s	multiply the gradient by this scalar
 	 */
 	public void update(double x_[], double s) {
-		Matrix X = new Matrix(Mat.addBias(new double[][]{x_}));
+		Matrix X = new Matrix(MatrixUtils.addBias(new double[][]{x_}));
 		update(X,s);
 	}
 
@@ -338,7 +339,7 @@ public class RBM {
 
 		initWeights(X_);
 
-		Matrix X = new Matrix(Mat.addBias(X_));
+		Matrix X = new Matrix(MatrixUtils.addBias(X_));
 
 		double _error = Double.MAX_VALUE; // prev error , necessary only when using m_V
 
@@ -378,7 +379,7 @@ public class RBM {
 
 		initWeights(X_);
 
-		X_ = Mat.addBias(X_);
+		X_ = MatrixUtils.addBias(X_);
 
 		int N = X_.length;					// N
 		if (batchSize == N)
@@ -414,7 +415,7 @@ public class RBM {
 
 		initWeights(X_);
 
-		X_ = Mat.addBias(X_);
+		X_ = MatrixUtils.addBias(X_);
 		int N = X_.length;					// N
 		int N_n = (int)Math.ceil(N*1./batchSize);// Number of batches
 
@@ -448,7 +449,7 @@ public class RBM {
 		Matrix X_down = prob_X(Z_up);											// go down
 
 		// MSE
-		return Mat.meanSquaredError(X.getArray(),X_down.getArray());			// @note: this can take some milliseconds to calculate
+		return MatrixUtils.meanSquaredError(X.getArray(), X_down.getArray());			// @note: this can take some milliseconds to calculate
 	}
 
 	/**
@@ -512,7 +513,7 @@ public class RBM {
 		Matrix E_neg = X_1.transpose().times(pZ_1);								// negative energy, P(Z_1) * X_1
 
 		// CALCULATE ERROR (Optional!)
-		double _Err = Mat.meanSquaredError(X_0.getArray(),X_1.getArray());			// @note: this take some milliseconds to calculate
+		double _Err = MatrixUtils.meanSquaredError(X_0.getArray(), X_1.getArray());			// @note: this take some milliseconds to calculate
 		System.out.println(""+_Err);
 
 		// CONTRASTIVE DIVERGENCE
@@ -588,7 +589,7 @@ public class RBM {
 	 */
 	public String toString() {
 		Matrix W = getW();
-		return Mat.toString(W);
+		return MatrixUtils.toString(W);
 	}
 
 	/**

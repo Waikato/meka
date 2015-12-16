@@ -19,7 +19,6 @@ import Jama.Matrix;
 import meka.classifiers.multilabel.NN.AbstractNeuralNet;
 import meka.core.MLUtils;
 import meka.core.MatrixUtils;
-import rbms.Mat;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -96,7 +95,7 @@ public class BPNN extends AbstractNeuralNet {
 		}
 
 		int h = W[1].getRowDimension()-1;
-		this.W[W.length] = Mat.randomn(h+1,L,r).timesEquals(0.1);
+		this.W[W.length] = MatrixUtils.randomn(h + 1, L, r).timesEquals(0.1);
 
 		makeMomentumMatrices();
 	}
@@ -133,7 +132,7 @@ public class BPNN extends AbstractNeuralNet {
 		// Hidden layers 
 		System.out.println(""+Arrays.toString(H));
 		for(int n = 0; n < H.length-1; n++) {
-			W[n] = Mat.randomn(H[n]+1,H[n+1],r).timesEquals(0.1);
+			W[n] = MatrixUtils.randomn(H[n] + 1, H[n + 1], r).timesEquals(0.1);
 			if (getDebug()) System.out.println("W["+n+"] = "+(H[n]+1)+" x "+H[n+1]);
 		}
 
@@ -221,22 +220,22 @@ public class BPNN extends AbstractNeuralNet {
 		int i = 1;
 		for(i = 1; i < numW; i++) {
 			if (getDebug())
-				System.out.print("DO: ["+i+"] "+Mat.getDim(Z[i-1].getArray())+" * "+Mat.getDim(W[i-1].getArray())+" => ");
+				System.out.print("DO: ["+i+"] "+ MatrixUtils.getDim(Z[i - 1].getArray())+" * "+ MatrixUtils.getDim(W[i - 1].getArray())+" => ");
 
 			Matrix A_z = Z[i-1].times(W[i-1]);									// 					A = X * W1 		= Z[n-1] * W[n-1]	 
 			Z[i] = MatrixUtils.sigma(A_z);
 			Z[i] = MatrixUtils.addBias(Z[i]);											// ACTIVATIONS      Z[n] = sigma(A)	=
 
 			if (getDebug())
-				System.out.println("==: "+Mat.getDim(A_z.getArray()));
+				System.out.println("==: "+ MatrixUtils.getDim(A_z.getArray()));
 		}
 
 		// output layer
 		if (getDebug())
-			System.out.print("DX: ["+i+"] "+Mat.getDim(Z[i-1].getArray())+" * "+Mat.getDim(W[i-1].getArray())+" => ");
+			System.out.print("DX: ["+i+"] "+ MatrixUtils.getDim(Z[i - 1].getArray())+" * "+ MatrixUtils.getDim(W[i - 1].getArray())+" => ");
 		Matrix A_y = Z[i-1].times(W[i-1]);			// 					A = X * W1 		= Z[n-1] * W[n-1]	 
 		if (getDebug())
-			System.out.println("==: "+Mat.getDim(A_y.getArray()));
+			System.out.println("==: "+ MatrixUtils.getDim(A_y.getArray()));
 		Z[numW] = MatrixUtils.sigma(A_y);					// ACTIVATIONS      Z[n] = sigma(A)	=
 
 		return Z;
