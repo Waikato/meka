@@ -15,7 +15,7 @@
 
 /**
  * MatrixUtils.java
- * Copyright (C) 2015 University of Mainz, Germany
+ * Copyright (C) 2015 University of Mainz, Germany (to/from instances)
  */
 
 package meka.core;
@@ -143,7 +143,6 @@ public class MatrixUtils {
 	 * ToString - return a String representation (to adp decimal places).
 	 */
 	public static String toString(double M_[][], int adp) {
-		int width = adp > 0 ? adp + 2 : 0;
 		StringBuilder sb = new StringBuilder();
 		for(int j = 0; j < M_.length; j++) {
 			for(int k = 0; k < M_[j].length; k++) {
@@ -261,7 +260,9 @@ public class MatrixUtils {
 		return C;
 	}
 
-	// squared sum
+	/**
+	 * squared sum
+ 	 */
 	public static double SS(double M[][]) {
 		double sum = 0;
 		for (int i = 0; i < M.length; i++) {
