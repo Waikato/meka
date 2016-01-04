@@ -17,7 +17,7 @@ package meka.classifiers.multilabel;
 
 import meka.classifiers.multilabel.cc.CNode;
 import meka.core.A;
-import meka.core.M;
+import meka.core.MatrixUtils;
 import meka.core.OptionUtils;
 import meka.core.StatUtils;
 import mst.Edge;
@@ -99,13 +99,13 @@ public class BCC extends CC {
 			CD = StatUtils.margDepMatrix(D,m_DependencyType);
 		}
 
-		if (getDebug()) System.out.println(M.toString(CD));
+		if (getDebug()) System.out.println(MatrixUtils.toString(CD));
 
 		/*
 		 * Make a fully connected graph, each edge represents the
 		 * dependence measured between the pair of labels.
 		 */
-		CD = M.multiply(CD,-1); // because we want a *maximum* spanning tree
+		CD = MatrixUtils.multiply(CD, -1); // because we want a *maximum* spanning tree
 		if (getDebug())
 			System.out.println("Make a graph ...");
 		EdgeWeightedGraph G = new EdgeWeightedGraph((int)L);
@@ -134,7 +134,7 @@ public class BCC extends CC {
 			paM[k][j] = 1;
 			//StdOut.println(e);
 		}
-		if (getDebug()) System.out.println(M.toString(paM));
+		if (getDebug()) System.out.println(MatrixUtils.toString(paM));
 
 		/*
 		 *  Turn the DAG into a Tree with the m_Seed-th node as root

@@ -17,8 +17,8 @@ package meka.classifiers.multilabel;
 
 import Jama.Matrix;
 import meka.classifiers.multilabel.NN.AbstractDeepNeuralNet;
-import meka.core.M;
 import meka.core.MLUtils;
+import meka.core.MatrixUtils;
 import rbms.DBM;
 import rbms.RBM;
 import weka.core.Instance;
@@ -72,11 +72,11 @@ public class DBPNN extends AbstractDeepNeuralNet implements TechnicalInformation
 
 		if (getDebug()) {
 			Matrix tW[] = dbm.getWs();
-			System.out.println("X = \n"+M.toString(X_));
+			System.out.println("X = \n"+ MatrixUtils.toString(X_));
 			for(int l = 0; l < tW.length; l++) {
-				System.out.println("W = \n"+M.toString(tW[l].getArray()));
+				System.out.println("W = \n"+ MatrixUtils.toString(tW[l].getArray()));
 			}
-			System.out.println("Y = \n"+M.toString(Y_));
+			System.out.println("Y = \n"+ MatrixUtils.toString(Y_));
 		}
 
 		/* Trim W's: instead of (d+1 x h+1), they become (d+1, h)
@@ -117,10 +117,10 @@ public class DBPNN extends AbstractDeepNeuralNet implements TechnicalInformation
 		if (getDebug()) {
 			Matrix tW[] = W;
 			//System.out.println("X = \n"+M.toString(X_));
-			System.out.println("W = \n"+M.toString(tW[0].getArray()));
-			System.out.println("W = \n"+M.toString(tW[1].getArray()));
+			System.out.println("W = \n"+ MatrixUtils.toString(tW[0].getArray()));
+			System.out.println("W = \n"+ MatrixUtils.toString(tW[1].getArray()));
 			double Ypred[][] = ((BPNN)m_Classifier).popY(X_);
-			System.out.println("Y = \n"+M.toString(M.threshold(Ypred,0.5)));
+			System.out.println("Y = \n"+ MatrixUtils.toString(MatrixUtils.threshold(Ypred, 0.5)));
 			//System.out.println("Z = \n"+M.toString(M.threshold(Z,0.5)));
 		}
 	}
@@ -132,7 +132,7 @@ public class DBPNN extends AbstractDeepNeuralNet implements TechnicalInformation
 
 	protected static Matrix trimBiases(Matrix A) {
 		double M_[][] = A.getArray();
-		return new Matrix(M.removeBias(M_));
+		return new Matrix(MatrixUtils.removeBias(M_));
 		//return new Matrix(M.getArray(),M.getRowDimension(),M.getColumnDimension()-1); // ignore last column
 	}
 

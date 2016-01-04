@@ -100,10 +100,10 @@ public class DeepML extends AbstractDeepNeuralNet implements TechnicalInformatio
 		double Z[][] = dbm.prob_Z(X_);
 		if (getDebug()) {
 			Matrix tW[] = dbm.getWs();
-			System.out.println("X = \n"+M.toString(X_));
-			System.out.println("W = \n"+M.toString(tW[0].getArray()));
-			System.out.println("Y = \n"+M.toString(MLUtils.getYfromD(D),0));
-			System.out.println("Z = \n"+M.toString(M.threshold(Z,0.5),0));
+			System.out.println("X = \n"+ MatrixUtils.toString(X_));
+			System.out.println("W = \n"+ MatrixUtils.toString(tW[0].getArray()));
+			System.out.println("Y = \n"+ MatrixUtils.toString(MLUtils.getYfromD(D), 0));
+			System.out.println("Z = \n"+ MatrixUtils.toString(MatrixUtils.threshold(Z, 0.5), 0));
 			/*
 			Instances newD = RBMTools.makeDataset(D,M.threshold(Z,0.5));
 			System.out.println(""+newD);
