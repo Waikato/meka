@@ -25,9 +25,9 @@ Number of training instances   355
 Number of test instances       237
 Label cardinality (train set)  1.789
 Label cardinality (test set)   1.992
-Build Time                     0.119
-Test Time                      0.071
-Total Time                     0.19 
+Build Time                     0.116
+Test Time                      0.066
+Total Time                     0.182
 
 
 

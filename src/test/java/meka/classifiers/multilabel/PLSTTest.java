@@ -23,7 +23,6 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import meka.classifiers.AbstractMekaClassifierTest;
 import weka.classifiers.Classifier;
-import weka.core.Instances;
 
 /**
  * Tests PLST. Run from the command line with:<p/>
@@ -31,47 +30,35 @@ import weka.core.Instances;
  *
  * @author Joerg Wicker (wicker@uni-mainz.de)
  */
-public class PLSTTest 
-  extends AbstractMekaClassifierTest {
+public class PLSTTest
+	extends AbstractMekaClassifierTest {
 
-  /**
-   * Initializes the test.
-   * 
-   * @param name the name of the test
-   */
-  public PLSTTest(String name) { 
-    super(name);  
-  }
+	/**
+	 * Initializes the test.
+	 *
+	 * @param name the name of the test
+	 */
+	public PLSTTest(String name) {
+		super(name);
+	}
 
-  /** 
-   * Creates a default classifier.
-   * 
-   * @return the classifier
-   */
-  @Override
-  public Classifier getClassifier() {
-    PLST plst =  new PLST();
-    plst.setSize(5);
-    return plst;
-  }
+	/**
+	 * Creates a default classifier.
+	 *
+	 * @return the classifier
+	 */
+	@Override
+	public Classifier getClassifier() {
+		PLST plst =  new PLST();
+		plst.setSize(3);
+		return plst;
+	}
 
-  public void testEvaluation() {
-	  System.out.println("Testing Evaluation");
-	  Instances D = null;
-	  try {
-		  D = loadData("Music.arff");
-	  } catch(Exception e) {
-		  System.err.println(" Failed to Load ");
-	  }
-	  //Assert.assertEquals("Result 1", D.classIndex(), 6);
-	  //Assert.assertEquals("Result 1", D.classIndex(), 3);
-  }
+	public static Test suite() {
+		return new TestSuite(PLSTTest.class);
+	}
 
-  public static Test suite() {
-    return new TestSuite(PLSTTest.class);
-  }
-
-  public static void main(String[] args){
-    junit.textui.TestRunner.run(suite());
-  }
+	public static void main(String[] args){
+		junit.textui.TestRunner.run(suite());
+	}
 }

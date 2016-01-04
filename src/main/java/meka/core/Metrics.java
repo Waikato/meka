@@ -922,7 +922,7 @@ public abstract class Metrics {
 	int D = avgCurve.numAttributes();
 
 	for (double t = 0.0; t < 1.; t+=0.01) {
-	    Instance x = (Instance)curveData[0].instance(0).copy();
+	    Instance x = (Instance)curveData[noNullIndex].instance(0).copy();
 	    //System.out.println("x1\n"+x);
 	    boolean firstloop = true;
 	    for(int j = 0; j < L; j++) {
