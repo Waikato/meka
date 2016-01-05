@@ -1,0 +1,120 @@
+#container
+{
+	margin: 0 auto;
+	width: 900px;
+	background: #fff;
+}
+
+#header
+{
+	background: #ccc;
+	padding: 20px;
+}
+
+#header h1 
+{ 
+	color: #006699;
+	margin: 0; 
+}
+
+#navigation
+{
+	float: left;
+	width: 900px;
+	background: #333;
+}
+
+#navigation ul
+{
+	margin: 0;
+	padding: 0;
+}
+
+#navigation ul li
+{
+	list-style-type: none;
+	display: inline;
+}
+
+#navigation li a
+{
+	display: block;
+	float: left;
+	padding: 5px 10px;
+	color: #fff;
+	text-decoration: none;
+	border-right: 1px solid #fff;
+}
+
+#navigation li a:hover 
+{ 
+	color: #006699;
+}
+
+#content-container
+{
+	float: left;
+	width: 900px;
+	background: #fff url(/wp-content/uploads/layout-two-fixed-background.gif) repeat-y 100% 0;
+}
+
+#content
+{
+	clear: left;
+	float: left;
+	width: 620px;
+	padding: 20px 0;
+	margin: 0 0 0 30px;
+	display: inline;
+}
+
+#content h2 
+{ 
+	margin: 0; 
+	color: #006699;
+}
+
+#aside
+{
+	float: right;
+	width: 180px;
+	padding: 20px 0;
+	margin: 0 20px 0 0;
+	display: inline;
+}
+
+#aside h3 
+{ 
+	color: #006699;
+	margin: 0; 
+}
+
+a:link, a:visited 
+{
+	color: #268CCD;
+	text-decoration: none;
+}
+a:hover 
+{
+	text-decoration: underline;
+}
+
+#footer
+{
+	clear: both;
+	background: #ccc;
+	text-align: right;
+	padding: 20px;
+	height: 1%;
+}
+
+#td
+{
+	font: small;
+}
+
+p.news
+{
+	background: #ccc;
+	padding: 20px;
+}
