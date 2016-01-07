@@ -288,6 +288,45 @@ public class OptionUtils {
 		return parse(options, "" + option, cls);
 	}
 
+
+
+/**
+	 * Parses a double option, uses default if option is missing.
+	 *
+	 * @param options       the option array to use
+	 * @param option        the option to look for in the options array (no leading dash)
+	 * @param defValue      the default value
+	 * @return              the parsed value (or default value if option not present)
+	 * @throws Exception    if parsing of value fails
+	 */
+	public static boolean parse(String[] options, char option, boolean defValue) throws Exception {
+		return parse(options, "" + option, defValue);
+	}
+
+	/**
+	 * Parses a double option, uses default if option is missing.
+	 *
+	 * @param options       the option array to use
+	 * @param option        the option to look for in the options array (no leading dash)
+	 * @param defValue      the default value
+	 * @return              the parsed value (or default value if option not present)
+	 * @throws Exception    if parsing of value fails
+	 */
+	public static boolean parse(String[] options, String option, boolean defValue) throws Exception {
+		String value = Utils.getOption(option, options);
+		if (value.isEmpty())
+			return defValue;
+		else
+			return Boolean.parseBoolean(value);
+	}
+
+
+
+
+
+
+
+    
 	/**
 	 * Parses an array option, returns all the occurrences of the option as a string array.
 	 *

@@ -123,6 +123,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kramerlab</groupId>
+      <artifactId>autoencoder</artifactId>
+      <version>0.1</version>
+    </dependency>
+    
+    <dependency>
       <groupId>org.markdownj</groupId>
       <artifactId>markdownj-core</artifactId>
       <version>0.4</version>

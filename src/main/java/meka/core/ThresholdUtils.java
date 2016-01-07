@@ -61,14 +61,14 @@ public abstract class ThresholdUtils {
 		Collections.sort(big);
 
 		int i = big.size() - (int)Math.round(LC_train * (double)N);
-
+		
 		if (N == big.size()) { // special cases
 			if (i+1 == N) // only one!
 				return (big.get(N-2)+big.get(N-1)/2.0);
 			if (i+1 >= N) // zero!
 				return 1.0;
 			else
-				return Math.max(((double)(big.get(i)+big.get(i+1))/2.0), 0.00001);
+			    return Math.max(((double)(big.get(i)+big.get(i+1))/2.0), 0.00001);
 		}
 
 		return Math.max(((double)(big.get(i)+big.get(Math.max(i+1,N-1))))/2.0 , 0.00001);
