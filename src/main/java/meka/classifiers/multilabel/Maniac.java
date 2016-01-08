@@ -380,6 +380,15 @@ public class Maniac extends LabelTransformationClassifier implements TechnicalIn
 	    Instances test = D.testCV(3,1);
 	    Instances labels = this.extractPart(train, true);
 	    
+	    // first convert the arff into non sparse form
+	    SparseToNonSparse spfilter = new SparseToNonSparse();
+	    spfilter.setInputFormat(labels);
+	    Instances aeData = Filter.useFilter(labels, spfilter);
+	    
+	    // now convert it into a format suitable for the autoencoder
+	    Mat data = wekaStatics.instancesToMat(aeData);
+	    
+	    
 	    Iterable<Autoencoder> autoencoders = autoencoderStatics
 		.deepAutoencoderStream_java(
 					    autoencoderStatics.Sigmoid(), // type of neurons.
@@ -387,7 +396,7 @@ public class Maniac extends LabelTransformationClassifier implements TechnicalIn
 					    this.getNumberAutoencoders(), // number of autoencoders = (max hidden layers + 1) /
 					    // 2
 					    this.getCompression(), // compression from k-th layer to (k+1)-th layer
-					    wekaStatics.instancesToMat(train), // training data 
+					    data, // training data 
 					    true, // true = L2 Error, false = CrossEntropy
 					    autoencoderStatics.HintonsMiraculousStrategy(), true,
 					    autoencoderStatics.NoObservers()
@@ -453,8 +462,10 @@ public class Maniac extends LabelTransformationClassifier implements TechnicalIn
 		}
 	    }
 	}
+
 	
-	Mat compressed = this.getAE().compress(wekaStatics.instancesToMat(labels));
+	
+	Mat compressed = this.getAE().compress(data);
 	Instances compressedLabels = wekaStatics.matToInstances(compressed);
 
 	// remember the labels to use for the prediction step,
