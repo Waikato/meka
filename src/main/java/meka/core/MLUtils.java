@@ -869,7 +869,7 @@ public abstract class MLUtils {
 	}
 
 	/**
-	 * HashMapToString - print out a HashMap nicely.
+	 * Print out a HashMap nicely.
 	 * @param	map	HashMap
 	 * @param	dp	decimal point precision (-1 for no limitation)
 	 * @return	String representation of map
