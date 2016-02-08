@@ -43,14 +43,12 @@ public class PSUpdateable extends PS implements IncrementalMultiLabelClassifier 
 	/** for serialization. */
   	private static final long serialVersionUID = -3909203248118831224L;
   	
-	protected int m_Counter = 0;
 	protected int m_Limit = 1000;
 	protected int m_Support = 10;
 	protected int L = -1;
 
 	protected HashMap<LabelSet,Integer> combinations = null;
 	protected Instances batch = null;
-	protected Instance m_InstanceTemplate = null;
 	protected MajorityLabelsetUpdateable mlu = new MajorityLabelsetUpdateable();
 
 	@Override
@@ -74,12 +72,12 @@ public class PSUpdateable extends PS implements IncrementalMultiLabelClassifier 
 	  	testCapabilities(D);
 	  	
 		L = D.classIndex();
-		m_Counter = D.numInstances();
+		batch = new Instances(D);
 
-		if (m_Counter > getLimit())  {
-			// build
-			if (getDebug()) System.out.println("init build @ "+D.numInstances());
-			combinations = PSUtils.countCombinationsSparse(D,L);
+		if (batch.numInstances() >= getLimit())  {
+			// if we have at least the limit, build!
+			if (getDebug()) System.out.println("Train on instances 0 ... "+batch.numInstances());
+			combinations = PSUtils.countCombinationsSparse(batch,L);
 			MLUtils.pruneCountHashMap(combinations,m_P);
 			// { NEW (we don't want more than m_Support classes!)
 			int p = m_P;
@@ -88,32 +86,29 @@ public class PSUpdateable extends PS implements IncrementalMultiLabelClassifier 
 				m_P++;
 				MLUtils.pruneCountHashMap(combinations,m_P);
 			}
-			super.buildClassifier(D);
+			super.buildClassifier(batch);
 			m_P = p;
 			// } NEW
+			mlu = null; // We won't be needing the majority set classifier!
 		}
 		else {
-			// start batch
-			if (getDebug()) System.out.println("start batch @ "+D.numInstances());
-			batch = new Instances(D);
+			// otherwise we don't have enough yet, initialize the collection batch
+			if (getDebug()) System.out.println("Continue collection batch from instance "+batch.numInstances());
 			// we will predict the majority labelset until we have a large enough batch
-			mlu.buildClassifier(D);
+			mlu.buildClassifier(batch);
 		}
 	}
 
 	@Override
 	public void updateClassifier(Instance x) throws Exception {
 
-		if (m_Counter < getLimit()) {
+		if (batch.numInstances() < getLimit() && mlu != null) {
 
 			// store example
 			batch.add(x);
-			mlu.updateClassifier(x);
-			// build when we're ready
-			if (++m_Counter >= getLimit()) {
-				// bulid PS
+			if (batch.numInstances() >= getLimit()) {
+				// we have enough instances to bulid PS!
 				combinations = PSUtils.countCombinationsSparse(batch,L);
-				//combinations.prune(m_P);
 				MLUtils.pruneCountHashMap(combinations,m_P);
 				// { NEW (we don't want more than m_Support classes!) -- note, the while loop is a slow way to do this
 				int p = m_P;
@@ -127,10 +122,14 @@ public class PSUpdateable extends PS implements IncrementalMultiLabelClassifier 
 				batch.clear();
 				mlu = null;
 			}
+			else {
+				// not enough instances in the batch yet, just update the majority-label classifier
+				mlu.updateClassifier(x);
+			}
 		}
 		else {
-			// update PS
-			for (Instance x_i : PSUtils.PSTransformation(x,L,combinations,m_N)) {
+			// update PS ...
+			for (Instance x_i : PSUtils.PSTransformation(x,L,combinations,m_N,super.m_InstancesTemplate)) {
 				// update internal sl classifier (e.g. naive bayes)
 				((UpdateableClassifier)m_Classifier).updateClassifier(x_i);
 			}
@@ -141,12 +140,12 @@ public class PSUpdateable extends PS implements IncrementalMultiLabelClassifier 
 	@Override
 	public double[] distributionForInstance(Instance x) throws Exception {
 		int L = x.classIndex();
-		if (m_Counter < getLimit()) {
-			// return most common combination
+		if (mlu != null) {
+			// we're still using the majority-labelset classifier, use it to return the most common combination
 			return mlu.distributionForInstance(x);
 		}
 		else {
-			// return PS prediction
+			// we've built PS already, return a PS prediction!
 			return super.distributionForInstance(x);
 		}
 	}
@@ -185,7 +184,7 @@ public class PSUpdateable extends PS implements IncrementalMultiLabelClassifier 
 	}
 
 	public String limitTipText() {
-		return "XXX.";
+		return "The buffer size (num. of instances to collect before training PS).";
 	}
 
 	public int getSupport() {
@@ -197,7 +196,7 @@ public class PSUpdateable extends PS implements IncrementalMultiLabelClassifier 
 	}
 
 	public String supportTipText() {
-		return "XXX.";
+		return "The maximum number of class values (i.e., label combinations) to consider.";
 	}
 
 	public static void main(String args[]) {

@@ -465,6 +465,9 @@ public abstract class PSUtils {
 		return D;
 	}
 
+	/*
+	 * This method was used before tighter MOA integration (in Feb 2016). 
+	 * This method could probably be elimitated if doing so does not cause any problems.
 	public static Instance[] PSTransformation(Instance x, int L, HashMap<LabelSet,Integer> map, int n) {
 
 		int y_[] = MLUtils.toSparseIntArray(x,L);
@@ -484,6 +487,45 @@ public abstract class PSUtils {
 			LabelSet d_subsets[] = PSUtils.getTopNSubsets(y,map,n);
 			Instance x_subsets[] = new Instance[d_subsets.length];
 			Instance x_template = convertInstance(x,L,x.dataset());
+			for(int i = 1; i < d_subsets.length; i++) {
+				x_subsets[i] = (Instance)(x_template).copy();
+				x_subsets[i].setClassValue(d_subsets[i].toString());
+			}
+			return x_subsets;
+		}
+	}
+	*/
+
+	/**
+	 * Transform one instance into multi-class representations (an array of possibly multiple single-label instances).
+	 * @param x			instance
+	 * @param L			number of labels in the instance
+	 * @param map		a map of labelsets to their frequencies 
+	 * @param n			restoration value
+	 * @return transformed instances
+	 */
+	public static Instance[] PSTransformation(Instance x, int L, HashMap<LabelSet,Integer> map, int n, Instances iTemplate) {
+
+		int y_[] = MLUtils.toSparseIntArray(x,L);
+
+		if (y_.length <= 0)
+			// There can be no transformation if there are no labels!
+			return new Instance[0];
+
+		LabelSet y = new LabelSet(y_);
+
+		if (map.get(y) != null) {
+			// The labelset already exists in the map (was observed in the training set)
+			Instance x_subsets[] = new Instance[1];
+			x_subsets[0] = convertInstance(x,L,iTemplate);
+			x_subsets[0].setClassValue(y.toString());            // problem here!
+			return x_subsets;
+		}
+		else {
+			// The labelset has not been seen before, use thap to construct some instances that fit
+			LabelSet d_subsets[] = PSUtils.getTopNSubsets(y,map,n);
+			Instance x_subsets[] = new Instance[d_subsets.length];
+			Instance x_template = convertInstance(x,L,iTemplate);
 			for(int i = 1; i < d_subsets.length; i++) {
 				x_subsets[i] = (Instance)(x_template).copy();
 				x_subsets[i].setClassValue(d_subsets[i].toString());
