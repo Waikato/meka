@@ -343,26 +343,25 @@ public class Result implements Serializable {
 	/**
 	 * GetResultAsString - print out each prediction in a Result (to a certain number of decimal points) along with its true labelset.
 	 */
-	public static String getResultAsString(Result s, int adp) {
+	public static String getResultAsString(Result result, int adp) {
 		StringBuilder sb = new StringBuilder();
-		double N = (double)s.predictions.size();
+		double N = (double)result.predictions.size();
 		sb.append("|==== PREDICTIONS (N="+N+") =====>\n");
 		for(int i = 0; i < N; i++) {
 			sb.append("|");
 			sb.append(Utils.doubleToString((i+1),5,0));
 			sb.append(" ");
-			if (adp == 0 && !s.getInfo("Type").equalsIgnoreCase("MT")) {
-				LabelSet y = new LabelSet(MLUtils.toIndicesSet(s.actuals.get(i)));
+			/*if (adp == 0 && !result.getInfo("Type").equalsIgnoreCase("MT")) {
+				LabelSet y = new LabelSet(MLUtils.toIndicesSet(result.actuals.get(i)));
 				sb.append(y).append(" ");
-				LabelSet ypred = new LabelSet(MLUtils.toIndicesSet(s.rowPrediction(i)));
+				LabelSet ypred = new LabelSet(MLUtils.toIndicesSet(result.rowPrediction(i)));
 				sb.append(ypred).append("\n");
 			}
 			else {
-				sb.append(A.toString(s.actuals.get(i)));
-				sb.append(" ");
-				sb.append(A.toString(s.predictions.get(i),adp));
-				sb.append("\n");
-			}
+			*/
+				sb.append(A.toString(result.actuals.get(i))).append(" ");
+				sb.append(A.toString(result.predictions.get(i),adp)).append("\n");
+			//}
 		}
 		sb.append("|==============================<\n");
 		return sb.toString();
