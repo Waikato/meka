@@ -148,7 +148,7 @@ public class Result implements Serializable {
 	 */
 	public int[] rowPrediction(int i) {
 		String t = info.get("Threshold");
-		if (t == null) {
+		if (t != null) {
 			// For multi-label data, should know about a threshold first
 			return ThresholdUtils.threshold(rowConfidence(i), t);
 		}
@@ -351,17 +351,19 @@ public class Result implements Serializable {
 			sb.append("|");
 			sb.append(Utils.doubleToString((i+1),5,0));
 			sb.append(" ");
-			/*if (adp == 0 && !result.getInfo("Type").equalsIgnoreCase("MT")) {
+			//System.out.println(""+result.info.get("Threshold"));
+			//System.out.println("|"+A.toString(result.rowPrediction(i)));
+			//System.out.println("|"+MLUtils.toIndicesSet(result.rowPrediction(i)));
+			if (adp == 0 && !result.getInfo("Type").equalsIgnoreCase("MT")) {
 				LabelSet y = new LabelSet(MLUtils.toIndicesSet(result.actuals.get(i)));
 				sb.append(y).append(" ");
 				LabelSet ypred = new LabelSet(MLUtils.toIndicesSet(result.rowPrediction(i)));
 				sb.append(ypred).append("\n");
 			}
 			else {
-			*/
 				sb.append(A.toString(result.actuals.get(i))).append(" ");
 				sb.append(A.toString(result.predictions.get(i),adp)).append("\n");
-			//}
+			}
 		}
 		sb.append("|==============================<\n");
 		return sb.toString();
