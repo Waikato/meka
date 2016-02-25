@@ -28,6 +28,7 @@ import weka.core.Instances;
 import weka.core.Drawable;
 import meka.core.MultiLabelDrawable;
 import meka.core.MLUtils;
+import meka.core.F;
 import weka.core.RevisionUtils;
 
 import java.util.HashMap;
@@ -67,7 +68,7 @@ public class BR extends ProblemTransformationMethod implements MultiLabelDrawabl
 		for(int j = 0; j < L; j++) {
 
 			//Select only class attribute 'j'
-			Instances D_j = MLUtils.keepAttributesAt(new Instances(D),new int[]{j},L);
+			Instances D_j = F.keepLabels(new Instances(D),L,new int[]{j});
 			D_j.setClassIndex(0);
 
 			//Build the classifier for that class
