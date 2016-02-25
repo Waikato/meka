@@ -594,9 +594,7 @@ public abstract class MLUtils {
 	}
 
 	// 
-	// ***NOTE*** The following functions are present in F.java in the form of removeLabels/keepLabels, but using the Remove() filter.
-	// I will keep these ones here for now in case they are faster or have some other advantage. Otherwise they can be deleted, and
-	// use F.java instead.
+	// ***NOTE*** Some of the following methods are present in F.java in the form of removeLabels/keepLabels, but using the Remove() filter. This appears much faster for large Instances, so for BR.java it has been changed over. It still needs to be changed over for CR.java and NSR.java. Then these methods can probably be deleted.
 	// 
 
 	/**
