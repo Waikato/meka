@@ -4,7 +4,7 @@ The MEKA project provides an open source implementation of methods for multi-lab
 
 http://meka.sourceforge.net/
 
-## About using Meka
+## Using Meka
 
 See the `Tutorial.pdf` for detailed information on obtaining, using and extending MEKA.
 For a list of included methods and command line examples for them, 
@@ -19,6 +19,7 @@ Improvements since the last version:
 * New classifiers (thanks to Joerg!)
 * PCC now outputs probabilistic info (as it should)
 * Bug fix with labelset print-outs in evaluation
+* ...
 
 ## TODO
 
@@ -51,4 +52,5 @@ A list of points flagged for improvement in future versions of Meka:
 * Wrapper for Clus
 * Generate Markdown from the classifier code (e.g., the globalInfo, tipText and technical info)
 * Better confidence outputs for multi-target methods, the full distribution should be available
+* More classifiers!
 
