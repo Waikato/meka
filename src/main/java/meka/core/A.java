@@ -171,6 +171,16 @@ public abstract class A {
 		return max;
 	}
 
+	/** Max */
+	public static int max(int a[]) {
+		int max = Integer.MIN_VALUE;
+		for (int a_ : a) {
+			if (a_ > max)
+				max = a_;
+		}
+		return max;
+	}
+
 	/** Argmax */
 	public static int argmax(double a[]) {
 		double max = a[0];

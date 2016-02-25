@@ -66,12 +66,25 @@ public class PCC extends CC implements TechnicalInformationHandler{
 		return K;
 	}
 
+	/**
+	 * Return multi-label probabilities.
+	 * Where p(y_j = y[j]) = confidence[j], then return [p(y_j = 1),...,p(y_L = 1)].
+	 */
+	private static double[] convertConfidenceToProbability(double y[], double confidences[]) {
+		double p[] = new double[confidences.length];
+		for(int j = 0; j < confidences.length; j++) {
+			p[j] = confidences[j] * y[j] + (1. - confidences[j]) * Math.abs(y[j] - 1.);
+		}
+		return p;
+	}
+
 	@Override
 	public double[] distributionForInstance(Instance xy) throws Exception {
 
 		int L = xy.classIndex(); 
 
 		double y[] = new double[L];
+		double conf[] = new double[L];
 		double w  = 0.0;
 
 		/*
@@ -84,12 +97,14 @@ public class PCC extends CC implements TechnicalInformationHandler{
 		double y_[] = new double[L]; 
 
 		for(int i = 0; i < 1000000; i++) { // limit to 1m
-			//System.out.println(""+i+" "+Arrays.toString(y_));
-			double w_  = A.product(super.probabilityForInstance(xy,y_));
+			double conf_[] = super.probabilityForInstance(xy,y_);
+			double w_  = A.product(conf_);
+			//System.out.println(""+i+" "+Arrays.toString(y_)+" "+w_+" "+Arrays.toString(conf_)+"/"+Arrays.toString(convertConfidenceToProbability(y_,conf_)));
 			if (w_ > w) {
 				if (getDebug()) System.out.println("y' = "+Arrays.toString(y_)+", :"+w_);
 				y = Arrays.copyOf(y_,y_.length);
 				w = w_;
+				conf = conf_;
 			}
 			if (push(y_,K,0)) {
 				// Done !
@@ -99,7 +114,8 @@ public class PCC extends CC implements TechnicalInformationHandler{
 			}
 		}
 
-		return y;
+		// If it's multi-label (binary only), return the probabilistic output (else just the values).
+		return (A.max(K) > 2) ? y : convertConfidenceToProbability(conf,y); //return p_y; //y;
 	}
 
 	@Override
