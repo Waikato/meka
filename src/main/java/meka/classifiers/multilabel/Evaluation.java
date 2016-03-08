@@ -55,6 +55,8 @@ public class Evaluation {
 		// Load Instances from a file
 		Instances D_train = loadDataset(options);
 
+		Instances D_full = D_train;
+		
 		// Try extract and set a class index from the @relation name
 		MLUtils.prepareData(D_train);
 
@@ -156,6 +158,7 @@ public class Evaluation {
 					int N_t = D_train.numInstances() - N_T;
 					D_test = new Instances(D_train,N_T,N_t);
 					D_train = new Instances(D_train,0,N_T);
+
 				}
 
 				// Invert the split?
@@ -184,10 +187,21 @@ public class Evaluation {
 					r = evaluateModel(h,D_test,t,voption);
 				}
 				else {
+				    //check if train and test set size are > 0
+				    if(D_train.numInstances() > 0 &&
+				       D_test.numInstances() > 0){
 					r = evaluateModel(h,D_train,D_test,top,voption);
+				    } else {
+					// otherwise just train on full set. Maybe better throw an exception.
+					h.buildClassifier(D_full);
+
+				    }
 				}
 				// @todo, if D_train==null, assume h is already trained
-				System.out.println(r.toString());
+				if(D_train.numInstances() > 0 &&
+				       D_test.numInstances() > 0){
+				    System.out.println(r.toString());
+				}
 			}
 
 			// Save model to file?
