@@ -7,6 +7,12 @@ import meka.classifiers.multilabel.*;
 import weka.core.Instance;
 import weka.core.Instances;
 
+/*
+
+Copyright (C) 2016 Fernando Benites
+@author Fernando Benites
+*/
+
 //based on ARTCluster_v3.py from DAMIART
 public class ARTCluster {
 	public double vigilance=0.7;

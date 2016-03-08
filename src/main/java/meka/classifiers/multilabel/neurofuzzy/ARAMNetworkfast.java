@@ -810,6 +810,12 @@ public void setThreaded(boolean setv) {
 	
 }
 
+@Override
+public String getModel() {
+	// TODO Auto-generated method stub
+	return null;
+}
+
 }
 
 

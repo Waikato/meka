@@ -1,5 +1,9 @@
 package meka.classifiers.multilabel.neurofuzzy;
 
+/*
+ * from http://introcs.cs.princeton.edu/java/44st/SparseVector.java.html
+Copyright © 2000–2011, Robert Sedgewick and Kevin Wayne. 
+ */
 public class SparseVector {
     private final int N;             // length
     private ST<Integer, Double> st;  // the vector, represented by index-value pairs

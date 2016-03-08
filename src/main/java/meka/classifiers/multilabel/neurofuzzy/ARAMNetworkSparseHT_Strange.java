@@ -1028,6 +1028,12 @@ public double[][] distributionForInstanceM(Instances i) throws Exception {
 	// TODO Auto-generated method stub
 	return null;
 }
+
+@Override
+public String getModel() {
+	// TODO Auto-generated method stub
+	return null;
+}
   
 
 }

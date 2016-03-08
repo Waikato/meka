@@ -1,11 +1,10 @@
 /*
- *	ClassifierTemplate.java
  *
  *
  *  Copyright (c) 2016, Fernando Benites 
+ *  @author Fernando Benites
  *  
  *  Adapted from NaiveBayes.java
- *  Copyright (C) 1999 Eibe Frank,Len Trigg
  */
 package meka.classifiers.multilabel.neurofuzzy;
 

@@ -1,16 +1,10 @@
 /*
- *	ClassifierTemplate.java
  *
- *  <<Your Name Here>>
- *  CN 710
- *  Dept. of Cognitive & Neural Systems
- *  Boston University
- *  <<Date here>>
- *
- *  Copyright (c) 2006, Boston University 
  *  
  *  Adapted from NaiveBayes.java
- *  Copyright (C) 1999 Eibe Frank,Len Trigg
+ *  
+ *  Copyright (C) 2016 Fernando Benites
+ *  @author Fernando Benites
  */
 package meka.classifiers.multilabel.neurofuzzy;
 
