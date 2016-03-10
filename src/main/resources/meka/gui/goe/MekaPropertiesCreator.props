@@ -10,7 +10,6 @@ meka.classifiers.multilabel.MultiLabelClassifier=\
  meka.classifiers.multitarget,\
  meka.classifiers.multitarget.meta,\
  meka.classifiers.multilabel.incremental,\
- meka.classifiers.multilabel.neurofuzzy,\
  meka.classifiers.multilabel.incremental.meta
 
 # Packages with MultiTargetClassifier implementations
