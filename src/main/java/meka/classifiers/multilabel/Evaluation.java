@@ -56,7 +56,7 @@ public class Evaluation {
 		Instances D_train = loadDataset(options);
 
 		Instances D_full = D_train;
-		
+
 		// Try extract and set a class index from the @relation name
 		MLUtils.prepareData(D_train);
 
@@ -78,6 +78,10 @@ public class Evaluation {
 		int seed = (Utils.getOptionPos('s',options) >= 0) ? Integer.parseInt(Utils.getOption('s',options)) : 0;
 		if(Utils.getFlag('R',options)) {
 			D_train.randomize(new Random(seed));
+		}
+		boolean Threaded =false;
+		if(Utils.getOptionPos("Thr",options) >= 0) {
+			Threaded = Utils.getFlag("Thr",options);
 		}
 
 		// Verbosity Option
@@ -190,13 +194,19 @@ public class Evaluation {
 				    //check if train and test set size are > 0
 				    if(D_train.numInstances() > 0 &&
 				       D_test.numInstances() > 0){
-					r = evaluateModel(h,D_train,D_test,top,voption);
+					  if(Threaded){
+					      r = evaluateModelM(h,D_train,D_test,top,voption);
+					  }else{
+					    
+					      r = evaluateModel(h,D_train,D_test,top,voption);
+					  }
 				    } else {
 					// otherwise just train on full set. Maybe better throw an exception.
 					h.buildClassifier(D_full);
 
 				    }
 				}
+							
 				// @todo, if D_train==null, assume h is already trained
 				if(D_train.numInstances() > 0 &&
 				       D_test.numInstances() > 0){
@@ -490,7 +500,12 @@ public class Evaluation {
 
 		return result;
 	}
-    /* Test Classifier but threaded (Multiple) */
+    /**
+     *Test Classifier but threaded (Multiple)     
+     * @param	h		a multi-dim. classifier, ALREADY BUILT (threaded, implements MultiLabelThreaded)
+     * @param	D_test 	test data
+     * @return	Result	with raw prediction data ONLY
+    */
 	public static Result testClassifierM(MultiLabelClassifier h, Instances D_test) throws Exception {
 
 		int L = D_test.classIndex();
