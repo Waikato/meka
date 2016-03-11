@@ -47,7 +47,6 @@ public class Evaluation {
 			Evaluation.printOptions(h.listOptions());
 			return;
 		}
-		
 
 		h.setOptions(options);
 
@@ -310,52 +309,7 @@ public class Evaluation {
 		r.output = Result.getStats(r, vop);
 		return r;
 	}
-/* allow threaded evaluation of model,
- * all instances are passed to the classifier then they are gathered in results,
- * for short datasets the overhead might be significant
- */
-	public static Result evaluateModelM(MultiLabelClassifier h, Instances D_train, Instances D_test, String top, String vop) throws Exception {
-		// Train
-				long before = System.currentTimeMillis();
-				/*if (h instanceof SemisupervisedClassifier) { // *NEW* for semi-supervised 
-					((SemisupervisedClassifier)h).setUnlabelledData(MLUtils.setLabelsMissing(new Instances(D_test)));
-				}*/
-				h.buildClassifier(D_train);
-				long after = System.currentTimeMillis();
 
-				//System.out.println(":- Classifier -: "+h.getClass().getName()+": "+Arrays.toString(h.getOptions()));
-
-				// Test
-				long before_test = System.currentTimeMillis();
-				Result result = testClassifierM(h,D_test);
-				long after_test = System.currentTimeMillis();
-
-				result.setValue("N_train",D_train.numInstances());
-				result.setValue("N_test",D_test.numInstances());
-				result.setValue("LCard_train",MLUtils.labelCardinality(D_train));
-				result.setValue("LCard_test",MLUtils.labelCardinality(D_test));
-
-				result.setValue("Build_time",(after - before)/1000.0);
-				result.setValue("Test_time",(after_test - before_test)/1000.0);
-				result.setValue("Total_time",(after_test - before)/1000.0);
-
-				result.setInfo("Classifier_name",h.getClass().getName());
-				result.setInfo("Classifier_ops",Arrays.toString(h.getOptions()));
-				result.setInfo("Classifier_info",h.toString());
-				result.setInfo("Dataset_name",MLUtils.getDatasetName(D_train));
-				//result.setInfo("Maxfreq_set",MLUtils.mostCommonCombination(D_train,result.L));
-
-		if (h instanceof MultiTargetClassifier || isMT(D_test)) {
-			result.setInfo("Type","MT");
-		}
-		else if (h instanceof MultiLabelClassifier) {
-			result.setInfo("Type","ML");
-		}
-		result.setInfo("Threshold",MLEvalUtils.getThreshold(result.predictions,D_train,top)); // <-- only relevant to ML (for now), but we'll put it in here in any case
-		result.setInfo("Verbosity",vop);
-		result.output = Result.getStats(result, vop);
-		return result;
-	}
 	/**
 	 * CVModel - Split D into train/test folds, and then train and evaluate on each one.
 	 * @param	h		 a multi-output classifier
@@ -456,6 +410,53 @@ public class Evaluation {
 		return result;
 	}
 
+/* allow threaded evaluation of model,
+ * all instances are passed to the classifier then they are gathered in results,
+ * for short datasets the overhead might be significant
+ */
+	public static Result evaluateModelM(MultiLabelClassifier h, Instances D_train, Instances D_test, String top, String vop) throws Exception {
+		// Train
+				long before = System.currentTimeMillis();
+				/*if (h instanceof SemisupervisedClassifier) { // *NEW* for semi-supervised 
+					((SemisupervisedClassifier)h).setUnlabelledData(MLUtils.setLabelsMissing(new Instances(D_test)));
+				}*/
+				h.buildClassifier(D_train);
+				long after = System.currentTimeMillis();
+
+				//System.out.println(":- Classifier -: "+h.getClass().getName()+": "+Arrays.toString(h.getOptions()));
+
+				// Test
+				long before_test = System.currentTimeMillis();
+				Result result = testClassifierM(h,D_test);
+				long after_test = System.currentTimeMillis();
+
+				result.setValue("N_train",D_train.numInstances());
+				result.setValue("N_test",D_test.numInstances());
+				result.setValue("LCard_train",MLUtils.labelCardinality(D_train));
+				result.setValue("LCard_test",MLUtils.labelCardinality(D_test));
+
+				result.setValue("Build_time",(after - before)/1000.0);
+				result.setValue("Test_time",(after_test - before_test)/1000.0);
+				result.setValue("Total_time",(after_test - before)/1000.0);
+
+				result.setInfo("Classifier_name",h.getClass().getName());
+				result.setInfo("Classifier_ops",Arrays.toString(h.getOptions()));
+				result.setInfo("Classifier_info",h.toString());
+				result.setInfo("Dataset_name",MLUtils.getDatasetName(D_train));
+				//result.setInfo("Maxfreq_set",MLUtils.mostCommonCombination(D_train,result.L));
+
+		if (h instanceof MultiTargetClassifier || isMT(D_test)) {
+			result.setInfo("Type","MT");
+		}
+		else if (h instanceof MultiLabelClassifier) {
+			result.setInfo("Type","ML");
+		}
+		result.setInfo("Threshold",MLEvalUtils.getThreshold(result.predictions,D_train,top)); // <-- only relevant to ML (for now), but we'll put it in here in any case
+		result.setInfo("Verbosity",vop);
+		result.output = Result.getStats(result, vop);
+		return result;
+	}
+
 	/**
 	 * TestClassifier - test classifier h on D_test
 	 * @param	h		a multi-dim. classifier, ALREADY BUILT
@@ -499,6 +500,12 @@ public class Evaluation {
 
 		return result;
 	}
+    /**
+     *Test Classifier but threaded (Multiple)     
+     * @param	h		a multi-dim. classifier, ALREADY BUILT (threaded, implements MultiLabelThreaded)
+     * @param	D_test 	test data
+     * @return	Result	with raw prediction data ONLY
+    */
 	public static Result testClassifierM(MultiLabelClassifier h, Instances D_test) throws Exception {
 
 		int L = D_test.classIndex();
