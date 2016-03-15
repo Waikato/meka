@@ -531,11 +531,13 @@ public abstract class Metrics {
 	// works with missing
 	int L = Y[0].length;
 	double m = 0.0;
+	
 	for (int j = 0; j < L; j++) {
 	    int[] y_j = MatrixUtils.getCol(Y, j);
             int[] p_j = MatrixUtils.getCol(Ypred, j);
 
             if (allMissing(y_j)) {
+		L--;
                 continue;
             }
 
@@ -544,7 +546,7 @@ public abstract class Metrics {
             int[] y_jAligned = aligned[0];
             int[] p_jAligned = aligned[1];
 
-            double curPrec = P_Precision(y_jAligned, p_jAligned) * 1. / y_jAligned.length;
+            double curPrec = P_Precision(y_jAligned, p_jAligned);
 
             if (Double.isNaN(curPrec)) {
                 continue;
@@ -553,7 +555,7 @@ public abstract class Metrics {
             m += curPrec;
 
 	}
-	return m;
+	return m/L;
     }
 
     /**
@@ -563,11 +565,13 @@ public abstract class Metrics {
 	//works with missing
 	int L = Y[0].length;
 	double m = 0.0;
+
 	for (int j = 0; j < L; j++) {
             int[] y_j = MatrixUtils.getCol(Y, j);
             int[] p_j = MatrixUtils.getCol(Ypred, j);
 
             if (allMissing(y_j)) {
+		L--;
                 continue;
             }
 
@@ -576,7 +580,7 @@ public abstract class Metrics {
             int[] y_jAligned = aligned[0];
             int[] p_jAligned = aligned[1];
 
-            double curRecall = P_Recall(y_jAligned, p_jAligned) * 1. / y_jAligned.length;
+            double curRecall = P_Recall(y_jAligned, p_jAligned);
 
             if (Double.isNaN(curRecall)) {
                 continue;
@@ -585,7 +589,7 @@ public abstract class Metrics {
             m += curRecall;
 	}
 
-	return m;
+	return m / L;
     }
 
     /**
