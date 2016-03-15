@@ -544,7 +544,7 @@ public abstract class Metrics {
             int[] y_jAligned = aligned[0];
             int[] p_jAligned = aligned[1];
 
-            double curPrec = P_Precision(y_jAligned, p_jAligned) * 1. / y_jAligned[0].length;
+            double curPrec = P_Precision(y_jAligned, p_jAligned) * 1. / y_jAligned.length;
 
             if (Double.isNaN(curPrec)) {
                 continue;
@@ -576,7 +576,7 @@ public abstract class Metrics {
             int[] y_jAligned = aligned[0];
             int[] p_jAligned = aligned[1];
 
-            double curRecall = P_Recall(y_jAligned, p_jAligned) * 1. / y_jAligned[0].length;
+            double curRecall = P_Recall(y_jAligned, p_jAligned) * 1. / y_jAligned.length;
 
             if (Double.isNaN(curRecall)) {
                 continue;
