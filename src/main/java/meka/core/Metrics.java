@@ -852,7 +852,7 @@ public abstract class Metrics {
 	int L = Y[0].length;
 	double AUC[] = new double[L];
 	for(int j = 0; j < L; j++) {
-	    if(allMissing(Y[j])){
+	    if(allMissing(MatrixUtils.getCol(Y, j))){
 		L--;
 		continue;
 	    }
@@ -869,7 +869,7 @@ public abstract class Metrics {
 	int L = Y[0].length;
 	double AUC[] = new double[L];
 	for(int j = 0; j < L; j++) {
-	    if(allMissing(Y[j])){
+	    if(allMissing(MatrixUtils.getCol(Y, j))){
 		L--;
 		continue;
 	    }
