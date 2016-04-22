@@ -81,12 +81,6 @@
     </dependency>
 
     <dependency>
-      <groupId>nz.ac.waikato.cms.moa</groupId>
-      <artifactId>moa</artifactId>
-      <version>2014.04</version>
-    </dependency>
-
-    <dependency>
       <groupId>net.sf.meka.thirdparty</groupId>
       <artifactId>mulan</artifactId>
       <version>1.4.0</version>
