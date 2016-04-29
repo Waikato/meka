@@ -15,18 +15,23 @@
 
 /*
  * GUIHelper.java
- * Copyright (C) 2012-2015 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2012-2016 University of Waikato, Hamilton, New Zealand
  */
 
 package meka.gui.core;
 
+import com.github.fracpete.jclipboardhelper.ClipboardHelper;
 import meka.gui.choosers.MekaFileChooser;
 import weka.core.Utils;
 import weka.gui.ConverterFileChooser;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import java.awt.Container;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.image.BufferedImage;
@@ -293,7 +298,7 @@ public class GUIHelper {
 	 * @param t		the transferable to copy
 	 */
 	public static void copyToClipboard(Transferable t) {
-		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(t, null);
+		ClipboardHelper.copyToClipboard(t);
 	}
 
 	/**
@@ -302,7 +307,7 @@ public class GUIHelper {
 	 * @param s		the string to copy
 	 */
 	public static void copyToClipboard(String s) {
-		copyToClipboard(new TransferableString(s));
+		ClipboardHelper.copyToClipboard(s);
 	}
 
 	/**
@@ -311,7 +316,7 @@ public class GUIHelper {
 	 * @param img		the image to copy
 	 */
 	public static void copyToClipboard(BufferedImage img) {
-		copyToClipboard(new TransferableImage(img));
+		ClipboardHelper.copyToClipboard(img);
 	}
 
 	/**
@@ -321,18 +326,7 @@ public class GUIHelper {
 	 * @return		true if the data can be obtained, false if not available
 	 */
 	public static boolean canPasteFromClipboard(DataFlavor flavor) {
-		Clipboard clipboard;
-		boolean		result;
-
-		try {
-			clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-			result    = clipboard.isDataFlavorAvailable(flavor);
-		}
-		catch (Exception e) {
-			result = false;
-		}
-
-		return result;
+		return ClipboardHelper.canPasteFromClipboard(flavor);
 	}
 
 	/**
@@ -341,7 +335,7 @@ public class GUIHelper {
 	 * @return		true if string can be obtained, false if not available
 	 */
 	public static boolean canPasteStringFromClipboard() {
-		return canPasteFromClipboard(DataFlavor.stringFlavor);
+		return ClipboardHelper.canPasteStringFromClipboard();
 	}
 
 	/**
@@ -351,23 +345,7 @@ public class GUIHelper {
 	 * @return		the obtained object, null if not available
 	 */
 	public static Object pasteFromClipboard(DataFlavor flavor) {
-		Clipboard 		clipboard;
-		Object		result;
-		Transferable	content;
-
-		result = null;
-
-		try {
-			clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-			content   = clipboard.getContents(null);
-			if ((content != null) && (content.isDataFlavorSupported(flavor)))
-				result = content.getTransferData(flavor);
-		}
-		catch (Exception e) {
-			result = null;
-		}
-
-		return result;
+		return ClipboardHelper.pasteFromClipboard(flavor);
 	}
 
 	/**
@@ -376,23 +354,7 @@ public class GUIHelper {
 	 * @return		the obtained string, null if not available
 	 */
 	public static String pasteStringFromClipboard() {
-		Clipboard 		clipboard;
-		String		result;
-		Transferable	content;
-
-		result = null;
-
-		try {
-			clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-			content   = clipboard.getContents(null);
-			if ((content != null) && (content.isDataFlavorSupported(DataFlavor.stringFlavor)))
-				result = (String) content.getTransferData(DataFlavor.stringFlavor);
-		}
-		catch (Exception e) {
-			result = null;
-		}
-
-		return result;
+		return ClipboardHelper.pasteStringFromClipboard();
 	}
 
 	/**
