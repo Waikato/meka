@@ -93,9 +93,9 @@
     </dependency>
 
     <dependency>
-      <groupId>com.googlecode.jfilechooser-bookmarks</groupId>
+      <groupId>com.github.fracpete</groupId>
       <artifactId>jfilechooser-bookmarks</artifactId>
-      <version>0.1.0</version>
+      <version>0.1.5</version>
     </dependency>
 
     <dependency>
