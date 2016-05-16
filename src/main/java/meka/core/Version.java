@@ -15,7 +15,7 @@
 
 /**
  * Version.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2016 University of Waikato, Hamilton, NZ
  */
 
 package meka.core;
@@ -54,5 +54,14 @@ public class Version {
 			result.append("?.?.?");
 		}
 		return result.toString();
+	}
+
+	/**
+	 * Outputs the version on stdout.
+	 *
+	 * @param args ignored
+	 */
+	public static void main(String[] args) {
+		System.out.println(getVersion());
 	}
 }
