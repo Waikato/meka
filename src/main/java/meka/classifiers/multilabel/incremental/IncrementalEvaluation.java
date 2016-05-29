@@ -78,10 +78,39 @@ public class IncrementalEvaluation {
 		// Get Verbosity (do we want to see everything?)
 		String Vop = OptionUtils.parse(options, "verbosity", "3");
 
-		if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(D)+"\tL="+D.classIndex()+"");
+		// Dump for later?
+		String dname = null;
+		if (Utils.getOptionPos('d',options) >= 0)
+			dname = Utils.getOption('d',options);
+
+		// Load from file?
+		String lname = null;
+		Instances dataHeader = null;
+		if (Utils.getOptionPos('l',options) >= 0) {
+			lname = Utils.getOption('l',options);
+			Object[] data = SerializationHelper.readAll(lname);
+			MultiLabelClassifier h2 = (MultiLabelClassifier)data[0];
+		  	if (h.getClass() != h2.getClass())
+		  		throw new IllegalArgumentException("Classifier stored in '" + lname + "' is not a " + h.getClass().getName());
+			if (data.length > 1) {
+				dataHeader = (Instances) data[1];
+				String msg = D.equalHeadersMsg(dataHeader);
+				if (msg != null)
+		  			throw new IllegalArgumentException("New training data is not compatible with training header stored in '" + lname + "':\n" + msg);
+			}
+		  	h = h2;
+		}
+
+		if (h.getDebug())
+			System.out.println(":- Dataset -: "+MLUtils.getDatasetName(D)+"\tL="+D.classIndex()+"");
 
 		Utils.checkForRemainingOptions(options);
-		return evaluateModelPrequentialBasic(h,D,nWin,rLabeled,Top,Vop);
+		Result result = evaluateModelPrequentialBasic(h,D,nWin,rLabeled,Top,Vop);
+		if (dname != null) {
+			dataHeader = new Instances(D, 0);
+			SerializationHelper.writeAll(dname, new Object[]{h, dataHeader});
+		}
+		return result;
 	}
 
 	private static String measures[] = new String[]{"Accuracy", "Exact match", "Hamming score"};
