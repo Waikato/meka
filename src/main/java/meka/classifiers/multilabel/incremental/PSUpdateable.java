@@ -154,7 +154,7 @@ public class PSUpdateable extends PS implements IncrementalMultiLabelClassifier 
 	public String [] getOptions() {
 		List<String> result = new ArrayList<>();
 		OptionUtils.add(result, 'I', getLimit());
-		OptionUtils.add(result, 'S', getSupport());
+		OptionUtils.add(result, "support", getSupport());
 		OptionUtils.add(result, super.getOptions());
 		return OptionUtils.toArray(result);
 	}
@@ -162,7 +162,7 @@ public class PSUpdateable extends PS implements IncrementalMultiLabelClassifier 
 	@Override
 	public void setOptions(String[] options) throws Exception {
 		setLimit(OptionUtils.parse(options, 'I', 1000));
-		setSupport(OptionUtils.parse(options, 'S', 10));
+		setSupport(OptionUtils.parse(options, "support", 10));
 		super.setOptions(options);
 	}
 
@@ -170,7 +170,7 @@ public class PSUpdateable extends PS implements IncrementalMultiLabelClassifier 
 	public Enumeration listOptions() {
 		Vector result = new Vector();
 		result.addElement(new Option("\tSets the buffer size        \n\tdefault: 1000", "I", 1, "-I <value>"));
-		result.addElement(new Option("\tSets the max. num. of combs.\n\tdefault: 10", "S", 1, "-S <value>"));
+		result.addElement(new Option("\tSets the max. num. of combs.\n\tdefault: 10", "support", 1, "-support <value>"));
 		OptionUtils.add(result, super.listOptions());
 		return OptionUtils.toEnumeration(result);
 	}
