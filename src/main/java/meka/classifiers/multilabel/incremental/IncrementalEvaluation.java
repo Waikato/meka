@@ -58,15 +58,28 @@ public class IncrementalEvaluation {
 	 * @return	The evaluation Result
 	 */
 	public static Result evaluateModel(MultiLabelClassifier h, String options[]) throws Exception {
+		boolean needPrebuiltModel = false;
 
-		// Load Instances, ...
-		Instances D = Evaluation.loadDataset(options);
-		MLUtils.prepareData(D);
+		// Load data for non-incremental testing
+		Instances test = null;
+		if (Utils.getOptionPos('T', options) > -1) {
+			test = Evaluation.loadDataset(options, 'T');
+			MLUtils.prepareData(test);
+			needPrebuiltModel = true;
+		}
+
+		// Load training data
+		Instances train = null;
+		if (Utils.getOptionPos('t', options) > -1) {
+			train = Evaluation.loadDataset(options, 't');
+			MLUtils.prepareData(train);
+			needPrebuiltModel = false;  // we can build a model with training data
+		}
 
 		// Set the number of windows (batches) @todo move below combining options?
 		int nWin = OptionUtils.parse(options, 'x', 10);
 
-		// Set the size of the initial triaining
+		// Set the size of the initial training
 		int nInit = OptionUtils.parse(options, "split-percentage", 10);
 
 		// Partially labelled ?
@@ -94,22 +107,48 @@ public class IncrementalEvaluation {
 		  		throw new IllegalArgumentException("Classifier stored in '" + lname + "' is not a " + h.getClass().getName());
 			if (data.length > 1) {
 				dataHeader = (Instances) data[1];
-				String msg = D.equalHeadersMsg(dataHeader);
-				if (msg != null)
-		  			throw new IllegalArgumentException("New training data is not compatible with training header stored in '" + lname + "':\n" + msg);
+				String msg;
+				if (train != null) {
+					msg = train.equalHeadersMsg(dataHeader);
+					if (msg != null)
+						throw new IllegalArgumentException("New training data is not compatible with training header stored in '" + lname + "':\n" + msg);
+				}
+				 if (test != null) {
+					msg = test.equalHeadersMsg(dataHeader);
+					if (msg != null)
+						throw new IllegalArgumentException("New test data is not compatible with training header stored in '" + lname + "':\n" + msg);
+				}
 			}
 		  	h = h2;
+			needPrebuiltModel = false;  // successfully loaded prebuilt model
 		}
 
-		if (h.getDebug())
-			System.out.println(":- Dataset -: "+MLUtils.getDatasetName(D)+"\tL="+D.classIndex()+"");
+		if (needPrebuiltModel)
+			throw new IllegalArgumentException("Options require a prebuilt model, but none available!");
+
+		if (h.getDebug()) {
+			if (train != null)
+				System.out.println(":- Dataset -: " + MLUtils.getDatasetName(train) + "\tL=" + train.classIndex() + "");
+			if (test != null)
+				System.out.println(":- Test -: " + MLUtils.getDatasetName(test) + "\tL=" + test.classIndex() + "");
+		}
 
 		Utils.checkForRemainingOptions(options);
-		Result result = evaluateModelPrequentialBasic(h,D,nWin,rLabeled,Top,Vop);
+
+		Result result = null;
+		if (train != null)
+			result = evaluateModelPrequentialBasic(h, train, nWin, rLabeled, Top, Vop);
+		if (test != null) {
+			if (h.getDebug())
+				System.out.println("Non-incremental evaluation on provided test set");
+			result = Evaluation.evaluateModel(h, test, Top, Vop);
+		}
+
 		if (dname != null) {
-			dataHeader = new Instances(D, 0);
+			dataHeader = new Instances(train, 0);
 			SerializationHelper.writeAll(dname, new Object[]{h, dataHeader});
 		}
+
 		return result;
 	}
 
