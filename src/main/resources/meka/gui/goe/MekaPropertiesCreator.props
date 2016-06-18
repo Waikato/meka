@@ -58,6 +58,10 @@ meka.gui.explorer.AbstractExplorerTab=\
 meka.gui.explorer.classify.AbstractClassifyResultHistoryPlugin=\
   meka.gui.explorer.classify
 
+# Explorer plugins for the Classify tab's custom menu
+meka.gui.explorer.classify.AbstractClassifyTabMenuItem=\
+  meka.gui.explorer.classify
+
 # the menu items of the GUIChooser
 meka.gui.guichooser.AbstractMenuItemDefinition=\
   meka.gui.guichooser

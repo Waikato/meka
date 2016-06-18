@@ -19,6 +19,7 @@
  */
 package meka.gui.explorer;
 
+import com.googlecode.jfilechooserbookmarks.core.Utils;
 import meka.classifiers.multilabel.Evaluation;
 import meka.classifiers.multilabel.IncrementalMultiLabelClassifier;
 import meka.classifiers.multilabel.MultiLabelClassifier;
@@ -26,14 +27,12 @@ import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
 import meka.core.MLUtils;
 import meka.core.OptionUtils;
 import meka.core.Result;
-import meka.gui.choosers.MekaFileChooser;
 import meka.gui.core.GUIHelper;
 import meka.gui.core.ResultHistoryList;
 import meka.gui.explorer.classify.AbstractClassifyResultHistoryPlugin;
+import meka.gui.explorer.classify.AbstractClassifyTabMenuItem;
 import meka.gui.goe.GenericObjectEditor;
 import weka.core.Instances;
-import weka.core.SerializationHelper;
-import weka.gui.ExtensionFileFilter;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -57,8 +56,9 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -173,11 +173,8 @@ public class ClassifyTab
 	/** the custom menu. */
 	protected JMenu m_Menu;
 
-	/** the menu item for loading models. */
-	protected JMenuItem m_MenuItemLoadModel;
-
-	/** the filechooser for loading models. */
-	protected MekaFileChooser m_FileChooserModel;
+	/** the additional menu items. */
+	protected HashMap<AbstractClassifyTabMenuItem, JMenuItem> m_AdditionalMenuItems;
 
 	/**
 	 * Initializes the members.
@@ -193,16 +190,16 @@ public class ClassifyTab
 		m_GenericObjectEditor.setClassType(MultiLabelClassifier.class);
 		m_GenericObjectEditor.setValue(m_LastNonIncrementalClassifier);
 
-		m_Seed               = 1;
-		m_SplitPercentage    = 66.0;
-		m_Folds              = 10;
-		m_Samples            = 10;
-		m_Randomize          = true;
-		m_TOP                = "PCut1";
-		m_VOP                = "3";
-		m_TestInstances      = null;
-		m_ClassifyTabOptions = null;
-		m_FileChooserModel = null;
+		m_Seed                = 1;
+		m_SplitPercentage     = 66.0;
+		m_Folds               = 10;
+		m_Samples             = 10;
+		m_Randomize           = true;
+		m_TOP                 = "PCut1";
+		m_VOP                 = "3";
+		m_TestInstances       = null;
+		m_ClassifyTabOptions  = null;
+		m_AdditionalMenuItems = new HashMap<>();
 	}
 
 	/**
@@ -739,29 +736,15 @@ public class ClassifyTab
 	}
 
 	/**
-	 * Returns the filechooser for models.
-	 *
-	 * @return the filechooser
-	 */
-	protected MekaFileChooser getModelFileChooser() {
-		if (m_FileChooserModel == null) {
-			m_FileChooserModel = new MekaFileChooser();
-			ExtensionFileFilter filter = new ExtensionFileFilter(".model", "Model files (*.model)");
-			m_FileChooserModel.addChoosableFileFilter(filter);
-			m_FileChooserModel.setFileFilter(filter);
-			m_FileChooserModel.setAcceptAllFileFilterUsed(true);
-		}
-		return m_FileChooserModel;
-	}
-
-	/**
 	 * Returns an optional menu to be added to the Explorer menu.
 	 *
 	 * @return the menu
 	 */
 	public JMenu getMenu() {
-		JMenu 		menu;
-		JMenuItem	menuitem;
+		JMenu 							menu;
+		JMenuItem						menuitem;
+		List<String> 					menuitemclasses;
+		AbstractClassifyTabMenuItem		menuitemplugin;
 
 		if (m_Menu == null) {
 			menu = new JMenu("Classify");
@@ -773,38 +756,18 @@ public class ClassifyTab
 				}
 			});
 
-			menuitem = new JMenuItem("Load model...", GUIHelper.getIcon("open.gif"));
-			menuitem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					int retVal = getModelFileChooser().showOpenDialog(getOwner());
-					if (retVal != MekaFileChooser.APPROVE_OPTION)
-						return;
-					File model = getModelFileChooser().getSelectedFile();
-					try {
-						Object[] objs = SerializationHelper.readAll(model.getAbsolutePath());
-						MultiLabelClassifier classifier = (MultiLabelClassifier) objs[0];
-						Instances data = null;
-						if (objs.length > 1)
-							data = (Instances) objs[1];
-						Result result = new Result();
-						addResultToHistory(
-							result,
-							new Object[]{classifier, new Instances(data, 0)},
-							classifier.getClass().getName().replace("meka.classifiers.", ""));
-					}
-					catch (Exception ex) {
-						handleException("Loading of model '" + model + "' failed:", ex);
-						JOptionPane.showMessageDialog(
-							getOwner(),
-							"Loading of model '" + model + "' failed:\n" + ex,
-							"Error",
-							JOptionPane.ERROR_MESSAGE);
-					}
+			menuitemclasses = GenericObjectEditor.getClassnames(AbstractClassifyTabMenuItem.class.getName());
+			for (String menuitemclass: menuitemclasses) {
+				try {
+					menuitemplugin = (AbstractClassifyTabMenuItem) Class.forName(menuitemclass).newInstance();
+					menuitem = menuitemplugin.getMenuItem(this);
+					menu.add(menuitem);
+					m_AdditionalMenuItems.put(menuitemplugin, menuitem);
 				}
-			});
-			menu.add(menuitem);
-			m_MenuItemLoadModel = menuitem;
+				catch (Exception e) {
+					log("Failed to process menu item class: " + menuitemclass + "\n" + Utils.throwableToString(e));
+				}
+			}
 
 			m_Menu = menu;
 		}
@@ -816,9 +779,14 @@ public class ClassifyTab
 	 * Updates the enabled/disabled state of the menu items.
 	 */
 	protected void updateMenu() {
+		JMenuItem		menuitem;
+
 		if (m_Menu == null)
 			return;
 
-		m_MenuItemLoadModel.setEnabled(true);
+		for (AbstractClassifyTabMenuItem menuitemplugin: m_AdditionalMenuItems.keySet()) {
+			menuitem = m_AdditionalMenuItems.get(menuitemplugin);
+			menuitemplugin.update(this, menuitem);
+		}
 	}
 }
