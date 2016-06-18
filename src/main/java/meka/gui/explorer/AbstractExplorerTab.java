@@ -207,7 +207,7 @@ public abstract class AbstractExplorerTab
 	 *
 	 * @param msg       the message to output
 	 */
-	protected synchronized void log(String msg) {
+	public synchronized void log(String msg) {
 		m_Owner.log(this, msg);
 	}
 
