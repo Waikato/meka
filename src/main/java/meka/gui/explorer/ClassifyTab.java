@@ -26,19 +26,38 @@ import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
 import meka.core.MLUtils;
 import meka.core.OptionUtils;
 import meka.core.Result;
+import meka.gui.choosers.MekaFileChooser;
 import meka.gui.core.GUIHelper;
 import meka.gui.core.ResultHistoryList;
 import meka.gui.explorer.classify.AbstractClassifyResultHistoryPlugin;
 import meka.gui.goe.GenericObjectEditor;
 import weka.core.Instances;
+import weka.core.SerializationHelper;
+import weka.gui.ExtensionFileFilter;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.awt.Dialog.ModalityType;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.Serializable;
 import java.util.Random;
 
@@ -151,6 +170,15 @@ public class ClassifyTab
 	/** the last incremental classifier in use. */
 	protected IncrementalMultiLabelClassifier m_LastIncrementalClassifier;
 
+	/** the custom menu. */
+	protected JMenu m_Menu;
+
+	/** the menu item for loading models. */
+	protected JMenuItem m_MenuItemLoadModel;
+
+	/** the filechooser for loading models. */
+	protected MekaFileChooser m_FileChooserModel;
+
 	/**
 	 * Initializes the members.
 	 */
@@ -174,6 +202,7 @@ public class ClassifyTab
 		m_VOP                = "3";
 		m_TestInstances      = null;
 		m_ClassifyTabOptions = null;
+		m_FileChooserModel = null;
 	}
 
 	/**
@@ -596,7 +625,7 @@ public class ClassifyTab
 	 * @param payload the payload to add
 	 * @param suffix the suffix to add
 	 */
-	protected void addResultToHistory(final Result result, final Object payload, final String suffix) {
+	public void addResultToHistory(final Result result, final Object payload, final String suffix) {
 		Runnable run;
 
 		run = new Runnable() {
@@ -671,5 +700,125 @@ public class ClassifyTab
 					"Error",
 					JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	/**
+	 * Returns the current classifier.
+	 *
+	 * @return the classifier
+	 */
+	public MultiLabelClassifier getClassifier() {
+		return (MultiLabelClassifier) m_GenericObjectEditor.getValue();
+	}
+
+	/**
+	 * Returns the test instances, if any.
+	 *
+	 * @return the test instances, null if none loaded
+	 */
+	public Instances getTestData() {
+		return m_TestInstances;
+	}
+
+	/**
+	 * Returns the threshold option.
+	 *
+	 * @return the option
+	 */
+	public String getTOP() {
+		return m_TOP;
+	}
+
+	/**
+	 * Returns the verbosity option.
+	 *
+	 * @return the option
+	 */
+	public String getVOP() {
+		return m_VOP;
+	}
+
+	/**
+	 * Returns the filechooser for models.
+	 *
+	 * @return the filechooser
+	 */
+	protected MekaFileChooser getModelFileChooser() {
+		if (m_FileChooserModel == null) {
+			m_FileChooserModel = new MekaFileChooser();
+			ExtensionFileFilter filter = new ExtensionFileFilter(".model", "Model files (*.model)");
+			m_FileChooserModel.addChoosableFileFilter(filter);
+			m_FileChooserModel.setFileFilter(filter);
+			m_FileChooserModel.setAcceptAllFileFilterUsed(true);
+		}
+		return m_FileChooserModel;
+	}
+
+	/**
+	 * Returns an optional menu to be added to the Explorer menu.
+	 *
+	 * @return the menu
+	 */
+	public JMenu getMenu() {
+		JMenu 		menu;
+		JMenuItem	menuitem;
+
+		if (m_Menu == null) {
+			menu = new JMenu("Classify");
+			menu.setMnemonic('C');
+			menu.addChangeListener(new ChangeListener() {
+				@Override
+				public void stateChanged(ChangeEvent e) {
+					updateMenu();
+				}
+			});
+
+			menuitem = new JMenuItem("Load model...", GUIHelper.getIcon("open.gif"));
+			menuitem.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					int retVal = getModelFileChooser().showOpenDialog(getOwner());
+					if (retVal != MekaFileChooser.APPROVE_OPTION)
+						return;
+					File model = getModelFileChooser().getSelectedFile();
+					try {
+						Object[] objs = SerializationHelper.readAll(model.getAbsolutePath());
+						MultiLabelClassifier classifier = (MultiLabelClassifier) objs[0];
+						Instances data = null;
+						if (objs.length > 1)
+							data = (Instances) objs[1];
+						Result result = new Result();
+						addResultToHistory(
+							result,
+							new Object[]{classifier, new Instances(data, 0)},
+							classifier.getClass().getName().replace("meka.classifiers.", ""));
+					}
+					catch (Exception ex) {
+						handleException("Loading of model '" + model + "' failed:", ex);
+						JOptionPane.showMessageDialog(
+							getOwner(),
+							"Loading of model '" + model + "' failed:\n" + ex,
+							"Error",
+							JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			});
+			menu.add(menuitem);
+			m_MenuItemLoadModel = menuitem;
+
+			m_Menu = menu;
+		}
+
+		return m_Menu;
+	}
+
+	/**
+	 * Updates the enabled/disabled state of the menu items.
+	 */
+	protected void updateMenu() {
+		if (m_Menu == null)
+			return;
+
+		m_MenuItemLoadModel.setEnabled(true);
 	}
 }
