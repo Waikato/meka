@@ -128,7 +128,7 @@ public abstract class AbstractThreadedExplorerTab
 	 * 
 	 * @param run the code to execute
 	 */
-	protected void start(Runnable run) {
+	public void start(Runnable run) {
 		m_Task = new WorkerThread(this, run);
 		m_Task.start();
 	}
