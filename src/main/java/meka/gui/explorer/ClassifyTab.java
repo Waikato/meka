@@ -690,7 +690,7 @@ public class ClassifyTab
 	 */
 	@Override
 	protected void executionFinished(Throwable t) {
-		m_ButtonStart.setEnabled(true);
+		m_ButtonStart.setEnabled(hasData());
 		m_ButtonStop.setEnabled(false);
 		if (t != null) {
 			handleException("Execution failed:", t);
