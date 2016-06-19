@@ -57,6 +57,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -709,6 +711,15 @@ public class ClassifyTab
 	}
 
 	/**
+	 * Sets the test instances.
+	 *
+	 * @param value the test instances, null if to remove
+	 */
+	public void setTestData(Instances value) {
+		m_TestInstances = value;
+	}
+
+	/**
 	 * Returns the test instances, if any.
 	 *
 	 * @return the test instances, null if none loaded
@@ -741,10 +752,12 @@ public class ClassifyTab
 	 * @return the menu
 	 */
 	public JMenu getMenu() {
-		JMenu 							menu;
-		JMenuItem						menuitem;
-		List<String> 					menuitemclasses;
-		AbstractClassifyTabMenuItem		menuitemplugin;
+		JMenu 								menu;
+		JMenuItem							menuitem;
+		List<String> 						menuitemclasses;
+		AbstractClassifyTabMenuItem			menuitemplugin;
+		List<AbstractClassifyTabMenuItem>	list;
+		String								group;
 
 		if (m_Menu == null) {
 			menu = new JMenu("Classify");
@@ -760,13 +773,28 @@ public class ClassifyTab
 			for (String menuitemclass: menuitemclasses) {
 				try {
 					menuitemplugin = (AbstractClassifyTabMenuItem) Class.forName(menuitemclass).newInstance();
-					menuitem = menuitemplugin.getMenuItem(this);
-					menu.add(menuitem);
+					menuitem = new JMenuItem(menuitemplugin.getName());
+					if (menuitemplugin.getIcon() == null)
+						menuitem.setIcon(GUIHelper.getEmptyIcon());
+					else
+						menuitem.setIcon(GUIHelper.getIcon(menuitemplugin.getIcon()));
+					menuitem.addActionListener(menuitemplugin.getActionListener(this));
 					m_AdditionalMenuItems.put(menuitemplugin, menuitem);
 				}
 				catch (Exception e) {
 					log("Failed to process menu item class: " + menuitemclass + "\n" + Utils.throwableToString(e));
 				}
+			}
+			list = new ArrayList<>(m_AdditionalMenuItems.keySet());
+			Collections.sort(list);
+			group = "";
+			for (AbstractClassifyTabMenuItem item: list) {
+				if (!group.equals(item.getGroup())) {
+					if (!group.isEmpty())
+						menu.addSeparator();
+					group = item.getGroup();
+				}
+				menu.add(m_AdditionalMenuItems.get(item));
 			}
 
 			m_Menu = menu;

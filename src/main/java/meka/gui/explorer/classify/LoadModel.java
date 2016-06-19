@@ -23,7 +23,6 @@ package meka.gui.explorer.classify;
 import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.core.Result;
 import meka.gui.choosers.MekaFileChooser;
-import meka.gui.core.GUIHelper;
 import meka.gui.explorer.ClassifyTab;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
@@ -48,17 +47,39 @@ public class LoadModel
 	public final static String SESSION_KEY_MODELCHOOSER = "modelchooser";
 
 	/**
-	 * Returns the menu item for the tab's custom menu.
+	 * Returns the group of the plugin. Used for the grouping the menu items.
 	 *
-	 * @param owner the tab this menu item is for
-	 * @return the menu item
+	 * @return          the group
 	 */
-	@Override
-	public JMenuItem getMenuItem(final ClassifyTab owner) {
-		JMenuItem 	menuitem;
+	public String getGroup() {
+		return "File";
+	}
 
-		menuitem = new JMenuItem("Load model...", GUIHelper.getIcon("open.gif"));
-		menuitem.addActionListener(new ActionListener() {
+	/**
+	 * Returns the name of the plugin. Used for the menu item text.
+	 *
+	 * @return          the name
+	 */
+	public String getName() {
+		return "Open model...";
+	}
+
+	/**
+	 * Returns the name of the icon to use.
+	 *
+	 * @return          the name of the icon, null if none to use
+	 */
+	public String getIcon() {
+		return "open.gif";
+	}
+
+	/**
+	 * Returns the action lister to use in the menu.
+	 *
+	 * @return          the listener
+	 */
+	public ActionListener getActionListener(final ClassifyTab owner) {
+		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MekaFileChooser filechooser;
@@ -99,8 +120,7 @@ public class LoadModel
 						JOptionPane.ERROR_MESSAGE);
 				}
 			}
-		});
-		return menuitem;
+		};
 	}
 
 	/**
