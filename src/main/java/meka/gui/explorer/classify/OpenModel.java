@@ -14,7 +14,7 @@
  */
 
 /**
- * LoadModel.java
+ * OpenModel.java
  * Copyright (C) 2016 University of Waikato, Hamilton, NZ
  */
 
@@ -40,7 +40,7 @@ import java.io.File;
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
-public class LoadModel
+public class OpenModel
 	extends AbstractClassifyTabMenuItem {
 
 	/** the session key for the model filechooser. */
