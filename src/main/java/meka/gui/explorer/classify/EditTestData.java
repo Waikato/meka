@@ -14,7 +14,7 @@
  */
 
 /**
- * LoadModel.java
+ * EditTestData.java
  * Copyright (C) 2016 University of Waikato, Hamilton, NZ
  */
 
@@ -46,7 +46,7 @@ public class EditTestData
 	 * @return          the group
 	 */
 	public String getGroup() {
-		return "Visualize";
+		return "Test data";
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class EditTestData
 	 * @return          the name
 	 */
 	public String getName() {
-		return "Edit test data";
+		return "Edit test data...";
 	}
 
 	/**

@@ -15,19 +15,14 @@
 
 /**
  * ClassifyTabOptions.java
- * Copyright (C) 2012-2015 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2012-2016 University of Waikato, Hamilton, New Zealand
  */
 package meka.gui.explorer;
 
-import meka.gui.core.GUIHelper;
 import meka.gui.core.ParameterPanel;
-import weka.core.Instances;
-import weka.core.converters.AbstractFileLoader;
-import weka.gui.ConverterFileChooser;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 
 /**
  * Panel for options for classification.
@@ -62,26 +57,6 @@ public class ClassifyTabOptions
 	/** for randomizing. */
 	protected JToggleButton m_ToggleRandomize;
 
-	/** for test file. */
-	protected JButton m_ButtonFile;
-
-	/** the filechooser for loading the test set. */
-	protected ConverterFileChooser m_FileChooser;
-
-	/** the test set. */
-	protected Instances m_FileTestset;
-
-	/**
-	 * Initializes the members.
-	 */
-	@Override
-	protected void initialize() {
-		super.initialize();
-
-		m_FileChooser = GUIHelper.newConverterFileChooser();
-		m_FileTestset = null;
-	}
-
 	/**
 	 * Initializes the widgets.
 	 */
@@ -109,45 +84,6 @@ public class ClassifyTabOptions
 
 		m_ToggleRandomize = new JToggleButton("Randomize", false);
 		addParameter("Randomize?", m_ToggleRandomize);
-
-		m_ButtonFile = new JButton("Open");
-		m_ButtonFile.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (m_FileChooser.showOpenDialog(ClassifyTabOptions.this) != ConverterFileChooser.APPROVE_OPTION)
-					return;
-				AbstractFileLoader loader = m_FileChooser.getLoader();
-				try {
-					m_FileTestset = loader.getDataSet();
-				}
-				catch (Exception ex) {
-					String msg = "Failed to load file: " + m_FileChooser.getSelectedFile();
-					System.err.println(msg);
-					ex.printStackTrace();
-					JOptionPane.showMessageDialog(
-							ClassifyTabOptions.this, msg + "\n" + ex, "Error", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		});
-		addParameter("Test File", m_ButtonFile);
-	}
-
-	/**
-	 * Sets the Test File option
-	 *
-	 * @param file	the test dataset
-	 */
-	public void setTestFile(Instances file) {
-		m_FileTestset = file;
-	}
-
-	/**
-	 * Returns the currently selected Test File (if any).
-	 *
-	 * @return		the test set
-	 */
-	public Instances getTestFile() {
-		return m_FileTestset;
 	}
 
 	/**
