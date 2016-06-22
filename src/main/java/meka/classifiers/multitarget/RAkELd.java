@@ -25,10 +25,11 @@ import weka.core.*;
 import java.util.*;
 
 /**
- * TODO
+ * RAkELd - Multi-target Version of RAkELd.
+ * Extends NSR just like the multi-label version extends PS.
  * @see		meka.classifiers.multilabel.RAkELd
  * @author 	Jesse Read 
- * @version October 2015
+ * @version June 2016
  */
 public class RAkELd extends NSR {
 
@@ -56,7 +57,7 @@ public class RAkELd extends NSR {
 	@Override
 	public void buildClassifier(Instances D) throws Exception {
 		/*
-		This is a slow way of doing things at the moment, making use of multitarget.SCC functionality,
+		NOTE: This is a slow way of doing things at the moment, making use of multitarget.SCC functionality,
 		even though multilabel.RAkELd is not a meta multi-label classifier.
 		 */
 
@@ -196,14 +197,7 @@ public class RAkELd extends NSR {
 	}
 
 	public static void main(String args[]) {
-		//ProblemTransformationMethod.evaluation(new RAkELd(), args);
-		RAkELd h = new RAkELd();
-		try {
-			String args2[] = Utils.splitOptions("-t /home/jesse/Local/Data/m0-SFLARE.arff -verbosity 5 -R -W weka.classifiers.functions.SMO -k 2 -output-debug-info");
-			//String args2[] = Utils.splitOptions("-t /home/jesse/Local/Data/X-EMOT.arff -verbosity 5 -R -W weka.classifiers.functions.SMO -k 2 -output-debug-info");
-			ProblemTransformationMethod.evaluation(h,args2);
-		} catch (Exception e) {
-		}
+		ProblemTransformationMethod.evaluation(new RAkELd(), args);
 	}
 
 }
