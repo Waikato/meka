@@ -34,6 +34,10 @@ Improvements since the last release, for the up and coming release (several of t
   of Weka's Arff Viewer, with correct visualization of the class attributes
   (also sports support for *recent files* and filechooser with directory
   shortcuts).
+* added `-predictions` option to evaluation (batch and incremental) to 
+  allow output of predictions generated on test set to a file. Using the
+  `-no-eval` option, the evaluation can be skipped, e.g., when there are no
+  class labels in the test set.
 * ...
 
 ## TODO

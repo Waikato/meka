@@ -19,7 +19,14 @@ import meka.classifiers.multitarget.MultiTargetClassifier;
 import meka.core.MLEvalUtils;
 import meka.core.MLUtils;
 import meka.core.Result;
-import weka.core.*;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.Option;
+import weka.core.SerializationHelper;
+import weka.core.Utils;
+import weka.core.converters.AbstractFileSaver;
+import weka.core.converters.ArffSaver;
+import weka.core.converters.ConverterUtils;
 import weka.core.converters.ConverterUtils.DataSource;
 
 import java.io.File;
@@ -122,8 +129,18 @@ public class Evaluation {
 			if (Utils.getOptionPos("threshold",options) >= 0)
 				top = Utils.getOption("threshold",options);
 
+			// output predictions to file?
+			String predictions = Utils.getOption("predictions", options);
+
+			// suppress evaluation?
+			boolean doEval = !Utils.getFlag("no-eval", options);
+
 			if(Utils.getOptionPos('x',options) >= 0) {
 				// CROSS-FOLD-VALIDATION
+
+				// TODO output predictions?
+				if (!predictions.isEmpty())
+					System.err.println("Predictions cannot be saved when using cross-validation!");
 
 				int numFolds = MLUtils.getIntegerOption(Utils.getOption('x',options),10); // default 10
 				// Check for remaining options
@@ -147,7 +164,7 @@ public class Evaluation {
 				}
 				else {
 					// split training set into train and test sets
-						// default split
+					// default split
 					int N_T = (int)(D_train.numInstances() * 0.60);
 					if(Utils.getOptionPos("split-percentage",options) >= 0) {
 						// split by percentage
@@ -162,7 +179,6 @@ public class Evaluation {
 					int N_t = D_train.numInstances() - N_T;
 					D_test = new Instances(D_train,N_T,N_t);
 					D_train = new Instances(D_train,0,N_T);
-
 				}
 
 				// Invert the split?
@@ -179,38 +195,69 @@ public class Evaluation {
 
 				if (lname != null) {
 					// h is already built, and loaded from a file, test it!
-					r = testClassifier(h, D_test);
+					if (doEval) {
+						r = testClassifier(h, D_test);
 
-					String t = top;
+						String t = top;
 
-					if (top.startsWith("PCut")) {
-						// if PCut is specified we need the training data,
-						// so that we can calibrate the threshold!
-						t = MLEvalUtils.getThreshold(r.predictions,D_train,top);
+						if (top.startsWith("PCut")) {
+							// if PCut is specified we need the training data,
+							// so that we can calibrate the threshold!
+							t = MLEvalUtils.getThreshold(r.predictions, D_train, top);
+						}
+						r = evaluateModel(h, D_test, t, voption);
 					}
-					r = evaluateModel(h,D_test,t,voption);
 				}
 				else {
-				    //check if train and test set size are > 0
-				    if(D_train.numInstances() > 0 &&
-				       D_test.numInstances() > 0){
-					  if(Threaded){
-					      r = evaluateModelM(h,D_train,D_test,top,voption);
-					  }else{
-					    
-					      r = evaluateModel(h,D_train,D_test,top,voption);
-					  }
-				    } else {
-					// otherwise just train on full set. Maybe better throw an exception.
-					h.buildClassifier(D_full);
-
-				    }
+					//check if train and test set size are > 0
+					if(D_train.numInstances() > 0 &&
+						D_test.numInstances() > 0){
+						if (doEval) {
+							if (Threaded) {
+								r = evaluateModelM(h, D_train, D_test, top, voption);
+							}
+							else {
+								r = evaluateModel(h, D_train, D_test, top, voption);
+							}
+						}
+						else {
+							h.buildClassifier(D_train);
+						}
+					} else {
+						// otherwise just train on full set. Maybe better throw an exception.
+						h.buildClassifier(D_full);
+					}
 				}
-							
+
 				// @todo, if D_train==null, assume h is already trained
 				if(D_train.numInstances() > 0 &&
-				       D_test.numInstances() > 0){
-				    System.out.println(r.toString());
+					D_test.numInstances() > 0 &&
+				    r != null) {
+					System.out.println(r.toString());
+				}
+
+				// predictions
+				if (!predictions.isEmpty()) {
+					Instances predicted = new Instances(D_test, 0);
+					for (int i = 0; i < D_test.numInstances(); i++) {
+						double pred[] = h.distributionForInstance(D_test.instance(i));
+						// Cut off any [no-longer-needed] probabalistic information from MT classifiers.
+						if (h instanceof MultiTargetClassifier)
+							pred = Arrays.copyOf(pred, D_test.classIndex());
+						Instance predInst = (Instance) D_test.instance(i).copy();
+						for (int j = 0; j < pred.length; j++)
+							predInst.setValue(j, pred[j]);
+						predicted.add(predInst);
+					}
+					AbstractFileSaver saver = ConverterUtils.getSaverForFile(predictions);
+					if (saver == null) {
+						System.err.println("Failed to determine saver for '" + predictions + "', using " + ArffSaver.class.getName());
+						saver = new ArffSaver();
+					}
+					saver.setFile(new File(predictions));
+					saver.setInstances(predicted);
+					saver.writeBatch();
+					System.out.println("Predictions saved to: " + predictions);
 				}
 			}
 
@@ -373,7 +420,7 @@ public class Evaluation {
 
 		long before = System.currentTimeMillis();
 		// Set test data as unlabelled data, if SemisupervisedClassifier
-		if (h instanceof SemisupervisedClassifier) { 
+		if (h instanceof SemisupervisedClassifier) {
 			((SemisupervisedClassifier)h).introduceUnlabelledData(MLUtils.setLabelsMissing(new Instances(D_test)));
 		}
 		// Train
@@ -410,40 +457,40 @@ public class Evaluation {
 		return result;
 	}
 
-/* allow threaded evaluation of model,
- * all instances are passed to the classifier then they are gathered in results,
- * for short datasets the overhead might be significant
- */
+	/* allow threaded evaluation of model,
+	 * all instances are passed to the classifier then they are gathered in results,
+	 * for short datasets the overhead might be significant
+	 */
 	public static Result evaluateModelM(MultiLabelClassifier h, Instances D_train, Instances D_test, String top, String vop) throws Exception {
 		// Train
-				long before = System.currentTimeMillis();
+		long before = System.currentTimeMillis();
 				/*if (h instanceof SemisupervisedClassifier) { // *NEW* for semi-supervised 
 					((SemisupervisedClassifier)h).setUnlabelledData(MLUtils.setLabelsMissing(new Instances(D_test)));
 				}*/
-				h.buildClassifier(D_train);
-				long after = System.currentTimeMillis();
+		h.buildClassifier(D_train);
+		long after = System.currentTimeMillis();
 
-				//System.out.println(":- Classifier -: "+h.getClass().getName()+": "+Arrays.toString(h.getOptions()));
+		//System.out.println(":- Classifier -: "+h.getClass().getName()+": "+Arrays.toString(h.getOptions()));
 
-				// Test
-				long before_test = System.currentTimeMillis();
-				Result result = testClassifierM(h,D_test);
-				long after_test = System.currentTimeMillis();
+		// Test
+		long before_test = System.currentTimeMillis();
+		Result result = testClassifierM(h,D_test);
+		long after_test = System.currentTimeMillis();
 
-				result.setValue("N_train",D_train.numInstances());
-				result.setValue("N_test",D_test.numInstances());
-				result.setValue("LCard_train",MLUtils.labelCardinality(D_train));
-				result.setValue("LCard_test",MLUtils.labelCardinality(D_test));
+		result.setValue("N_train",D_train.numInstances());
+		result.setValue("N_test",D_test.numInstances());
+		result.setValue("LCard_train",MLUtils.labelCardinality(D_train));
+		result.setValue("LCard_test",MLUtils.labelCardinality(D_test));
 
-				result.setValue("Build_time",(after - before)/1000.0);
-				result.setValue("Test_time",(after_test - before_test)/1000.0);
-				result.setValue("Total_time",(after_test - before)/1000.0);
+		result.setValue("Build_time",(after - before)/1000.0);
+		result.setValue("Test_time",(after_test - before_test)/1000.0);
+		result.setValue("Total_time",(after_test - before)/1000.0);
 
-				result.setInfo("Classifier_name",h.getClass().getName());
-				result.setInfo("Classifier_ops",Arrays.toString(h.getOptions()));
-				result.setInfo("Classifier_info",h.toString());
-				result.setInfo("Dataset_name",MLUtils.getDatasetName(D_train));
-				//result.setInfo("Maxfreq_set",MLUtils.mostCommonCombination(D_train,result.L));
+		result.setInfo("Classifier_name",h.getClass().getName());
+		result.setInfo("Classifier_ops",Arrays.toString(h.getOptions()));
+		result.setInfo("Classifier_info",h.toString());
+		result.setInfo("Dataset_name",MLUtils.getDatasetName(D_train));
+		//result.setInfo("Maxfreq_set",MLUtils.mostCommonCombination(D_train,result.L));
 
 		if (h instanceof MultiTargetClassifier || isMT(D_test)) {
 			result.setInfo("Type","MT");
@@ -475,7 +522,7 @@ public class Evaluation {
 
 			// No cheating allowed; clear all class information
 			Instance x = (Instance)(D_test.instance(i)).copy();
-			for(int v = 0; v < D_test.classIndex(); v++) 
+			for(int v = 0; v < D_test.classIndex(); v++)
 				x.setValue(v,0.0);
 
 			// Get and store ranking
@@ -500,26 +547,26 @@ public class Evaluation {
 
 		return result;
 	}
-    /**
-     *Test Classifier but threaded (Multiple)     
-     * @param	h		a multi-dim. classifier, ALREADY BUILT (threaded, implements MultiLabelThreaded)
-     * @param	D_test 	test data
-     * @return	Result	with raw prediction data ONLY
-    */
+	/**
+	 *Test Classifier but threaded (Multiple)
+	 * @param	h		a multi-dim. classifier, ALREADY BUILT (threaded, implements MultiLabelThreaded)
+	 * @param	D_test 	test data
+	 * @return	Result	with raw prediction data ONLY
+	 */
 	public static Result testClassifierM(MultiLabelClassifier h, Instances D_test) throws Exception {
 
 		int L = D_test.classIndex();
 		Result result = new Result(D_test.numInstances(),L);
 		if(h.getDebug()) System.out.print(":- Evaluate ");
 		if(h instanceof MultiLabelClassifierThreaded){
-		((MultiLabelClassifierThreaded)h).setThreaded(true);
-		double y[][] = ((MultiLabelClassifierThreaded)h).distributionForInstanceM(D_test);
+			((MultiLabelClassifierThreaded)h).setThreaded(true);
+			double y[][] = ((MultiLabelClassifierThreaded)h).distributionForInstanceM(D_test);
 
-		for (int i = 0, c = 0; i < D_test.numInstances(); i++) {
-			// Store the result
-			result.addResult(y[i],D_test.instance(i));
-		}
-		if(h.getDebug()) System.out.println(":-");
+			for (int i = 0, c = 0; i < D_test.numInstances(); i++) {
+				// Store the result
+				result.addResult(y[i],D_test.instance(i));
+			}
+			if(h.getDebug()) System.out.println(":-");
 
 		/*
 		if(h.getDebug()) {
@@ -541,20 +588,20 @@ public class Evaluation {
 	 * @param	T		set to 'T' if we want to load a test file
 	 * @return	An Instances representing the dataset
 	public static Instances getDataset(String options[], char T) throws Exception {
-		Instances D = loadDataset(options, T);
-		setClassesFromOptions(D,MLUtils.getDatasetOptions(D));
-		return D;
+	Instances D = loadDataset(options, T);
+	setClassesFromOptions(D,MLUtils.getDatasetOptions(D));
+	return D;
 	}
-	*/
+	 */
 
 	/**
 	 * GetDataset - load a dataset, given command line options specifying an arff file, and set the class index correctly to indicate the number of labels.
 	 * @param	options	command line options
 	 * @return	An Instances representing the dataset
 	public static Instances getDataset(String options[]) throws Exception {
-		return getDataset(options,'t');
+	return getDataset(options,'t');
 	}
-	*/
+	 */
 
 	/**
 	 * loadDataset - load a dataset, given command line option '-t' specifying an arff file.

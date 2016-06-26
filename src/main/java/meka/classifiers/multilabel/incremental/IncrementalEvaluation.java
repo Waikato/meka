@@ -21,7 +21,11 @@ import weka.core.*;
 import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.classifiers.multitarget.MultiTargetClassifier;
 import meka.classifiers.multilabel.Evaluation;
+import weka.core.converters.AbstractFileSaver;
+import weka.core.converters.ArffSaver;
+import weka.core.converters.ConverterUtils;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -43,7 +47,8 @@ public class IncrementalEvaluation {
 		try {
 			h.setOptions(args);
 			Result avg = IncrementalEvaluation.evaluateModel(h,args);
-			System.out.println(avg);
+			if (avg != null)
+				System.out.println(avg);
 		} catch(Exception e) {
 			System.err.println("Evaluation exception ("+e+"); failed to run experiment");
 			e.printStackTrace();
@@ -55,7 +60,7 @@ public class IncrementalEvaluation {
 	 * EvaluateModel - Build and evaluate.
 	 * @param	h			a multi-label Updateable classifier
 	 * @param	options	dataset options (classifier options should already be set)
-	 * @return	The evaluation Result
+	 * @return	The evaluation Result, null if none produced (eg when just outputting predictions)
 	 */
 	public static Result evaluateModel(MultiLabelClassifier h, String options[]) throws Exception {
 		boolean needPrebuiltModel = false;
@@ -75,6 +80,12 @@ public class IncrementalEvaluation {
 			MLUtils.prepareData(train);
 			needPrebuiltModel = false;  // we can build a model with training data
 		}
+
+		// output predictions to file?
+		String predictions = Utils.getOption("predictions", options);
+
+		// suppress evaluation?
+		boolean doEval = !Utils.getFlag("no-eval", options);
 
 		// Set the number of windows (batches) @todo move below combining options?
 		int nWin = OptionUtils.parse(options, 'x', 10);
@@ -103,8 +114,8 @@ public class IncrementalEvaluation {
 			lname = Utils.getOption('l',options);
 			Object[] data = SerializationHelper.readAll(lname);
 			MultiLabelClassifier h2 = (MultiLabelClassifier)data[0];
-		  	if (h.getClass() != h2.getClass())
-		  		throw new IllegalArgumentException("Classifier stored in '" + lname + "' is not a " + h.getClass().getName());
+			if (h.getClass() != h2.getClass())
+				throw new IllegalArgumentException("Classifier stored in '" + lname + "' is not a " + h.getClass().getName());
 			if (data.length > 1) {
 				dataHeader = (Instances) data[1];
 				String msg;
@@ -113,13 +124,13 @@ public class IncrementalEvaluation {
 					if (msg != null)
 						throw new IllegalArgumentException("New training data is not compatible with training header stored in '" + lname + "':\n" + msg);
 				}
-				 if (test != null) {
+				if (test != null) {
 					msg = test.equalHeadersMsg(dataHeader);
 					if (msg != null)
 						throw new IllegalArgumentException("New test data is not compatible with training header stored in '" + lname + "':\n" + msg);
 				}
 			}
-		  	h = h2;
+			h = h2;
 			needPrebuiltModel = false;  // successfully loaded prebuilt model
 		}
 
@@ -136,9 +147,18 @@ public class IncrementalEvaluation {
 		Utils.checkForRemainingOptions(options);
 
 		Result result = null;
-		if (train != null)
-			result = evaluateModelPrequentialBasic(h, train, nWin, rLabeled, Top, Vop);
-		if (test != null) {
+		if (train != null) {
+			if (doEval) {
+				result = evaluateModelPrequentialBasic(h, train, nWin, rLabeled, Top, Vop);
+			}
+			else {
+				Instances init = new Instances(train, 0, nWin); 	// initial window
+				h.buildClassifier(init);
+				for (Instance inst: train)
+					((UpdateableClassifier) h).updateClassifier(inst);
+			}
+		}
+		if (test != null && doEval) {
 			if (h.getDebug())
 				System.out.println("Non-incremental evaluation on provided test set");
 			result = Evaluation.evaluateModel(h, test, Top, Vop);
@@ -147,6 +167,35 @@ public class IncrementalEvaluation {
 		if (dname != null) {
 			dataHeader = new Instances(train, 0);
 			SerializationHelper.writeAll(dname, new Object[]{h, dataHeader});
+		}
+
+		// predictions
+		if (!predictions.isEmpty()) {
+			if (test == null) {
+				System.err.println("No test set provided, cannot make predictions!");
+			}
+			else {
+				Instances predicted = new Instances(test, 0);
+				for (int i = 0; i < test.numInstances(); i++) {
+					double pred[] = h.distributionForInstance(test.instance(i));
+					// Cut off any [no-longer-needed] probabalistic information from MT classifiers.
+					if (h instanceof MultiTargetClassifier)
+						pred = Arrays.copyOf(pred, test.classIndex());
+					Instance predInst = (Instance) test.instance(i).copy();
+					for (int j = 0; j < pred.length; j++)
+						predInst.setValue(j, pred[j]);
+					predicted.add(predInst);
+				}
+				AbstractFileSaver saver = ConverterUtils.getSaverForFile(predictions);
+				if (saver == null) {
+					System.err.println("Failed to determine saver for '" + predictions + "', using " + ArffSaver.class.getName());
+					saver = new ArffSaver();
+				}
+				saver.setFile(new File(predictions));
+				saver.setInstances(predicted);
+				saver.writeBatch();
+				System.out.println("Predictions saved to: " + predictions);
+			}
 		}
 
 		return result;
@@ -227,7 +276,7 @@ public class IncrementalEvaluation {
 		for (int w = 0; w < numWindows-1; w++) {
 			// For each evaluation window ...
 
-            result = new Result(L);
+			result = new Result(L);
 			result.setInfo("Supervision",String.valueOf(rLabeled));
 			result.setInfo("Type","MLi");
 
@@ -243,7 +292,7 @@ public class IncrementalEvaluation {
 				// (we can't clear the class values because certain classifiers need to know how well they're doing -- just trust that there's no cheating!)
 				//for(int j = 0; j < L; j++)  
 				//	x_.setValue(j,0.0);
-				
+
 				if ( rLabeled < 0.5 && (i % (int)(1/rLabeled) == 0) || ( rLabeled >= 0.5 && (i % (int)(1./(1.-rLabeled)) != 0 )) ) {
 					// LABELLED - Test & record prediction 
 					long before_test = System.currentTimeMillis();
@@ -467,7 +516,7 @@ public class IncrementalEvaluation {
 		for(int i = 0; i < D.numInstances(); i++) {
 
 			Instance x = D.instance(i);
-			AbstractInstance x_ = (AbstractInstance)((AbstractInstance) x).copy(); 		// copy 
+			Instance x_ = (Instance)x.copy(); 		// copy
 				
 			/*
 			 * TEST
@@ -475,7 +524,7 @@ public class IncrementalEvaluation {
 			long before_test = System.currentTimeMillis();
 			double y[] = h.distributionForInstance(x_);
 			long after_test = System.currentTimeMillis();
-			test_time += (after_test-before_test); 
+			test_time += (after_test-before_test);
 			result.addResult(y,x);
 
 			/*
