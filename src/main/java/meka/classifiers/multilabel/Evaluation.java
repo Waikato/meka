@@ -474,7 +474,7 @@ public class Evaluation {
 			if(h.getDebug()) { int t = i*50/D_test.numInstances(); if(t > c) { System.out.print("#"); c = t; } }
 
 			// No cheating allowed; clear all class information
-			AbstractInstance x = (AbstractInstance)((AbstractInstance) D_test.instance(i)).copy(); 
+			Instance x = (Instance)(D_test.instance(i)).copy();
 			for(int v = 0; v < D_test.classIndex(); v++) 
 				x.setValue(v,0.0);
 
