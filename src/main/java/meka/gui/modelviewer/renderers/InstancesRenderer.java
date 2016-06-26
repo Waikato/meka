@@ -21,13 +21,13 @@
 package meka.gui.modelviewer.renderers;
 
 import com.googlecode.jfilechooserbookmarks.gui.BaseScrollPane;
+import meka.gui.dataviewer.DataSortedTableModel;
+import meka.gui.dataviewer.DataTable;
 import weka.core.ClassDiscovery;
 import weka.core.Instances;
-import weka.gui.arffviewer.ArffSortedTableModel;
-import weka.gui.arffviewer.ArffTable;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
 
 /**
  * Renders Instances objects.
@@ -60,7 +60,7 @@ public class InstancesRenderer
 	 */
 	@Override
 	protected String doRender(Object obj, JPanel panel) {
-		ArffTable       table;
+		DataTable table;
 		Instances       data;
 
 		data = (Instances) obj;
@@ -68,7 +68,7 @@ public class InstancesRenderer
 		if (data.numInstances() == 0)
 			return new PlainTextRenderer().render(obj, panel);
 
-        table = new ArffTable(new ArffSortedTableModel(data));
+        table = new DataTable(new DataSortedTableModel(data));
 		panel.add(new BaseScrollPane(table), BorderLayout.CENTER);
 
 		return null;

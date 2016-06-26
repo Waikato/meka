@@ -14,7 +14,7 @@
  */
 
 /**
- * ArffViewerDefinition.java
+ * DataViewerDefinition.java
  * Copyright (C) 2015 University of Waikato, Hamilton, NZ
  */
 
@@ -22,17 +22,17 @@ package meka.gui.guichooser;
 
 import meka.gui.core.GUIHelper;
 import meka.gui.core.MekaFrame;
-import weka.gui.arffviewer.ArffViewerMainPanel;
+import meka.gui.dataviewer.DataViewerMainPanel;
 
-import java.awt.*;
+import java.awt.BorderLayout;
 
 /**
- * Launches the Arff Viewer.
+ * Launches the Data Viewer.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  */
-public class ArffViewerDefinition
+public class DataViewerDefinition
   extends AbstractMenuItemDefinition {
 
 	private static final long serialVersionUID = -3184143315707991090L;
@@ -54,7 +54,7 @@ public class ArffViewerDefinition
 	 */
 	@Override
 	public String getName() {
-		return "Arff viewer";
+		return "Data viewer";
 	}
 
 	/**
@@ -73,14 +73,14 @@ public class ArffViewerDefinition
 	@Override
 	protected void launch() {
 		MekaFrame frame = new MekaFrame();
-		ArffViewerMainPanel main = new ArffViewerMainPanel(frame);
+		DataViewerMainPanel main = new DataViewerMainPanel(frame);
 		frame.setTitle(getName());
 		frame.setDefaultCloseOperation(MekaFrame.DISPOSE_ON_CLOSE);
 		frame.setIconImage(GUIHelper.getLogoIcon().getImage());
 		frame.setLayout(new BorderLayout());
 		frame.add(main, BorderLayout.CENTER);
 		frame.setJMenuBar(main.getMenu());
-		frame.setSize(GUIHelper.getDefaultFrameDimensions(ArffViewerMainPanel.class));
+		frame.setSize(GUIHelper.getDefaultFrameDimensions(DataViewerMainPanel.class));
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}

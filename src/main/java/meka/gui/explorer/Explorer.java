@@ -21,7 +21,14 @@ package meka.gui.explorer;
 
 import meka.core.ExceptionUtils;
 import meka.core.MLUtils;
-import meka.gui.core.*;
+import meka.gui.core.CommandLineArgsHandler;
+import meka.gui.core.GUIHelper;
+import meka.gui.core.GUILauncher;
+import meka.gui.core.MekaPanel;
+import meka.gui.core.MenuBarProvider;
+import meka.gui.core.RecentFilesHandlerWithCommandline;
+import meka.gui.core.StatusBar;
+import meka.gui.dataviewer.DataViewerDialog;
 import meka.gui.events.RecentItemEvent;
 import meka.gui.events.RecentItemListener;
 import weka.core.Instances;
@@ -32,13 +39,24 @@ import weka.core.converters.SerializedInstancesLoader;
 import weka.gui.ConverterFileChooser;
 import weka.gui.ViewerDialog;
 
-import javax.swing.*;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -511,27 +529,19 @@ public class Explorer
 	 * edits the current instances object in the viewer 
 	 */
 	public void edit() {
-		ViewerDialog        dialog;
+		DataViewerDialog    dialog;
 		int                 result;
 		Instances           copy;
 		Instances           newInstances;
 
 		copy   = new Instances(m_Data);
-		dialog = new ViewerDialog(null);
+		dialog = new DataViewerDialog(null);
 		dialog.setSize(800, 600);
 		dialog.setLocationRelativeTo(this);
 		result = dialog.showDialog(copy);
 		if (result == ViewerDialog.APPROVE_OPTION) {
-			try {
-				addUndoPoint();
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-			}
-			// if class was not set before, reset it again after use of filter
+			addUndoPoint();
 			newInstances = dialog.getInstances();
-			if (m_Data.classIndex() < 0)
-				newInstances.setClassIndex(-1);
 			notifyTabsDataChanged(null, newInstances);
 		}
 	}
