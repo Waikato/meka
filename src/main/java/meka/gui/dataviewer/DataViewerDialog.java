@@ -21,10 +21,15 @@
 
 package meka.gui.dataviewer;
 
+import com.googlecode.jfilechooserbookmarks.core.Utils;
+import meka.gui.core.GUIHelper;
 import weka.core.Instances;
+import weka.core.converters.AbstractFileSaver;
+import weka.gui.ConverterFileChooser;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -34,6 +39,7 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  * A downsized version of the DataViewer, displaying only one Instances-Object.
@@ -70,8 +76,14 @@ public class DataViewerDialog
 	/** Click to add a new instance to the end of the dataset */
 	protected JButton m_addInstanceButton = new JButton("Add instance");
 
+	/** Click to export the data*/
+	protected JButton m_ExportButton = new JButton("Export...");
+
 	/** the panel to display the Instances-object */
 	protected DataPanel m_DataPanel = new DataPanel();
+
+	/** the file chooser for loading/saving files. */
+	protected ConverterFileChooser m_FileChooser;
 
 	/**
 	 * initializes the dialog with the given parent.
@@ -155,8 +167,14 @@ public class DataViewerDialog
 				m_DataPanel.addInstanceAtEnd();
 			}
 		});
+		m_ExportButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				export();
+			}
+		});
 		panel.add(m_addInstanceButton);
 		panel.add(m_UndoButton);
+		panel.add(m_ExportButton);
 		panel.add(m_OkButton);
 		panel.add(m_CancelButton);
 
@@ -187,6 +205,37 @@ public class DataViewerDialog
 	}
 
 	/**
+	 * Exports the data to a file.
+	 */
+	protected void export() {
+		int retVal;
+		File file;
+		AbstractFileSaver saver;
+
+		if (m_FileChooser == null)
+			m_FileChooser = GUIHelper.newConverterFileChooser();
+
+		retVal = m_FileChooser.showSaveDialog(this);
+		if (retVal != ConverterFileChooser.APPROVE_OPTION)
+			return;
+
+		file  = m_FileChooser.getSelectedFile();
+		saver = m_FileChooser.getSaver();
+		try {
+			saver.setInstances(m_DataPanel.getInstances());
+			saver.writeBatch();
+		}
+		catch (Exception e) {
+			JOptionPane.showMessageDialog(
+				this,
+				"Failed to save dataset to '" + file + "':\n" + Utils.throwableToString(e),
+				"Error saving",
+				JOptionPane.ERROR_MESSAGE);
+		}
+		// TODO
+	}
+
+	/**
 	 * returns whether the data has been changed
 	 *
 	 * @return true if the data has been changed
@@ -198,7 +247,7 @@ public class DataViewerDialog
 	/**
 	 * undoes the last action
 	 */
-	private void undo() {
+	protected void undo() {
 		m_DataPanel.undo();
 	}
 
