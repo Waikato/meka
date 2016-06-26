@@ -577,10 +577,16 @@ public class IncrementalEvaluation {
 		text.append("\n\nEvaluation Options:\n\n");
 		text.append("-t\n");
 		text.append("\tSpecify the dataset (required)\n");
+		text.append("-T <name of test file>\n");
+		text.append("\tSets test file (will be used for making predictions).\n");
+		text.append("-predictions <name of output file for predictions>\n");
+		text.append("\tSets the file to store the predictions in (does not work with cross-validation).\n");
 		//text.append("-split-percentage <percentage>\n");
 		//text.append("\tSets the percentage of data to use for the initial training, e.g., 10.\n");
 		text.append("-x <number of windows>\n");
 		text.append("\tSets the number of samples to take (at evenly space intervals); default: 10.\n");
+		text.append("-no-eval\n");
+		text.append("\tSkips evaluation, e.g., used when test set contains no class labels.\n");
 		text.append("-supervision <ratio labelled>\n");
 		text.append("\tSets the ratio of labelled instances; default: 1.\n");
 		text.append("-threshold <threshold>\n");

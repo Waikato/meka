@@ -687,9 +687,13 @@ public class Evaluation {
 		text.append("-t <name of training file>\n");
 		text.append("\tSets training file.\n");
 		text.append("-T <name of test file>\n");
-		text.append("\tSets test file.\n");
+		text.append("\tSets test file (will be used for making predictions).\n");
+		text.append("-predictions <name of output file for predictions>\n");
+		text.append("\tSets the file to store the predictions in (does not work with cross-validation).\n");
 		text.append("-x <number of folds>\n");
 		text.append("\tDo cross-validation with this many folds.\n");
+		text.append("-no-eval\n");
+		text.append("\tSkips evaluation, e.g., used when test set contains no class labels.\n");
 		text.append("-R\n");
 		text.append("\tRandomize the order of instances in the dataset.\n");
 		text.append("-split-percentage <percentage>\n");
