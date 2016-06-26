@@ -37,7 +37,6 @@ import weka.core.converters.AbstractFileSaver;
 import weka.core.converters.ConverterUtils;
 import weka.core.converters.SerializedInstancesLoader;
 import weka.gui.ConverterFileChooser;
-import weka.gui.ViewerDialog;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -48,6 +47,7 @@ import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
+import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
@@ -535,11 +535,11 @@ public class Explorer
 		Instances           newInstances;
 
 		copy   = new Instances(m_Data);
-		dialog = new DataViewerDialog(null);
+		dialog = new DataViewerDialog(GUIHelper.getParentFrame(this), ModalityType.DOCUMENT_MODAL);
 		dialog.setSize(800, 600);
 		dialog.setLocationRelativeTo(this);
 		result = dialog.showDialog(copy);
-		if (result == ViewerDialog.APPROVE_OPTION) {
+		if (result == DataViewerDialog.APPROVE_OPTION) {
 			addUndoPoint();
 			newInstances = dialog.getInstances();
 			notifyTabsDataChanged(null, newInstances);
