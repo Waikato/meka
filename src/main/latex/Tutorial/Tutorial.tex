@@ -292,6 +292,16 @@ java meka.classifiers.multilabel.MULAN -t data/Scene.arff -verbosity 5 \
 \end{lstlisting}
 the \texttt{-verbosity 5} options increases the amount of evaluation output.
 
+\paragraph{Binary Relevance} (BR) On the \textit{Music} data, loading from two separate sets, using Naive Bayes as a base classifier, performing no evaluation and outputting the collected predictions to a file:
+\begin{lstlisting}
+java meka.classifiers.multilabel.BR \
+  -t data/Music_train.arff \
+  -T data/Music_test.arff \
+  -predictions output/Music_predictions.arff \
+  -no-eval \
+  -W weka.classifiers.bayes.NaiveBayes
+\end{lstlisting}
+
 %\paragraph{Cross Validation} the following carries out cross validation on ECC using Logistic Regression as a base classifier, on the \textit{Music} data.
 
 %\begin{lstlisting}
@@ -332,6 +342,24 @@ java meka.classifiers.multilabel.meta.EM -t data-train.arff \
 %\end{lstlisting}
 
 Note that the training set is required again in the second command because when \texttt{PCutL} is used (currently the default) it is necessary to know the label cardinality of the training data in order to calibrate a threshold for the test data.
+
+\paragraph{Updateable Binary Relevance} (BRUpdateable) Prequentially trained/evaluated on the \textit{Music} data, and the final model batch-evaluated against the test set:
+\begin{lstlisting}
+java meka.classifiers.multilabel.BR \
+  -t data/Music_train.arff \
+  -T data/Music_test.arff \
+  -W weka.classifiers.bayes.NaiveBayes
+\end{lstlisting}
+
+\paragraph{Updateable Binary Relevance} (BRUpdateable) On the \textit{Music} data, incrementally built on the training set and then outputting the predictions generated for the test set to the specified predictions file, outputting no evaluation:
+\begin{lstlisting}
+java meka.classifiers.multilabel.BR \
+  -t data/Music_train.arff \
+  -T data/Music_test.arff \
+  -predictions output/Music_predictions.arff \
+  -no-eval \
+  -W weka.classifiers.bayes.NaiveBayes
+\end{lstlisting}
 
 \subsection{Graphical User Interface}
 
