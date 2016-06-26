@@ -28,6 +28,8 @@ Improvements since the last release, for the up and coming release (several of t
   to make it more obvious.
 * The *Classify* tab now allows the loading of serialized models and their
   evaluation against the loaded test set.
+* The *Classify* tab now allows to make predictions on a loaded test set
+  using the selected model from the result history.
 * The *Arff Viewer* got renamed to *Data Viewer* as it is a customized version
   of Weka's Arff Viewer, with correct visualization of the class attributes
   (also sports support for *recent files* and filechooser with directory
