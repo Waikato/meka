@@ -71,5 +71,6 @@ Things on the to-do list for future versions of Meka:
 * Use a matrix for storing all values in `Result` (sparse matrix in the case of multi-label).
 * Generate Markdown from the classifier code (e.g., the globalInfo, tipText and technical info)
 * Better confidence outputs for multi-target methods, the full distribution should be available
+* Instances reader for multi-label libSVM datasets: http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/multilabel.html
 * More classifiers!
 
