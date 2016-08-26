@@ -36,7 +36,7 @@ import java.util.*;
  * @author Jesse Read
  * @version	March 2015
  */
-public class MCC extends CC implements TechnicalInformationHandler {
+public class MCC extends CC implements TechnicalInformationHandler, MultiTargetCapable {
 
 	private static final long serialVersionUID = 5085402586815030939L;
 	protected int m_Is = 0;

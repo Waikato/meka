@@ -17,6 +17,7 @@ package meka.classifiers.multitarget;
 
 import meka.classifiers.multilabel.Evaluation;
 import meka.classifiers.multilabel.ProblemTransformationMethod;
+import meka.classifiers.multilabel.MultiTargetCapable;
 import meka.core.*;
 import meka.filters.multilabel.SuperNodeFilter;
 import weka.classifiers.Classifier;
@@ -237,7 +238,7 @@ public class SCC extends NSR implements Randomizable, MultiTargetClassifier, Tec
 		int L = D.classIndex();
 		rand = new Random(m_S);
 
-		if (!(m_Classifier instanceof MultiTargetClassifier)) {
+		if (!(m_Classifier instanceof MultiTargetClassifier) && !(m_Classifier instanceof MultiTargetCapable)) {
 			throw new Exception("[Error] The base classifier must be multi-target capable, i.e., from meka.classifiers.multitarget.");
 		}
 
