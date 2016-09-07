@@ -341,6 +341,42 @@ public class Result implements Serializable {
 	}
 
 	/**
+	 * Convert predictions into Instances (and true values).
+	 * The first L attributes (for L labels) hold the true values, and the next L attributes hold the predictions.
+	 * @param result A Result
+	 * @return	Instances containing true values and predictions.
+	 */
+	public static Instances getPredictionsAsInstances(Result result) {
+
+		ArrayList<Attribute> attInfo = new ArrayList<Attribute>();
+		for(int j = 0; j < result.L; j++) {
+			attInfo.add(new Attribute("Y"+String.valueOf(j)));
+		}
+		for(int j = 0; j < result.L; j++) {
+			attInfo.add(new Attribute("P"+String.valueOf(j)));
+		}
+
+		double Y_pred[][] = result.allPredictions();
+		int Y_true[][] = result.allTrueValues();
+
+		Instances resultInstances = new Instances("Predictions",attInfo,Y_pred.length);
+
+		for(int i = 0; i < Y_pred.length; i++) {
+			Instance rx = new DenseInstance(attInfo.size());
+			rx.setDataset(resultInstances);
+			for(int j = 0; j < Y_true[i].length; j++) {
+				rx.setValue(j,(double)Y_true[i][j]);
+			}
+			for(int j = 0; j < Y_pred[i].length; j++) {
+				rx.setValue(j+result.L,Y_pred[i][j]);
+			}
+			resultInstances.add(rx);
+		}
+
+		return resultInstances;
+	}
+
+	/**
 	 * GetResultAsString - print out each prediction in a Result (to a certain number of decimal points) along with its true labelset.
 	 */
 	public static String getResultAsString(Result result, int adp) {
