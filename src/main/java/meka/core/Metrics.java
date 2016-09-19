@@ -655,7 +655,7 @@ public abstract class Metrics {
 	double F[] = new double[L];
 
 	for (int j = 0; j < L; j++) {
-	    if(allMissing(Y[j])){
+	    if(allMissing(MatrixUtils.getCol(Y, j))){
 		L--;
 		continue;
 	    }
