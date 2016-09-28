@@ -135,7 +135,7 @@ public abstract class Metrics {
         int offset = 0;
         for (int i = 0; i < real.length; i++) {
             if (real[i] == -1 ||
-                pred[i] == -1 ||
+                pred[i] == -1.0 ||
                 Double.isNaN(pred[i])) {
                 offset++;
                 continue;
