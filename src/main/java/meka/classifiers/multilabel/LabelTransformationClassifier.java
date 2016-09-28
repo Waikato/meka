@@ -40,7 +40,7 @@ import weka.filters.unsupervised.attribute.Remove;
  * and third, a method transforming the predicted labels back into the original 
  * dimension. 
  *
- * @author 	Joerg Wicker (wicker@uni-mainz.de)
+ * @author 	Joerg Wicker (jw@joerg-wicker.org)
  */
 public abstract class LabelTransformationClassifier
     extends SingleClassifierEnhancer

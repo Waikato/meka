@@ -48,7 +48,7 @@ import weka.filters.unsupervised.instance.SparseToNonSparse;
  * Autoencoders</i>. The 20th Pacific Asia Conference on Knowledge Discovery 
  * and Data Mining (PAKDD), 2016.
  *
- * @author 	Joerg Wicker (wicker@uni-mainz.de)
+ * @author 	Joerg Wicker (jw@joerg-wicker.org)
  */
 public class Maniac extends LabelTransformationClassifier implements TechnicalInformationHandler {
 
@@ -327,7 +327,7 @@ public class Maniac extends LabelTransformationClassifier implements TechnicalIn
 	result.setValue(Field.TITLE, "A Nonlinear Label Compression and Transformation Method for Multi-Label Classification using Autoencoders");
 	result.setValue(Field.BOOKTITLE, "The 20th Pacific Asia Conference on Knowledge Discovery and Data Mining (PAKDD)");
 	result.setValue(Field.YEAR, "2016");
-	result.setValue(Field.PAGES, "-");
+	result.setValue(Field.PAGES, "328-340");
 
 	return result;
     }

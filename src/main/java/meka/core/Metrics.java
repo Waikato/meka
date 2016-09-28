@@ -82,9 +82,12 @@ public abstract class Metrics {
     }
 
     /**
-     * Helper function for missing values in the labels. Aligns the predictions
-     * with the real labels, discarding labels that are missing.
+     * Helper function for missing values in the labels and missing predictions 
+     * (i.e., from abstaining classifiers). Aligns the predictions
+     * with the real labels, discarding labels and predictions that are missing.
      * 
+     * @param real The real values from the data
+     * @param pred The predicted values from the classifiers
      * @return Aligned predicted and real labels.
      */
     public static int[][] align(int[] real, int[] pred) {
@@ -96,7 +99,8 @@ public abstract class Metrics {
 
         int offset = 0;
         for (int i = 0; i < real.length; i++) {
-            if (real[i] == -1) {
+            if (real[i] == -1 ||
+                pred[i] == -1) {
                 offset++;
                 continue;
             }
@@ -113,9 +117,12 @@ public abstract class Metrics {
 
 
     /**
-     * Helper function for missing values in the labels. Aligns the predictions
-     * with the real labels, discarding labels that are missing.
+     * Helper function for missing values in the labels and missing predictions 
+     * (i.e., from abstaining classifiers). Aligns the predictions
+     * with the real labels, discarding labels and predictions that are missing.
      * 
+     * @param real The real values from the data
+     * @param pred The predicted values from the classifiers
      * @return Aligned predicted and real labels.
      */
     public static double[][] align(int[] real, double[] pred) {
@@ -127,7 +134,9 @@ public abstract class Metrics {
 
         int offset = 0;
         for (int i = 0; i < real.length; i++) {
-            if (real[i] == -1) {
+            if (real[i] == -1 ||
+                pred[i] == -1 ||
+                Double.isNaN(pred[i])) {
                 offset++;
                 continue;
             }

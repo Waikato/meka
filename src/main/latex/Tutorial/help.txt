@@ -9,9 +9,13 @@ Evaluation Options:
 -t <name of training file>
 	Sets training file.
 -T <name of test file>
-	Sets test file.
+	Sets test file (will be used for making predictions).
+-predictions <name of output file for predictions>
+	Sets the file to store the predictions in (does not work with cross-validation).
 -x <number of folds>
 	Do cross-validation with this many folds.
+-no-eval
+	Skips evaluation, e.g., used when test set contains no class labels.
 -R
 	Randomize the order of instances in the dataset.
 -split-percentage <percentage>

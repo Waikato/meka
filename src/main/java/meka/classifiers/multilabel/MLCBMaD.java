@@ -40,28 +40,28 @@ import java.util.Vector;
  * <br>
  * See: J&ouml;rg Wicker, Bernhard Pfahringer, Stefan Kramer. <i>Multi-label Classification Using Boolean Matrix Decomposition</i>. Proceedings of the 27th Annual ACM Symposium on Applied Computing, pp. 179–186, ACM, 2012.
  *
- * @author 	Joerg Wicker (wicker@uni-mainz.de)
+ * @author 	Joerg Wicker (jw@oerg-wicker.org)
  */
 public class MLCBMaD extends LabelTransformationClassifier implements TechnicalInformationHandler {
 
     protected static final long serialVersionUID = 585507197229071545L;
 
-    /*
+    /**
      * The upper matrix. Decomposition is done such that Y=Y'*M, this is M.
      */
     protected Instances uppermatrix = null;
 
-    /*
+    /**
      * The compressed matrix. Decomposition is done such that Y=Y'*M, this is Y'.
      */
     protected Instances compressedMatrix = null;
 
-    /*
+    /**
      * The size of the compressed matrix, i.e., the number of columns of Y'.
      */
     protected int size = getDefaultSize();
 
-    /*
+    /**
      * The threshold t of the decomposition process, see the paper for details. Sets 
      * the minimum frequency to be considered a frequent coocurence. Between 0 
      * (all are frequent) and 1 (must be in all rows to be frequent). 
