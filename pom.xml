@@ -289,9 +289,42 @@
       </plugin>
 
       <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.3.1</version>
+        <executions>
+          <execution>
+            <id>only-examples</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <classifier>examples</classifier>
+              <includes>
+                <include>mekaexamples/**/*</include>
+              </includes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>default-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <exclude>mekaexamples/**/*</exclude>
+                <exclude>mekaexamples</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>2.1.2</version>
+        <version>3.0.1</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -300,6 +333,23 @@
             </goals>
             <configuration>
               <excludeResources>true</excludeResources>
+              <excludes>
+                <exclude>mekaexamples/**/*</exclude>
+                <exclude>mekaexamples</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>attach-sources-examples</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>examples-sources</classifier>
+              <excludeResources>true</excludeResources>
+              <includes>
+                <include>mekaexamples/**/*</include>
+              </includes>
             </configuration>
           </execution>
         </executions>
