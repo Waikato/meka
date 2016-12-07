@@ -63,6 +63,7 @@
       <useProjectArtifact>true</useProjectArtifact>
       <excludes>
         <exclude>*:javadoc</exclude>
+        <exclude>*:examples-sources</exclude>
       </excludes>
     </dependencySet>
 

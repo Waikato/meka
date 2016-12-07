@@ -54,6 +54,20 @@
       <version>${project.version}</version>
       <classifier>javadoc</classifier>
     </dependency>
+
+    <dependency>
+      <groupId>net.sf.meka</groupId>
+      <artifactId>meka</artifactId>
+      <version>${project.version}</version>
+      <classifier>examples</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sf.meka</groupId>
+      <artifactId>meka</artifactId>
+      <version>${project.version}</version>
+      <classifier>examples-sources</classifier>
+    </dependency>
   </dependencies>
 
   <build>
@@ -96,6 +110,19 @@
             </goals>
             <configuration>
               <classifier>sources</classifier>
+              <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
+              <outputDirectory>${project.build.directory}/sources</outputDirectory>
+            </configuration>
+          </execution>
+          <!-- get all example source jars -->
+          <execution>
+            <id>examples-sources</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <classifier>examples-sources</classifier>
               <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
               <outputDirectory>${project.build.directory}/sources</outputDirectory>
             </configuration>
