@@ -47,12 +47,13 @@ public class CrossValidate {
     Instances data = DataSource.read(args[0]);
     MLUtils.prepareData(data);
 
-    System.out.println("Cross-validate BR classifier");
+    int numFolds = 10;
+    System.out.println("Cross-validate BR classifier using " + numFolds + " folds");
     BR classifier = new BR();
     // further configuration of classifier
     String top = "PCut1";
     String vop = "3";
-    Result result = Evaluation.cvModel(classifier, data, 10, top, vop);
+    Result result = Evaluation.cvModel(classifier, data, numFolds, top, vop);
 
     System.out.println(result);
   }
