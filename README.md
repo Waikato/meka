@@ -6,15 +6,20 @@ http://meka.sourceforge.net/
 
 ## Using Meka
 
-See the `Tutorial.pdf` for detailed information on obtaining, using and extending MEKA.
-For a list of included methods and command line examples for them, 
-	see: http://meka.sourceforge.net/methods.html
+See http://meka.sourceforge.net/#documentation for sources of documentation regarding MEKA.
+
+In particular, 
+
+* See the `Tutorial.pdf` for detailed information on obtaining, using and extending MEKA.
+* For a list of included methods and command line examples for them, see: http://meka.sourceforge.net/methods.html
+* For examples on how to use MEKA in your Java code: https://github.com/Waikato/meka/tree/master/src/main/java/mekaexamples
 
 
 ## Recent changes scheduled for the upcoming release Version 1.9.1
 
 Improvements since the last release, for the up and coming release.
 
+* Added a folder `mekaexamples` with examples of how to use Meka from Java code
 * Evaluation can handle missing values
 * `BR` now runs faster on large datasets
 * `PCC` now outputs probabilistic info (as it should)
@@ -47,6 +52,8 @@ Improvements since the last release, for the up and coming release.
 
 The following is a list of changes in mind for future versions of Meka. 
 
+The Meka developers never have enough time to implement everything that should be in Meka. If you have made some Meka-related code you would like to see in Meka, or would like to help with any of the following list, please get in touch with the developers. 
+
 * More user control to the `-verbosity` flag
 * Support for multi-target regression
 * Add Nemenyi test for latex saver
@@ -74,6 +81,6 @@ The following is a list of changes in mind for future versions of Meka.
 * Generate Markdown from the classifier code (e.g., the globalInfo, tipText and technical info)
 * Better confidence outputs for multi-target methods, the full distribution should be available
 * Instances reader for multi-label libSVM datasets: http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/multilabel.html
-* Add to tutorial:
+* Add to tutorial: Examples of using Meka from Java code.
 * More classifiers!
 
