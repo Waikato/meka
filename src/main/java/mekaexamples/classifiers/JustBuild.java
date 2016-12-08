@@ -21,6 +21,7 @@
 package mekaexamples.classifiers;
 
 import meka.classifiers.multilabel.BR;
+import meka.core.MLUtils;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
@@ -42,9 +43,11 @@ public class JustBuild {
 
     System.out.println("Loading data: " + args[0]);
     Instances data = DataSource.read(args[0]);
+    MLUtils.prepareData(data);
 
     System.out.println("Build BR classifier");
     BR classifier = new BR();
+    // further configuration of classifier
     classifier.buildClassifier(data);
   }
 }
