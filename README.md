@@ -4,7 +4,7 @@ The MEKA project provides an open source implementation of methods for multi-lab
 
 http://meka.sourceforge.net/
 
-## Using Meka
+## Documentation
 
 See http://meka.sourceforge.net/#documentation for sources of documentation regarding MEKA.
 
@@ -14,10 +14,12 @@ In particular,
 * For a list of included methods and command line examples for them, see: http://meka.sourceforge.net/methods.html
 * For examples on how to use MEKA in your Java code: https://github.com/Waikato/meka/tree/master/src/main/java/mekaexamples
 
+If you have a specific question, ask on Meka's mailing list
 
-## Recent changes scheduled for the upcoming release Version 1.9.1
+* Check if it is already answered: http://sourceforge.net/mailarchive/forum.php?forum_name=meka-list
+* Write it to meka-list@lists.sourceforge.net
 
-Improvements since the last release, for the up and coming release.
+## Changes in Version 1.9.1
 
 * Added a folder `mekaexamples` with examples of how to use Meka from Java code
 * Evaluation can handle missing values
@@ -38,15 +40,13 @@ Improvements since the last release, for the up and coming release.
   of Weka's Arff Viewer, with correct visualization of the class attributes
   (also sports support for *recent files* and filechooser with directory
   shortcuts).
-* New classifiers
+* New classifiers (Boolean Matrix Factorization, Neurofuzzy methods)
 * Added `-predictions` option to evaluation (batch and incremental) to 
   allow output of predictions generated on test set to a file. Using the
   `-no-eval` option, the evaluation can be skipped, e.g., when there are no
   class labels in the test set.
 * Added an 'Export Predictions (CSV)' plugin option to the GUI to save
   all predictions along with true label relevances to a CSV file 
-  (not only those predictions from a test set).
-  (works for , but not yet cross validation)
 
 ## TODO
 
@@ -79,8 +79,14 @@ The Meka developers never have enough time to implement everything that should b
 * Check the use of Filters with Meka classifiers
 * Use a matrix for storing all values in `Result` (sparse matrix in the case of multi-label).
 * Generate Markdown from the classifier code (e.g., the globalInfo, tipText and technical info)
-* Better confidence outputs for multi-target methods, the full distribution should be available
+* Better confidence outputs for multi-target methods, the full posterior distribution should be available
 * Instances reader for multi-label libSVM datasets: http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/multilabel.html
-* Add to tutorial: Examples of using Meka from Java code.
+* Document in tutorial: 
+	- new ways to save predictions, for both GUI (`Export Predictions to CSV`) and also from the CLI (`-predictions`), and note: not yet cross validation
+	- classifier must be descendend of MultiLabelClassifier
+	- should add new folder hierarchy in `./src/main/resources/meka/gui/goe/MekaPropertiesCreator.props` to see it in the GUI
+	- document better usage of Maven and Eclipse
+* Plugin/Wrapper for CLUS
+* Autocreation of `eval.txt` was a bad idea (runtime is always different, becomes Modified file), should reverse this
 * More classifiers!
 
