@@ -1,5 +1,5 @@
 
-java.lang.Exception: [Error] You did not specify a dataset!
+java.lang.ClassCastException: jdk.internal.loader.ClassLoaders$AppClassLoader (in module: java.base) cannot be cast to java.net.URLClassLoader (in module: java.base)
 
 
 Evaluation Options:
