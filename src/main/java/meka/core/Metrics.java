@@ -392,6 +392,10 @@ public abstract class Metrics {
      * @return 	Log loss
      */
     public static double L_LogLoss(double y, double rpred, double C) {
+        if (y == -1) {
+            return 0.0;
+        }
+
 	// base 2 ?
 	double ans = Math.min(Utils.eq(y,rpred) ? 0.0 : -( (y * Math.log(rpred)) + ((1.0 - y) * Math.log(1.0 - rpred)) ),C);
 	return (Double.isNaN(ans) ? 0.0 : ans);
@@ -401,9 +405,29 @@ public abstract class Metrics {
      * L_LogLoss - the log loss between real-valued confidences Rpred and true predictions Y with a maximum penalty based on the number of labels L [Important Note: Earlier versions of Meka only normalised by N, and not N*L as here].
      */
     public static double L_LogLossL(int Y[][], double Rpred[][]) {
-	int N = Y.length;
+        
+        int N = Y.length;
 	int L = Y[0].length;
-	return L_LogLoss(Y,Rpred,Math.log((double)L)) / ((double)N * (double)L);
+
+        int missing = 0;
+        
+        for(int i = 0; i < Y.length; i++) {
+            if (allMissing(Y[i])) {
+                N--;
+            }
+            
+            for(int j = 0; j < Y[i].length; j++) {
+                if (Y[i][j] == -1) {
+                    missing++;
+                }
+            }
+        }
+        
+        if (N == 0) {
+            return Double.NaN;
+        }
+
+        return L_LogLoss(Y,Rpred,Math.log((double)L)) / (((double)N * (double)L) - (double) missing);
     }
 
     /**
@@ -412,7 +436,27 @@ public abstract class Metrics {
     public static double L_LogLossD(int Y[][], double Rpred[][]) {
 	int N = Y.length;
 	int L = Y[0].length;
-	return L_LogLoss(Y,Rpred,Math.log((double)N)) / ((double)N * (double)L);
+
+        int missing = 0;
+        
+        for(int i = 0; i < Y.length; i++) {
+            if (allMissing(Y[i])) {
+                N--;
+            }
+            
+            for(int j = 0; j < Y[i].length; j++) {
+                if (Y[i][j] == -1) {
+                    missing++;
+                }
+            }
+        }
+        
+        if (N == 0) {
+            return Double.NaN;
+        }
+
+
+        return L_LogLoss(Y,Rpred,Math.log((double)N)) / (((double)N * (double)L)-(double) missing);
     }
 
     /**
@@ -421,8 +465,16 @@ public abstract class Metrics {
     public static double L_LogLoss(int Y[][], double Rpred[][], double C) {
 	double loss = 0.0;
 	for(int i = 0; i < Y.length; i++) {
-	    for(int j = 0; j < Y[i].length; j++) {
-		loss += L_LogLoss(Y[i][j],Rpred[i][j],C);
+            if (allMissing(Y[i])) {
+                continue;
+            }
+            
+            for(int j = 0; j < Y[i].length; j++) {
+                if (Y[i][j] == -1) {
+                    continue;
+                }
+
+                loss += L_LogLoss(Y[i][j],Rpred[i][j],C);
 	    }
 	}
 	return loss;
@@ -540,13 +592,13 @@ public abstract class Metrics {
 	// works with missing
 	int L = Y[0].length;
 	double m = 0.0;
-	
+	int missing = 0;
 	for (int j = 0; j < L; j++) {
 	    int[] y_j = MatrixUtils.getCol(Y, j);
             int[] p_j = MatrixUtils.getCol(Ypred, j);
 
             if (allMissing(y_j)) {
-		L--;
+                missing++;
                 continue;
             }
 
@@ -564,6 +616,13 @@ public abstract class Metrics {
             m += curPrec;
 
 	}
+
+        L -= missing;
+        
+        if (L == 0) {
+            return Double.NaN;
+        }
+
 	return m/L;
     }
 
@@ -575,12 +634,14 @@ public abstract class Metrics {
 	int L = Y[0].length;
 	double m = 0.0;
 
+        int missing = 0;
+
 	for (int j = 0; j < L; j++) {
             int[] y_j = MatrixUtils.getCol(Y, j);
             int[] p_j = MatrixUtils.getCol(Ypred, j);
 
             if (allMissing(y_j)) {
-		L--;
+                missing ++;
                 continue;
             }
 
@@ -598,6 +659,12 @@ public abstract class Metrics {
             m += curRecall;
 	}
 
+        L -= missing;
+
+        if (L == 0) {
+            return Double.NaN;
+        }
+        
 	return m / L;
     }
 
@@ -663,10 +730,12 @@ public abstract class Metrics {
 	double FN[] = new double[L];
 	double F[] = new double[L];
 
+        int missing = 0;
+        
 	for (int j = 0; j < L; j++) {
 	    if(allMissing(MatrixUtils.getCol(Y, j))){
-		L--;
-		continue;
+                missing ++;
+                continue;
 	    }
 
 	    int y_j[] = MatrixUtils.getCol(Y, j);
@@ -684,12 +753,19 @@ public abstract class Metrics {
 	    }
 	}
 
+        L -= missing;
+
+        if (L == 0) {
+            return Double.NaN;
+        }
+
+        
 	return (double) A.sum(F) / (double) L;
 
     }
 
     /**
-     * F-Measure Macro Averaged by D - The F-measure macro averaged by example.
+     * F-Measure  Averaged by D - The F-measure macro averaged by example.
      * The Jaccard index is also averaged this way.
      */
     public static double P_FmacroAvgD(int Y[][], int Ypred[][]) {
@@ -697,14 +773,23 @@ public abstract class Metrics {
 	int N = Y.length;
 
 	double F1_macro_D = 0.0;
+        int missing = 0;
+        
 	for(int i = 0; i < N; i++) {
 	    if(allMissing(Y[i])){
-		N--;
+                missing ++;
 		continue;
 	    }
 	    F1_macro_D += F1(Y[i],Ypred[i]);
 	}
 
+        N -= missing;
+
+        if (N == 0) {
+            return Double.NaN;
+        }
+
+        
 	return F1_macro_D / (double)N;
     }
 
@@ -715,15 +800,25 @@ public abstract class Metrics {
 	// works with missing
 	int N = Y.length;
 	int one_error = 0;
-	
+
+        int missing = 0;
+        
 	for(int i = 0; i < N; i++) {
 	    if(allMissing(Y[i])){
-		N--;
+                missing ++;
 		continue;
 	    }
 	    if(Y[i][Utils.maxIndex(Rpred[i])] <= 0)
 		one_error++;
 	}
+
+        N-= missing;
+
+        if (N == 0) {
+            return Double.NaN;
+        }
+
+        
 	return (double)one_error/(double)N;
     }
     
@@ -860,15 +955,25 @@ public abstract class Metrics {
 	// works with missing
 	int L = Y[0].length;
 	double AUC[] = new double[L];
+
+        int missing = 0;
+        
 	for(int j = 0; j < L; j++) {
 	    if(allMissing(MatrixUtils.getCol(Y, j))){
-		L--;
+                missing ++;
 		continue;
 	    }
 	    ThresholdCurve curve = new ThresholdCurve();
 	    Instances result = curve.getCurve(MLUtils.toWekaPredictions(MatrixUtils.getCol(Y, j), MatrixUtils.getCol(P, j)));
 	    AUC[j] = ThresholdCurve.getPRCArea(result);
 	}
+
+        L -= missing;
+        
+        if (L == 0) {
+            return Double.NaN;
+        }
+                
 	return Utils.mean(AUC);
     }
 
@@ -877,15 +982,26 @@ public abstract class Metrics {
 	// works with missing
 	int L = Y[0].length;
 	double AUC[] = new double[L];
+
+        int missing = 0;
+        
 	for(int j = 0; j < L; j++) {
 	    if(allMissing(MatrixUtils.getCol(Y, j))){
-		L--;
+                missing ++;
 		continue;
 	    }
 	    ThresholdCurve curve = new ThresholdCurve();
 	    Instances result = curve.getCurve(MLUtils.toWekaPredictions(MatrixUtils.getCol(Y, j), MatrixUtils.getCol(P, j)));
 	    AUC[j] = ThresholdCurve.getROCArea(result);
 	}
+
+        L -= missing;
+
+        if (L == 0) {
+            return Double.NaN;
+        }
+
+        
 	return Utils.mean(AUC);
     }
 
@@ -1015,9 +1131,27 @@ public abstract class Metrics {
     public static double L_LevenshteinDistance(int Y[][], int P[][]) {
 	double loss = 0.;
 	int N = Y.length;
+
+        int missing = 0;
+        
 	for(int i = 0; i < N; i++) {
+
+            if (allMissing(Y[i])) {
+                missing ++;
+                continue;
+            }
+
+            
 	    loss += L_LevenshteinDistance(Y[i],P[i]);
 	}
+
+        N -= missing;
+
+        if (N == 0) {
+            return Double.NaN;
+        }
+
+        
 	return loss / (double)N;
     }
 
