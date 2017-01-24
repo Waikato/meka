@@ -246,7 +246,7 @@ public class Evaluation {
 							pred = Arrays.copyOf(pred, D_test.classIndex());
 						Instance predInst = (Instance) D_test.instance(i).copy();
 						for (int j = 0; j < pred.length; j++)
-							predInst.setValue(j, pred[j]);
+							predInst.setValue(j, Math.round(pred[j])); // ML have probabilities; MT have discrete label indices
 						predicted.add(predInst);
 					}
 					AbstractFileSaver saver = ConverterUtils.getSaverForFile(predictions);
