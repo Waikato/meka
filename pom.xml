@@ -85,7 +85,7 @@
       <artifactId>mulan</artifactId>
       <version>1.4.0</version>
     </dependency>
-    
+
     <dependency>
       <groupId>net.sf.meka.thirdparty</groupId>
       <artifactId>mst</artifactId>
@@ -127,7 +127,7 @@
       <artifactId>autoencoder</artifactId>
       <version>0.1</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.markdownj</groupId>
       <artifactId>markdownj-core</artifactId>
@@ -141,6 +141,13 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <meka.mainclass>meka.gui.guichooser.GUIChooser</meka.mainclass>
+    <meka.heap>-Xmx2g</meka.heap>
+  </properties>
 
   <profiles>
     <profile>
@@ -178,13 +185,36 @@
         <skipTests>true</skipTests>
       </properties>
     </profile>
-  </profiles>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <meka.mainclass>meka.gui.guichooser.GUIChooser</meka.mainclass>
-  </properties>
+    <profile>
+      <id>gui</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>gui</id>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>${meka.heap}</argument>
+                <argument>-classpath</argument>
+                <classpath />
+                <argument>${meka.mainclass}</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <build>
     <resources>
@@ -261,6 +291,12 @@
           <artifactId>maven-resources-plugin</artifactId>
           <version>2.7</version>
         </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>1.4.0</version>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -277,7 +313,7 @@
                 <include>**/*~</include>
                 <include>**/.attach_pid*</include>
                 <include>**/hs_err_pid*</include>
-        	    <include>temp_Testdata_*.arff</include>
+                <include>temp_Testdata_*.arff</include>
               </includes>
               <followSymlinks>false</followSymlinks>
             </fileset>
@@ -388,18 +424,18 @@
         <artifactId>maven-resources-plugin</artifactId>
       </plugin>
 
-      <!-- for starting up the GUI: mvn exec:exec -->
+      <!--
+           for starting up the GUI:
+             mvn exec:exec -Pgui
+             mvn exec:exec -Pgui -Dmeka.heap=-Xmx4g
+
+           for starting an arbitrary class:
+             mvn exec:java -Dexec.mainClass="meka.classifiers.multilabel.BR" -Dexec.args="-t Music.arff"
+      -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.4.0</version>
         <executions>
-          <execution>
-            <id>gui</id>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-          </execution>
           <execution>
             <id>br-help</id>
             <goals>
@@ -437,15 +473,6 @@
             </configuration>
           </execution>
         </executions>
-        <configuration>
-          <executable>java</executable>
-          <arguments>
-            <argument>-Xmx2g</argument>
-            <argument>-classpath</argument>
-            <classpath />
-            <argument>${meka.mainclass}</argument>
-          </arguments>
-        </configuration>
       </plugin>
     </plugins>
   </build>
