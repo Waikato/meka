@@ -183,6 +183,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <meka.mainclass>meka.gui.guichooser.GUIChooser</meka.mainclass>
   </properties>
 
   <build>
@@ -442,7 +443,7 @@
             <argument>-Xmx2g</argument>
             <argument>-classpath</argument>
             <classpath />
-            <argument>meka.gui.guichooser.GUIChooser</argument>
+            <argument>${meka.mainclass}</argument>
           </arguments>
         </configuration>
       </plugin>
