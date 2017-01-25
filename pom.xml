@@ -428,6 +428,7 @@
            for starting up the GUI:
              mvn exec:exec -Pgui
              mvn exec:exec -Pgui -Dmeka.heap=-Xmx4g
+             mvn exec:exec -Pgui -Dmeka.mainclass=meka.gui.guichooser.GUIChooser -Dmeka.heap=-Xmx4g
 
            for starting an arbitrary class:
              mvn exec:java -Dexec.mainClass="meka.classifiers.multilabel.BR" -Dexec.args="-t Music.arff"
