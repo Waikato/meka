@@ -21,8 +21,8 @@ package meka.filters.unsupervised.attribute;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import weka.core.Instances;
 import meka.filters.AbstractMekaFilterTest;
+import weka.core.Instances;
 import weka.filters.Filter;
 
 /**
@@ -32,94 +32,94 @@ import weka.filters.Filter;
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision: 66 $
  */
-public class MekaClassAttributesTest 
-  extends AbstractMekaFilterTest {
-  
-  /**
-   * Initializes the test.
-   * 
-   * @param name the name of the test to run
-   */
-  public MekaClassAttributesTest(String name) { 
-    super(name);
-  }
+public class MekaClassAttributesTest
+	extends AbstractMekaFilterTest {
 
-  /** 
-   * Creates a default MekaClassAttributes filter.
-   * 
-   * @return the filter instance
-   */
-  @Override
-  public Filter getFilter() {
-    return new MekaClassAttributes();
-  }
+	/**
+	 * Initializes the test.
+	 *
+	 * @param name the name of the test to run
+	 */
+	public MekaClassAttributesTest(String name) {
+		super(name);
+	}
 
-  /** 
-   * Creates a specialized MekaClassAttributes.
-   * 
-   * @param range the range of attributes to use
-   */
-  public Filter getFilter(String range) {
-    MekaClassAttributes af = new MekaClassAttributes();
-    try {
-      af.setAttributeIndices(range);
-    }
-    catch (Exception e) {
-      fail("Failed to set set range '" + range + "': " + e);
-    }
-    return af;
-  }
+	/**
+	 * Creates a default MekaClassAttributes filter.
+	 *
+	 * @return the filter instance
+	 */
+	@Override
+	public Filter getFilter() {
+		return new MekaClassAttributes();
+	}
 
-  /**
-   * performs the actual test.
-   */
-  protected void performTest() {
-    Instances icopy = new Instances(m_Instances);
-    Instances result = null;
-    try {
-      m_Filter.setInputFormat(icopy);
-    } 
-    catch (Exception ex) {
-      ex.printStackTrace();
-      fail("Exception thrown on setInputFormat(): \n" + ex.getMessage());
-    }
-    try {
-      result = Filter.useFilter(icopy, m_Filter);
-      assertNotNull(result);
-    } 
-    catch (Exception ex) {
-      ex.printStackTrace();
-      fail("Exception thrown on useFilter(): \n" + ex.getMessage());
-    }
+	/**
+	 * Creates a specialized MekaClassAttributes.
+	 *
+	 * @param range the range of attributes to use
+	 */
+	public Filter getFilter(String range) {
+		MekaClassAttributes af = new MekaClassAttributes();
+		try {
+			af.setAttributeIndices(range);
+		}
+		catch (Exception e) {
+			fail("Failed to set set range '" + range + "': " + e);
+		}
+		return af;
+	}
 
-    assertEquals((icopy.numAttributes()), result.numAttributes());
-    assertEquals(icopy.numInstances(), m_Instances.numInstances());
-  }
+	/**
+	 * performs the actual test.
+	 */
+	protected void performTest() {
+		Instances icopy = new Instances(m_Instances);
+		Instances result = null;
+		try {
+			m_Filter.setInputFormat(icopy);
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+			fail("Exception thrown on setInputFormat(): \n" + ex.getMessage());
+		}
+		try {
+			result = Filter.useFilter(icopy, m_Filter);
+			assertNotNull(result);
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+			fail("Exception thrown on useFilter(): \n" + ex.getMessage());
+		}
 
-  /**
-   * Tests using the first two attributes.
-   */
-  public void testFirst() {
-    m_Filter = getFilter("1-2");
-    testBuffered();
-    performTest();
-  }
+		assertEquals((icopy.numAttributes()), result.numAttributes());
+		assertEquals(icopy.numInstances(), m_Instances.numInstances());
+	}
+
+	/**
+	 * Tests using the first two attributes.
+	 */
+	public void testFirst() {
+		m_Filter = getFilter("1-2");
+		testBuffered();
+		performTest();
+	}
 
 
-  /**
-   * Tests using the last two attributes.
-   */
-  public void testLast() {
-    m_Filter = getFilter((m_Instances.numAttributes() - 1) + "-" + m_Instances.numAttributes());
-    testBuffered();
-    performTest();
-  }
+	/**
+	 * Tests using the last two attributes.
+	 */
+	public void testLast() {
+		m_Filter = getFilter((m_Instances.numAttributes() - 1) + "-" + m_Instances.numAttributes());
+		testBuffered();
+		performTest();
+	}
 
-  public static Test suite() {
-    return new TestSuite(MekaClassAttributesTest.class);
-  }
+	public static Test suite() {
+		return new TestSuite(MekaClassAttributesTest.class);
+	}
 
-  public static void main(String[] args){
-    junit.textui.TestRunner.run(suite());
-  }
+	public static void main(String[] args){
+		junit.textui.TestRunner.run(suite());
+	}
 }

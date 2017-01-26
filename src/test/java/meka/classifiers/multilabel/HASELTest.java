@@ -32,7 +32,7 @@ import weka.classifiers.Classifier;
  * @version $Revision: 117 $
  */
 public class HASELTest
-  extends AbstractMekaClassifierTest {
+  extends AbstractMultiLabelClassifierTest {
 
   /**
    * Initializes the test.

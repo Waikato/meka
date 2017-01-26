@@ -15,13 +15,14 @@
 
 package meka.classifiers.multilabel.meta;
 
-import java.util.Random;
-
+import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.classifiers.multilabel.ProblemTransformationMethod;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Randomizable;
 import weka.core.RevisionUtils;
+
+import java.util.Random;
 
 /**
  * BaggingML.java - Combining several multi-label classifiers using Bootstrap AGGregatING.
@@ -55,7 +56,7 @@ public class BaggingML extends MetaProblemTransformationMethod {
 		if (getDebug()) System.out.print("-: Models: ");
 
 		train = new Instances(train);
-		m_Classifiers = ProblemTransformationMethod.makeCopies((ProblemTransformationMethod) m_Classifier, m_NumIterations);
+		m_Classifiers = ProblemTransformationMethod.makeCopies((MultiLabelClassifier) m_Classifier, m_NumIterations);
 
 		for(int i = 0; i < m_NumIterations; i++) {
 			Random r = new Random(m_Seed+i);

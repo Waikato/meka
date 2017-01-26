@@ -21,7 +21,6 @@ package meka.classifiers.multilabel;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import meka.classifiers.AbstractMekaClassifierTest;
 import weka.classifiers.Classifier;
 
 /**
@@ -31,7 +30,7 @@ import weka.classifiers.Classifier;
  * @author Joerg Wicker (wicker@uni-mainz.de)
  */
 public class PLSTTest
-	extends AbstractMekaClassifierTest {
+	extends AbstractMultiLabelClassifierTest {
 
 	/**
 	 * Initializes the test.

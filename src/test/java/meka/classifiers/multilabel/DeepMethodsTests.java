@@ -16,19 +16,12 @@
 package meka.classifiers.multilabel;
 
 import junit.framework.Test;
-import junit.framework.TestSuite;
 import junit.framework.TestCase;
-
-import meka.classifiers.AbstractMekaClassifierTest;
-import weka.classifiers.Classifier;
-import meka.classifiers.multilabel.meta.*;
-import weka.classifiers.functions.SMO;
-import weka.core.converters.ConverterUtils.DataSource;
-import weka.core.Utils;
+import junit.framework.TestSuite;
+import meka.classifiers.multilabel.meta.DeepML;
 import meka.core.Result;
-import meka.core.MLEvalUtils;
-
-import meka.gui.explorer.Explorer;
+import weka.classifiers.functions.SMO;
+import weka.core.Utils;
 
 /**
  * EvaluationTests. Run from the command line with:<p/>
@@ -62,7 +55,7 @@ public class DeepMethodsTests extends TestCase {
 
 		MCC h = new MCC();
 		SMO smo = new SMO();
-		smo.setBuildLogisticModels(true);
+		smo.setBuildCalibrationModels(true);
 		h.setClassifier(smo);
 
 		dbn.setClassifier(h);

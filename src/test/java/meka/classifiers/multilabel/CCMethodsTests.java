@@ -67,7 +67,7 @@ public class CCMethodsTests extends TestCase {
 		System.out.println("Test MCC");
 		MCC h = new MCC();
 		SMO smo = new SMO();
-		smo.setBuildLogisticModels(true);
+		smo.setBuildCalibrationModels(true);
 		h.setClassifier(smo);
 		Result r = EvaluationTests.cvEvaluateClassifier(h);
 		assertEquals("MCC Accuracy Correct", "0.561 +/- 0.035", r.getMeasurement("Accuracy"));
@@ -81,7 +81,7 @@ public class CCMethodsTests extends TestCase {
 		h.setChainIterations(50);
 		h.setInferenceIterations(20);
 		SMO smo = new SMO();
-		smo.setBuildLogisticModels(true);
+		smo.setBuildCalibrationModels(true);
 		h.setClassifier(smo);
 		Result r = EvaluationTests.cvEvaluateClassifier(h);
 		assertEquals("PMCC Accuracy Correct", "0.594 +/- 0.029", r.getMeasurement("Accuracy"));
@@ -92,7 +92,7 @@ public class CCMethodsTests extends TestCase {
 		System.out.println("Test PCC");
 		PCC h = new PCC();
 		SMO smo = new SMO();
-		smo.setBuildLogisticModels(true);
+		smo.setBuildCalibrationModels(true);
 		h.setClassifier(smo);
 		Result r = EvaluationTests.cvEvaluateClassifier(h);
 		assertEquals("PCC Accuracy Correct", "0.565 +/- 0.032", r.getMeasurement("Accuracy"));
@@ -103,7 +103,7 @@ public class CCMethodsTests extends TestCase {
 		System.out.println("Test CT");
 		CT h = new CT();
 		SMO smo = new SMO();
-		smo.setBuildLogisticModels(true);
+		smo.setBuildCalibrationModels(true);
 		h.setClassifier(smo);
 		h.setInferenceIterations(10);
 		h.setChainIterations(10);
@@ -117,7 +117,7 @@ public class CCMethodsTests extends TestCase {
 		System.out.println("Test CDT");
 		CDT h = new CDT();
 		SMO smo = new SMO();
-		smo.setBuildLogisticModels(true);
+		smo.setBuildCalibrationModels(true);
 		h.setClassifier(smo);
 		Result r = EvaluationTests.cvEvaluateClassifier(h);
 		//System.out.println("CDT ACC: "+r.getMeasurement("Accuracy"));

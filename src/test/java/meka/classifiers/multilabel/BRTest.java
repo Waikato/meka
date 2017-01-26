@@ -21,7 +21,6 @@ package meka.classifiers.multilabel;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import meka.classifiers.AbstractMekaClassifierTest;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
@@ -33,7 +32,7 @@ import weka.core.Instances;
  * @version $Revision: 117 $
  */
 public class BRTest 
-  extends AbstractMekaClassifierTest {
+  extends AbstractMultiLabelClassifierTest {
 
   /**
    * Initializes the test.

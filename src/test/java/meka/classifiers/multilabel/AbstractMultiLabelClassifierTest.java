@@ -13,51 +13,30 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * Copyright (C) 2012 University of Waikato, Hamilton, New Zealand
+/**
+ * AbstractMultiLabelClassifierTest.java
+ * Copyright (C) 2017 University of Waikato, Hamilton, NZ
  */
 
 package meka.classifiers.multilabel;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
 import meka.classifiers.AbstractMekaClassifierTest;
-import weka.classifiers.Classifier;
 
 /**
- * Tests BPNN. Run from the command line with:<p/>
- * java meka.classifiers.multilabel.BPNNTest
+ * Ancestor for multi-label tests.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
- * @version $Revision: 117 $
+ * @version $Revision$
  */
-public class BPNNTest 
-  extends AbstractMultiLabelClassifierTest {
+public abstract class AbstractMultiLabelClassifierTest
+  extends AbstractMekaClassifierTest {
 
-  /**
-   * Initializes the test.
-   * 
-   * @param name the name of the test
-   */
-  public BPNNTest(String name) { 
-    super(name);  
-  }
-
-  /** 
-   * Creates a default classifier.
-   * 
-   * @return the classifier
-   */
-  @Override
-  public Classifier getClassifier() {
-    return new BPNN();
-  }
-
-  public static Test suite() {
-    return new TestSuite(BPNNTest.class);
-  }
-
-  public static void main(String[] args){
-    junit.textui.TestRunner.run(suite());
-  }
+	/**
+	 * Initializes the test.
+	 *
+	 * @param name the name of the test
+	 */
+	public AbstractMultiLabelClassifierTest(String name) {
+		super(name);
+	}
 }
