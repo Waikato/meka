@@ -1,0 +1,108 @@
+== Evaluation Info
+
+Classifier                     meka.classifiers.multilabel.meta.FilteredClassifier
+Options                        [-F, weka.filters.AllFilter , -W, meka.classifiers.multilabel.BR, --, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
+Additional Info                
+FilteredClassifier using meka.classifiers.multilabel.BR -W weka.classifiers.trees.J48 -- -C 0.25 -M 2 on data filtered through weka.filters.AllFilter 
+
+Filtered Header
+@relation 'Music: -C -6'
+
+@attribute amazed-suprised- {0,1}
+@attribute happy-pleased- {0,1}
+@attribute relaxing-clam- {0,1}
+@attribute quiet-still- {0,1}
+@attribute sad-lonely- {0,1}
+@attribute angry-aggresive- {0,1}
+@attribute Mean_Acc1298_Mean_Mem40_Centroid numeric
+@attribute Mean_Acc1298_Mean_Mem40_Rolloff numeric
+@attribute Mean_Acc1298_Mean_Mem40_Flux numeric
+@attribute Mean_Acc1298_Mean_Mem40_MFCC_0 numeric
+@attribute Mean_Acc1298_Mean_Mem40_MFCC_1 numeric
+@attribute Mean_Acc1298_Mean_Mem40_MFCC_2 numeric
+@attribute Mean_Acc1298_Mean_Mem40_MFCC_3 numeric
+@attribute Mean_Acc1298_Mean_Mem40_MFCC_4 numeric
+@attribute Mean_Acc1298_Mean_Mem40_MFCC_5 numeric
+@attribute Mean_Acc1298_Mean_Mem40_MFCC_6 numeric
+@attribute Mean_Acc1298_Mean_Mem40_MFCC_7 numeric
+@attribute Mean_Acc1298_Mean_Mem40_MFCC_8 numeric
+@attribute Mean_Acc1298_Mean_Mem40_MFCC_9 numeric
+@attribute Mean_Acc1298_Mean_Mem40_MFCC_10 numeric
+@attribute Mean_Acc1298_Mean_Mem40_MFCC_11 numeric
+@attribute Mean_Acc1298_Mean_Mem40_MFCC_12 numeric
+@attribute Mean_Acc1298_Std_Mem40_Centroid numeric
+@attribute Mean_Acc1298_Std_Mem40_Rolloff numeric
+@attribute Mean_Acc1298_Std_Mem40_Flux numeric
+@attribute Mean_Acc1298_Std_Mem40_MFCC_0 numeric
+@attribute Mean_Acc1298_Std_Mem40_MFCC_1 numeric
+@attribute Mean_Acc1298_Std_Mem40_MFCC_2 numeric
+@attribute Mean_Acc1298_Std_Mem40_MFCC_3 numeric
+@attribute Mean_Acc1298_Std_Mem40_MFCC_4 numeric
+@attribute Mean_Acc1298_Std_Mem40_MFCC_5 numeric
+@attribute Mean_Acc1298_Std_Mem40_MFCC_6 numeric
+@attribute Mean_Acc1298_Std_Mem40_MFCC_7 numeric
+@attribute Mean_Acc1298_Std_Mem40_MFCC_8 numeric
+@attribute Mean_Acc1298_Std_Mem40_MFCC_9 numeric
+@attribute Mean_Acc1298_Std_Mem40_MFCC_10 numeric
+@attribute Mean_Acc1298_Std_Mem40_MFCC_11 numeric
+@attribute Mean_Acc1298_Std_Mem40_MFCC_12 numeric
+@attribute Std_Acc1298_Mean_Mem40_Centroid numeric
+@attribute Std_Acc1298_Mean_Mem40_Rolloff numeric
+@attribute Std_Acc1298_Mean_Mem40_Flux numeric
+@attribute Std_Acc1298_Mean_Mem40_MFCC_0 numeric
+@attribute Std_Acc1298_Mean_Mem40_MFCC_1 numeric
+@attribute Std_Acc1298_Mean_Mem40_MFCC_2 numeric
+@attribute Std_Acc1298_Mean_Mem40_MFCC_3 numeric
+@attribute Std_Acc1298_Mean_Mem40_MFCC_4 numeric
+@attribute Std_Acc1298_Mean_Mem40_MFCC_5 numeric
+@attribute Std_Acc1298_Mean_Mem40_MFCC_6 numeric
+@attribute Std_Acc1298_Mean_Mem40_MFCC_7 numeric
+@attribute Std_Acc1298_Mean_Mem40_MFCC_8 numeric
+@attribute Std_Acc1298_Mean_Mem40_MFCC_9 numeric
+@attribute Std_Acc1298_Mean_Mem40_MFCC_10 numeric
+@attribute Std_Acc1298_Mean_Mem40_MFCC_11 numeric
+@attribute Std_Acc1298_Mean_Mem40_MFCC_12 numeric
+@attribute Std_Acc1298_Std_Mem40_Centroid numeric
+@attribute Std_Acc1298_Std_Mem40_Rolloff numeric
+@attribute Std_Acc1298_Std_Mem40_Flux numeric
+@attribute Std_Acc1298_Std_Mem40_MFCC_0 numeric
+@attribute Std_Acc1298_Std_Mem40_MFCC_1 numeric
+@attribute Std_Acc1298_Std_Mem40_MFCC_2 numeric
+@attribute Std_Acc1298_Std_Mem40_MFCC_3 numeric
+@attribute Std_Acc1298_Std_Mem40_MFCC_4 numeric
+@attribute Std_Acc1298_Std_Mem40_MFCC_5 numeric
+@attribute Std_Acc1298_Std_Mem40_MFCC_6 numeric
+@attribute Std_Acc1298_Std_Mem40_MFCC_7 numeric
+@attribute Std_Acc1298_Std_Mem40_MFCC_8 numeric
+@attribute Std_Acc1298_Std_Mem40_MFCC_9 numeric
+@attribute Std_Acc1298_Std_Mem40_MFCC_10 numeric
+@attribute Std_Acc1298_Std_Mem40_MFCC_11 numeric
+@attribute Std_Acc1298_Std_Mem40_MFCC_12 numeric
+@attribute BH_LowPeakAmp numeric
+@attribute BH_LowPeakBPM numeric
+@attribute BH_HighPeakAmp numeric
+@attribute BH_HighPeakBPM numeric
+@attribute BHSUM1 numeric
+@attribute BHSUM2 numeric
+@attribute BHSUM3 numeric
+
+@data
+
+
+Classifier Model
+
+
+Dataset                        Music
+Number of labels (L)           6
+
+
+== Predictive Performance
+
+
+
+== Additional Measurements
+
+Number of training instances   491
+Number of test instances       101
+Label cardinality (train set)  1.855
+Label cardinality (test set)   1.941
