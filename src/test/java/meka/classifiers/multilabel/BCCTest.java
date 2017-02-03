@@ -33,7 +33,7 @@ import weka.core.Instances;
  * @version $Revision: 117 $
  */
 public class BCCTest 
-  extends AbstractMekaClassifierTest {
+  extends AbstractMultiLabelClassifierTest {
 
   /**
    * Initializes the test.

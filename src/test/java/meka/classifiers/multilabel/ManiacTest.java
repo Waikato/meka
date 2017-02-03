@@ -32,7 +32,7 @@ import weka.core.Instances;
  * @author Joerg Wicekr (me@joerg-wicker.org)
  */
 public class ManiacTest 
-    extends AbstractMekaClassifierTest {
+    extends AbstractMultiLabelClassifierTest {
 
     /**
      * Initializes the test.

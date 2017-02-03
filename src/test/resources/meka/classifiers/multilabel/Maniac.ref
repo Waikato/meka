@@ -1,7 +1,7 @@
 == Evaluation Info
 
 Classifier                     meka.classifiers.multilabel.Maniac
-Options                        [-compression, 0.85, -numberAutoencoders, 1, -W, meka.classifiers.multitarget.CR, --, -W, weka.classifiers.functions.LinearRegression, --, -S, 0, -R, 1.0E-8]
+Options                        [-compression, 0.85, -numberAutoencoders, 1, -W, meka.classifiers.multitarget.CR, --, -W, weka.classifiers.functions.LinearRegression, --, -S, 0, -R, 1.0E-8, -num-decimal-places, 4]
 Additional Info                
 Dataset                        Music
 Number of labels (L)           6

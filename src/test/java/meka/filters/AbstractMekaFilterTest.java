@@ -56,5 +56,6 @@ public abstract class AbstractMekaFilterTest
     m_OptionTester       = getOptionTester();
     m_GOETester          = getGOETester();
     m_FilteredClassifier = getFilteredClassifier();
+    m_FilteredClassifier.setDoNotCheckForModifiedClassAttribute(true);
   }
 }

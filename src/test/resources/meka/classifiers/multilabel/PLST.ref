@@ -1,7 +1,7 @@
 == Evaluation Info
 
 Classifier                     meka.classifiers.multilabel.PLST
-Options                        [-size, 3, -W, meka.classifiers.multitarget.CR, --, -W, weka.classifiers.functions.LinearRegression, --, -S, 0, -R, 1.0E-8]
+Options                        [-size, 3, -W, meka.classifiers.multitarget.CR, --, -W, weka.classifiers.functions.LinearRegression, --, -S, 0, -R, 1.0E-8, -num-decimal-places, 4]
 Additional Info                
 Dataset                        Music
 Number of labels (L)           6

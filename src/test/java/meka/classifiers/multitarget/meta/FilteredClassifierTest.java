@@ -14,46 +14,47 @@
  */
 
 /*
- * Copyright (C) 2015 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2017 University of Waikato, Hamilton, New Zealand
  */
 
-package meka.classifiers.multilabel;
+package meka.classifiers.multitarget.meta;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import meka.classifiers.multitarget.AbstractMultiTargetClassifierTest;
 import weka.classifiers.Classifier;
 
 /**
- * Tests RAkELd. Run from the command line with:<p/>
- * java meka.classifiers.multilabel.RAkELdTest
+ * Tests FilteredClassifier. Run from the command line with:<p/>
+ * java meka.classifiers.multitarget.meta.FilteredClassifierTest
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
- * @version $Revision: 117 $
+ * @version $Revision: 66 $
  */
-public class RAkELdTest
-  extends AbstractMultiLabelClassifierTest {
+public class FilteredClassifierTest
+  extends AbstractMultiTargetClassifierTest {
 
   /**
    * Initializes the test.
-   * 
+   *
    * @param name the name of the test
    */
-  public RAkELdTest(String name) {
+  public FilteredClassifierTest(String name) {
     super(name);  
   }
 
   /** 
-   * Creates a default classifier.
+   * Creates a default FilteredClassifier.
    * 
    * @return the classifier
    */
   @Override
   public Classifier getClassifier() {
-    return new RAkELd();
+    return new FilteredClassifier();
   }
 
   public static Test suite() {
-    return new TestSuite(RAkELdTest.class);
+    return new TestSuite(FilteredClassifierTest.class);
   }
 
   public static void main(String[] args){

@@ -21,7 +21,7 @@ package meka.classifiers.multilabel.meta;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import meka.classifiers.AbstractMekaClassifierTest;
+import meka.classifiers.multilabel.AbstractMultiLabelClassifierTest;
 import weka.classifiers.Classifier;
 
 /**
@@ -32,7 +32,7 @@ import weka.classifiers.Classifier;
  * @version $Revision: 66 $
  */
 public class EnsembleMLTest 
-  extends AbstractMekaClassifierTest {
+  extends AbstractMultiLabelClassifierTest {
 
   /**
    * Initializes the test.

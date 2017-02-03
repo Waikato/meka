@@ -21,7 +21,7 @@ package meka.classifiers.multitarget.meta;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import meka.classifiers.AbstractMekaClassifierTest;
+import meka.classifiers.multitarget.AbstractMultiTargetClassifierTest;
 import weka.classifiers.Classifier;
 
 /**
@@ -32,7 +32,7 @@ import weka.classifiers.Classifier;
  * @version $Revision: 66 $
  */
 public class BaggingMTTest 
-  extends AbstractMekaClassifierTest {
+  extends AbstractMultiTargetClassifierTest {
 
   /**
    * Initializes the test.

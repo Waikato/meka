@@ -16,6 +16,7 @@
 package meka.classifiers.multilabel.meta;
 
 import meka.classifiers.multilabel.CC;
+import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.classifiers.multilabel.ProblemTransformationMethod;
 import meka.core.OptionUtils;
 import weka.core.Instance;
@@ -36,7 +37,7 @@ public abstract class MetaProblemTransformationMethod extends ProblemTransformat
 	/** for serialization. */
 	private static final long serialVersionUID = -6604797895790690612L;
 	
-	protected ProblemTransformationMethod m_Classifiers[] = null;
+	protected MultiLabelClassifier m_Classifiers[] = null;
 	protected int m_Seed = 1;
 	protected int m_NumIterations = 10;
 	protected int m_BagSizePercent = 67;

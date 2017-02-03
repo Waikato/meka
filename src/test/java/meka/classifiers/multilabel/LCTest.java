@@ -32,7 +32,7 @@ import weka.classifiers.Classifier;
  * @version $Revision: 66 $
  */
 public class LCTest 
-  extends AbstractMekaClassifierTest {
+  extends AbstractMultiLabelClassifierTest {
 
   /**
    * Initializes the test.
