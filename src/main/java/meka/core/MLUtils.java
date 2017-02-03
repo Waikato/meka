@@ -1255,4 +1255,31 @@ public abstract class MLUtils {
 		}
 	}
 
+
+	/**
+         * Transforms the predictions into a ranking array. The ranking array can have multiple 
+         * entries at the same rank, e.g., if the predictions are
+         * [0.0, 0.75, 0.5, 0.5, 0.25, 1.0 ]
+         * the result would be
+         * [5, 1, 3, 3, 4, 0]
+         * 
+         * @param predictions The predictions array. 
+         * @return The ranking of the predictions with equal ranks.
+	 */
+	public static final int[] predictionsToRanking(double[] predictions) {
+            int[] res = new int[predictions.length];
+            for (int i = 0; i < predictions.length ; i++ ) {
+                int countHigherOrEqual = 0;
+                for (int j = 0; j < predictions.length ; j++ ) {
+                    if (predictions[i] <= predictions[j]) {
+                        countHigherOrEqual ++;
+                    }
+                    
+                }
+
+                res[i] = countHigherOrEqual -1;
+                
+            }
+            return res;
+        }
 }

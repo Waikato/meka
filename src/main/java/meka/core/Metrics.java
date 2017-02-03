@@ -22,6 +22,7 @@ import weka.core.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
 /**
  * Metrics.java - Evaluation Metrics. 
@@ -398,11 +399,15 @@ public abstract class Metrics {
 
 	// base 2 ?
 	double ans = Math.min(Utils.eq(y,rpred) ? 0.0 : -( (y * Math.log(rpred)) + ((1.0 - y) * Math.log(1.0 - rpred)) ),C);
+        System.out.println(y + " " + rpred + " " + C);
+        System.out.println((Double.isNaN(ans) ? 0.0 : ans));
 	return (Double.isNaN(ans) ? 0.0 : ans);
     }
 
     /**
-     * L_LogLoss - the log loss between real-valued confidences Rpred and true predictions Y with a maximum penalty based on the number of labels L [Important Note: Earlier versions of Meka only normalised by N, and not N*L as here].
+     * L_LogLoss - the log loss between real-valued confidences Rpred and true predictions 
+     * Y with a maximum penalty based on the number of labels L [Important Note: Earlier 
+     * versions of Meka only normalised by N, and not N*L as here]. 
      */
     public static double L_LogLossL(int Y[][], double Rpred[][]) {
         
@@ -431,7 +436,9 @@ public abstract class Metrics {
     }
 
     /**
-     * L_LogLoss - the log loss between real-valued confidences Rpred and true predictions Y with a maximum penalty based on the number of examples D [Important Note: Earlier versions of Meka only normalised by N, and not N*L as here].
+     * L_LogLoss - the log loss between real-valued confidences Rpred and true predictions 
+     * Y with a maximum penalty based on the number of examples D [Important Note: Earlier 
+     * versions of Meka only normalised by N, and not N*L as here].
      */
     public static double L_LogLossD(int Y[][], double Rpred[][]) {
 	int N = Y.length;
@@ -825,7 +832,8 @@ public abstract class Metrics {
     public static double P_AveragePrecision(int Y[][], double Rpred[][]) {
 	// works with missing
 	int N = Y.length;
-	
+
+        
 	double loss = 0.0;
 	for(int i = 0; i < Y.length; i++) {
 	    if(allMissing(Y[i])){
@@ -838,18 +846,33 @@ public abstract class Metrics {
 	return loss/(double)N;
     }
 
-    public static double P_AveragePrecision(int y[], double rpred[]) {
-	int r[] = Utils.sort(rpred);
-	return P_AveragePrecision(y,r);
-    }
 
     /**
-     * Average Precision - computes for each relevant label the percentage of relevant labels among all labels that are ranked before it.
+     * Converts confidences in prediction array to ranking array, and continues
+     * with 
+     * {@link #P_AveragePrecision(int[], int[]) 
+     * P_AveragePrecision(using ranking array)}. 
+     * 
+     * 
+     * 
+     * @param y The real label values of an instance.
+     * @param rpred The predicted confidences for the labels.
+     * @return the calculated average precision for an instance.
+     */
+    public static double P_AveragePrecision(int y[], double rpred[]) {
+	int r[] = MLUtils.predictionsToRanking(rpred);
+	return P_AveragePrecision(y,r);
+        
+    }
+    
+    /**
+     * Average Precision - computes for each relevant label the percentage 
+     * of relevant labels among all labels that are ranked before it.
      * @param	y	0/1 labels         [0,   0,   1   ] (true labels)
      * @param	r	ranking position   [1,   2,   0   ]
      * @return	Average Precision
      */
-    public static double P_AveragePrecision(int y[], int r[]) {
+       public static double P_AveragePrecision(int y[], int r[]) {
 	// works with missing
         double avg_prec = 0;
 	
@@ -862,8 +885,9 @@ public abstract class Metrics {
             }
         }
 
-        if (ones.size() <= 0) 
+        if (ones.size() <= 0) {
 	    return 1.0;
+        }
 
 	for (int j : ones) {
 	    // 's' = the percentage of relevant labels ranked before 'j'
@@ -873,13 +897,15 @@ public abstract class Metrics {
 		    s++; 
 		}
 	    }
-	    // 's' divided by the position of 'j'
-	    avg_prec += (s / (1. + r[j]));
+            // 's' divided by the position of 'j'
+	    avg_prec += (s / (1+r[j]));
+
 	}
 	avg_prec /= ones.size();
 	return avg_prec;
     }
-
+    //////////////////////////////////////////////////////////////////////////
+    
     public static double L_RankLoss(int Y[][], double Rpred[][]) {
 	// works with missing
 	int N = Y.length;
@@ -966,14 +992,14 @@ public abstract class Metrics {
 	    ThresholdCurve curve = new ThresholdCurve();
 	    Instances result = curve.getCurve(MLUtils.toWekaPredictions(MatrixUtils.getCol(Y, j), MatrixUtils.getCol(P, j)));
 	    AUC[j] = ThresholdCurve.getPRCArea(result);
-	}
+        }
 
         L -= missing;
         
         if (L == 0) {
             return Double.NaN;
         }
-                
+        
 	return Utils.mean(AUC);
     }
 
@@ -993,7 +1019,7 @@ public abstract class Metrics {
 	    ThresholdCurve curve = new ThresholdCurve();
 	    Instances result = curve.getCurve(MLUtils.toWekaPredictions(MatrixUtils.getCol(Y, j), MatrixUtils.getCol(P, j)));
 	    AUC[j] = ThresholdCurve.getROCArea(result);
-	}
+        }
 
         L -= missing;
 
