@@ -171,7 +171,7 @@ public abstract class Metrics {
 	
 	int L = yAligned.length;
 	for(int j = 0; j < L; j++) {
-	    if (y[j] != ypredAligned[j])
+	    if (yAligned[j] != ypredAligned[j])
 		return 1.;
 	}
 	return 0.;
@@ -399,9 +399,7 @@ public abstract class Metrics {
 
 	// base 2 ?
 	double ans = Math.min(Utils.eq(y,rpred) ? 0.0 : -( (y * Math.log(rpred)) + ((1.0 - y) * Math.log(1.0 - rpred)) ),C);
-        System.out.println(y + " " + rpred + " " + C);
-        System.out.println((Double.isNaN(ans) ? 0.0 : ans));
-	return (Double.isNaN(ans) ? 0.0 : ans);
+        return (Double.isNaN(ans) ? 0.0 : ans);
     }
 
     /**
@@ -815,7 +813,7 @@ public abstract class Metrics {
                 missing ++;
 		continue;
 	    }
-	    if(Y[i][Utils.maxIndex(Rpred[i])] <= 0)
+	    if(Y[i][Utils.maxIndex(Rpred[i])] == 0)
 		one_error++;
 	}
 
@@ -860,8 +858,19 @@ public abstract class Metrics {
      * @return the calculated average precision for an instance.
      */
     public static double P_AveragePrecision(int y[], double rpred[]) {
-	int r[] = MLUtils.predictionsToRanking(rpred);
-	return P_AveragePrecision(y,r);
+
+        
+        double[][] aligned = align(y,rpred);
+
+        double[] alignedy = aligned[0];
+        double[] alignedp = aligned[1];
+
+
+        int r[] = MLUtils.predictionsToRanking(alignedp);
+
+        
+        
+	return P_AveragePrecision(toIntArray(alignedy),r);
         
     }
     
@@ -872,7 +881,7 @@ public abstract class Metrics {
      * @param	r	ranking position   [1,   2,   0   ]
      * @return	Average Precision
      */
-       public static double P_AveragePrecision(int y[], int r[]) {
+    public static double P_AveragePrecision(int y[], int r[]) {
 	// works with missing
         double avg_prec = 0;
 	
@@ -885,12 +894,15 @@ public abstract class Metrics {
             }
         }
 
+
+        
         if (ones.size() <= 0) {
 	    return 1.0;
         }
 
 	for (int j : ones) {
-	    // 's' = the percentage of relevant labels ranked before 'j'
+
+            // 's' = the percentage of relevant labels ranked before 'j'
 	    double s = 0.0;
 	    for (int k : ones) {
 		if (r[k] <= r[j]) {
@@ -976,9 +988,13 @@ public abstract class Metrics {
 	return i;
     }
 
-    /** Calculate AUPRC: Area Under the Precision-Recall curve. */
-    public static double P_macroAUPRC(int Y[][], double P[][]) {
-	// works with missing
+
+    /**
+     * Helper function, returns macro AUROC (roc = true) or macro RPC (roc = false)
+     */
+    private static double getMacro(int Y[][], double P[][], boolean roc){
+
+        // works with missing
 	int L = Y[0].length;
 	double AUC[] = new double[L];
 
@@ -990,8 +1006,22 @@ public abstract class Metrics {
 		continue;
 	    }
 	    ThresholdCurve curve = new ThresholdCurve();
-	    Instances result = curve.getCurve(MLUtils.toWekaPredictions(MatrixUtils.getCol(Y, j), MatrixUtils.getCol(P, j)));
-	    AUC[j] = ThresholdCurve.getPRCArea(result);
+
+            double[][] aligned = align(MatrixUtils.getCol(Y, j),
+                                       MatrixUtils.getCol(P, j));
+            
+	    Instances result =
+                curve.getCurve(MLUtils.toWekaPredictions(toIntArray(aligned[0]),
+                                                         aligned[1]));
+            if (roc) {
+                AUC[j] = ThresholdCurve.getROCArea(result);
+            } else {
+                AUC[j] = ThresholdCurve.getPRCArea(result);
+            }
+            System.out.println(Arrays.toString(MatrixUtils.getCol(Y, j)));
+            System.out.println(Arrays.toString(MatrixUtils.getCol(P, j)));
+
+            System.out.println(AUC[j]);
         }
 
         L -= missing;
@@ -1001,34 +1031,18 @@ public abstract class Metrics {
         }
         
 	return Utils.mean(AUC);
+
+        
+    }
+
+    /** Calculate AUPRC: Area Under the Precision-Recall curve. */
+    public static double P_macroAUPRC(int Y[][], double P[][]) {
+	return getMacro(Y,P,false);
     }
 
     /** Calculate AUROC: Area Under the ROC curve. */
     public static double P_macroAUROC(int Y[][], double P[][]) {
-	// works with missing
-	int L = Y[0].length;
-	double AUC[] = new double[L];
-
-        int missing = 0;
-        
-	for(int j = 0; j < L; j++) {
-	    if(allMissing(MatrixUtils.getCol(Y, j))){
-                missing ++;
-		continue;
-	    }
-	    ThresholdCurve curve = new ThresholdCurve();
-	    Instances result = curve.getCurve(MLUtils.toWekaPredictions(MatrixUtils.getCol(Y, j), MatrixUtils.getCol(P, j)));
-	    AUC[j] = ThresholdCurve.getROCArea(result);
-        }
-
-        L -= missing;
-
-        if (L == 0) {
-            return Double.NaN;
-        }
-
-        
-	return Utils.mean(AUC);
+        return getMacro(Y,P,true);
     }
 
     /** Get Data for Plotting PR and ROC curves. */
@@ -1183,8 +1197,14 @@ public abstract class Metrics {
 
     /** Levenshtein Distance divided by the number of labels. Multi-target compatible */
     public static double L_LevenshteinDistance(int y[], int p[]) {
-	int L = y.length;
-	return (getLevenshteinDistance(y, p) / (double)L);
+	int L = y.length - numberOfMissingLabels(y);
+        
+        int[][] aligned = align(y,p);
+
+        int[] alignedy = aligned[0];
+        int[] alignedp = aligned[1];
+        
+	return (getLevenshteinDistance(alignedy, alignedp) / (double)L);
     }
 
     /*

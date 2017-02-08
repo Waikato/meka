@@ -60,20 +60,20 @@ public class MetricsTest
         // all correct
 
         
-        double[][] pred = new double[][]{new double[]{1.0,0.0,1.0},
-                                         new double[]{0.0,1.0,0.0},
-                                         new double[]{1.0,0.0,1.0},
-                                         new double[]{0.0,1.0,0.0}};
+        double[][] pred = new double[][]{new double[]{1.0,0.0,1.0,0.0},
+                                         new double[]{0.0,1.0,0.0,1.0},
+                                         new double[]{1.0,0.0,1.0,0.0},
+                                         new double[]{0.0,1.0,0.0,1.0}};
 
-        int[][] predInt = new int[][]{new int[]{1,0,1},
-                                      new int[]{0,1,0},
-                                      new int[]{1,0,1},
-                                      new int[]{0,1,0}};
+        int[][] predInt = new int[][]{new int[]{1,0,1,0},
+                                      new int[]{0,1,0,1},
+                                      new int[]{1,0,1,0},
+                                      new int[]{0,1,0,1}};
 
-        int[][] real = new int[][]{new int[]{1,0,1},
-                                   new int[]{0,1,0},
-                                   new int[]{1,0,1},
-                                   new int[]{0,1,0}};
+        int[][] real = new int[][]{new int[]{1,0,1,0},
+                                   new int[]{0,1,0,1},
+                                   new int[]{1,0,1,0},
+                                   new int[]{0,1,0,1}};
         
         
         TestMetricObject tmo = new TestMetricObject(pred,
@@ -161,8 +161,106 @@ public class MetricsTest
         
         // always exactly 50% right
 
+        pred = new double[][]{new double[]{1.0,0.0,1.0,0.0},
+                              new double[]{0.0,1.0,0.0,1.0},
+                              new double[]{1.0,0.0,1.0,0.0},
+                              new double[]{0.0,1.0,0.0,1.0}};
+        
+        predInt = new int[][]{new int[]{1,0,1,0},
+                              new int[]{0,1,0,1},
+                              new int[]{1,0,1,0},
+                              new int[]{0,1,0,1}};
+        
+        real = new int[][]{new int[]{0,1,0,1},
+                           new int[]{0,1,0,1},
+                           new int[]{1,0,1,0},
+                           new int[]{1,0,1,0}};
+        
+        
+        tmo = new TestMetricObject(pred,
+                                   predInt,
+                                   real,
+                                   0.5, // exactmatch
+                                   0.5, // zeroone
+                                   0.5, // l_hamming
+                                   0.5, // p_hamming
+                                   0.5, // p_harmonic
+                                   0.5, // p_accuracy
+                                   0.5, // p_jaccardind
+                                   0.5, // l_jaccarddist
+                                   Math.log(4.0)/2.0, // l_loglossl
+                                   Math.log(4.0)/2.0, // l_loglossd
+                                   0.5, // precision_mac
+                                   0.5, // recall_mac
+                                   0.5, // precision_mic
+                                   0.5, // recall_mic
+                                   0.5, // fmicro
+                                   0.5, // fmicrol
+                                   0.5, // fmicrod
+                                   0.5, // oneerror
+                                   0.75, // avgprec 
+                                   0.5, // rankloss
+                                   0.5, // macroauprc
+                                   0.5, // macroauroc
+                                   0.5, // microauprc
+                                   0.5, // microauroc
+                                   0.25); // levenshtein
+        tmos.add(tmo);
+
+
+        
+        
         // all correct w missing 50%
 
+        pred = new double[][]{new double[]{1.0,0.0,1.0,0.0},
+                              new double[]{0.0,1.0,0.0,1.0},
+                              new double[]{1.0,0.0,1.0,0.0},
+                              new double[]{0.0,1.0,0.0,1.0}};
+
+        predInt = new int[][]{new int[]{1,0,1,0},
+                              new int[]{0,1,0,1},
+                              new int[]{1,0,1,0},
+                              new int[]{0,1,0,1}};
+
+        real = new int[][]{new int[]{-1,0,1,-1},
+                           new int[]{0,-1,-1,1},
+                           new int[]{1,-1,-1,0},
+                           new int[]{-1,1,0,-1}};
+        
+        
+        tmo = new TestMetricObject(pred,
+                                   predInt,
+                                   real,
+                                   1.0, // exactmatch
+                                   0.0, // zeroone
+                                   0.0, // l_hamming
+                                   1.0, // p_hamming
+                                   1.0, // p_harmonic
+                                   1.0, // p_accuracy
+                                   1.0, // p_jaccardind
+                                   0.0, // l_jaccarddist
+                                   0.0, // l_loglossl
+                                   0.0, // l_loglossd
+                                   1.0, // precision_mac
+                                   1.0, // recall_mac
+                                   1.0, // precision_mic
+                                   1.0, // recall_mic
+                                   1.0, // fmicro
+                                   1.0, // fmicrol
+                                   1.0, // fmicrod
+                                   0.0, // oneerror
+                                   1.0, // avgprec 
+                                   0.0, // rankloss
+                                   1.0, // macroauprc
+                                   1.0, // macroauroc
+                                   1.0, // microauprc
+                                   1.0, // microauroc
+                                   0.0); // levenshtein
+        tmos.add(tmo);
+
+
+
+        
         // all wrong w missing 50%
 
         // always exactly 50% right w missing 50%
