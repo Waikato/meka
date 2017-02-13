@@ -262,8 +262,11 @@ public abstract class A {
 		return array;
 	}
 
-	// randomly swap two elements in 'array[]'
+	/* randomly swap two elements in 'array[]' */
 	public static int[] swap(int array[], Random r) {
+		if (array.length == 1)
+			// cannot swap if only one element !
+			return array
 		int a = r.nextInt(array.length);
 		int b = r.nextInt(array.length-1);
 		return swap(array,a,(a==b) ? array.length-1 : b);
