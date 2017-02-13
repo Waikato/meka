@@ -266,7 +266,7 @@ public abstract class A {
 	public static int[] swap(int array[], Random r) {
 		if (array.length == 1)
 			// cannot swap if only one element !
-			return array
+			return array;
 		int a = r.nextInt(array.length);
 		int b = r.nextInt(array.length-1);
 		return swap(array,a,(a==b) ? array.length-1 : b);
