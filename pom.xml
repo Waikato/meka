@@ -23,9 +23,9 @@
     <developer>
       <id>jread</id>
       <name>Jesse Read</name>
-      <url>http://users.ics.aalto.fi/jesse/</url>
-      <organization>Aalto University, Espoo, Finland</organization>
-      <organizationUrl>http://ics.aalto.fi/en/</organizationUrl>
+	  <url>http://jmread.github.io/</url>
+      <organization>École Polytechnique, Paris, France</organization>
+	  <organizationUrl>https://www.polytechnique.edu/</organizationUrl>
       <roles>
         <role>architect</role>
         <role>developer</role>
