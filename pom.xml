@@ -41,6 +41,16 @@
         <role>developer</role>
       </roles>
     </developer>
+    <developer>
+      <id>joergwicker</id>
+      <name>Joerg Wicker</name>
+      <url>https://joerg-wicker.org/</url>
+      <organization>Johannes Gutenberg University Mainz, Germany</organization>
+      <organizationUrl>http://www.uni-mainz.de</organizationUrl>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
   </developers>
 
   <parent>
