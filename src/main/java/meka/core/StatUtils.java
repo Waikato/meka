@@ -389,7 +389,7 @@ public abstract class StatUtils {
 		double M[][] = new double[L][L];
 		for(int j = 0; j < L; j++) {
 			for(int k = j+1; k < L; k++) {
-				M[j][k] = I(P,j,k);
+				M[j][k] = M[k][j] = I(P,j,k);
 			}
 		}
 		return M;
