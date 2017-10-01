@@ -150,6 +150,19 @@
       <version>3.8.2</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>com.github.fracpete</groupId>
+      <artifactId>multisearch-weka-package</artifactId>
+      <version>2017.10.1</version>
+      <type>jar</type>
+      <exclusions>
+        <exclusion>
+          <groupId>nz.ac.waikato.cms.weka</groupId>
+          <artifactId>weka-dev</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
 
   <properties>
