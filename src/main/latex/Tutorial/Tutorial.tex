@@ -446,6 +446,50 @@ As in the Explorer, you will see a number of tabs. The following process will gu
 
 If you wish to carry out this process from within Java code, you can inspect the file \texttt{./src/main/java/meka/experiment/ExperimentExample.java} to see how it can be done.
 
+\subsection{Optimizing parameters}
+MEKA comes with two parameter optimization meta-classifiers:
+\begin{itemize}
+  \item \texttt{meka.classifiers.multilabel.meta.MultiSearch} -- for multi-label
+  classifiers.
+  \item \texttt{meka.classifiers.multitarget.meta.MultiSearch} -- for multi-target
+  classifiers.
+\end{itemize}
+These classifiers are based on the \textit{MultiSearch} meta-classifier from
+the \href{https://github.com/fracpete/multisearch-weka-package}{multisearch-weka-package}
+and allow you to optimize an arbitrary number of parameters (1 to $n$).
+
+\heading{Parameter definitions}
+The following types of parameter definitions are available:
+\begin{itemize}
+  \item \textit{weka.core.setupgenerator.MathParameter} -- uses mathematical
+  expression to compute the (numeric) parameters.
+  \item \textit{weka.core.setupgenerator.ListParameter} -- list of values; default
+  is blank-separated, but a custom delimiter can be supplied.
+  \item \textit{weka.core.setupgenerator.ParameterGroup} -- allows grouping of
+  dependent parameters, e.g., setting on group sets the kernel of SMO to RFBKernel
+  and explores the gamma option, another group sets the kernel to PolyKernel and
+  explores the exponent option.
+\end{itemize}
+
+\textbf{Note:} array elements can be accessed using $[n]$ with $n$ being the
+0-based index.
+
+\heading{Supported types}
+The following parameter types are supported:
+\begin{itemize}
+  \item char, string
+  \item float, double
+  \item int, long
+  \item boolean
+  \item \texttt{weka.core.SelectedTag}
+  \item Java classname
+\end{itemize}
+
+\heading{Examples}
+For more examples (though Weka-specific), check out the following URL: \\
+\url{https://github.com/fracpete/multisearch-weka-package-examples}{}
+
+
 \section{Development}
 \label{development}
 The following sections explain a bit more in detail of how to obtain MEKA's source code, how to compile it and how to develop new algorithms.
