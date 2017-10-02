@@ -22,7 +22,6 @@ import weka.core.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Arrays;
 
 /**
  * Metrics.java - Evaluation Metrics. 
@@ -1018,10 +1017,10 @@ public abstract class Metrics {
             } else {
                 AUC[j] = ThresholdCurve.getPRCArea(result);
             }
-            System.out.println(Arrays.toString(MatrixUtils.getCol(Y, j)));
-            System.out.println(Arrays.toString(MatrixUtils.getCol(P, j)));
-
-            System.out.println(AUC[j]);
+//            System.out.println(Arrays.toString(MatrixUtils.getCol(Y, j)));
+//            System.out.println(Arrays.toString(MatrixUtils.getCol(P, j)));
+//
+//            System.out.println(AUC[j]);
         }
 
         L -= missing;
