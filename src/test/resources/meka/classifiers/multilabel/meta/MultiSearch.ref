@@ -1,0 +1,44 @@
+== Model info
+
+Model                          
+meka.classifiers.multilabel.meta.MultiSearch:
+Classifier: meka.classifiers.multilabel.RAkEL -M 5 -k 3 -P 0 -N 0 -S 0 -W weka.classifiers.trees.J48 -- -C 0.25 -M 2
+
+1. parameter: property: M, min: 5.0, max: 15.0, step: 5.0, base: 10.0, expr: I
+2. parameter: property: K, min: 1.0, max: 3.0, step: 1.0, base: 10.0, expr: I
+Evaluation: Accuracy
+Coordinates: 5, 3
+Values: 5, 3
+
+{[1, 2, 4][2, 3, 4][0, 3, 4][1, 3, 5][2, 4, 5]}
+
+== Evaluation Info
+
+Classifier                     meka.classifiers.multilabel.meta.MultiSearch
+Options                        [-E, ACC, -search, weka.core.setupgenerator.MathParameter -property M -min 5.0 -max 15.0 -step 5.0 -base 10.0 -expression I, -search, weka.core.setupgenerator.MathParameter -property K -min 1.0 -max 3.0 -step 1.0 -base 10.0 -expression I, -algorithm, weka.classifiers.meta.multisearch.DefaultSearch -sample-size 100.0 -initial-folds 2 -subsequent-folds 10 -initial-test-set . -subsequent-test-set . -num-slots 1, -log-file, /home/fracpete/development/projects/meka, -S, 1, -W, meka.classifiers.multilabel.RAkEL, --, -M, 5, -k, 3, -P, 0, -N, 0, -S, 0, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
+Additional Info                
+meka.classifiers.multilabel.meta.MultiSearch:
+Classifier: meka.classifiers.multilabel.RAkEL -M 5 -k 3 -P 0 -N 0 -S 0 -W weka.classifiers.trees.J48 -- -C 0.25 -M 2
+
+1. parameter: property: M, min: 5.0, max: 15.0, step: 5.0, base: 10.0, expr: I
+2. parameter: property: K, min: 1.0, max: 3.0, step: 1.0, base: 10.0, expr: I
+Evaluation: Accuracy
+Coordinates: 5, 3
+Values: 5, 3
+
+{[1, 2, 4][2, 3, 4][0, 3, 4][1, 3, 5][2, 4, 5]}
+
+Dataset                        Music
+Number of labels (L)           6
+
+
+== Predictive Performance
+
+
+
+== Additional Measurements
+
+Number of training instances   491
+Number of test instances       101
+Label cardinality (train set)  1.855
+Label cardinality (test set)   1.941

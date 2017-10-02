@@ -21,6 +21,7 @@
 package meka.classifiers.multitarget.meta;
 
 import meka.classifiers.AbstractMultiSearch;
+import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.classifiers.multitarget.MultiTargetClassifier;
 import meka.classifiers.multitarget.RAkELd;
 import weka.classifiers.Classifier;
@@ -224,7 +225,7 @@ import weka.core.setupgenerator.MathParameter;
  */
 public class MultiSearch
 	extends AbstractMultiSearch
-	implements MultiTargetClassifier {
+	implements MultiLabelClassifier, MultiTargetClassifier {
 
 	/** for serialization. */
 	private static final long serialVersionUID = -5129316523575906233L;
@@ -247,16 +248,7 @@ public class MultiSearch
 		AbstractParameter[] 	result;
 		MathParameter param;
 
-		result = new AbstractParameter[2];
-
-		param = new MathParameter();
-		param.setProperty("M");
-		param.setMin(5);
-		param.setMax(15);
-		param.setStep(5);
-		param.setBase(10);
-		param.setExpression("I");
-		result[0] = param;
+		result = new AbstractParameter[1];
 
 		param = new MathParameter();
 		param.setProperty("K");
@@ -265,7 +257,7 @@ public class MultiSearch
 		param.setStep(1);
 		param.setBase(10);
 		param.setExpression("I");
-		result[1] = param;
+		result[0] = param;
 
 		try {
 			result = (AbstractParameter[]) new SerializedObject(result).getObject();
