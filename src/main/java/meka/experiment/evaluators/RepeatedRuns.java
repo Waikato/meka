@@ -33,7 +33,6 @@ import weka.core.Randomizable;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -265,12 +264,10 @@ public class RepeatedRuns
 
 		for (i = m_LowerRuns; i <= m_UpperRuns; i++) {
 			log("Run: " + i);
-			Instances data = new Instances(dataset);
-			data.randomize(new Random(i));
 			if (m_Evaluator instanceof Randomizable)
 				((Randomizable) m_Evaluator).setSeed(i);
 			m_Evaluator.initialize();
-			stats = m_Evaluator.evaluate(classifier, data);
+			stats = m_Evaluator.evaluate(classifier, dataset);
 			if (stats != null) {
 				for (EvaluationStatistics stat: stats) {
 					stat.put(KEY_RUN, i);
@@ -312,9 +309,7 @@ public class RepeatedRuns
 					if (evaluator instanceof Randomizable)
 						((Randomizable) evaluator).setSeed(index);
 					evaluator.initialize();
-					Instances data = new Instances(dataset);
-					data.randomize(new Random(index));
-					List<EvaluationStatistics> stats = m_Evaluator.evaluate(classifier, data);
+					List<EvaluationStatistics> stats = m_Evaluator.evaluate(classifier, dataset);
 					for (LogListener l: m_LogListeners)
 						evaluator.removeLogListener(l);
 					log("...finished run #" + index + ((stats == null) ? "" : " with error"));

@@ -13,9 +13,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * CrossValidation.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2017 University of Waikato, Hamilton, NZ
  */
 
 package meka.experiment.evaluators;
@@ -370,20 +370,24 @@ public class CrossValidation
 		int                         i;
 		Random                      rand;
 		MultiLabelClassifier        current;
+		Instances                   data;
 
 		result = new ArrayList<>();
 		rand   = new Random(m_Seed);
+		data   = new Instances(dataset);
+		if (!m_PreserveOrder)
+			data.randomize(rand);
 		for (i = 1; i <= m_NumFolds; i++) {
 			log("Fold: " + i);
 			if (m_PreserveOrder)
-				train = dataset.trainCV(m_NumFolds, i - 1);
+				train = data.trainCV(m_NumFolds, i - 1);
 			else
-				train = dataset.trainCV(m_NumFolds, i - 1, rand);
-			test = dataset.testCV(m_NumFolds, i - 1);
+				train = data.trainCV(m_NumFolds, i - 1, rand);
+			test = data.testCV(m_NumFolds, i - 1);
 			try {
 				current = (MultiLabelClassifier) OptionUtils.shallowCopy(classifier);
 				res = Evaluation.evaluateModel(current, train, test, m_Threshold, m_Verbosity);
-				stats = new EvaluationStatistics(classifier, dataset, res);
+				stats = new EvaluationStatistics(classifier, data, res);
 				stats.put(KEY_FOLD, i);
 				result.add(stats);
 			}
@@ -416,22 +420,26 @@ public class CrossValidation
 		EvaluatorJob		            job;
 		int                             i;
 		Random                          rand;
+		Instances                       data;
 
 		result = new ArrayList<>();
 
 		debug("pre: create jobs");
 		jobs = new ArrayList<>();
 		rand = new Random(m_Seed);
+		data = new Instances(dataset);
+		if (!m_PreserveOrder)
+			data.randomize(rand);
 		for (i = 1; i <= m_NumFolds; i++) {
 			final int index = i;
 			final Instances train;
 			final Instances test;
 			final MultiLabelClassifier current;
 			if (m_PreserveOrder)
-				train = dataset.trainCV(m_NumFolds, index - 1);
+				train = data.trainCV(m_NumFolds, index - 1);
 			else
-				train = dataset.trainCV(m_NumFolds, index - 1, rand);
-			test = dataset.testCV(m_NumFolds, index - 1);
+				train = data.trainCV(m_NumFolds, index - 1, rand);
+			test = data.testCV(m_NumFolds, index - 1);
 			current = (MultiLabelClassifier) OptionUtils.shallowCopy(classifier);
 			job = new EvaluatorJob() {
 				protected List<EvaluationStatistics> doCall() throws Exception {
