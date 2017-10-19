@@ -13,9 +13,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * RepeatedRuns.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2017 University of Waikato, Hamilton, NZ
  */
 
 package meka.experiment.evaluators;
@@ -33,8 +33,12 @@ import weka.core.Randomizable;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Random;
 import java.util.Vector;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Repeatedly executes the base evaluator.
@@ -261,10 +265,12 @@ public class RepeatedRuns
 
 		for (i = m_LowerRuns; i <= m_UpperRuns; i++) {
 			log("Run: " + i);
+			Instances data = new Instances(dataset);
+			data.randomize(new Random(i));
 			if (m_Evaluator instanceof Randomizable)
 				((Randomizable) m_Evaluator).setSeed(i);
 			m_Evaluator.initialize();
-			stats = m_Evaluator.evaluate(classifier, dataset);
+			stats = m_Evaluator.evaluate(classifier, data);
 			if (stats != null) {
 				for (EvaluationStatistics stat: stats) {
 					stat.put(KEY_RUN, i);
@@ -306,7 +312,9 @@ public class RepeatedRuns
 					if (evaluator instanceof Randomizable)
 						((Randomizable) evaluator).setSeed(index);
 					evaluator.initialize();
-					List<EvaluationStatistics> stats = m_Evaluator.evaluate(classifier, dataset);
+					Instances data = new Instances(dataset);
+					data.randomize(new Random(index));
+					List<EvaluationStatistics> stats = m_Evaluator.evaluate(classifier, data);
 					for (LogListener l: m_LogListeners)
 						evaluator.removeLogListener(l);
 					log("...finished run #" + index + ((stats == null) ? "" : " with error"));
