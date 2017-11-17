@@ -21,7 +21,9 @@ package meka.gui.explorer;
 
 import meka.core.ExceptionUtils;
 import meka.core.MLUtils;
+import meka.core.converters.MultiLabelTextDirectoryLoader;
 import meka.gui.core.CommandLineArgsHandler;
+import meka.gui.core.DirectoryChooser;
 import meka.gui.core.GUIHelper;
 import meka.gui.core.GUILauncher;
 import meka.gui.core.MekaPanel;
@@ -86,6 +88,9 @@ public class Explorer
 
 	/** the "open" menu item. */
 	protected JMenuItem m_MenuItemFileOpen;
+
+	/** the "import text" menu item. */
+	protected JMenuItem m_MenuItemFileImportText;
 
 	/** the "save" menu item. */
 	protected JMenuItem m_MenuItemFileSave;
@@ -264,6 +269,18 @@ public class Explorer
 				}
 			});
 			m_MenuFileOpenRecent = submenu;
+
+			// File/Import text
+			menuitem = new JMenuItem("Import text...", GUIHelper.getEmptyIcon());
+			menuitem.setMnemonic('O');
+			menuitem.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					importText();
+				}
+			});
+			menu.add(menuitem);
+			m_MenuItemFileImportText = menuitem;
 
 			// File/Save
 			menuitem = new JMenuItem("Save", GUIHelper.getIcon("save.gif"));
@@ -460,6 +477,44 @@ public class Explorer
 			return;
 
 		open(m_FileChooser.getSelectedFile(), m_FileChooser.getLoader());
+	}
+
+	/**
+	 * Uses the {@link meka.core.converters.MultiLabelTextDirectoryLoader} to
+	 * import directory with text files.
+	 */
+	public void importText() {
+		DirectoryChooser chooser;
+		int retVal;
+		File dir;
+		MultiLabelTextDirectoryLoader loader;
+		Instances data;
+
+		chooser = new DirectoryChooser();
+		chooser.setDialogTitle("Import text directory...");
+		retVal = chooser.showOpenDialog(this);
+		if (retVal != DirectoryChooser.APPROVE_OPTION)
+			return;
+
+		dir = chooser.getSelectedFile();
+		try {
+			loader = new MultiLabelTextDirectoryLoader();
+			loader.setOutputFilename(true);
+			loader.setDirectory(dir);
+			data = loader.getDataSet();
+			addUndoPoint();
+			MLUtils.prepareData(data);
+			m_CurrentFile = null;
+			notifyTabsDataChanged(null, data);
+		}
+		catch (Exception e) {
+			handleException(null, "Failed to import text with " + MultiLabelTextDirectoryLoader.class.getName() + " from directory '" + dir + "':", e);
+			JOptionPane.showMessageDialog(
+					this,
+					"Failed to import text with " + MultiLabelTextDirectoryLoader.class.getName() + " + from directory '" + dir + "':\n" + e,
+					"Error importing text",
+					JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	/**
