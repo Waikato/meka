@@ -53,6 +53,7 @@ import java.util.Vector;
  <!-- globalinfo-start -->
  * Loads text files in a directory.<br>
  * First sub-directory level is used for the class attribute names, the second level for the labels for each class attribute.<br>
+ * Due to the multi-label nature, documents need to be copied into multiple sub-directories. The loader uses the file's name (no path) as a unique ID to identify the copies.<br>
  * <br>
  * Example:<br>
  * /text-dataset<br>
@@ -164,6 +165,9 @@ public class MultiLabelTextDirectoryLoader
 			"Loads text files in a directory.\n"
 				+ "First sub-directory level is used for the class attribute names, "
 				+ "the second level for the labels for each class attribute.\n"
+				+ "Due to the multi-label nature, documents need to be copied "
+				+ "into multiple sub-directories. The loader uses the file's name "
+				+ "(no path) as a unique ID to identify the copies.\n"
 				+ "\n"
 				+ "Example:\n"
 				+ "/text-dataset\n"
