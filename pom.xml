@@ -103,6 +103,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.jidesoft</groupId>
+      <artifactId>jide-oss</artifactId>
+      <version>3.6.18</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.github.fracpete</groupId>
       <artifactId>jfilechooser-bookmarks</artifactId>
       <version>0.1.5</version>
