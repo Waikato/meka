@@ -23,7 +23,7 @@ import com.googlecode.jfilechooserbookmarks.core.Utils;
 import meka.classifiers.multilabel.Evaluation;
 import meka.classifiers.multilabel.IncrementalMultiLabelClassifier;
 import meka.classifiers.multilabel.MultiLabelClassifier;
-import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
+import meka.classifiers.incremental.IncrementalEvaluation;
 import meka.core.MLUtils;
 import meka.core.OptionUtils;
 import meka.core.Result;

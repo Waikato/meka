@@ -36,7 +36,9 @@ import weka.core.OptionHandler;
  * 	@version	January 2015
  */
 
-public interface MultiTargetClassifier extends Classifier, OptionHandler {
+import meka.classifiers.MultiXClassifier;
+
+public interface MultiTargetClassifier extends MultiXClassifier {
 
 	/*
 	 * TODO Returns the distribution of the k-th value, for each label.
@@ -45,33 +47,5 @@ public interface MultiTargetClassifier extends Classifier, OptionHandler {
 	 */
 	//public double[] distributionForInstance(Instance x, int k);
 
-	/**
-	 * Set debugging mode.
-	 *
-	 * @param debug true if debug output should be printed
-	 */
-	public void setDebug(boolean debug);
-
-	/**
-	 * Get whether debugging is turned on.
-	 *
-	 * @return true if debugging output is on
-	 */
-	public boolean getDebug();
-
-	/**
-	 * Returns the tip text for this property
-	 *
-	 * @return tip text for this property suitable for displaying in the
-	 *         explorer/experimenter gui
-	 */
-	public String debugTipText();
-
-	/**
-	 * Returns a string representation of the model.
-	 *
-	 * @return      the model
-	 */
-	public String getModel();
 
 }

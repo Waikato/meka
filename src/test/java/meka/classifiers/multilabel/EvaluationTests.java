@@ -19,7 +19,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import meka.classifiers.multilabel.incremental.CCUpdateable;
-import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
+import meka.classifiers.incremental.IncrementalEvaluation;
 import meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable;
 import meka.classifiers.multilabel.meta.BaggingML;
 import meka.core.MLUtils;

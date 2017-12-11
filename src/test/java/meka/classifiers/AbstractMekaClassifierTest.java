@@ -424,8 +424,9 @@ public abstract class AbstractMekaClassifierTest
 			diff = regression.diff();
 			if (diff == null)
 				System.err.println("Warning: No reference available, creating.");
-			else if (!diff.equals(""))
+			else if (!diff.equals("")) {
 				fail("Regression test failed. Difference:\n" + diff);
+                        }
 		}
 		catch (Exception ex) {
 			System.err.println("Problem during regression testing:");

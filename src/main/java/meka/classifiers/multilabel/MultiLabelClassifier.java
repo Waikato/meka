@@ -20,6 +20,7 @@
 
 package meka.classifiers.multilabel;
 
+import meka.classifiers.MultiXClassifier;
 import weka.classifiers.Classifier;
 import weka.core.OptionHandler;
 
@@ -30,34 +31,5 @@ import weka.core.OptionHandler;
  * @version $Revision$
  */
 public interface MultiLabelClassifier
-		extends Classifier, OptionHandler {
-
-	/**
-	 * Set debugging mode.
-	 *
-	 * @param debug true if debug output should be printed
-	 */
-	public void setDebug(boolean debug);
-
-	/**
-	 * Get whether debugging is turned on.
-	 *
-	 * @return true if debugging output is on
-	 */
-	public boolean getDebug();
-
-	/**
-	 * Returns the tip text for this property
-	 *
-	 * @return tip text for this property suitable for displaying in the
-	 *         explorer/experimenter gui
-	 */
-	public String debugTipText();
-
-	/**
-	 * Returns a string representation of the model.
-	 *
-	 * @return      the model
-	 */
-	public String getModel();
+		extends MultiXClassifier {
 }

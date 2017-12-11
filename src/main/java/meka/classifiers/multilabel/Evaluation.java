@@ -16,6 +16,7 @@
 package meka.classifiers.multilabel;
 
 import meka.classifiers.multitarget.MultiTargetClassifier;
+import meka.classifiers.MultiXClassifier;
 import meka.core.MLEvalUtils;
 import meka.core.MLUtils;
 import meka.core.Result;
@@ -308,7 +309,7 @@ public class Evaluation {
 	 * @param	top    	Threshold OPtion (pertains to multi-label data only)
 	 * @return	Result	raw prediction data with evaluation statistics included.
 	 */
-	public static Result evaluateModel(MultiLabelClassifier h, Instances D_train, Instances D_test, String top) throws Exception {
+	public static Result evaluateModel(MultiXClassifier h, Instances D_train, Instances D_test, String top) throws Exception {
 		return Evaluation.evaluateModel(h,D_train,D_test,top,"1");
 	}
 
@@ -321,7 +322,7 @@ public class Evaluation {
 	 * @param	vop    	Verbosity OPtion (which measures do we want to calculate/output)
 	 * @return	Result	raw prediction data with evaluation statistics included.
 	 */
-	public static Result evaluateModel(MultiLabelClassifier h, Instances D_train, Instances D_test, String top, String vop) throws Exception {
+	public static Result evaluateModel(MultiXClassifier h, Instances D_train, Instances D_test, String top, String vop) throws Exception {
 		Result r = evaluateModel(h,D_train,D_test);
 		if (h instanceof MultiTargetClassifier || isMT(D_test)) {
 			r.setInfo("Type","MT");
@@ -343,7 +344,7 @@ public class Evaluation {
 	 * @param	vop    	Verbosity OPtion (which measures do we want to calculate/output)
 	 * @return	Result	raw prediction data with evaluation statistics included.
 	 */
-	public static Result evaluateModel(MultiLabelClassifier h, Instances D_test, String tal, String vop) throws Exception {
+	public static Result evaluateModel(MultiXClassifier h, Instances D_test, String tal, String vop) throws Exception {
 		Result r = testClassifier(h,D_test);
 		if (h instanceof MultiTargetClassifier || isMT(D_test)) {
 			r.setInfo("Type","MT");
@@ -416,7 +417,7 @@ public class Evaluation {
 	 * @param	D_test 	test data
 	 * @return	raw prediction data (no evaluation yet)
 	 */
-	public static Result evaluateModel(MultiLabelClassifier h, Instances D_train, Instances D_test) throws Exception {
+	public static Result evaluateModel(MultiXClassifier h, Instances D_train, Instances D_test) throws Exception {
 
 		long before = System.currentTimeMillis();
 		// Set test data as unlabelled data, if SemisupervisedClassifier
@@ -461,7 +462,7 @@ public class Evaluation {
 	 * all instances are passed to the classifier then they are gathered in results,
 	 * for short datasets the overhead might be significant
 	 */
-	public static Result evaluateModelM(MultiLabelClassifier h, Instances D_train, Instances D_test, String top, String vop) throws Exception {
+	public static Result evaluateModelM(MultiXClassifier h, Instances D_train, Instances D_test, String top, String vop) throws Exception {
 		// Train
 		long before = System.currentTimeMillis();
 				/*if (h instanceof SemisupervisedClassifier) { // *NEW* for semi-supervised 
@@ -510,7 +511,7 @@ public class Evaluation {
 	 * @param	D_test 	test data
 	 * @return	Result	with raw prediction data ONLY
 	 */
-	public static Result testClassifier(MultiLabelClassifier h, Instances D_test) throws Exception {
+	public static Result testClassifier(MultiXClassifier h, Instances D_test) throws Exception {
 
 		int L = D_test.classIndex();
 		Result result = new Result(D_test.numInstances(),L);
@@ -553,7 +554,7 @@ public class Evaluation {
 	 * @param	D_test 	test data
 	 * @return	Result	with raw prediction data ONLY
 	 */
-	public static Result testClassifierM(MultiLabelClassifier h, Instances D_test) throws Exception {
+	public static Result testClassifierM(MultiXClassifier h, Instances D_test) throws Exception {
 
 		int L = D_test.classIndex();
 		Result result = new Result(D_test.numInstances(),L);

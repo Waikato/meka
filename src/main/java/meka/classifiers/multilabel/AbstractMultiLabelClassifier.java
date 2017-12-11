@@ -15,7 +15,7 @@
 
 package meka.classifiers.multilabel;
 
-import meka.classifiers.multilabel.incremental.IncrementalEvaluation;
+import meka.classifiers.incremental.IncrementalEvaluation;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.UpdateableClassifier;
 import weka.core.Attribute;

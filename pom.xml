@@ -43,10 +43,10 @@
     </developer>
     <developer>
       <id>joergwicker</id>
-      <name>Joerg Wicker</name>
-      <url>https://joerg-wicker.org/</url>
-      <organization>Johannes Gutenberg University Mainz, Germany</organization>
-      <organizationUrl>http://www.uni-mainz.de</organizationUrl>
+      <name>Joerg Simon Wicker</name>
+      <url>https://wicker.nz/</url>
+      <organization>The University of Auckland</organization>
+      <organizationUrl>http://cs.auckland.ac.nz</organizationUrl>
       <roles>
         <role>developer</role>
       </roles>
