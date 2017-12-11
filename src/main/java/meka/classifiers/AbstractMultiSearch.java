@@ -92,7 +92,7 @@ public abstract class AbstractMultiSearch
 	protected int m_Evaluation;
 
 	/** the log file to use. */
-	protected File m_LogFile = new File(System.getProperty("user.dir"));
+	protected File m_LogFile = new File(".");
 
 	/** the default parameters. */
 	protected AbstractParameter[] m_DefaultParameters;

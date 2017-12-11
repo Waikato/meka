@@ -14,7 +14,7 @@ Values: 3
 == Evaluation Info
 
 Classifier                     meka.classifiers.multitarget.meta.MultiSearch
-Options                        [-E, ACC, -search, weka.core.setupgenerator.MathParameter -property K -min 1.0 -max 3.0 -step 1.0 -base 10.0 -expression I, -algorithm, weka.classifiers.meta.multisearch.DefaultSearch -sample-size 100.0 -initial-folds 2 -subsequent-folds 10 -initial-test-set . -subsequent-test-set . -num-slots 1, -log-file, /home/fracpete/development/projects/meka, -S, 1, -W, meka.classifiers.multitarget.RAkELd, --, -k, 3, -P, 0, -N, 0, -S, 0, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
+Options                        [-E, ACC, -search, weka.core.setupgenerator.MathParameter -property K -min 1.0 -max 3.0 -step 1.0 -base 10.0 -expression I, -algorithm, weka.classifiers.meta.multisearch.DefaultSearch -sample-size 100.0 -initial-folds 2 -subsequent-folds 10 -initial-test-set . -subsequent-test-set . -num-slots 1, -log-file, ., -S, 1, -W, meka.classifiers.multitarget.RAkELd, --, -k, 3, -P, 0, -N, 0, -S, 0, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
 Additional Info                
 meka.classifiers.multitarget.meta.MultiSearch:
 Classifier: meka.classifiers.multitarget.RAkELd -k 3 -P 0 -N 0 -S 0 -W weka.classifiers.trees.J48 -- -C 0.25 -M 2
