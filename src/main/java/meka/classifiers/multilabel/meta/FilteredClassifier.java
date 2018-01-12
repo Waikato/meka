@@ -13,9 +13,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * FilteredClassifier.java
- * Copyright (C) 2017 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2017-2018 University of Waikato, Hamilton, NZ
  */
 
 package meka.classifiers.multilabel.meta;
@@ -27,8 +27,13 @@ import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.Capabilities;
 import weka.core.Instances;
+import weka.core.Randomizable;
+import weka.core.WeightedAttributesHandler;
+import weka.core.WeightedInstancesHandler;
 import weka.filters.AllFilter;
 import weka.filters.Filter;
+
+import java.util.Random;
 
 /**
  * Allows the application of a filter in conjunction with a multi-label classifier.
@@ -126,6 +131,36 @@ public class FilteredClassifier
 
 		return data;
 	}
+
+  /**
+   * Build the classifier on the filtered data.
+   *
+   * @param data the training data
+   * @throws Exception if the classifier could not be built successfully
+   */
+  public void buildClassifier(Instances data) throws Exception {
+
+    if (m_Classifier == null) {
+      throw new Exception("No base classifier has been set!");
+    }
+
+    getCapabilities().testWithFail(data);
+
+    Random r = (data.numInstances() > 0) ? data.getRandomNumberGenerator(getSeed()) : new Random(getSeed());
+    data = setUp(data, r);
+    if (!data.allInstanceWeightsIdentical() && !(m_Classifier instanceof WeightedInstancesHandler)) {
+      data = data.resampleWithWeights(r); // The filter may have assigned weights.
+    }
+    if (!data.allAttributeWeightsIdentical() && !(m_Classifier instanceof WeightedAttributesHandler)) {
+      data = resampleAttributes(data, false, r);
+    }
+
+    if (m_Classifier instanceof Randomizable) {
+      ((Randomizable)m_Classifier).setSeed(r.nextInt());
+    }
+
+    m_Classifier.buildClassifier(data);
+  }
 
 	/**
 	 * Returns a string representation of the model.

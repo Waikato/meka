@@ -13,9 +13,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * AbstractExperimenterTab.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2018 University of Waikato, Hamilton, NZ
  */
 
 package meka.gui.experimenter;
@@ -24,9 +24,9 @@ import meka.experiment.Experiment;
 import meka.experiment.events.ExecutionStageEvent;
 import meka.experiment.events.ExecutionStageListener;
 import meka.gui.core.MekaPanel;
-import meka.gui.goe.GenericObjectEditor;
+import weka.core.PluginManager;
 
-import javax.swing.*;
+import javax.swing.JMenu;
 import java.util.List;
 
 /**
@@ -186,7 +186,7 @@ public abstract class AbstractExperimenterTab
 	 * @return          the classnames of the tabs
 	 */
 	public static List<String> getTabs() {
-		return GenericObjectEditor.getClassnames(AbstractExperimenterTab.class.getName());
+		return PluginManager.getPluginNamesOfTypeList(AbstractExperimenterTab.class.getName());
 	}
 
 	/**

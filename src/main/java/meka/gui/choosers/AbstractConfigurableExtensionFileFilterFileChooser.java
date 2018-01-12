@@ -15,7 +15,7 @@
 
 /*
  * AbstractConfigurableExtensionFileFilterFileChooser.java
- * Copyright (C) 2013-2015 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2013-2018 University of Waikato, Hamilton, New Zealand
  */
 
 package meka.gui.choosers;
@@ -24,11 +24,14 @@ package meka.gui.choosers;
 import com.googlecode.jfilechooserbookmarks.gui.GUIHelper;
 import meka.gui.goe.GenericObjectEditor;
 import meka.gui.goe.GenericObjectEditorDialog;
-import weka.core.ClassDiscovery;
+import weka.core.InheritanceUtils;
 
-import javax.swing.*;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.io.File;
 import java.util.List;
 
@@ -292,8 +295,8 @@ public abstract class AbstractConfigurableExtensionFileFilterFileChooser<R,W>
 	public R getReader() {
 		configureCurrentHandlerHook(OPEN_DIALOG);
 
-		if (    !ClassDiscovery.isSubclass(getReaderClass(), m_CurrentHandler.getClass())
-				&& !ClassDiscovery.hasInterface(getReaderClass(), m_CurrentHandler.getClass()) )
+		if (    !InheritanceUtils.isSubclass(getReaderClass(), m_CurrentHandler.getClass())
+				&& !InheritanceUtils.hasInterface(getReaderClass(), m_CurrentHandler.getClass()) )
 			return null;
 		else
 			return (R) m_CurrentHandler;
@@ -308,8 +311,8 @@ public abstract class AbstractConfigurableExtensionFileFilterFileChooser<R,W>
 	public W getWriter() {
 		configureCurrentHandlerHook(SAVE_DIALOG);
 
-		if (    !ClassDiscovery.isSubclass(getWriterClass(), m_CurrentHandler.getClass())
-				&& !ClassDiscovery.hasInterface(getWriterClass(), m_CurrentHandler.getClass()) )
+		if (    !InheritanceUtils.isSubclass(getWriterClass(), m_CurrentHandler.getClass())
+				&& !InheritanceUtils.hasInterface(getWriterClass(), m_CurrentHandler.getClass()) )
 			return null;
 		else
 			return (W) m_CurrentHandler;

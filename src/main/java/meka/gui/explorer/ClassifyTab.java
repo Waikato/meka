@@ -13,17 +13,17 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * ClassifyTab.java
- * Copyright (C) 2012-2016 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2012-2018 University of Waikato, Hamilton, New Zealand
  */
 package meka.gui.explorer;
 
 import com.googlecode.jfilechooserbookmarks.core.Utils;
+import meka.classifiers.incremental.IncrementalEvaluation;
 import meka.classifiers.multilabel.Evaluation;
 import meka.classifiers.multilabel.IncrementalMultiLabelClassifier;
 import meka.classifiers.multilabel.MultiLabelClassifier;
-import meka.classifiers.incremental.IncrementalEvaluation;
 import meka.core.MLUtils;
 import meka.core.OptionUtils;
 import meka.core.Result;
@@ -33,6 +33,7 @@ import meka.gui.explorer.classify.AbstractClassifyResultHistoryPlugin;
 import meka.gui.explorer.classify.AbstractClassifyTabMenuItem;
 import meka.gui.goe.GenericObjectEditor;
 import weka.core.Instances;
+import weka.core.PluginManager;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -767,7 +768,7 @@ public class ClassifyTab
 				}
 			});
 
-			menuitemclasses = GenericObjectEditor.getClassnames(AbstractClassifyTabMenuItem.class.getName());
+			menuitemclasses = PluginManager.getPluginNamesOfTypeList(AbstractClassifyTabMenuItem.class.getName());
 			for (String menuitemclass: menuitemclasses) {
 				try {
 					menuitemplugin = (AbstractClassifyTabMenuItem) Class.forName(menuitemclass).newInstance();

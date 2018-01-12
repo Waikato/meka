@@ -13,17 +13,17 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * AbstractExplorerTab.java
- * Copyright (C) 2012-2015 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2012-2018 University of Waikato, Hamilton, New Zealand
  */
 package meka.gui.explorer;
 
 import meka.gui.core.MekaPanel;
-import meka.gui.goe.GenericObjectEditor;
 import weka.core.Instances;
+import weka.core.PluginManager;
 
-import javax.swing.*;
+import javax.swing.JMenu;
 import java.util.HashMap;
 import java.util.List;
 
@@ -199,7 +199,7 @@ public abstract class AbstractExplorerTab
 	 * @return          the classnames of the tabs
 	 */
 	public static List<String> getTabs() {
-		return GenericObjectEditor.getClassnames(AbstractExplorerTab.class.getName());
+		return PluginManager.getPluginNamesOfTypeList(AbstractExplorerTab.class.getName());
 	}
 
 	/**

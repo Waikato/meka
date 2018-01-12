@@ -13,20 +13,19 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * AbstractObjectRenderer.java
- * Copyright (C) 2015 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2015-2018 University of Waikato, Hamilton, New Zealand
  */
 package meka.gui.modelviewer.renderers;
 
-import meka.gui.goe.GenericObjectEditor;
+import weka.core.PluginManager;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Ancestor for classes that render objects visually.
@@ -43,7 +42,7 @@ public abstract class AbstractObjectRenderer
 	protected static Hashtable<Class,List<Class>> m_Cache;
 
 	/** the renderers (classnames) currently available. */
-	protected static Vector<String> m_Renderers;
+	protected static List<String> m_Renderers;
 
 	/** the renderers (classes) currently available. */
 	protected static Class[] m_RendererClasses;
@@ -63,7 +62,7 @@ public abstract class AbstractObjectRenderer
 		if (m_Renderers != null)
 			return;
 
-		m_Renderers       = GenericObjectEditor.getClassnames(AbstractObjectRenderer.class.getName());
+		m_Renderers       = PluginManager.getPluginNamesOfTypeList(AbstractObjectRenderer.class.getName());
 		m_RendererClasses = new Class[m_Renderers.size()];
 		for (i = 0; i < m_Renderers.size(); i++) {
 			try {
@@ -205,6 +204,6 @@ public abstract class AbstractObjectRenderer
 	 * @return		the renderer classnames
 	 */
 	public static String[] getRenderers() {
-		return GenericObjectEditor.getClassnames(AbstractObjectRenderer.class.getName()).toArray(new String[0]);
+		return PluginManager.getPluginNamesOfTypeList(AbstractObjectRenderer.class.getName()).toArray(new String[0]);
 	}
 }

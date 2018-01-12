@@ -13,9 +13,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * Experimenter.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2018 University of Waikato, Hamilton, NZ
  */
 
 package meka.gui.experimenter;
@@ -26,26 +26,44 @@ import meka.events.LogEvent;
 import meka.events.LogListener;
 import meka.experiment.DefaultExperiment;
 import meka.experiment.Experiment;
-import meka.experiment.events.*;
+import meka.experiment.events.ExecutionStageEvent;
+import meka.experiment.events.ExecutionStageListener;
+import meka.experiment.events.IterationNotificationEvent;
+import meka.experiment.events.IterationNotificationListener;
+import meka.experiment.events.StatisticsNotificationEvent;
+import meka.experiment.events.StatisticsNotificationListener;
 import meka.experiment.filehandlers.ExperimentFileHandler;
 import meka.gui.choosers.ExperimentFileChooser;
-import meka.gui.core.*;
+import meka.gui.core.CommandLineArgsHandler;
+import meka.gui.core.GUIHelper;
+import meka.gui.core.GUILauncher;
+import meka.gui.core.MekaPanel;
+import meka.gui.core.MenuBarProvider;
+import meka.gui.core.RecentFilesHandlerWithCommandline;
+import meka.gui.core.StatusBar;
 import meka.gui.events.RecentItemEvent;
 import meka.gui.events.RecentItemListener;
 import meka.gui.experimenter.menu.AbstractExperimenterMenuItem;
+import weka.core.PluginManager;
 import weka.gui.ConverterFileChooser;
-import weka.gui.GenericObjectEditor;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
+import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
+import java.util.List;
 
 /**
  * Experimenter interface.
@@ -209,7 +227,7 @@ public class Experimenter
 		JMenu		                    menu;
 		JMenu		                    submenu;
 		JMenuItem	                    menuitem;
-		Vector<String>                  clsnames;
+		List<String>                    clsnames;
 		HashMap<String,JMenu>           menus;
 		AbstractExperimenterMenuItem    additional;
 		AbstractAction                  action;
@@ -233,7 +251,7 @@ public class Experimenter
 			// File/New
 			submenu = new JMenu("New");
 			submenu.setIcon(GUIHelper.getIcon("new.gif"));
-			clsnames = GenericObjectEditor.getClassnames(Experiment.class.getName());
+			clsnames = PluginManager.getPluginNamesOfTypeList(Experiment.class.getName());
 			for (String clsname: clsnames) {
 				try {
 					final Class cls = Class.forName(clsname);

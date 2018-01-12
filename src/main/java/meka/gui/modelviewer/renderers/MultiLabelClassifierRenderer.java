@@ -13,9 +13,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * MultiLabelClassifierRenderer.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2018 University of Waikato, Hamilton, NZ
  */
 
 package meka.gui.modelviewer.renderers;
@@ -23,11 +23,12 @@ package meka.gui.modelviewer.renderers;
 import com.googlecode.jfilechooserbookmarks.gui.BaseScrollPane;
 import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.gui.core.GUIHelper;
-import weka.core.ClassDiscovery;
+import weka.core.InheritanceUtils;
 import weka.core.Utils;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import java.awt.BorderLayout;
 
 /**
  * Renders MultiLabelClassifier objects.
@@ -48,7 +49,7 @@ public class MultiLabelClassifierRenderer
 	 */
 	@Override
 	public boolean handles(Class cls) {
-		return (ClassDiscovery.hasInterface(MultiLabelClassifier.class, cls));
+		return (InheritanceUtils.hasInterface(MultiLabelClassifier.class, cls));
 	}
 
 	/**

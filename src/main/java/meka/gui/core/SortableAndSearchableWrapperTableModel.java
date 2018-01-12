@@ -15,15 +15,15 @@
 
 /*
  * SortableAndSearchableWrapperTableModel.java
- * Copyright (C) 2009-2013 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2009-2018 University of Waikato, Hamilton, New Zealand
  */
 
 package meka.gui.core;
 
 import gnu.trove.list.array.TIntArrayList;
-import weka.core.ClassDiscovery;
+import weka.core.InheritanceUtils;
 
-import javax.swing.*;
+import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
@@ -566,7 +566,7 @@ public class SortableAndSearchableWrapperTableModel
 			return;
 
 		// determine the column type: 0=other, 1=comparable
-		if (ClassDiscovery.hasInterface(Comparable.class, getColumnClassForComparison(m_SortColumn)))
+		if (InheritanceUtils.hasInterface(Comparable.class, getColumnClassForComparison(m_SortColumn)))
 			columnType = 1;
 		else
 			columnType = 0;

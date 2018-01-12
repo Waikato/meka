@@ -13,14 +13,14 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * OptionUtils.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2018 University of Waikato, Hamilton, NZ
  */
 
 package meka.core;
 
-import weka.core.ClassDiscovery;
+import weka.core.InheritanceUtils;
 import weka.core.Option;
 import weka.core.OptionHandler;
 import weka.core.Utils;
@@ -28,7 +28,11 @@ import weka.core.Utils;
 import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * Helper class for option parsing.
@@ -342,7 +346,7 @@ public class OptionUtils {
 		while (Utils.getOptionPos(option, options) > -1)
 			list.add(Utils.getOption(option, options));
 		// Optionhandler?
-		if (ClassDiscovery.hasInterface(OptionHandler.class, cls)) {
+		if (InheritanceUtils.hasInterface(OptionHandler.class, cls)) {
 			Object result = Array.newInstance(cls, list.size());
 			for (int i = 0; i < list.size(); i++) {
 				try {

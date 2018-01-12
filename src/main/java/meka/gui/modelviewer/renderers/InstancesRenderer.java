@@ -13,9 +13,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * PlainTextRenderer.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2018 University of Waikato, Hamilton, NZ
  */
 
 package meka.gui.modelviewer.renderers;
@@ -23,7 +23,7 @@ package meka.gui.modelviewer.renderers;
 import com.googlecode.jfilechooserbookmarks.gui.BaseScrollPane;
 import meka.gui.dataviewer.DataSortedTableModel;
 import meka.gui.dataviewer.DataTable;
-import weka.core.ClassDiscovery;
+import weka.core.InheritanceUtils;
 import weka.core.Instances;
 
 import javax.swing.JPanel;
@@ -48,7 +48,7 @@ public class InstancesRenderer
 	 */
 	@Override
 	public boolean handles(Class cls) {
-		return (ClassDiscovery.isSubclass(Instances.class, cls));
+		return (InheritanceUtils.isSubclass(Instances.class, cls));
 	}
 
 	/**

@@ -22,12 +22,13 @@ package meka.gui.experimenter.menu;
 
 import meka.gui.core.GUIHelper;
 import meka.gui.experimenter.Experimenter;
-import meka.gui.goe.GenericObjectEditor;
+import weka.core.PluginManager;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import java.awt.event.ActionEvent;
 import java.io.Serializable;
-import java.util.Vector;
+import java.util.List;
 
 /**
  * Ancestor for menu items to be displayed in the Experimenter menu.
@@ -141,7 +142,7 @@ public abstract class AbstractExperimenterMenuItem
 	 *
 	 * @return          the classnames
 	 */
-	public static Vector<String> getMenuItems() {
-		return GenericObjectEditor.getClassnames(AbstractExperimenterMenuItem.class.getName());
+	public static List<String> getMenuItems() {
+		return PluginManager.getPluginNamesOfTypeList(AbstractExperimenterMenuItem.class.getName());
 	}
 }

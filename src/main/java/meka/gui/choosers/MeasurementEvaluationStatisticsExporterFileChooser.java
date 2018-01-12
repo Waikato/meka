@@ -13,9 +13,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * MeasurementEvaluationStatisticsExporterFileChooser.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2018 University of Waikato, Hamilton, NZ
  */
 
 package meka.gui.choosers;
@@ -27,11 +27,11 @@ import meka.experiment.statisticsexporters.FileBasedEvaluationStatisticsExporter
 import meka.experiment.statisticsexporters.FileBasedMeasurementEvaluationStatisticsExporter;
 import meka.experiment.statisticsexporters.TabSeparatedMeasurement;
 import meka.gui.goe.GenericObjectEditor;
+import weka.core.PluginManager;
 import weka.core.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * File chooser for evaluation statistics exporters for a single measurement (only writers, no readers!).
@@ -62,7 +62,7 @@ public class MeasurementEvaluationStatisticsExporterFileChooser
 	 */
 	@Override
 	protected void doInitializeFilters() {
-		Vector<String> filters = GenericObjectEditor.getClassnames(FileBasedMeasurementEvaluationStatisticsExporter.class.getName());
+		List<String> filters = PluginManager.getPluginNamesOfTypeList(FileBasedMeasurementEvaluationStatisticsExporter.class.getName());
 		m_FileFilters = new ArrayList<>();
 		for (String filter: filters) {
 			try {

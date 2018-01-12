@@ -79,7 +79,7 @@
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-dev</artifactId>
-      <version>3.9.0</version>
+      <version>3.9.2</version>
       <scope>test</scope>
       <type>test-jar</type>
     </dependency>
@@ -87,7 +87,7 @@
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-dev</artifactId>
-      <version>3.9.0</version>
+      <version>3.9.2</version>
     </dependency>
 
     <dependency>
@@ -111,13 +111,13 @@
     <dependency>
       <groupId>com.github.fracpete</groupId>
       <artifactId>jfilechooser-bookmarks</artifactId>
-      <version>0.1.5</version>
+      <version>0.1.6</version>
     </dependency>
 
     <dependency>
       <groupId>com.github.fracpete</groupId>
       <artifactId>jclipboardhelper</artifactId>
-      <version>0.1.0</version>
+      <version>0.1.1</version>
     </dependency>
 
     <dependency>

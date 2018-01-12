@@ -13,9 +13,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * ExperimentFileChooser.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2018 University of Waikato, Hamilton, NZ
  */
 
 package meka.gui.choosers;
@@ -26,11 +26,11 @@ import meka.core.Project;
 import meka.experiment.evaluationstatistics.FileBasedEvaluationStatisticsHandler;
 import meka.experiment.evaluationstatistics.KeyValuePairs;
 import meka.gui.goe.GenericObjectEditor;
+import weka.core.PluginManager;
 import weka.core.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * File chooser for evaluation statistics files.
@@ -61,7 +61,7 @@ public class EvaluationStatisticsFileChooser
 	 */
 	@Override
 	protected void doInitializeFilters() {
-		Vector<String> filters = GenericObjectEditor.getClassnames(FileBasedEvaluationStatisticsHandler.class.getName());
+		List<String> filters = PluginManager.getPluginNamesOfTypeList(FileBasedEvaluationStatisticsHandler.class.getName());
 		m_FileFilters = new ArrayList<>();
 		for (String filter: filters) {
 			try {

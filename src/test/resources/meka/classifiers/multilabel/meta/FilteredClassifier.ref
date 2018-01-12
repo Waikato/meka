@@ -1,12 +1,12 @@
 == Evaluation Info
 
 Classifier                     meka.classifiers.multilabel.meta.FilteredClassifier
-Options                        [-F, weka.filters.AllFilter , -W, meka.classifiers.multilabel.BR, --, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
+Options                        [-F, weka.filters.AllFilter , -doNotCheckForModifiedClassAttribute, -S, 1, -W, meka.classifiers.multilabel.BR, --, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
 Additional Info                
 FilteredClassifier using meka.classifiers.multilabel.BR -W weka.classifiers.trees.J48 -- -C 0.25 -M 2 on data filtered through weka.filters.AllFilter 
 
 Filtered Header
-@relation 'Music: -C -6'
+@relation 'Music: -C -6-weka.filters.AllFilter'
 
 @attribute amazed-suprised- {0,1}
 @attribute happy-pleased- {0,1}

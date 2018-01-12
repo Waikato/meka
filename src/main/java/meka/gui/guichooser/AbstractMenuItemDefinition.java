@@ -13,17 +13,19 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * AbstractMenuItemDefinition.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2018 University of Waikato, Hamilton, NZ
  */
 
 package meka.gui.guichooser;
 
 import meka.gui.core.GUIHelper;
-import meka.gui.goe.GenericObjectEditor;
+import weka.core.PluginManager;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JMenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
@@ -181,6 +183,6 @@ public abstract class AbstractMenuItemDefinition
 	 * @return          the classnames of the menu items
 	 */
 	public static List<String> getDefinitions() {
-		return GenericObjectEditor.getClassnames(AbstractMenuItemDefinition.class.getName());
+		return PluginManager.getPluginNamesOfTypeList(AbstractMenuItemDefinition.class.getName());
 	}
 }

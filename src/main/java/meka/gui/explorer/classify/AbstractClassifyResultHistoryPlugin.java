@@ -23,11 +23,11 @@ package meka.gui.explorer.classify;
 import meka.gui.core.ResultHistoryList;
 import meka.gui.explorer.AbstractExplorerTab;
 import meka.gui.explorer.AbstractResultHistoryPlugin;
-import meka.gui.goe.GenericObjectEditor;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
+import weka.core.PluginManager;
 
-import javax.swing.*;
+import javax.swing.JPopupMenu;
 import java.lang.reflect.Array;
 import java.util.List;
 
@@ -86,7 +86,7 @@ public abstract class AbstractClassifyResultHistoryPlugin
 	 * @return          the classnames of the plugins
 	 */
 	public static List<String> getPlugins() {
-		return GenericObjectEditor.getClassnames(AbstractClassifyResultHistoryPlugin.class.getName());
+		return PluginManager.getPluginNamesOfTypeList(AbstractClassifyResultHistoryPlugin.class.getName());
 	}
 
 	/**
