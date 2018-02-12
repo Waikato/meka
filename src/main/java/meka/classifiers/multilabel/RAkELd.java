@@ -127,6 +127,32 @@ public class RAkELd extends PS implements TechnicalInformationHandler {
 		}
 	}
 
+	/**
+	 * Returns a string that describes a graph representing
+	 * the object. The string should be in XMLBIF ver.
+	 * 0.3 format if the graph is a BayesNet, otherwise
+	 * it should be in dotty format.
+	 *
+	 * @return the graph described by a string (label index as key)
+	 * @throws Exception if the graph can't be computed
+	 */
+	@Override
+	public Map<Integer,String> graph() throws Exception {
+		Map<Integer,String>		result;
+
+		result = new HashMap<Integer,String>();
+
+		for (int i = 0; i < m_Classifiers.length; i++) {
+			if (m_Classifiers[i] != null) {
+				if (m_Classifiers[i] instanceof Drawable) {
+					result.put(i, ((Drawable) m_Classifiers[i]).graph());
+				}
+			}
+		}
+
+		return result;
+	}
+
 	@Override
 	public String toString() {
 		if (kMap == null)
