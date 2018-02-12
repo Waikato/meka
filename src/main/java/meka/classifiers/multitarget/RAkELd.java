@@ -16,13 +16,27 @@
 package meka.classifiers.multitarget;
 
 import meka.classifiers.multilabel.ProblemTransformationMethod;
-import meka.core.*;
-import meka.filters.multilabel.SuperNodeFilter;
+import meka.core.A;
+import meka.core.F;
+import meka.core.OptionUtils;
+import meka.core.PSUtils;
+import meka.core.SuperLabelUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
-import weka.core.*;
+import weka.core.Drawable;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.Option;
+import weka.core.RevisionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Vector;
 
 /**
  * RAkELd - Multi-target Version of RAkELd.
@@ -149,6 +163,32 @@ public class RAkELd extends NSR {
 			s.append(Arrays.toString(kMap[k]));
 		}
 		return s.append("}").toString();
+	}
+
+	/**
+	 * Returns a string that describes a graph representing
+	 * the object. The string should be in XMLBIF ver.
+	 * 0.3 format if the graph is a BayesNet, otherwise
+	 * it should be in dotty format.
+	 *
+	 * @return the graph described by a string (label index as key)
+	 * @throws Exception if the graph can't be computed
+	 */
+	@Override
+	public Map<Integer,String> graph() throws Exception {
+		Map<Integer,String>		result;
+
+		result = new HashMap<Integer,String>();
+
+		for (int i = 0; i < m_Classifiers.length; i++) {
+			if (m_Classifiers[i] != null) {
+				if (m_Classifiers[i] instanceof Drawable) {
+					result.put(i, ((Drawable) m_Classifiers[i]).graph());
+				}
+			}
+		}
+
+		return result;
 	}
 
 	/**
