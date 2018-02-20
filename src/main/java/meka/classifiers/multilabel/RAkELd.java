@@ -25,8 +25,21 @@ import weka.core.TechnicalInformation.Type;
 import java.util.*;
 
 /**
- * RAkELd - Takes RAndom partition of labELs; like RAkEL but labelsets are disjoint / non-overlapping subsets.
- * As in RAkEL, <code>k</code> still indicates the size of partitions, although anything more than L/2 just causes the classifier to default to <code>PS</code>).
+ * RAkELd - RAndom partition of labELs; like RAkEL but labelsets are disjoint / 
+ * non-overlapping.
+ *
+ * As in <code>RAkEL</code>, <code>k</code> still indicates the size of 
+ * partitions, however, note that anything more than L/2 (for L labels) just 
+ * causes the classifier to default to <code>PS</code>, because it is not 
+ * possible form more than one labelset of size L/2 from L labels.
+ *
+ * For example, for 6 labels, a possibility where k=2 are the labelsets  
+ * <code>[1,3,4]</code> and <code>[0,2,5]</code> (indices 0,...,5). 
+ * 
+ * Note that the number of partitions (in this case, 2) is interpreted 
+ * automatically (unlike in <code>RAkEL</code> where this (the 
+ * <code>M</code> parameter is open). 
+ *
  * @see		RAkEL
  * @author 	Jesse Read 
  * @version September 2015
@@ -57,11 +70,11 @@ public class RAkELd extends PS implements TechnicalInformationHandler {
 
 		int L = D.classIndex();
 		int N = D.numInstances();
-		Random r = new Random(m_S);
+		Random random = new Random(m_S);
 
-		// Note: a slightly round-about way of doing it:
+		// Note: a slightly roundabout way of doing it:
 		int num = (int)Math.ceil(L / m_K);
-		kMap = SuperLabelUtils.generatePartition(A.make_sequence(L),num,r,true);
+		kMap = SuperLabelUtils.generatePartition(A.make_sequence(L),num,random,true);
 		m_M = kMap.length;
 		m_Classifiers = AbstractClassifier.makeCopies(m_Classifier,m_M);
 		m_InstancesTemplates = new Instances[m_M];
@@ -165,14 +178,14 @@ public class RAkELd extends PS implements TechnicalInformationHandler {
 	}
 
 	/**
-	 * GetK - Get the k parameter (size of partitions).
+	 * Get the k parameter (the size of each partition).
 	 */
 	public int getK() {
 		return m_K;
 	}
 
 	/**
-	 * SetP - Sets the k parameter (size of partitions)
+	 * Sets the k parameter (the size of each partition)
 	 */
 	public void setK(int k) {
 		m_K = k;
