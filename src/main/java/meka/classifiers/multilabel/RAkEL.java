@@ -28,9 +28,20 @@ import weka.core.TechnicalInformation.Type;
 import java.util.*;
 
 /**
- * RAkEL.java - Draws M subsets of size k from the set of labels, and trains PS upon each one, then combines label votes from these PS classifiers to get a label-vector prediction. The original RAkEL by Tsoumakas et al. was a meta method, typically taking LC (aka LP) as a classifier; this implementation is more like a combination between RAkEL and PS, making it potentially very fast (recall that PS defaults to LC with 0 pruning).
+ * RAkEL - RAndom k-labEL subsets: Draws M subsets of size k from the set of 
+ * labels. 
  *
- * See also <i>RAkEL</i> from the <a href=http://mulan.sourceforge.net>MULAN</a> framework.
+ * This method draws M subsets of size k from the set of labels. and trains PS 
+ * upon each one, then combines label votes from these PS classifiers to get a 
+ * label-vector prediction. The original RAkEL by <i>Tsoumakas et al.</i> was a 
+ * meta method, typically taking LC (aka label powerset) base classifiers. 
+ * This implementation is based on (extends) PS, making it potentially very fast 
+ * (due to the pruning mechanism offered by PS).
+ *
+ * See also <i>RAkEL</i> from the <a href=http://mulan.sourceforge.net>MULAN</a> 
+ * framework.
+ *
+ * @see		PS
  * @author 	Jesse Read
  * @version September 2015
  */
@@ -55,7 +66,7 @@ public class RAkEL extends RAkELd {
 		testCapabilities(D);
 
 		int L = D.classIndex();
-		Random r = new Random(m_S);
+		Random random = new Random(m_S);
 
 
 		if (getDebug())
@@ -65,7 +76,7 @@ public class RAkEL extends RAkELd {
 		kMap = new int[m_M][m_K];
 		m_Classifiers = AbstractClassifier.makeCopies(m_Classifier,m_M);
 		for(int i = 0; i < m_M; i++) {
-			kMap[i] = SuperLabelUtils.get_k_subset(L,m_K,r);
+			kMap[i] = SuperLabelUtils.get_k_subset(L,m_K,random);
 			if (getDebug()) 
 				System.out.println("\tmodel "+(i+1)+"/"+m_M+": "+Arrays.toString(kMap[i])+", P="+m_P+", N="+m_N);
 			Instances D_i = SuperLabelUtils.makePartitionDataset(D,kMap[i],m_P,m_N);
@@ -76,25 +87,25 @@ public class RAkEL extends RAkELd {
 
 	@Override
 	public String kTipText() {
-		return "The number of labels in each subset (must be at least 1 and less than the number of labels) ";
+		return "The number of labels k in each subset (must be 0 < k < L for L labels)";
 	}
 
 	/** 
-	 * GetM - Get the M parameter (number of subsets).
+	 * Get the M parameter (the number of subsets).
 	 */
 	public int getM() {
 		return m_M;
 	}
 
 	/** 
-	 * SetM - Sets the M parameter (number of subsets)
+	 * Sets the M parameter (the number of subsets)
 	 */
 	public void setM(int M) {
 		m_M = M;
 	}
 
 	public String mTipText() {
-		return "The number of subsets (to run in ensemble)";
+		return "The number of subsets to draw (which together form an ensemble)";
 	}
 
 	@Override
