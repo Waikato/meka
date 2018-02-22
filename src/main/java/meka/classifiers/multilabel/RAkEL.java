@@ -108,55 +108,6 @@ public class RAkEL extends RAkELd {
 		return "The number of subsets to draw (which together form an ensemble)";
 	}
 
-	/**
-	 * Returns the type of graph representing
-	 * the object.
-	 *
-	 * @return the type of graph representing the object (label index as key)
-	 */
-	public Map<Integer,Integer> graphType() {
-		Map<Integer,Integer>	result;
-		int						i;
-
-		result = new HashMap<Integer,Integer>();
-
-		if (m_Classifiers != null) {
-			for (i = 0; i < m_Classifiers.length; i++) {
-				if (m_Classifiers[i] instanceof Drawable) {
-					result.put(i, ((Drawable) m_Classifiers[i]).graphType());
-				}
-			}
-		}
-
-		return result;
-	}
-
-	/**
-	 * Returns a string that describes a graph representing
-	 * the object. The string should be in XMLBIF ver.
-	 * 0.3 format if the graph is a BayesNet, otherwise
-	 * it should be in dotty format.
-	 *
-	 * @return the graph described by a string (label index as key)
-	 * @throws Exception if the graph can't be computed
-	 */
-	public Map<Integer,String> graph() throws Exception {
-		Map<Integer,String>		result;
-		int						i;
-
-		result = new HashMap<Integer,String>();
-
-		if (m_Classifiers != null) {
-			for (i = 0; i < m_Classifiers.length; i++) {
-				if (m_Classifiers[i] instanceof Drawable) {
-					result.put(i, ((Drawable) m_Classifiers[i]).graph());
-				}
-			}
-		}
-
-		return result;
-	}
-
 	@Override
 	public String getRevision() {
 	    return RevisionUtils.extract("$Revision: 9117 $");

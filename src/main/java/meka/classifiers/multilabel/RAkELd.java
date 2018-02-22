@@ -166,6 +166,29 @@ public class RAkELd extends PS implements TechnicalInformationHandler {
 		return result;
 	}
 
+	/**
+	 * Returns the type of graph representing
+	 * the object.
+	 *
+	 * @return the type of graph representing the object (label index as key)
+	 */
+	public Map<Integer,Integer> graphType() {
+		Map<Integer,Integer>	result;
+		int						i;
+
+		result = new HashMap<Integer,Integer>();
+
+		if (m_Classifiers != null) {
+			for (i = 0; i < m_Classifiers.length; i++) {
+				if (m_Classifiers[i] instanceof Drawable) {
+					result.put(i, ((Drawable) m_Classifiers[i]).graphType());
+				}
+			}
+		}
+
+		return result;
+	}
+
 	@Override
 	public String toString() {
 		if (kMap == null)
