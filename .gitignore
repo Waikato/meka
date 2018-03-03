@@ -3,7 +3,6 @@ build/
 /build/
 dist/
 /dist/
-doc/
 target/
 /target/
 .texlipse
