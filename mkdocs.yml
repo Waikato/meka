@@ -1,6 +1,6 @@
 site_name: MEKA
 theme: readthedocs
-repo_url: https://github.com/waikato/meka
+repo_url: https://github.com/Waikato/meka
 site_description: MEKA Documentation
 pages:
     - Home: index.md
