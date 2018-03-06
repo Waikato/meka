@@ -19,6 +19,14 @@
 
     
     <url>
+     <loc>None/documentation/</loc>
+     <lastmod>2018-03-06</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
      <loc>None/downloads/</loc>
      <lastmod>2018-03-06</lastmod>
      <changefreq>daily</changefreq>

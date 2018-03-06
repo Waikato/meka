@@ -41,6 +41,11 @@
             "title": "Move to Github Nov 04, 2015:"
         },
         {
+            "location": "/documentation/",
+            "text": "To get started, \ndownload\n \nMEKA and run \n./run.sh\n (\nrun.bat\n on Windows) to launch the GUI.\n\n\nThe \nMEKA tutorial (pdf)\n \nhas numerous examples on how to run and extend MEKA.\n\n\nSee the list of methods available in MEKA, and (command-line) examples on how to use them.\n\n\nThere are some \nexamples\n \non how to use Meka in your Java code.\n\n\nThe \nAPI reference\n is available.\n\n\nMEKA originated from implementations of work from various \npublications\n \n(note also the references therein). There are some \ntutorials/slides\n \nabout multi-label and multi-target classification in general.\n\n\nHave a specific problem or query? Post to MEKA's \nMailing List\n \n(please avoid contacting developers directly for MEKA-related help).",
+            "title": "Documentation"
+        },
+        {
             "location": "/downloads/",
             "text": "Download MEKA at \nsourceforge.net\n.\n\n\nGet a \nnightly snapshot\n.\n\n\nCheckout the code from GitHub: https://github.com/waikato/meka",
             "title": "Downloads"
