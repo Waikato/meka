@@ -1,0 +1,79 @@
+{
+    "docs": [
+        {
+            "location": "/",
+            "text": "The MEKA project provides an open source implementation of methods for \nmulti-label\n \nlearning and evaluation. In \nmulti-label classification\n, \nwe want to predict multiple output variables for each input instance. This different from the \n'standard' case (binary, or multi-class classification) which involves only a \nsingle target variable. MEKA is based on the \nWEKA\n \nMachine Learning Toolkit; it includes dozens of multi-label methods from the scientific literature, \nas well as a wrapper to the related \nMULAN\n framework.\n\n\nMain developers\n\n\n\n\nJesse Read\n (Ecole Polytechnique, France)\n\n\nPeter Reutemann\n (University of Waikato, New Zealand)\n\n\nJoerg Wicker\n (University of Auckland, New Zealand)\n\n\n\n\nScreenshots",
+            "title": "Home"
+        },
+        {
+            "location": "/#main-developers",
+            "text": "Jesse Read  (Ecole Polytechnique, France)  Peter Reutemann  (University of Waikato, New Zealand)  Joerg Wicker  (University of Auckland, New Zealand)",
+            "title": "Main developers"
+        },
+        {
+            "location": "/#screenshots",
+            "text": "",
+            "title": "Screenshots"
+        },
+        {
+            "location": "/news/",
+            "text": "NEW RELEASE April 12, 2017:\n\n\nMeka 1.9.1\n is released. \nThis release gives several minor improvements and fixes over the previous version, \nbut it also includes new features and new classifiers. See the \n\nREADME\n regarding changes.\n\n\nMEKA in your Java code Dec 08, 2016:\n\n\nAdded some examples of how to \nuse Meka in your Java code\n.\n\n\nMeka in JMLR-mloss April 29, 2016:\n\n\nMeka published in Journal of Machine Learning Research MLOSS track. You can now \ncite\n Meka. \n\n\nMove to Github Nov 04, 2015:\n\n\nMeka is moving to \nGitHub\n. \nThe \nreleases and other files\n \nwill still be updated at SourceForge.net, but the code repository is now: \nhttps://github.com/Waikato/meka.",
+            "title": "News"
+        },
+        {
+            "location": "/news/#new-release-april-12-2017",
+            "text": "Meka 1.9.1  is released. \nThis release gives several minor improvements and fixes over the previous version, \nbut it also includes new features and new classifiers. See the  README  regarding changes.",
+            "title": "NEW RELEASE April 12, 2017:"
+        },
+        {
+            "location": "/news/#meka-in-your-java-code-dec-08-2016",
+            "text": "Added some examples of how to  use Meka in your Java code .",
+            "title": "MEKA in your Java code Dec 08, 2016:"
+        },
+        {
+            "location": "/news/#meka-in-jmlr-mloss-april-29-2016",
+            "text": "Meka published in Journal of Machine Learning Research MLOSS track. You can now  cite  Meka.",
+            "title": "Meka in JMLR-mloss April 29, 2016:"
+        },
+        {
+            "location": "/news/#move-to-github-nov-04-2015",
+            "text": "Meka is moving to  GitHub . \nThe  releases and other files  \nwill still be updated at SourceForge.net, but the code repository is now: \nhttps://github.com/Waikato/meka.",
+            "title": "Move to Github Nov 04, 2015:"
+        },
+        {
+            "location": "/downloads/",
+            "text": "Download MEKA at \nsourceforge.net\n.\n\n\nGet a \nnightly snapshot\n.\n\n\nCheckout the code from GitHub: https://github.com/waikato/meka",
+            "title": "Downloads"
+        },
+        {
+            "location": "/datasets/",
+            "text": "A collection of multi-label and multi-target datasets is \n\navailable here\n.\nEven more datasets are available at the \nMULAN Website\n \n(note that MULAN indexes labels as the final attributes, whereas MEKA indexs as the beginning). \nSee the \nMEKA Tutorial\n \nfor more information.\n\n\nThe following text datasets have been created / compiled into WEKA's ARFF format \nusing the \nStringToWordVector\n \nfilter. Also available are \ntrain/test splits\n \nand the \noriginal raw prefiltered text\n.\n\n\n\n\n\n\n\n\nDataset\n\n\nL\n\n\nN\n\n\nLC\n\n\nPU\n\n\nDescription and Original Source(s)\n\n\n\n\n\n\n\n\n\n\nEnron\n\n\n53\n\n\n1702\n\n\n3.39\n\n\n0.442\n\n\nA subset of the \nEnron Email Dataset\n, as labelled by the \nUC Berkeley Enron Email Analysis Project\n\n\n\n\n\n\nSlashdot\n\n\n22\n\n\n3782\n\n\n1.18\n\n\n0.041\n\n\nArticle titles and partial blurbs mined from \nSlashdot.org\n\n\n\n\n\n\nLanguage Log\n\n\n75\n\n\n1460\n\n\n1.18\n\n\n0.208\n\n\nArticles posted on the \nLanguage Log\n\n\n\n\n\n\nIMDB (Updated)\n\n\n28\n\n\n120919\n\n\n2.00\n\n\n0.037\n\n\nMovie plot text summaries labelled with genres sourced from the \nInternet Movie Database\n interface, labeled with genres.\n\n\n\n\n\n\n\n\nKey:\n\n\n\n\nN\n = The number of examples (training+testing) in the datasets\n\n\nL\n = The number of predefined labels relevant to this dataset\n\n\nLC\n = Label Cardinality. Average number of labels assigned per document\n\n\nPU\n = Percentage of documents with Unique label combinations",
+            "title": "Datasets"
+        },
+        {
+            "location": "/citing/",
+            "text": "Please use the following to cite MEKA:\n\n\n@article{MEKA,\n    author = {Read, Jesse and Reutemann, Peter and Pfahringer, Bernhard and Holmes, Geoff},\n    title = {{MEKA}: A Multi-label/Multi-target Extension to {Weka}},\n    journal = {Journal of Machine Learning Research},\n    year = {2016},\n    volume = {17},\n    number = {21},\n    pages = {1--5},\n    url = {http://jmlr.org/papers/v17/12-164.html},\n}",
+            "title": "Citing"
+        },
+        {
+            "location": "/maven/",
+            "text": "Add the following dependency to your \npom.xml\n:\n\n\n  <dependency>\n    <groupId>net.sf.meka</groupId>\n    <artifactId>meka</artifactId>\n    <version>1.9.1</version>\n  </dependency>",
+            "title": "Maven"
+        },
+        {
+            "location": "/links/",
+            "text": "Other software that uses MEKA\n\n\n\n\nADAMS\n framework - integrates MEKA into workflows\n\n\nMOA environment for data streams\n \n  can use Updateable MEKA classifiers\n\n\nscikit-multilearn\n can interface to MEKA in Python\n\n\nKNIME\n \n  framework, includes a plugin to integrate Meka Classifiers into workflows\n\n\nDKPro Text Classification Framework\n\n\n\n\nOther multi-label links\n\n\n\n\nMULAN Framework for Multi-label Classification\n\n\nMulan Multi-label Group\n from the \n  Machine Learning and Knowledge Discovery Group in the Aristotle University of Thessaloniki.",
+            "title": "Links"
+        },
+        {
+            "location": "/links/#other-software-that-uses-meka",
+            "text": "ADAMS  framework - integrates MEKA into workflows  MOA environment for data streams  \n  can use Updateable MEKA classifiers  scikit-multilearn  can interface to MEKA in Python  KNIME  \n  framework, includes a plugin to integrate Meka Classifiers into workflows  DKPro Text Classification Framework",
+            "title": "Other software that uses MEKA"
+        },
+        {
+            "location": "/links/#other-multi-label-links",
+            "text": "MULAN Framework for Multi-label Classification  Mulan Multi-label Group  from the \n  Machine Learning and Knowledge Discovery Group in the Aristotle University of Thessaloniki.",
+            "title": "Other multi-label links"
+        }
+    ]
+}
