@@ -5,6 +5,7 @@ site_description: MEKA Documentation
 pages:
     - Home: index.md
     - News: news.md
+    - Documentation: documentation.md
     - Downloads: downloads.md
     - Datasets: datasets.md
     - Citing: citing.md
