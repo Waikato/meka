@@ -97,3 +97,18 @@ Release archive
 
 
 
+Update documentation
+--------------------
+
+* update artifact version (`maven.md`)
+* test 
+  
+  ```
+  mkdocs build --clean && mkdocs serve
+  ```
+  
+* deploy
+
+  ```
+  mkdocs gh-deploy --clean
+  ```

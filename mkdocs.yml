@@ -1,0 +1,12 @@
+site_name: MEKA
+theme: readthedocs
+repo_url: https://github.com/waikato/meka
+site_description: MEKA Documentation
+pages:
+    - Home: index.md
+    - News: news.md
+    - Downloads: downloads.md
+    - Datasets: datasets.md
+    - Citing: citing.md
+    - Maven: maven.md
+    - Links: links.md
