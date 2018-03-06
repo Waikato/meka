@@ -2,11 +2,11 @@
 
 The MEKA project provides an open source implementation of methods for multi-label learning and evaluation.
 
-http://meka.sourceforge.net/
+http://waikato.github.io/meka/
 
 ## Documentation
 
-See http://meka.sourceforge.net/#documentation for sources of documentation regarding MEKA.
+See http://waikato.github.io/meka/documentation/ for sources of documentation regarding MEKA.
 
 In particular, 
 
