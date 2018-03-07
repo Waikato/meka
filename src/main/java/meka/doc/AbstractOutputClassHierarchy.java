@@ -279,14 +279,14 @@ public abstract class AbstractOutputClassHierarchy
 		GenericObjectEditor.registerAllEditors();
 		classnames = PluginManager.getPluginNamesOfTypeList(m_Superclass);
 		if (m_Debug)
-			System.out.println("# classes: " + classnames.size());
+			System.err.println("# classes: " + classnames.size());
 
 		for (String classname: classnames) {
 			if (m_Debug)
-				System.out.println("--> " + classname);
+				System.err.println("--> " + classname);
 			outFile = new File(m_OutputDir.getAbsolutePath() + File.separator + generateFilename(classname));
 			if (m_Debug)
-				System.out.println("output file: " + outFile);
+				System.err.println("output file: " + outFile);
 			doGenerate(classname, outFile);
 		}
 	}
