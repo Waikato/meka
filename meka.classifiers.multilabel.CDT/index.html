@@ -568,133 +568,133 @@ Yuhong Guoand, Suicheng Gu (2011). Multi-Label Classification Using Conditional 
 
 <h2 id="options">Options</h2>
 <ul>
-<li><code>-H &lt;value&gt;</code></li>
-</ul>
+<li>
+<p><code>-H &lt;value&gt;</code></p>
 <p>Determines the width of the trellis (use 0 for chain; use -1 for a square trellis, i.e., width of sqrt(number of labels)).</p>
-<ul>
-<li><code>-L &lt;value&gt;</code></li>
-</ul>
+</li>
+<li>
+<p><code>-L &lt;value&gt;</code></p>
 <p>Determines the neighbourhood density (the number of neighbours for each node in the trellis).</p>
-<ul>
-<li><code>-X &lt;value&gt;</code></li>
-</ul>
+</li>
+<li>
+<p><code>-X &lt;value&gt;</code></p>
 <p>The dependency heuristic to use in rearranging the trellis (None by default).</p>
-<ul>
-<li><code>-I &lt;value&gt;</code></li>
-</ul>
+</li>
+<li>
+<p><code>-I &lt;value&gt;</code></p>
 <p>The total number of iterations.
-  default: 1000</p>
-<ul>
-<li><code>-Ic &lt;value&gt;</code></li>
-</ul>
+default: 1000</p>
+</li>
+<li>
+<p><code>-Ic &lt;value&gt;</code></p>
 <p>The number of collection iterations.
-  default: 100</p>
-<ul>
-<li><code>-S &lt;value&gt;</code></li>
-</ul>
+default: 100</p>
+</li>
+<li>
+<p><code>-S &lt;value&gt;</code></p>
 <p>The seed value for randomization.</p>
-<ul>
-<li><code>-W &lt;classifier name&gt;</code></li>
-</ul>
+</li>
+<li>
+<p><code>-W &lt;classifier name&gt;</code></p>
 <p>Full name of base classifier.
-  (default: weka.classifiers.trees.J48)</p>
-<ul>
-<li><code>-output-debug-info</code></li>
-</ul>
+(default: weka.classifiers.trees.J48)</p>
+</li>
+<li>
+<p><code>-output-debug-info</code></p>
 <p>If set, classifier is run in debug mode and
-  may output additional info to the console</p>
-<ul>
-<li><code>-do-not-check-capabilities</code></li>
-</ul>
+may output additional info to the console</p>
+</li>
+<li>
+<p><code>-do-not-check-capabilities</code></p>
 <p>If set, classifier capabilities are not checked before classifier is built
-  (use with caution).</p>
-<ul>
-<li><code>-num-decimal-places</code></li>
-</ul>
+(use with caution).</p>
+</li>
+<li>
+<p><code>-num-decimal-places</code></p>
 <p>The number of decimal places for the output of numbers in the model (default 2).</p>
-<ul>
-<li><code>-batch-size</code></li>
-</ul>
+</li>
+<li>
+<p><code>-batch-size</code></p>
 <p>The desired batch size for batch prediction  (default 100).</p>
-<ul>
+</li>
 <li>
 <p><strong>Options specific to classifier weka.classifiers.trees.J48:</strong></p>
 </li>
 <li>
 <p><code>-U</code></p>
+<p>Use unpruned tree.</p>
+</li>
+<li>
+<p><code>-O</code></p>
+<p>Do not collapse tree.</p>
+</li>
+<li>
+<p><code>-C &lt;pruning confidence&gt;</code></p>
+<p>Set confidence threshold for pruning.
+(default 0.25)</p>
+</li>
+<li>
+<p><code>-M &lt;minimum number of instances&gt;</code></p>
+<p>Set minimum number of instances per leaf.
+(default 2)</p>
+</li>
+<li>
+<p><code>-R</code></p>
+<p>Use reduced error pruning.</p>
+</li>
+<li>
+<p><code>-N &lt;number of folds&gt;</code></p>
+<p>Set number of folds for reduced error
+pruning. One fold is used as pruning set.
+(default 3)</p>
+</li>
+<li>
+<p><code>-B</code></p>
+<p>Use binary splits only.</p>
+</li>
+<li>
+<p><code>-S</code></p>
+<p>Do not perform subtree raising.</p>
+</li>
+<li>
+<p><code>-L</code></p>
+<p>Do not clean up after the tree has been built.</p>
+</li>
+<li>
+<p><code>-A</code></p>
+<p>Laplace smoothing for predicted probabilities.</p>
+</li>
+<li>
+<p><code>-J</code></p>
+<p>Do not use MDL correction for info gain on numeric attributes.</p>
+</li>
+<li>
+<p><code>-Q &lt;seed&gt;</code></p>
+<p>Seed for random data shuffling (default 1).</p>
+</li>
+<li>
+<p><code>-doNotMakeSplitPointActualValue</code></p>
+<p>Do not make split point actual value.</p>
+</li>
+<li>
+<p><code>-output-debug-info</code></p>
+<p>If set, classifier is run in debug mode and
+may output additional info to the console</p>
+</li>
+<li>
+<p><code>-do-not-check-capabilities</code></p>
+<p>If set, classifier capabilities are not checked before classifier is built
+(use with caution).</p>
+</li>
+<li>
+<p><code>-num-decimal-places</code></p>
+<p>The number of decimal places for the output of numbers in the model (default 2).</p>
+</li>
+<li>
+<p><code>-batch-size</code></p>
+<p>The desired batch size for batch prediction  (default 100).</p>
 </li>
 </ul>
-<p>Use unpruned tree.</p>
-<ul>
-<li><code>-O</code></li>
-</ul>
-<p>Do not collapse tree.</p>
-<ul>
-<li><code>-C &lt;pruning confidence&gt;</code></li>
-</ul>
-<p>Set confidence threshold for pruning.
-  (default 0.25)</p>
-<ul>
-<li><code>-M &lt;minimum number of instances&gt;</code></li>
-</ul>
-<p>Set minimum number of instances per leaf.
-  (default 2)</p>
-<ul>
-<li><code>-R</code></li>
-</ul>
-<p>Use reduced error pruning.</p>
-<ul>
-<li><code>-N &lt;number of folds&gt;</code></li>
-</ul>
-<p>Set number of folds for reduced error
-  pruning. One fold is used as pruning set.
-  (default 3)</p>
-<ul>
-<li><code>-B</code></li>
-</ul>
-<p>Use binary splits only.</p>
-<ul>
-<li><code>-S</code></li>
-</ul>
-<p>Do not perform subtree raising.</p>
-<ul>
-<li><code>-L</code></li>
-</ul>
-<p>Do not clean up after the tree has been built.</p>
-<ul>
-<li><code>-A</code></li>
-</ul>
-<p>Laplace smoothing for predicted probabilities.</p>
-<ul>
-<li><code>-J</code></li>
-</ul>
-<p>Do not use MDL correction for info gain on numeric attributes.</p>
-<ul>
-<li><code>-Q &lt;seed&gt;</code></li>
-</ul>
-<p>Seed for random data shuffling (default 1).</p>
-<ul>
-<li><code>-doNotMakeSplitPointActualValue</code></li>
-</ul>
-<p>Do not make split point actual value.</p>
-<ul>
-<li><code>-output-debug-info</code></li>
-</ul>
-<p>If set, classifier is run in debug mode and
-  may output additional info to the console</p>
-<ul>
-<li><code>-do-not-check-capabilities</code></li>
-</ul>
-<p>If set, classifier capabilities are not checked before classifier is built
-  (use with caution).</p>
-<ul>
-<li><code>-num-decimal-places</code></li>
-</ul>
-<p>The number of decimal places for the output of numbers in the model (default 2).</p>
-<ul>
-<li><code>-batch-size</code></li>
-</ul>
-<p>The desired batch size for batch prediction  (default 100).</p>
               
             </div>
           </div>

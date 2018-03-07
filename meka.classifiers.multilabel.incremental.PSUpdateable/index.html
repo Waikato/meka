@@ -558,100 +558,100 @@
 
 <h2 id="options">Options</h2>
 <ul>
-<li><code>-I &lt;value&gt;</code></li>
-</ul>
+<li>
+<p><code>-I &lt;value&gt;</code></p>
 <p>Sets the buffer size
-  default: 1000</p>
-<ul>
-<li><code>-support &lt;value&gt;</code></li>
-</ul>
+default: 1000</p>
+</li>
+<li>
+<p><code>-support &lt;value&gt;</code></p>
 <p>Sets the max. num. of combs.
-  default: 10</p>
-<ul>
-<li><code>-P &lt;value&gt;</code></li>
-</ul>
+default: 10</p>
+</li>
+<li>
+<p><code>-P &lt;value&gt;</code></p>
 <p>Sets the pruning value, defining an infrequent labelset as one which occurs &lt;= P times in the data (P = 0 defaults to LC).
-  default: 0    (LC)</p>
-<ul>
-<li><code>-N &lt;value&gt;</code></li>
-</ul>
+default: 0  (LC)</p>
+</li>
+<li>
+<p><code>-N &lt;value&gt;</code></p>
 <p>Sets the (maximum) number of frequent labelsets to subsample from the infrequent labelsets.
-  default: 0    (none)
-  n N = n
-  -n    N = n, or 0 if LCard(D) &gt;= 2
-  n-m   N = random(n,m)</p>
-<ul>
-<li><code>-S &lt;value&gt;</code></li>
-</ul>
+default: 0  (none)
+n   N = n
+-n  N = n, or 0 if LCard(D) &gt;= 2
+n-m N = random(n,m)</p>
+</li>
+<li>
+<p><code>-S &lt;value&gt;</code></p>
 <p>The seed value for randomization
-  default: 0</p>
-<ul>
-<li><code>-W &lt;classifier name&gt;</code></li>
-</ul>
+default: 0</p>
+</li>
+<li>
+<p><code>-W &lt;classifier name&gt;</code></p>
 <p>Full name of base classifier.
-  (default: weka.classifiers.trees.HoeffdingTree)</p>
-<ul>
-<li><code>-output-debug-info</code></li>
-</ul>
+(default: weka.classifiers.trees.HoeffdingTree)</p>
+</li>
+<li>
+<p><code>-output-debug-info</code></p>
 <p>If set, classifier is run in debug mode and
-  may output additional info to the console</p>
-<ul>
-<li><code>-do-not-check-capabilities</code></li>
-</ul>
+may output additional info to the console</p>
+</li>
+<li>
+<p><code>-do-not-check-capabilities</code></p>
 <p>If set, classifier capabilities are not checked before classifier is built
-  (use with caution).</p>
-<ul>
-<li><code>-num-decimal-places</code></li>
-</ul>
+(use with caution).</p>
+</li>
+<li>
+<p><code>-num-decimal-places</code></p>
 <p>The number of decimal places for the output of numbers in the model (default 2).</p>
-<ul>
-<li><code>-batch-size</code></li>
-</ul>
+</li>
+<li>
+<p><code>-batch-size</code></p>
 <p>The desired batch size for batch prediction  (default 100).</p>
-<ul>
+</li>
 <li>
 <p><strong>Options specific to classifier weka.classifiers.trees.HoeffdingTree:</strong></p>
 </li>
 <li>
 <p><code>-L</code></p>
+<p>The leaf prediction strategy to use. 0 = majority class, 1 = naive Bayes, 2 = naive Bayes adaptive.
+(default = 2)</p>
+</li>
+<li>
+<p><code>-S</code></p>
+<p>The splitting criterion to use. 0 = Gini, 1 = Info gain
+(default = 1)</p>
+</li>
+<li>
+<p><code>-E</code></p>
+<p>The allowable error in a split decision - values closer to zero will take longer to decide
+(default = 1e-7)</p>
+</li>
+<li>
+<p><code>-H</code></p>
+<p>Threshold below which a split will be forced to break ties
+(default = 0.05)</p>
+</li>
+<li>
+<p><code>-M</code></p>
+<p>Minimum fraction of weight required down at least two branches for info gain splitting
+(default = 0.01)</p>
+</li>
+<li>
+<p><code>-G</code></p>
+<p>Grace period - the number of instances a leaf should observe between split attempts
+(default = 200)</p>
+</li>
+<li>
+<p><code>-N</code></p>
+<p>The number of instances (weight) a leaf should observe before allowing naive Bayes to make predictions (NB or NB adaptive only)
+(default = 0)</p>
+</li>
+<li>
+<p><code>-P</code></p>
+<p>Print leaf models when using naive Bayes at the leaves.</p>
 </li>
 </ul>
-<p>The leaf prediction strategy to use. 0 = majority class, 1 = naive Bayes, 2 = naive Bayes adaptive.
-  (default = 2)</p>
-<ul>
-<li><code>-S</code></li>
-</ul>
-<p>The splitting criterion to use. 0 = Gini, 1 = Info gain
-  (default = 1)</p>
-<ul>
-<li><code>-E</code></li>
-</ul>
-<p>The allowable error in a split decision - values closer to zero will take longer to decide
-  (default = 1e-7)</p>
-<ul>
-<li><code>-H</code></li>
-</ul>
-<p>Threshold below which a split will be forced to break ties
-  (default = 0.05)</p>
-<ul>
-<li><code>-M</code></li>
-</ul>
-<p>Minimum fraction of weight required down at least two branches for info gain splitting
-  (default = 0.01)</p>
-<ul>
-<li><code>-G</code></li>
-</ul>
-<p>Grace period - the number of instances a leaf should observe between split attempts
-  (default = 200)</p>
-<ul>
-<li><code>-N</code></li>
-</ul>
-<p>The number of instances (weight) a leaf should observe before allowing naive Bayes to make predictions (NB or NB adaptive only)
-  (default = 0)</p>
-<ul>
-<li><code>-P</code></li>
-</ul>
-<p>Print leaf models when using naive Bayes at the leaves.</p>
               
             </div>
           </div>

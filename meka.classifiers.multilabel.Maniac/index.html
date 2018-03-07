@@ -560,116 +560,114 @@ J"org Wicker, Andrey Tyukin, Stefan Kramer: A Nonlinear Label Compression and Tr
 
 <h2 id="options">Options</h2>
 <ul>
-<li><code>-compression &lt;value&gt;</code></li>
-</ul>
+<li>
+<p><code>-compression &lt;value&gt;</code></p>
 <p>Compression factor of the autoencoders, each level of autoencoders will compress the labels to factor times previous layer size.
-  (default: 0.85)</p>
-<ul>
-<li><code>-numberAutoencoders &lt;value&gt;</code></li>
-</ul>
+(default: 0.85)</p>
+</li>
+<li>
+<p><code>-numberAutoencoders &lt;value&gt;</code></p>
 <p>Number of autoencoders, i.e. number of hidden layers +1. Note that this can be also used as the number of autoencoders to use in the optimization search, autoencoders will be added until this number is reached  and then the best configuration in terms of number of layers is selects.
-  (default: 4)</p>
-<ul>
-<li><code>-optimizeAE &lt;value&gt;</code></li>
-</ul>
+(default: 4)</p>
+</li>
+<li>
+<p><code>-optimizeAE &lt;value&gt;</code></p>
 <p>Optimize the number of layers of autoencoders. If set to true the number of layers will internally be optimized using a validation set.
-  (default: false)</p>
-<ul>
-<li><code>-W &lt;classifier name&gt;</code></li>
-</ul>
+(default: false)</p>
+</li>
+<li>
+<p><code>-W &lt;classifier name&gt;</code></p>
 <p>Full name of base classifier.
-  (default: meka.classifiers.multitarget.CR)</p>
-<ul>
-<li><code>-output-debug-info</code></li>
-</ul>
+(default: meka.classifiers.multitarget.CR)</p>
+</li>
+<li>
+<p><code>-output-debug-info</code></p>
 <p>If set, classifier is run in debug mode and
-  may output additional info to the console</p>
-<ul>
-<li><code>-do-not-check-capabilities</code></li>
-</ul>
+may output additional info to the console</p>
+</li>
+<li>
+<p><code>-do-not-check-capabilities</code></p>
 <p>If set, classifier capabilities are not checked before classifier is built
-  (use with caution).</p>
-<ul>
-<li><code>-num-decimal-places</code></li>
-</ul>
+(use with caution).</p>
+</li>
+<li>
+<p><code>-num-decimal-places</code></p>
 <p>The number of decimal places for the output of numbers in the model (default 2).</p>
-<ul>
-<li><code>-batch-size</code></li>
-</ul>
+</li>
+<li>
+<p><code>-batch-size</code></p>
 <p>The desired batch size for batch prediction  (default 100).</p>
-<ul>
+</li>
 <li>
 <p><strong>Options specific to classifier meka.classifiers.multitarget.CR:</strong></p>
 </li>
 <li>
 <p><code>-W &lt;classifier name&gt;</code></p>
-</li>
-</ul>
 <p>Full name of base classifier.
-  (default: weka.classifiers.trees.J48)</p>
-<ul>
-<li><code>-output-debug-info</code></li>
-</ul>
+(default: weka.classifiers.trees.J48)</p>
+</li>
+<li>
+<p><code>-output-debug-info</code></p>
 <p>If set, classifier is run in debug mode and
-  may output additional info to the console</p>
-<ul>
-<li><code>-do-not-check-capabilities</code></li>
-</ul>
+may output additional info to the console</p>
+</li>
+<li>
+<p><code>-do-not-check-capabilities</code></p>
 <p>If set, classifier capabilities are not checked before classifier is built
-  (use with caution).</p>
-<ul>
-<li><code>-num-decimal-places</code></li>
-</ul>
+(use with caution).</p>
+</li>
+<li>
+<p><code>-num-decimal-places</code></p>
 <p>The number of decimal places for the output of numbers in the model (default 2).</p>
-<ul>
-<li><code>-batch-size</code></li>
-</ul>
+</li>
+<li>
+<p><code>-batch-size</code></p>
 <p>The desired batch size for batch prediction  (default 100).</p>
-<ul>
+</li>
 <li>
 <p><strong>Options specific to classifier weka.classifiers.functions.LinearRegression:</strong></p>
 </li>
 <li>
 <p><code>-S &lt;number of selection method&gt;</code></p>
+<p>Set the attribute selection method to use. 1 = None, 2 = Greedy.
+(default 0 = M5' method)</p>
+</li>
+<li>
+<p><code>-C</code></p>
+<p>Do not try to eliminate colinear attributes.</p>
+</li>
+<li>
+<p><code>-R &lt;double&gt;</code></p>
+<p>Set ridge parameter (default 1.0e-8).</p>
+</li>
+<li>
+<p><code>-minimal</code></p>
+<p>Conserve memory, don't keep dataset header and means/stdevs.
+Model cannot be printed out if this option is enabled.  (default: keep data)</p>
+</li>
+<li>
+<p><code>-additional-stats</code></p>
+<p>Output additional statistics.</p>
+</li>
+<li>
+<p><code>-output-debug-info</code></p>
+<p>If set, classifier is run in debug mode and
+may output additional info to the console</p>
+</li>
+<li>
+<p><code>-do-not-check-capabilities</code></p>
+<p>If set, classifier capabilities are not checked before classifier is built
+(use with caution).</p>
+</li>
+<li>
+<p><code>-num-decimal-places</code></p>
+<p>The number of decimal places for the output of numbers in the model (default 4).</p>
+</li>
+<li>
+<p><code>-batch-size</code></p>
+<p>The desired batch size for batch prediction  (default 100).</p>
 </li>
 </ul>
-<p>Set the attribute selection method to use. 1 = None, 2 = Greedy.
-  (default 0 = M5' method)</p>
-<ul>
-<li><code>-C</code></li>
-</ul>
-<p>Do not try to eliminate colinear attributes.</p>
-<ul>
-<li><code>-R &lt;double&gt;</code></li>
-</ul>
-<p>Set ridge parameter (default 1.0e-8).</p>
-<ul>
-<li><code>-minimal</code></li>
-</ul>
-<p>Conserve memory, don't keep dataset header and means/stdevs.
-  Model cannot be printed out if this option is enabled.    (default: keep data)</p>
-<ul>
-<li><code>-additional-stats</code></li>
-</ul>
-<p>Output additional statistics.</p>
-<ul>
-<li><code>-output-debug-info</code></li>
-</ul>
-<p>If set, classifier is run in debug mode and
-  may output additional info to the console</p>
-<ul>
-<li><code>-do-not-check-capabilities</code></li>
-</ul>
-<p>If set, classifier capabilities are not checked before classifier is built
-  (use with caution).</p>
-<ul>
-<li><code>-num-decimal-places</code></li>
-</ul>
-<p>The number of decimal places for the output of numbers in the model (default 4).</p>
-<ul>
-<li><code>-batch-size</code></li>
-</ul>
-<p>The desired batch size for batch prediction  (default 100).</p>
               
             </div>
           </div>
