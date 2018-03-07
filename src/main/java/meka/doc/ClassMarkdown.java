@@ -178,7 +178,7 @@ public class ClassMarkdown
 					for (String part : parts) {
 						if (part.trim().isEmpty())
 							continue;
-						result.append("  ").append(part.trim()).append("\n");
+						result.append("    ").append(part.trim()).append("\n");
 					}
 					result.append("\n");
 				}
