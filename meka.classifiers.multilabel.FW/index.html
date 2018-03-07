@@ -186,11 +186,10 @@
         
             <ul>
             
-                <li class="toctree-l3"><a href="#mekaclassifiersmultilabelfw">meka.classifiers.multilabel.FW</a></li>
+                <li class="toctree-l3"><a href="#synopsis">Synopsis</a></li>
                 
-                    <li><a class="toctree-l4" href="#synopsis">Synopsis</a></li>
-                
-                    <li><a class="toctree-l4" href="#options">Options</a></li>
+            
+                <li class="toctree-l3"><a href="#options">Options</a></li>
                 
             
             </ul>
@@ -542,8 +541,7 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="mekaclassifiersmultilabelfw">meka.classifiers.multilabel.FW</h1>
-<h2 id="synopsis">Synopsis</h2>
+                <h2 id="synopsis">Synopsis</h2>
 <p>The Fourclass Pairwise (FW) method.
 Trains a multi-class base classifier for each pair of labels -- (L*(L-1))/2 in total --, each with four possible class values: {00,01,10,11} representing the possible combinations of relevant (1) /irrelevant (0) for the pair. Uses a voting + threshold scheme at testing time where e.g., 01 from pair jk gives one vote to label k; any label with votes above the threshold is considered relevant.</p>
 <h2 id="options">Options</h2>
