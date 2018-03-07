@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.meta.BaggingMLdup
-
 ## Synopsis
 Combining several multi-label classifiers using Bootstrap AGGregatING.
 Duplicates Instances instead of assigning higher weights -- should work for methods that do not handle weights at all.

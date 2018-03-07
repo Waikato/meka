@@ -1,5 +1,3 @@
-# meka.classifiers.multitarget.meta.EnsembleMT
-
 ## Synopsis
 The Multi-Target Version of EnsembleML.
 It takes votes using the confidence outputs of the base classifier.

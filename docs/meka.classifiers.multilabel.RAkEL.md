@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.RAkEL
-
 ## Synopsis
 Draws M subsets of size k from the set of labels, and trains PS upon each one, then combines label votes from the PS classifiers to get a label-vector prediction.
 

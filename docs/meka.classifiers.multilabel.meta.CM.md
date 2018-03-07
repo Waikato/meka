@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.meta.CM
-
 ## Synopsis
 Train a classifier using labelled and unlabelled data (semi-supervised) using Classification Expectation algorithm (a hard version of EM). Unlike EM, can use any classifier here, not necessarily one which gives good probabilistic output.
 

@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.meta.EM
-
 ## Synopsis
 A specified multi-label classifier is built on the training data. This model is then used to classify the test data. The confidence with which instances are classified is used to reweight them. This data is then used to retrain the classifier. This cycle continues ('EM'-style) for I iterations. The final model is used to officially classifier the test data. Because of the weighting, it is advised to use a classifier which gives good confidence (probabalistic) outputs. 
 

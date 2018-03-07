@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.meta.BaggingML
-
 ## Synopsis
 Combining several multi-label classifiers using Bootstrap AGGregatING
 

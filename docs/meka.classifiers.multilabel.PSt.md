@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.PSt
-
 ## Synopsis
 Pruned Sets with a a threshold so as to be able to predict sets not seen in the training set.For more information see:
 Jesse Read: A Pruned Problem Transformation Method for Multi-label Classification. In: NZ Computer Science Research Student Conference. Christchurch, New Zealand, 2008.

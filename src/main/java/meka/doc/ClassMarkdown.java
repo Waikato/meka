@@ -42,6 +42,9 @@ public class ClassMarkdown
 
 	private static final long serialVersionUID = 814382607780262012L;
 
+	/** whether to skip the title. */
+	protected boolean m_SkipTitle = false;
+
 	/** the classname to generate the markdown for. */
 	protected String m_Classname;
 
@@ -53,6 +56,10 @@ public class ClassMarkdown
 	@Override
 	public Enumeration<Option> listOptions() {
 		Vector<Option> result = new Vector<>();
+
+		result.addElement(new Option(
+			"\tIf set, title is skipped in the output",
+			"skip-title", 0, "-skip-title"));
 
 		result.addElement(new Option(
 			"\tIf set, generator is run in debug mode and\n"
@@ -72,6 +79,8 @@ public class ClassMarkdown
 	public void setOptions(String[] options) throws Exception {
 		String value;
 
+		setSkipTitle(Utils.getFlag("skip-title", options));
+
 		value = Utils.getOption("W", options);
 		if (value.isEmpty())
 			throw new Exception("No classname provided!");
@@ -88,9 +97,39 @@ public class ClassMarkdown
 	@Override
 	public String[] getOptions() {
 		List<String> result = new ArrayList<>(Arrays.asList(super.getOptions()));
+		if (m_SkipTitle)
+			result.add("-skip-title");
 		result.add("-W");
 		result.add(getClassname());
 		return result.toArray(new String[result.size()]);
+	}
+
+	/**
+	 * Set whether skipping title.
+	 *
+	 * @param value true if skipping title
+	 */
+	public void setSkipTitle(boolean value) {
+		m_SkipTitle = value;
+	}
+
+	/**
+	 * Get whether skipping title.
+	 *
+	 * @return true if to skip title
+	 */
+	public boolean getSkipTitle() {
+		return m_SkipTitle;
+	}
+
+	/**
+	 * Returns the tip text for this property
+	 *
+	 * @return tip text for this property suitable for displaying in the
+	 *         explorer/experimenter gui
+	 */
+	public String skipTitleTipText() {
+		return "If set to true, the title is skipped in the output.";
 	}
 
 	/**
@@ -144,7 +183,8 @@ public class ClassMarkdown
 		instance = cls.newInstance();
 
 		// title
-		result.append("# ").append(cls.getName()).append("\n\n");
+		if (!m_SkipTitle)
+			result.append("# ").append(cls.getName()).append("\n\n");
 
 		// global info
 		try {

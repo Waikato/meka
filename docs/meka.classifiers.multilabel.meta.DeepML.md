@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.meta.DeepML
-
 ## Synopsis
 Create a new feature space using a stack of RBMs, then employ a multi-label classifier on top. For more information see:
 Jesse Read, Jaako Hollmen: A Deep Interpretation of Classifier Chains. In: Advances in Intelligent Data Analysis {XIII} - 13th International Symposium, {IDA} 2014, 251--262, 2014.

@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.HASEL
-
 ## Synopsis
 Partitions labels into subsets based on the dataset defined hierarchy (assuming that a '.' in the attribute names defines hierarchical branches, e.g., "Europe.Spain").
 

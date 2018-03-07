@@ -1,5 +1,3 @@
-# meka.classifiers.multitarget.meta.BaggingMT
-
 ## Synopsis
 Multi-Target Version of BaggingML
 It takes votes using the confidence outputs of the base classifier.

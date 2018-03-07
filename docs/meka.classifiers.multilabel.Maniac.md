@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.Maniac
-
 ## Synopsis
 Maniac - Multi-lAbel classificatioN using AutoenCoders.Transforms the labels using layers of autoencoders.For more information see:
 J"org Wicker, Andrey Tyukin, Stefan Kramer: A Nonlinear Label Compression and Transformation Method for Multi-Label Classification using Autoencoders. In: The 20th Pacific Asia Conference on Knowledge Discovery and Data Mining (PAKDD), 328-340, 2016.

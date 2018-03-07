@@ -1,5 +1,3 @@
-# meka.classifiers.multitarget.CCp
-
 ## Synopsis
 CC method with probabilistic output (CCp).
 This version includes probabilistic output in the distributionForInstance, like other MT methods.

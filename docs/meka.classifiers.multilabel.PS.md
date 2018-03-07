@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.PS
-
 ## Synopsis
 The Pruned Sets method (PS).
 Removes examples with P-infrequent labelsets from the training data, then subsamples these labelsets N time to produce N new examples with P-frequent labelsets. Then train a standard LC classifier. The idea is to reduce the number of unique class values that would otherwise need to be learned by LC. Best used in an Ensemble (e.g., EnsembleML).

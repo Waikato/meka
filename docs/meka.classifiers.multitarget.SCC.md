@@ -1,5 +1,3 @@
-# meka.classifiers.multitarget.SCC
-
 ## Synopsis
 Super Class Classifier (SCC).
 The output space is manipulated into super classes (based on label dependence; and pruning and nearest-subset-replacement like NSR), upon which a multi-target base classifier is applied.

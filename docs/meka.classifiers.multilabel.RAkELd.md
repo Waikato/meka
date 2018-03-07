@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.RAkELd
-
 ## Synopsis
 Takes RAndom partition of labELs; like RAkEL but labelsets are disjoint / non-overlapping subsets.
 

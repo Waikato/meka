@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.meta.MBR
-
 ## Synopsis
 BR stacked with feature outputs.
 For more information see:

@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.CT
-
 ## Synopsis
 CC in a trellis structure (rather than a cascaded chain). You set the width and type/connectivity of the trellis, and optionally change the payoff function which guides the placement of nodes (labels) within the trellis.
 

@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.DBPNN
-
 ## Synopsis
 A Deep Back-Propagation Neural Network. For more information see:
 Geoffrey Hinton, Ruslan Salakhutdinov (2006). Reducing the Dimensionality of Data with Neural Networks. Science. 313(5786):504-507.

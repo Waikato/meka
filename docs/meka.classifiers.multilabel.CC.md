@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.CC
-
 ## Synopsis
 Classifier Chains. For more information see:
 Jesse Read, Bernhard Pfahringer, Geoff Holmes, Eibe Frank (2011). Classifier Chains for Multi-label Classification. Machine Learning Journal. 85(3):333-359.

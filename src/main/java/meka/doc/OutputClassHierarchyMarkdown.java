@@ -20,12 +20,18 @@
 
 package meka.doc;
 
+import weka.core.Option;
+import weka.core.Utils;
+
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Generates markdown documentation.
@@ -37,8 +43,86 @@ public class OutputClassHierarchyMarkdown
 
 	private static final long serialVersionUID = -6256728478824354526L;
 
+	/** whether to skip the title. */
+	protected boolean m_SkipTitle = false;
+
 	/** the generator. */
 	protected ClassMarkdown m_Generator;
+
+	/**
+	 * Returns an enumeration describing the available options.
+	 *
+	 * @return an enumeration of all the available options.
+	 */
+	@Override
+	public Enumeration<Option> listOptions() {
+		Vector<Option> result = new Vector<>();
+		Enumeration<Option> enm = super.listOptions();
+		while (enm.hasMoreElements())
+			result.add(enm.nextElement());
+
+		result.addElement(new Option(
+			"\tIf set, title is skipped in the output",
+			"skip-title", 0, "-skip-title"));
+
+		return result.elements();
+	}
+
+	/**
+	 * Parses a given list of options.
+	 *
+	 * @param options the list of options as an array of strings
+	 * @throws  Exception if an option is not supported
+	 */
+	@Override
+	public void setOptions(String[] options) throws Exception {
+		setSkipTitle(Utils.getFlag("skip-title", options));
+
+		super.setOptions(options);
+	}
+
+	/**
+	 * Gets the current option settings for the OptionHandler.
+	 *
+	 * @return the list of current option settings as an array of strings
+	 */
+	@Override
+	public String[] getOptions() {
+		List<String> result = new ArrayList<>(Arrays.asList(super.getOptions()));
+
+		if (m_SkipTitle)
+			result.add("-skip-title");
+
+		return result.toArray(new String[result.size()]);
+	}
+
+	/**
+	 * Set whether skipping title.
+	 *
+	 * @param value true if skipping title
+	 */
+	public void setSkipTitle(boolean value) {
+		m_SkipTitle = value;
+	}
+
+	/**
+	 * Get whether skipping title.
+	 *
+	 * @return true if to skip title
+	 */
+	public boolean getSkipTitle() {
+		return m_SkipTitle;
+	}
+
+	/**
+	 * Returns the tip text for this property
+	 *
+	 * @return tip text for this property suitable for displaying in the
+	 *         explorer/experimenter gui
+	 */
+	public String skipTitleTipText() {
+		return "If set to true, the title is skipped in the output.";
+	}
 
 	/**
 	 * Generates a filename (without path) from the classname.
@@ -66,6 +150,7 @@ public class OutputClassHierarchyMarkdown
 		if (m_Generator == null) {
 			m_Generator = new ClassMarkdown();
 			m_Generator.setDebug(m_Debug);
+			m_Generator.setSkipTitle(m_SkipTitle);
 		}
 
 		System.out.println("      - " + classname + ": " + outFile.getName());

@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable
-
 ## Synopsis
 Incremental Bagging
 

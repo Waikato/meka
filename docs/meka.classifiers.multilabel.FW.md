@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.FW
-
 ## Synopsis
 The Fourclass Pairwise (FW) method.
 Trains a multi-class base classifier for each pair of labels -- (L*(L-1))/2 in total --, each with four possible class values: {00,01,10,11} representing the possible combinations of relevant (1) /irrelevant (0) for the pair. Uses a voting + threshold scheme at testing time where e.g., 01 from pair jk gives one vote to label k; any label with votes above the threshold is considered relevant.

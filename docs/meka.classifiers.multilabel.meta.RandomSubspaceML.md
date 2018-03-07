@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.meta.RandomSubspaceML
-
 ## Synopsis
 Combining several multi-label classifiers in an ensemble where the attribute space for each model is a random subset of the original space.
 

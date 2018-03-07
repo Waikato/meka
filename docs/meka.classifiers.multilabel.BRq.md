@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.BRq
-
 ## Synopsis
 The Binary Relevance Method - Random Subspace ('quick') Version.
 This version is able to downsample the number of instances across the binary models.

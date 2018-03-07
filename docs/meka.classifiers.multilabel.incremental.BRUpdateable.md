@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.incremental.BRUpdateable
-
 ## Synopsis
 Updateable BR
 Must be run with an Updateable base classifier.

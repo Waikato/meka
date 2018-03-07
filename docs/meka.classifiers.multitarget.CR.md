@@ -1,5 +1,3 @@
-# meka.classifiers.multitarget.CR
-
 ## Synopsis
 The Class-Relevance Method.
 (The generalised, multi-target version of the Binary Relevance (BR) method).

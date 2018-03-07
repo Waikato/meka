@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.PMCC
-
 ## Synopsis
 PMCC - Like MCC but selects the top M chains at training time, and uses all them at test time (using Monte Carlo sampling -- this is not a typical majority-vote ensemble method). For more information see:
 Jesse Read, Luca Martino, David Luengo: Efficient Monte Carlo Optimization for Multi-label Classifier Chains. In: ICASSP'13: International Conference on Acoustics, Speech, and Signal Processing, 2013.

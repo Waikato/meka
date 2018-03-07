@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.PCC
-
 ## Synopsis
 Probabalistic Classifier Chains. For more information see:
 Krzysztof Dembczynsky, Weiwei Cheng, Eyke Hullermeier: Bayes Optimal Multi-label Classification via Probabalistic Classifier Chains. In: ICML '10: 27th International Conference on Machine Learning, 2010.

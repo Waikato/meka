@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.BPNN
-
 ## Synopsis
 A multi-label classifier
 

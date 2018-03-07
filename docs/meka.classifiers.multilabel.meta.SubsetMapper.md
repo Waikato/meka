@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.meta.SubsetMapper
-
 ## Synopsis
 Maps the output of a multi-label classifier to a known label combination using the hamming distance.For more information see:
 Robert E. Schapire, Yoram Singer  (1999). Improved Boosting Algorithms Using Confidence-rated Predictions. Machine Learning Journal. 37(3):297-336.

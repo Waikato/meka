@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.PLST
-
 ## Synopsis
 PLST - Principle Label Space Transformation. Uses SVD to generate a matrix that transforms the label space. This implementation is adapted from the MatLab implementation provided by the authors.
 

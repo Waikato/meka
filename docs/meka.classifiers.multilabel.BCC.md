@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.BCC
-
 ## Synopsis
 Bayesian Classifier Chains (BCC).
 Creates a maximum spanning tree based on marginal label dependence. Then employs CC.

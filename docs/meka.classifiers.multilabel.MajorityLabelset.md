@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.MajorityLabelset
-
 ## Synopsis
 Majority Labelset Classifier: Always predict the combination of labels which occurs most frequently in the training set.
 

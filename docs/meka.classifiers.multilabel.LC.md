@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.LC
-
 ## Synopsis
 LC aka LP (Laber Powerset) Method.
 Treats each label combination as a single class in a multi-class learning scheme. The set of possible values of each class is the powerset of labels.

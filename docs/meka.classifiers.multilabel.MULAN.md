@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.MULAN
-
 ## Synopsis
 A wrapper for MULAN classifiers.
 http://mulan.sourceforge.net

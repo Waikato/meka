@@ -1,5 +1,3 @@
-# meka.classifiers.multitarget.CC
-
 ## Synopsis
 The Classifier Chains (CC) method.
 Multi-target version of CC (directly applicable, but the posterior distribution is multidimensional (may help ensemble performance)).

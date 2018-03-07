@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.incremental.RTUpdateable
-
 ## Synopsis
 Updateable RT
 Must be run with an Updateable base classifier.

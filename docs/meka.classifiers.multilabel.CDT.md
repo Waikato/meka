@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.CDT
-
 ## Synopsis
 A Conditional Dependency Trellis. Like CDN, but with a trellis structure (like CT) rather than a fully connected network.For more information see:
 Yuhong Guoand, Suicheng Gu (2011). Multi-Label Classification Using Conditional Dependency Networks.

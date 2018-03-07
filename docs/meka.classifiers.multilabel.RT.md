@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.RT
-
 ## Synopsis
 Duplicates each multi-labelled example, and assigns one of the labels (only) to each copy; then trains a regular multi-class base classifier.
 At test time, a threshold separates relevant from irrelevant labels using the posterior for each class value (i.e., label).

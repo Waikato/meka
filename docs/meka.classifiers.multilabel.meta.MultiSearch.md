@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.meta.MultiSearch
-
 ## Synopsis
 Performs a search of an arbitrary number of parameters of a classifier and chooses the best combination found.
 The properties being explored are totally up to the user.

@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.incremental.CCUpdateable
-
 ## Synopsis
 Updateable CC
 Must be run with an Updateable base classifier.

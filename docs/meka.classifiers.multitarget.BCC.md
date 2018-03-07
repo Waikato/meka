@@ -1,5 +1,3 @@
-# meka.classifiers.multitarget.BCC
-
 ## Synopsis
 The Bayesian Classifier Chains (BCC) method.
 Multi-target version of the BCC method (directly applicable).

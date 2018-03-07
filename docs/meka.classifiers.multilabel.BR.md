@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.BR
-
 ## Synopsis
 The Binary Relevance Method.
 See also MULAN framework:

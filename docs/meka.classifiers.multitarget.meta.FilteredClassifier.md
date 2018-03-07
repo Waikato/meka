@@ -1,5 +1,3 @@
-# meka.classifiers.multitarget.meta.FilteredClassifier
-
 ## Synopsis
 Class for running an arbitrary classifier on data that has been passed through an arbitrary filter. Like the classifier, the structure of the filter is based exclusively on the training data and test instances will be processed by the filter without changing their structure.
 

@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.CDN
-
 ## Synopsis
 A Conditional Dependency Network. For more information see:
 Yuhong Guoand, Suicheng Gu (2011). Multi-Label Classification Using Conditional Dependency Networks.

@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.MLCBMaD
-
 ## Synopsis
 MLC-BMaD - Multi-Label Classification using Boolean Matrix Decomposition. Transforms the labels using a Boolean matrix decomposition, the first resulting matrix are used as latent labels and a classifier is trained to predict them. The second matrix is used in a multiplication to decompress the predicted latent labels.
 For more information see:

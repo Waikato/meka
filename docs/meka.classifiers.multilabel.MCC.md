@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.MCC
-
 ## Synopsis
 Classifier Chains with Monte Carlo optimization. For more information see:
 Jesse Read, Luca Martino, David Luengo: Efficient Monte Carlo Optimization for Multi-label Classifier Chains. In: ICASSP'13: International Conference on Acoustics, Speech, and Signal Processing, 2013.

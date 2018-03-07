@@ -105,7 +105,7 @@ Update documentation
   which will place markdown files in the `docs` directory for each classifier:
 
   ```
-  meka.doc.OutputClassHierarchyMarkdown -output-dir ./docs -superclass meka.classifiers.multilabel.MultiLabelClassifier
+  meka.doc.OutputClassHierarchyMarkdown -skip-title -output-dir ./docs -superclass meka.classifiers.multilabel.MultiLabelClassifier
   ```
   
   Replace the TOC items in `mkdocs.yml` below `Methods` with the ones output

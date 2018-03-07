@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.meta.EnsembleML
-
 ## Synopsis
 Combining several multi-label classifiers in a simple-subset ensemble.
 

@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.CCq
-
 ## Synopsis
 The Classifier Chains  Method - Random Subspace ('quick') Version.
 This version is able to downsample the number of training instances across the binary models.For more information see:

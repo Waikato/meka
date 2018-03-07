@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.incremental.MajorityLabelsetUpdateable
-
 ## Synopsis
 Updateable Majority Labelset Classifier
 

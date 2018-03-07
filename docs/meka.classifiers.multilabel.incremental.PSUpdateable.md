@@ -1,5 +1,3 @@
-# meka.classifiers.multilabel.incremental.PSUpdateable
-
 ## Synopsis
 Updateable PS
 
