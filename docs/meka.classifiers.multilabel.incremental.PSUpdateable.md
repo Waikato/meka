@@ -64,7 +64,7 @@ Updateable PS
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier weka.classifiers.trees.HoeffdingTree:**
+**Options specific to classifier weka.classifiers.trees.HoeffdingTree:**
 
 * `-L`
 

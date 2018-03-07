@@ -53,7 +53,7 @@ J"org Wicker, Andrey Tyukin, Stefan Kramer: A Nonlinear Label Compression and Tr
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier meka.classifiers.multitarget.CR:**
+**Options specific to classifier meka.classifiers.multitarget.CR:**
 
 * `-W <classifier name>`
 
@@ -78,7 +78,7 @@ J"org Wicker, Andrey Tyukin, Stefan Kramer: A Nonlinear Label Compression and Tr
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier weka.classifiers.functions.LinearRegression:**
+**Options specific to classifier weka.classifiers.functions.LinearRegression:**
 
 * `-S <number of selection method>`
 

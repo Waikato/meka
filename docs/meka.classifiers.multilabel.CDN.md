@@ -51,7 +51,7 @@ Yuhong Guoand, Suicheng Gu (2011). Multi-Label Classification Using Conditional 
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier weka.classifiers.trees.J48:**
+**Options specific to classifier weka.classifiers.trees.J48:**
 
 * `-U`
 

@@ -63,7 +63,7 @@ Jesse Read, Jaako Hollmen: A Deep Interpretation of Classifier Chains. In: Advan
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier meka.classifiers.multilabel.BR:**
+**Options specific to classifier meka.classifiers.multilabel.BR:**
 
 * `-W <classifier name>`
 
@@ -88,7 +88,7 @@ Jesse Read, Jaako Hollmen: A Deep Interpretation of Classifier Chains. In: Advan
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier weka.classifiers.trees.J48:**
+**Options specific to classifier weka.classifiers.trees.J48:**
 
 * `-U`
 

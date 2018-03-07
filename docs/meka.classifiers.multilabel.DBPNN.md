@@ -65,7 +65,7 @@ Geoffrey Hinton, Ruslan Salakhutdinov (2006). Reducing the Dimensionality of Dat
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier weka.classifiers.trees.J48:**
+**Options specific to classifier weka.classifiers.trees.J48:**
 
 * `-U`
 

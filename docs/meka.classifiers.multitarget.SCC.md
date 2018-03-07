@@ -68,7 +68,7 @@ Jesse Read, Concha Blieza, Pedro Larranaga: Multi-Dimensional Classification wit
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier meka.classifiers.multitarget.CC:**
+**Options specific to classifier meka.classifiers.multitarget.CC:**
 
 * `-S <value>`
 
@@ -98,7 +98,7 @@ Jesse Read, Concha Blieza, Pedro Larranaga: Multi-Dimensional Classification wit
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier weka.classifiers.trees.J48:**
+**Options specific to classifier weka.classifiers.trees.J48:**
 
 * `-U`
 

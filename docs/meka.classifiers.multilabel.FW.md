@@ -28,7 +28,7 @@ Trains a multi-class base classifier for each pair of labels -- (L*(L-1))/2 in t
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier weka.classifiers.trees.J48:**
+**Options specific to classifier weka.classifiers.trees.J48:**
 
 * `-U`
 

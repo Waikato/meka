@@ -71,7 +71,7 @@ Draws M subsets of size k from the set of labels, and trains PS upon each one, t
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier weka.classifiers.trees.J48:**
+**Options specific to classifier weka.classifiers.trees.J48:**
 
 * `-U`
 

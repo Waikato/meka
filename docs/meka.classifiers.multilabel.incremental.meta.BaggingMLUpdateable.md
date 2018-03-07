@@ -50,7 +50,7 @@ Incremental Bagging
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier meka.classifiers.multilabel.incremental.BRUpdateable:**
+**Options specific to classifier meka.classifiers.multilabel.incremental.BRUpdateable:**
 
 * `-W <classifier name>`
 
@@ -75,7 +75,7 @@ Incremental Bagging
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier weka.classifiers.trees.HoeffdingTree:**
+**Options specific to classifier weka.classifiers.trees.HoeffdingTree:**
 
 * `-L`
 

@@ -53,7 +53,7 @@ i.e.: y[j+L] := P(y[j]|x) (this is usefull when used in an ensemble).
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier weka.classifiers.trees.J48:**
+**Options specific to classifier weka.classifiers.trees.J48:**
 
 * `-U`
 

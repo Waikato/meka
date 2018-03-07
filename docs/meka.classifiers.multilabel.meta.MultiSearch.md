@@ -90,7 +90,7 @@ Using the weka.core.setupgenerator.ParameterGroup parameter, it is possible to g
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier meka.classifiers.multilabel.RAkEL:**
+**Options specific to classifier meka.classifiers.multilabel.RAkEL:**
 
 * `-M <num>`
 
@@ -141,7 +141,7 @@ Using the weka.core.setupgenerator.ParameterGroup parameter, it is possible to g
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier weka.classifiers.trees.J48:**
+**Options specific to classifier weka.classifiers.trees.J48:**
 
 * `-U`
 

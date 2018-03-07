@@ -50,7 +50,7 @@ For more information see:
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier meka.classifiers.multitarget.CR:**
+**Options specific to classifier meka.classifiers.multitarget.CR:**
 
 * `-W <classifier name>`
 
@@ -75,7 +75,7 @@ For more information see:
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier weka.classifiers.functions.LinearRegression:**
+**Options specific to classifier weka.classifiers.functions.LinearRegression:**
 
 * `-S <number of selection method>`
 

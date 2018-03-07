@@ -183,7 +183,7 @@ public class ClassMarkdown
 					result.append("\n");
 				}
 				else {
-					result.append("* **").append(option.synopsis().trim()).append("**\n");
+					result.append("**").append(option.synopsis().trim()).append("**\n");
 					result.append("\n");
 				}
 			}

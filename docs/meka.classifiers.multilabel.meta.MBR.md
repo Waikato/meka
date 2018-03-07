@@ -40,7 +40,7 @@ Shantanu Godbole, Sunita Sarawagi: Discriminative Methods for Multi-labeled Clas
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier meka.classifiers.multilabel.BR:**
+**Options specific to classifier meka.classifiers.multilabel.BR:**
 
 * `-W <classifier name>`
 
@@ -65,7 +65,7 @@ Shantanu Godbole, Sunita Sarawagi: Discriminative Methods for Multi-labeled Clas
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier weka.classifiers.trees.J48:**
+**Options specific to classifier weka.classifiers.trees.J48:**
 
 * `-U`
 

@@ -40,7 +40,7 @@ It takes votes using the confidence outputs of the base classifier.
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier meka.classifiers.multitarget.CC:**
+**Options specific to classifier meka.classifiers.multitarget.CC:**
 
 * `-S <value>`
 
@@ -70,7 +70,7 @@ It takes votes using the confidence outputs of the base classifier.
 
     The desired batch size for batch prediction  (default 100).
 
-* **Options specific to classifier weka.classifiers.trees.J48:**
+**Options specific to classifier weka.classifiers.trees.J48:**
 
 * `-U`
 
