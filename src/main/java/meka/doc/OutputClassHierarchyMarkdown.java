@@ -68,6 +68,7 @@ public class OutputClassHierarchyMarkdown
 			m_Generator.setDebug(m_Debug);
 		}
 
+		System.out.println("      - " + classname + ": " + outFile.getName());
 		m_Generator.setClassname(classname);
 		content = m_Generator.generate();
 		lines = Arrays.asList(content.split("\n"));

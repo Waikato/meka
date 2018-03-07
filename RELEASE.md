@@ -101,6 +101,16 @@ Update documentation
 --------------------
 
 * update artifact version (`maven.md`)
+* Update methods using the following command (add any additional methods to git),
+  which will place markdown files in the `docs` directory for each classifier:
+
+  ```
+  meka.doc.OutputClassHierarchyMarkdown -output-dir ./docs -superclass meka.classifiers.multilabel.MultiLabelClassifier
+  ```
+  
+  Replace the TOC items in `mkdocs.yml` below `Methods` with the ones output
+  on stdout from the above command. 
+
 * test 
   
   ```

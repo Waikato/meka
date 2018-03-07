@@ -259,6 +259,14 @@ public abstract class AbstractOutputClassHierarchy
 	protected abstract String generateFilename(String classname);
 
 	/**
+	 * Gets execute before iterating over the classes of the hierarchy.
+	 * <br>
+	 * Default implementation does nothing.
+	 */
+	protected void preGenerate() {
+	}
+
+	/**
 	 * Generates the documentation for the specified class.
 	 *
 	 * @param classname the class to generate the documentation for
@@ -292,6 +300,14 @@ public abstract class AbstractOutputClassHierarchy
 	}
 
 	/**
+	 * Gets execute after iterating over the classes of the hierarchy.
+	 * <br>
+	 * Default implementation does nothing.
+	 */
+	protected void postGenerate() {
+	}
+
+	/**
 	 * Generates the documentation.
 	 *
 	 * @throws Exception if generation fails
@@ -301,7 +317,9 @@ public abstract class AbstractOutputClassHierarchy
 		msg = check();
 		if (msg != null)
 			throw new IllegalStateException(msg);
+		preGenerate();
 		doGenerate();
+		postGenerate();
 	}
 
 	/**
