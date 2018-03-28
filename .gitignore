@@ -36,3 +36,6 @@ syntax: glob
 *.synctex.gz
 *.thm
 *.toc
+
+# mkdocs
+site/
