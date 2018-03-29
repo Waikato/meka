@@ -2,8 +2,13 @@
     "docs": [
         {
             "location": "/",
-            "text": "The MEKA project provides an open source implementation of methods for \nmulti-label\n \nlearning and evaluation. In \nmulti-label classification\n, \nwe want to predict multiple output variables for each input instance. This different from the \n'standard' case (binary, or multi-class classification) which involves only a \nsingle target variable. MEKA is based on the \nWEKA\n \nMachine Learning Toolkit; it includes dozens of multi-label methods from the scientific literature, \nas well as a wrapper to the related \nMULAN\n framework.\n\n\nMain developers\n\n\n\n\nJesse Read\n (Ecole Polytechnique, France)\n\n\nPeter Reutemann\n (University of Waikato, New Zealand)\n\n\nJoerg Wicker\n (University of Auckland, New Zealand)\n\n\n\n\nScreenshots",
+            "text": "MEKA\n\n\nThe MEKA project provides an open source implementation of methods for \nmulti-label\n \nlearning and evaluation. In \nmulti-label classification\n, \nwe want to predict multiple output variables for each input instance. This different from the \n'standard' case (binary, or multi-class classification) which involves only a \nsingle target variable. MEKA is based on the \nWEKA\n \nMachine Learning Toolkit; it includes dozens of multi-label methods from the scientific literature, \nas well as a wrapper to the related \nMULAN\n framework.\n\n\nMain developers\n\n\n\n\nJesse Read\n (Ecole Polytechnique, France)\n\n\nPeter Reutemann\n (University of Waikato, New Zealand)\n\n\nJoerg Wicker\n (University of Auckland, New Zealand)\n\n\n\n\nScreenshots",
             "title": "Home"
+        },
+        {
+            "location": "/#meka",
+            "text": "The MEKA project provides an open source implementation of methods for  multi-label  \nlearning and evaluation. In  multi-label classification , \nwe want to predict multiple output variables for each input instance. This different from the \n'standard' case (binary, or multi-class classification) which involves only a \nsingle target variable. MEKA is based on the  WEKA  \nMachine Learning Toolkit; it includes dozens of multi-label methods from the scientific literature, \nas well as a wrapper to the related  MULAN  framework.",
+            "title": "MEKA"
         },
         {
             "location": "/#main-developers",
@@ -17,13 +22,18 @@
         },
         {
             "location": "/news/",
-            "text": "NEW RELEASE April 12, 2017:\n\n\nMeka 1.9.1\n is released. \nThis release gives several minor improvements and fixes over the previous version, \nbut it also includes new features and new classifiers. See the \n\nREADME\n regarding changes.\n\n\nMEKA in your Java code Dec 08, 2016:\n\n\nAdded some examples of how to \nuse Meka in your Java code\n.\n\n\nMeka in JMLR-mloss April 29, 2016:\n\n\nMeka published in Journal of Machine Learning Research MLOSS track. You can now \ncite\n Meka. \n\n\nMove to Github Nov 04, 2015:\n\n\nMeka is moving to \nGitHub\n. \nThe \nreleases and other files\n \nwill still be updated at SourceForge.net, but the code repository is now: \nhttps://github.com/Waikato/meka.",
+            "text": "New Release March 29, 2018:\n\n\nMeka 1.9.2\n is released. \n\n\nNew Release April 12, 2017:\n\n\nMeka 1.9.1\n is released. \nThis release gives several minor improvements and fixes over the previous version, \nbut it also includes new features and new classifiers. See the \n\nREADME\n regarding changes.\n\n\nMEKA in your Java code Dec 08, 2016:\n\n\nAdded some examples of how to \nuse Meka in your Java code\n.\n\n\nMeka in JMLR-mloss April 29, 2016:\n\n\nMeka published in Journal of Machine Learning Research MLOSS track. You can now \ncite\n Meka. \n\n\nMove to Github Nov 04, 2015:\n\n\nMeka is moving to \nGitHub\n. \nThe \nreleases and other files\n \nwill still be updated at SourceForge.net, but the code repository is now: \nhttps://github.com/Waikato/meka.",
             "title": "News"
+        },
+        {
+            "location": "/news/#new-release-march-29-2018",
+            "text": "Meka 1.9.2  is released.",
+            "title": "New Release March 29, 2018:"
         },
         {
             "location": "/news/#new-release-april-12-2017",
             "text": "Meka 1.9.1  is released. \nThis release gives several minor improvements and fixes over the previous version, \nbut it also includes new features and new classifiers. See the  README  regarding changes.",
-            "title": "NEW RELEASE April 12, 2017:"
+            "title": "New Release April 12, 2017:"
         },
         {
             "location": "/news/#meka-in-your-java-code-dec-08-2016",
@@ -42,12 +52,32 @@
         },
         {
             "location": "/documentation/",
-            "text": "To get started, \ndownload\n \nMEKA and run \n./run.sh\n (\nrun.bat\n on Windows) to launch the GUI.\n\n\nThe \nMEKA tutorial (pdf)\n \nhas numerous examples on how to run and extend MEKA.\n\n\nSee the list of methods available in MEKA, and (command-line) examples on how to use them.\n\n\nThere are some \nexamples\n \non how to use Meka in your Java code.\n\n\nThe \nAPI reference\n is available.\n\n\nMEKA originated from implementations of work from various \npublications\n \n(note also the references therein). There are some \ntutorials/slides\n \nabout multi-label and multi-target classification in general.\n\n\nHave a specific problem or query? Post to MEKA's \nMailing List\n \n(please avoid contacting developers directly for MEKA-related help).",
+            "text": "Quick Start\n\n\nTo get started, \ndownload\n \nMEKA and run \n./run.sh\n (\nrun.bat\n on Windows) to launch the GUI.\n\n\nTutorial\n\n\nThe \nMEKA tutorial (pdf)\n \nhas numerous examples on how to run and extend MEKA.\n\n\nSee a \nlist of the most common methods available in MEKA\n, and (command-line) examples on how to use them.\n\n\nThere are some \nexamples\n on how to use Meka in your Java code.\n\n\nThe \nAPI reference\n is available.\n\n\nReferences\n\n\nMEKA originated from implementations of work from various \npublications\n \n(note also the references therein). There are some \ntutorials/slides\n \nabout multi-label and multi-target classification in general.\n\n\nHelp\n\n\nHave a specific problem or query? Post to MEKA's \nMailing List\n \n(please avoid contacting developers directly for MEKA-related help).",
             "title": "Documentation"
         },
         {
+            "location": "/documentation/#quick-start",
+            "text": "To get started,  download  \nMEKA and run  ./run.sh  ( run.bat  on Windows) to launch the GUI.",
+            "title": "Quick Start"
+        },
+        {
+            "location": "/documentation/#tutorial",
+            "text": "The  MEKA tutorial (pdf)  \nhas numerous examples on how to run and extend MEKA.  See a  list of the most common methods available in MEKA , and (command-line) examples on how to use them.  There are some  examples  on how to use Meka in your Java code.  The  API reference  is available.",
+            "title": "Tutorial"
+        },
+        {
+            "location": "/documentation/#references",
+            "text": "MEKA originated from implementations of work from various  publications  \n(note also the references therein). There are some  tutorials/slides  \nabout multi-label and multi-target classification in general.",
+            "title": "References"
+        },
+        {
+            "location": "/documentation/#help",
+            "text": "Have a specific problem or query? Post to MEKA's  Mailing List  \n(please avoid contacting developers directly for MEKA-related help).",
+            "title": "Help"
+        },
+        {
             "location": "/downloads/",
-            "text": "Download MEKA at \nsourceforge.net\n.\n\n\nGet a \nnightly snapshot\n.\n\n\nCheckout the code from GitHub: https://github.com/waikato/meka",
+            "text": "Download MEKA at \nsourceforge.net\n.\n\n\nGet a \nnightly snapshot\n.\n\n\nCheckout the code from GitHub: \nhttps://github.com/waikato/meka",
             "title": "Downloads"
         },
         {
@@ -62,17 +92,17 @@
         },
         {
             "location": "/maven/",
-            "text": "Add the following dependency to your \npom.xml\n:\n\n\n  <dependency>\n    <groupId>net.sf.meka</groupId>\n    <artifactId>meka</artifactId>\n    <version>1.9.1</version>\n  </dependency>",
+            "text": "Add the following dependency to your \npom.xml\n:\n\n\n  <dependency>\n    <groupId>net.sf.meka</groupId>\n    <artifactId>meka</artifactId>\n    <version>1.9.2</version>\n  </dependency>",
             "title": "Maven"
         },
         {
             "location": "/links/",
-            "text": "Other software that uses MEKA\n\n\n\n\nADAMS\n framework - integrates MEKA into workflows\n\n\nMOA environment for data streams\n \n  can use Updateable MEKA classifiers\n\n\nscikit-multilearn\n can interface to MEKA in Python\n\n\nKNIME\n \n  framework, includes a plugin to integrate Meka Classifiers into workflows\n\n\nDKPro Text Classification Framework\n\n\n\n\nOther multi-label links\n\n\n\n\nMULAN Framework for Multi-label Classification\n\n\nMulan Multi-label Group\n from the \n  Machine Learning and Knowledge Discovery Group in the Aristotle University of Thessaloniki.",
+            "text": "Other software that uses MEKA\n\n\n\n\nADAMS\n framework - integrates MEKA into workflows\n\n\nMOA environment for data streams\n \n  can use Updateable MEKA classifiers\n\n\nscikit-multilearn\n can interface to MEKA in Python\n\n\nKNIME\n \n  framework, includes a plugin to integrate Meka Classifiers into workflows\n\n\nDKPro Text Classification Framework\n\n\nscikit-multiflow\n uses multi-label classifiers in Python\n\n\n\n\nOther multi-label links\n\n\n\n\nMULAN Framework for Multi-label Classification\n\n\nMulan Multi-label Group\n from the \n  Machine Learning and Knowledge Discovery Group in the Aristotle University of Thessaloniki.",
             "title": "Links"
         },
         {
             "location": "/links/#other-software-that-uses-meka",
-            "text": "ADAMS  framework - integrates MEKA into workflows  MOA environment for data streams  \n  can use Updateable MEKA classifiers  scikit-multilearn  can interface to MEKA in Python  KNIME  \n  framework, includes a plugin to integrate Meka Classifiers into workflows  DKPro Text Classification Framework",
+            "text": "ADAMS  framework - integrates MEKA into workflows  MOA environment for data streams  \n  can use Updateable MEKA classifiers  scikit-multilearn  can interface to MEKA in Python  KNIME  \n  framework, includes a plugin to integrate Meka Classifiers into workflows  DKPro Text Classification Framework  scikit-multiflow  uses multi-label classifiers in Python",
             "title": "Other software that uses MEKA"
         },
         {
