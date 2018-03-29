@@ -243,6 +243,68 @@
         </plugins>
       </build>
     </profile>
+
+    <profile>
+      <id>update-br-help</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>br-help</id>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-classpath</argument>
+                <classpath />
+                <argument>meka.classifiers.multilabel.BR</argument>
+              </arguments>
+              <outputFile>src/main/latex/Tutorial/help.txt</outputFile>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>update-br-eval</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>br-run</id>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-classpath</argument>
+                <classpath />
+                <argument>meka.classifiers.multilabel.BR</argument>
+                <argument>-t</argument>
+                <argument>src/main/data/Music.arff</argument>
+                <argument>-W</argument>
+                <argument>weka.classifiers.bayes.NaiveBayes</argument>
+              </arguments>
+              <outputFile>src/main/latex/Tutorial/eval.txt</outputFile>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
   <build>
@@ -462,51 +524,13 @@
              mvn exec:exec -Pgui -Dmeka.heap=-Xmx4g
              mvn exec:exec -Pgui -Dmeka.mainclass=meka.gui.guichooser.GUIChooser -Dmeka.heap=-Xmx4g
 
+           for updating eval.txt and help.txt:
+             mvn exec:exec -Pupdate-br-eval
+             mvn exec:exec -Pupdate-br-help
+
            for starting an arbitrary class:
              mvn exec:java -Dexec.mainClass="meka.classifiers.multilabel.BR" -Dexec.args="-t Music.arff"
       -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>br-help</id>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <phase>compile</phase>
-            <configuration>
-              <executable>java</executable>
-              <arguments>
-                <argument>-classpath</argument>
-                <classpath />
-                <argument>meka.classifiers.multilabel.BR</argument>
-              </arguments>
-              <outputFile>src/main/latex/Tutorial/help.txt</outputFile>
-            </configuration>
-          </execution>
-          <execution>
-            <id>br-run</id>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <phase>compile</phase>
-            <configuration>
-              <executable>java</executable>
-              <arguments>
-                <argument>-classpath</argument>
-                <classpath />
-                <argument>meka.classifiers.multilabel.BR</argument>
-                <argument>-t</argument>
-                <argument>src/main/data/Music.arff</argument>
-                <argument>-W</argument>
-                <argument>weka.classifiers.bayes.NaiveBayes</argument>
-              </arguments>
-              <outputFile>src/main/latex/Tutorial/eval.txt</outputFile>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 </project>
