@@ -22,6 +22,7 @@ package meka.classifiers.multitarget.meta;
 
 import meka.classifiers.AbstractMultiSearch;
 import meka.classifiers.multilabel.MultiLabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import meka.classifiers.multitarget.MultiTargetClassifier;
 import meka.classifiers.multitarget.RAkELd;
 import weka.classifiers.Classifier;
@@ -301,6 +302,6 @@ public class MultiSearch
 	 * @param args 	the options
 	 */
 	public static void main(String[] args) {
-		runClassifier(new MultiSearch(), args);
+		ProblemTransformationMethod.evaluation(new MultiSearch(), args);
 	}
 }

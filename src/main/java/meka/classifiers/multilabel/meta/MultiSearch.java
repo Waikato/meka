@@ -22,6 +22,7 @@ package meka.classifiers.multilabel.meta;
 
 import meka.classifiers.AbstractMultiSearch;
 import meka.classifiers.multilabel.MultiLabelClassifier;
+import meka.classifiers.multilabel.ProblemTransformationMethod;
 import meka.classifiers.multilabel.RAkEL;
 import weka.classifiers.Classifier;
 import weka.core.RevisionUtils;
@@ -312,6 +313,6 @@ public class MultiSearch
 	 * @param args 	the options
 	 */
 	public static void main(String[] args) {
-		runClassifier(new MultiSearch(), args);
+		ProblemTransformationMethod.evaluation(new MultiSearch(), args);
 	}
 }
