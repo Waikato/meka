@@ -87,7 +87,7 @@ This tutorial applies to \framework{\MEKA} version {\version}.
 \framework{\MEKA} requires:
 
 \begin{itemize}
-	 \item Java version 1.7 or above
+	 \item Java version 1.8 or above
 \end{itemize}
 
 %\subsection{Downloading}
@@ -447,6 +447,21 @@ As in the Explorer, you will see a number of tabs. The following process will gu
 \end{enumerate}
 
 If you wish to carry out this process from within Java code, you can inspect the file \texttt{./src/main/java/meka/experiment/ExperimentExample.java} to see how it can be done.
+
+\subsubsection{Scripting}
+
+With the \textit{Scripting} tool, it is possible to write Java code without having
+to compile. For this to work, the tool relies on Java's \textit{jshell} utility,
+which is available starting with Java 9. This tool makes up for the lack of a
+simple command-line interface, like Weka has.
+
+\begin{figure}
+	\centering
+	\includegraphics[height=0.55\textwidth]{scripting.png}
+	\caption{\label{screen:graphs} \framework{MEKA}'s GUI interface; Java scripting.}
+\end{figure}
+
+
 
 \subsection{Optimizing parameters}
 MEKA comes with two parameter optimization meta-classifiers:
