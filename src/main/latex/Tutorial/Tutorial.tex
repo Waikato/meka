@@ -455,6 +455,40 @@ to compile. For this to work, the tool relies on Java's \textit{jshell} utility\
 which is available starting with Java 9. This tool makes up for the lack of a
 simple command-line interface, like Weka has.
 
+\noindent Here is an example script:
+{\scriptsize
+\begin{verbatim}
+import meka.classifiers.multilabel.BR;
+import meka.classifiers.multilabel.Evaluation;
+import meka.core.MLUtils;
+import meka.core.Result;
+import weka.core.converters.ConverterUtils.DataSource;
+import weka.core.Instances;
+
+Instances data = DataSource.read("/some/where/Music.arff");
+MLUtils.prepareData(data);
+BR br = new BR();
+Result res = Evaluation.cvModel(br, data, 10, "1");
+System.out.println(res);
+\end{verbatim}}
+
+\noindent If you only want to execute a classifier's command-line options
+instead of going low-level Java, you can do this, too. For this, you only
+need to call the \textit{main} method of a classifier (since this method is
+static, you don't need to instantiate an object)):
+{\scriptsize
+\begin{verbatim}
+import meka.classifiers.multilabel.BR;
+
+BR.main(new String[]{
+   "-t",
+   "/some/where/Music.arff",
+});
+\end{verbatim}}
+\noindent \textbf{NB:} When using the \textit{main} method, jshell does not
+exit properly and you need to stop the execution yourself (you can ignore the
+error that pops up then).
+
 \begin{figure}
 	\centering
 	\includegraphics[height=0.55\textwidth]{scripting.png}
