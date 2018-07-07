@@ -27,3 +27,6 @@ meka.experiment.statisticsexporters.EvaluationStatisticsExporter=meka.gui.goe.Ge
 meka.experiment.statisticsexporters.EvaluationStatisticsExporter[]=weka.gui.GenericArrayEditor
 weka.core.setupgenerator.AbstractParameter=meka.gui.goe.GenericObjectEditor
 weka.core.setupgenerator.AbstractParameter[]=weka.gui.GenericArrayEditor
+weka.classifiers.meta.multisearch.AbstractSearch=meka.gui.goe.GenericObjectEditor
+weka.classifiers.meta.multisearch.AbstractSearch[]=weka.gui.GenericArrayEditor
+
