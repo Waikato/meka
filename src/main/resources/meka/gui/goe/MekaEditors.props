@@ -25,3 +25,5 @@ meka.experiment.evaluators.Evaluator=meka.gui.goe.GenericObjectEditor
 meka.experiment.evaluators.Evaluator[]=weka.gui.GenericArrayEditor
 meka.experiment.statisticsexporters.EvaluationStatisticsExporter=meka.gui.goe.GenericObjectEditor
 meka.experiment.statisticsexporters.EvaluationStatisticsExporter[]=weka.gui.GenericArrayEditor
+weka.core.setupgenerator.AbstractParameter=meka.gui.goe.GenericObjectEditor
+weka.core.setupgenerator.AbstractParameter[]=weka.gui.GenericArrayEditor

@@ -113,3 +113,7 @@ meka.gui.experimenter.AbstractExperimenterTab=\
 # The additional Experimenter menu items
 meka.gui.experimenter.menu.AbstractExperimenterMenuItem=\
   meka.gui.experimenter.menu
+
+# search parameters for multisearch
+weka.core.setupgenerator.AbstractParameter=\
+  weka.core.setupgenerator
