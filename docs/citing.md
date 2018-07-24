@@ -1,4 +1,4 @@
-Please use the following to cite MEKA:
+Please use the following to cite the [JMLR-MLOSS paper](http://jmlr.org/papers/volume17/12-164/12-164.pdf) introducing MEKA:
 
 ```
 @article{MEKA,

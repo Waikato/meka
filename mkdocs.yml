@@ -3,15 +3,15 @@ theme: readthedocs
 repo_url: https://github.com/Waikato/meka
 site_description: MEKA Documentation
 pages:
-    - Home: index.md
+    - MEKA: index.md
     - News: news.md
     - Documentation: documentation.md
     - Downloads: downloads.md
     - Datasets: datasets.md
     - Citing: citing.md
     - Maven: maven.md
-    - Links: links.md
-    - Methods:
+    - An Overview of Methods in MEKA: methods.md
+    - Methods (API):
       - meka.classifiers.multilabel.BCC: meka.classifiers.multilabel.BCC.md
       - meka.classifiers.multilabel.BPNN: meka.classifiers.multilabel.BPNN.md
       - meka.classifiers.multilabel.BR: meka.classifiers.multilabel.BR.md
