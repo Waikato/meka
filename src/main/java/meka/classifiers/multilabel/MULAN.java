@@ -52,7 +52,9 @@ public class MULAN extends ProblemTransformationMethod {
 
 	/** for serialization. */
 	private static final long serialVersionUID = 1720289364996202350L;
-	
+
+	protected static Random m_r = new Random(0);
+
 	protected MultiLabelLearner m_MULAN = null;
 
 	//HOMER.Random.3.LabelPowerset
@@ -63,12 +65,12 @@ public class MULAN extends ProblemTransformationMethod {
 
 	/**
 	 * Description to display in the GUI.
-	 * 
+	 *
 	 * @return		the description
 	 */
 	@Override
 	public String globalInfo() {
-		return 
+		return
 				"A wrapper for MULAN classifiers.\n"
 				+ "http://mulan.sourceforge.net";
 	}
@@ -112,15 +114,23 @@ public class MULAN extends ProblemTransformationMethod {
 
 	}
 
+	/**
+	 * Returns a random long value for the temp filename.
+	 *
+	 * @return the long value
+	 */
+	protected synchronized long nextLong() {
+		return m_r.nextLong();
+	}
+
 	@Override
 	public void buildClassifier(Instances instances) throws Exception {
 	  	testCapabilities(instances);
-	  	
+
 		long before = System.currentTimeMillis();
 		if (getDebug()) System.err.print(" moving target attributes to the beginning ... ");
 
-		Random r = instances.getRandomNumberGenerator(0);
-		String name = "temp_"+MLUtils.getDatasetName(instances)+"_"+r.nextLong()+".arff";
+		String name = "temp_"+MLUtils.getDatasetName(instances)+"_"+System.currentTimeMillis() + "_"+nextLong()+".arff";
 		System.err.println("Using temporary file: "+name);
 		int L = instances.classIndex();
 
@@ -235,5 +245,4 @@ public class MULAN extends ProblemTransformationMethod {
 	public static void main(String args[]) {
 		ProblemTransformationMethod.evaluation(new MULAN(), args);
 	}
-
 }
