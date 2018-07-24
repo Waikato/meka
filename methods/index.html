@@ -3,31 +3,28 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>An Overview of Methods in MEKA - MEKA</title>
   
-
   <link rel="shortcut icon" href="../img/favicon.ico">
-
-  
+  <title>An Overview of Methods in MEKA - MEKA</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="../css/highlight.css">
-
   
   <script>
     // Current page data
     var mkdocs_page_name = "An Overview of Methods in MEKA";
+    var mkdocs_page_input_path = "methods.md";
+    var mkdocs_page_url = "/methods/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
   <script src="../js/modernizr-2.8.3.min.js"></script>
-  <script type="text/javascript" src="../js/highlight.pack.js"></script>
-  <script src="../js/theme.js"></script> 
-
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
   
 </head>
 
@@ -47,475 +44,293 @@
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-        <ul class="current">
+	<ul class="current">
+	  
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="..">Home</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="..">MEKA</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../news/">News</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../news/">News</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../documentation/">Documentation</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../documentation/">Documentation</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../downloads/">Downloads</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../downloads/">Downloads</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../datasets/">Datasets</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../datasets/">Datasets</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../citing/">Citing</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../citing/">Citing</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../maven/">Maven</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../maven/">Maven</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../links/">Links</a>
-        
-    </li>
-<li>
-          
-            <li>
-    <li class="toctree-l1 current">
-        <a class="current" href="./">An Overview of Methods in MEKA</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#methods-in-meka">Methods in MEKA</a></li>
-                
-                    <li><a class="toctree-l4" href="#binary-relevance-methods">Binary Relevance Methods</a></li>
-                
-                    <li><a class="toctree-l4" href="#label-powerset-methods">Label Powerset Methods</a></li>
-                
-                    <li><a class="toctree-l4" href="#pairwise-and-threshold-methods">Pairwise and Threshold Methods</a></li>
-                
-                    <li><a class="toctree-l4" href="#other-methods">Other Methods</a></li>
-                
-                    <li><a class="toctree-l4" href="#updateable-methods-for-data-streams">Updateable Methods for Data Streams</a></li>
-                
-                    <li><a class="toctree-l4" href="#notes-on-scalability">Notes on Scalability</a></li>
-                
-            
-            </ul>
-        
-    </li>
-<li>
-          
-            <li>
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">An Overview of Methods in MEKA</a>
     <ul class="subnav">
-    <li><span>Methods (API)</span></li>
-
-        
             
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.BCC/">meka.classifiers.multilabel.BCC</a>
+    <li class="toctree-l2"><a href="#methods-in-meka">Methods in MEKA</a></li>
+    
+        <ul>
         
-    </li>
+            <li><a class="toctree-l3" href="#binary-relevance-methods">Binary Relevance Methods</a></li>
+        
+            <li><a class="toctree-l3" href="#label-powerset-methods">Label Powerset Methods</a></li>
+        
+            <li><a class="toctree-l3" href="#pairwise-and-threshold-methods">Pairwise and Threshold Methods</a></li>
+        
+            <li><a class="toctree-l3" href="#other-methods">Other Methods</a></li>
+        
+            <li><a class="toctree-l3" href="#updateable-methods-for-data-streams">Updateable Methods for Data Streams</a></li>
+        
+            <li><a class="toctree-l3" href="#notes-on-scalability">Notes on Scalability</a></li>
+        
+        </ul>
+    
 
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.BPNN/">meka.classifiers.multilabel.BPNN</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.BR/">meka.classifiers.multilabel.BR</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.BRq/">meka.classifiers.multilabel.BRq</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.CC/">meka.classifiers.multilabel.CC</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.CCq/">meka.classifiers.multilabel.CCq</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.CDN/">meka.classifiers.multilabel.CDN</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.CDT/">meka.classifiers.multilabel.CDT</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.CT/">meka.classifiers.multilabel.CT</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.DBPNN/">meka.classifiers.multilabel.DBPNN</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.FW/">meka.classifiers.multilabel.FW</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.HASEL/">meka.classifiers.multilabel.HASEL</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.incremental.BRUpdateable/">meka.classifiers.multilabel.incremental.BRUpdateable</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.incremental.CCUpdateable/">meka.classifiers.multilabel.incremental.CCUpdateable</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.incremental.MajorityLabelsetUpdateable/">meka.classifiers.multilabel.incremental.MajorityLabelsetUpdateable</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable/">meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.incremental.PSUpdateable/">meka.classifiers.multilabel.incremental.PSUpdateable</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.incremental.RTUpdateable/">meka.classifiers.multilabel.incremental.RTUpdateable</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.LC/">meka.classifiers.multilabel.LC</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.MajorityLabelset/">meka.classifiers.multilabel.MajorityLabelset</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.Maniac/">meka.classifiers.multilabel.Maniac</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.MCC/">meka.classifiers.multilabel.MCC</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.meta.BaggingML/">meka.classifiers.multilabel.meta.BaggingML</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.meta.BaggingMLdup/">meka.classifiers.multilabel.meta.BaggingMLdup</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.meta.CM/">meka.classifiers.multilabel.meta.CM</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.meta.DeepML/">meka.classifiers.multilabel.meta.DeepML</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.meta.EM/">meka.classifiers.multilabel.meta.EM</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.meta.EnsembleML/">meka.classifiers.multilabel.meta.EnsembleML</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.meta.FilteredClassifier/">meka.classifiers.multilabel.meta.FilteredClassifier</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.meta.MBR/">meka.classifiers.multilabel.meta.MBR</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.meta.MultiSearch/">meka.classifiers.multilabel.meta.MultiSearch</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.meta.RandomSubspaceML/">meka.classifiers.multilabel.meta.RandomSubspaceML</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.meta.SubsetMapper/">meka.classifiers.multilabel.meta.SubsetMapper</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.MLCBMaD/">meka.classifiers.multilabel.MLCBMaD</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.MULAN/">meka.classifiers.multilabel.MULAN</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.PCC/">meka.classifiers.multilabel.PCC</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.PLST/">meka.classifiers.multilabel.PLST</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.PMCC/">meka.classifiers.multilabel.PMCC</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.PS/">meka.classifiers.multilabel.PS</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.PSt/">meka.classifiers.multilabel.PSt</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.RAkEL/">meka.classifiers.multilabel.RAkEL</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.RAkELd/">meka.classifiers.multilabel.RAkELd</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multilabel.RT/">meka.classifiers.multilabel.RT</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multitarget.BCC/">meka.classifiers.multitarget.BCC</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multitarget.CC/">meka.classifiers.multitarget.CC</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multitarget.CCp/">meka.classifiers.multitarget.CCp</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multitarget.CR/">meka.classifiers.multitarget.CR</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multitarget.meta.BaggingMT/">meka.classifiers.multitarget.meta.BaggingMT</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multitarget.meta.EnsembleMT/">meka.classifiers.multitarget.meta.EnsembleMT</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multitarget.meta.FilteredClassifier/">meka.classifiers.multitarget.meta.FilteredClassifier</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multitarget.meta.MultiSearch/">meka.classifiers.multitarget.meta.MultiSearch</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multitarget.NSR/">meka.classifiers.multitarget.NSR</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multitarget.RAkELd/">meka.classifiers.multitarget.RAkELd</a>
-        
-    </li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../meka.classifiers.multitarget.SCC/">meka.classifiers.multitarget.SCC</a>
-        
-    </li>
-
-        
     </ul>
-<li>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Methods (API)</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.BCC/">meka.classifiers.multilabel.BCC</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.BPNN/">meka.classifiers.multilabel.BPNN</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.BR/">meka.classifiers.multilabel.BR</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.BRq/">meka.classifiers.multilabel.BRq</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.CC/">meka.classifiers.multilabel.CC</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.CCq/">meka.classifiers.multilabel.CCq</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.CDN/">meka.classifiers.multilabel.CDN</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.CDT/">meka.classifiers.multilabel.CDT</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.CT/">meka.classifiers.multilabel.CT</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.DBPNN/">meka.classifiers.multilabel.DBPNN</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.FW/">meka.classifiers.multilabel.FW</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.HASEL/">meka.classifiers.multilabel.HASEL</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.incremental.BRUpdateable/">meka.classifiers.multilabel.incremental.BRUpdateable</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.incremental.CCUpdateable/">meka.classifiers.multilabel.incremental.CCUpdateable</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.incremental.MajorityLabelsetUpdateable/">meka.classifiers.multilabel.incremental.MajorityLabelsetUpdateable</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable/">meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.incremental.PSUpdateable/">meka.classifiers.multilabel.incremental.PSUpdateable</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.incremental.RTUpdateable/">meka.classifiers.multilabel.incremental.RTUpdateable</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.LC/">meka.classifiers.multilabel.LC</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.MajorityLabelset/">meka.classifiers.multilabel.MajorityLabelset</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.Maniac/">meka.classifiers.multilabel.Maniac</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.MCC/">meka.classifiers.multilabel.MCC</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.meta.BaggingML/">meka.classifiers.multilabel.meta.BaggingML</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.meta.BaggingMLdup/">meka.classifiers.multilabel.meta.BaggingMLdup</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.meta.CM/">meka.classifiers.multilabel.meta.CM</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.meta.DeepML/">meka.classifiers.multilabel.meta.DeepML</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.meta.EM/">meka.classifiers.multilabel.meta.EM</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.meta.EnsembleML/">meka.classifiers.multilabel.meta.EnsembleML</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.meta.FilteredClassifier/">meka.classifiers.multilabel.meta.FilteredClassifier</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.meta.MBR/">meka.classifiers.multilabel.meta.MBR</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.meta.MultiSearch/">meka.classifiers.multilabel.meta.MultiSearch</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.meta.RandomSubspaceML/">meka.classifiers.multilabel.meta.RandomSubspaceML</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.meta.SubsetMapper/">meka.classifiers.multilabel.meta.SubsetMapper</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.MLCBMaD/">meka.classifiers.multilabel.MLCBMaD</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.MULAN/">meka.classifiers.multilabel.MULAN</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.PCC/">meka.classifiers.multilabel.PCC</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.PLST/">meka.classifiers.multilabel.PLST</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.PMCC/">meka.classifiers.multilabel.PMCC</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.PS/">meka.classifiers.multilabel.PS</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.PSt/">meka.classifiers.multilabel.PSt</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.RAkEL/">meka.classifiers.multilabel.RAkEL</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.RAkELd/">meka.classifiers.multilabel.RAkELd</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multilabel.RT/">meka.classifiers.multilabel.RT</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multitarget.BCC/">meka.classifiers.multitarget.BCC</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multitarget.CC/">meka.classifiers.multitarget.CC</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multitarget.CCp/">meka.classifiers.multitarget.CCp</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multitarget.CR/">meka.classifiers.multitarget.CR</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multitarget.meta.BaggingMT/">meka.classifiers.multitarget.meta.BaggingMT</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multitarget.meta.EnsembleMT/">meka.classifiers.multitarget.meta.EnsembleMT</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multitarget.meta.FilteredClassifier/">meka.classifiers.multitarget.meta.FilteredClassifier</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multitarget.meta.MultiSearch/">meka.classifiers.multitarget.meta.MultiSearch</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multitarget.NSR/">meka.classifiers.multitarget.NSR</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multitarget.RAkELd/">meka.classifiers.multitarget.RAkELd</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../meka.classifiers.multitarget.SCC/">meka.classifiers.multitarget.SCC</a>
+                </li>
+    </ul>
+	    </li>
           
         </ul>
       </div>
@@ -542,9 +357,8 @@
     <li>An Overview of Methods in MEKA</li>
     <li class="wy-breadcrumbs-aside">
       
-        
-          <a href="https://github.com/Waikato/meka" class="icon icon-github"> Edit on GitHub</a>
-        
+        <a href="https://github.com/Waikato/meka/edit/master/docs/methods.md"
+          class="icon icon-github"> Edit on GitHub</a>
       
     </li>
   </ul>
@@ -558,96 +372,19 @@
 All examples are given usen <code>-t data.arff</code> which implies a train/test split. For other options, see the Tutorial.</p>
 <h3 id="binary-relevance-methods">Binary Relevance Methods</h3>
 <p>Binary relevance methods create an individual model for each label. This means that each model is a simply binary problem, but many labels means many models which can easily fill up memory.</p>
-<table>
-<thead>
-<tr>
-<th>Class</th>
-<th></th>
-<th>Name</th>
-<th>Description  / Notes</th>
-<th>Examples</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>BR</td>
-<td></td>
-<td>Binary Relevance</td>
-<td>Individual classifiers</td>
-<td>java meka.classifiers.multilabel.BR -t data.arff -W weka.classifiers.functions.SMO</td>
-</tr>
-<tr>
-<td>CC</td>
-<td></td>
-<td>Classifier Chains</td>
-<td>.. linked in a cascaded chain, random node order</td>
-<td>java meka.classifiers.multilabel.CC -t data.arff -W weka.classifiers.functions.SMO</td>
-</tr>
-<tr>
-<td>CT</td>
-<td></td>
-<td>Classifier Trellis</td>
-<td>.. linked in a trellis, connectivity <code>L</code>, heuristic <code>X</code></td>
-<td>java meka.classifiers.multilabel.CT -L 2 -X Ibf -t data.arff -W weka.classifiers.functions.SMO</td>
-</tr>
-<tr>
-<td>CDN</td>
-<td>p</td>
-<td>Classifier Dependency Network</td>
-<td>Fully-connected, undirected, <code>I</code> iterations, <code>Ic</code> of which for collecting marginals</td>
-<td>java meka.classifiers.multilabel.CDN -I 1000 -Ic 100 -t data.arff -W weka.classifiers.functions.SMO -- -M</td>
-</tr>
-<tr>
-<td>CDT</td>
-<td>p</td>
-<td>Classifier Dependency Trellis</td>
-<td>.. in a trellis structure of connectivity <code>L</code>, heuristic <code>X</code></td>
-<td>java meka.classifiers.multilabel.CDT -I 1000 -Ic 100 -L 3 -t data.arff -W weka.classifiers.functions.SMO -- -M</td>
-</tr>
-<tr>
-<td>meta.BaggingML</td>
-<td>m</td>
-<td>Ensembles of Classifier Chains (ECC)</td>
-<td>A Bagging ensemble of <code>I</code> chains, bagging <code>P</code> % of the instances</td>
-<td>java meka.classifiers.multilabel.meta.BaggingML -I 10 -P 100 -t data.arff -W meka.classifiers.multilabel.CC -- -W weka.classifiers.functions.SMO</td>
-</tr>
-<tr>
-<td>meta.RandomSubspaceML</td>
-<td>m</td>
-<td>Subspace Ensembles of Classifier Chains</td>
-<td>.. where each chain is given only a <code>A</code> percent of the attributes</td>
-<td>java meka.classifiers.multilabel.meta.RandomSubspaceML -I 10 -P 80 -A 50 -t data.arff -W meka.classifiers.multilabel.CC -- -W weka.classifiers.functions.SMO</td>
-</tr>
-<tr>
-<td>PCC</td>
-<td>p</td>
-<td>Probabilistic Classifier Chains</td>
-<td>A classifier chain with Bayes Optimal inference, (exponential trials)</td>
-<td>java meka.classifiers.multilabel.PCC -t data.arff -W weka.classifiers.functions.Logistic</td>
-</tr>
-<tr>
-<td>MCC</td>
-<td>p</td>
-<td>Monte-Carlo Classifier Chains</td>
-<td>.. with Monte Carlo search, maximum of <code>Iy</code> inference trials and <code>Is</code> chain-order trails</td>
-<td>java meka.classifiers.multilabel.MCC -Iy 100 -Is 10 -t data.arff -W weka.classifiers.functions.Logistic</td>
-</tr>
-<tr>
-<td>PMCC</td>
-<td>p</td>
-<td>Population of Monte-Carlo Classifier Chains</td>
-<td>.. a population of <code>M</code> chains is kept (not just the best)</td>
-<td>java meka.classifiers.multilabel.PMCC -Iy 100 -Is 50 -M 10 -t data.arff -W weka.classifiers.functions.Logistic</td>
-</tr>
-<tr>
-<td>BCC</td>
-<td></td>
-<td>Bayesian Classifier Chains</td>
-<td>Tree connectivity based on Maximum Spanning Tree algorithm</td>
-<td>java meka.classifiers.multilabel.BCC -t data.arff -W weka.classifiers.bayes.NaiveBayes</td>
-</tr>
-</tbody>
-</table>
+<p>Class                  |  | Name                                         | Description  / Notes                                                                     | Examples
+-----------------------|--|----------------------------------------------|-----------------------------------------------------                                     | Examples
+ BR                    |  | Binary Relevance                             | Individual classifiers                                                                   | java meka.classifiers.multilabel.BR -t data.arff -W weka.classifiers.functions.SMO            <br />
+ CC                    |  | Classifier Chains                            | .. linked in a cascaded chain, random node order                                         | java meka.classifiers.multilabel.CC -t data.arff -W weka.classifiers.functions.SMO           <br />
+ CT                    |  | Classifier Trellis                           | .. linked in a trellis, connectivity <code>L</code>, heuristic <code>X</code>                                  | java meka.classifiers.multilabel.CT -L 2 -X Ibf -t data.arff -W weka.classifiers.functions.SMO            <br />
+ CDN                   |p | Classifier Dependency Network                | Fully-connected, undirected, <code>I</code> iterations, <code>Ic</code> of which for collecting marginals      | java meka.classifiers.multilabel.CDN -I 1000 -Ic 100 -t data.arff -W weka.classifiers.functions.SMO -- -M
+ CDT                   |p | Classifier Dependency Trellis                | .. in a trellis structure of connectivity <code>L</code>, heuristic <code>X</code>                             | java meka.classifiers.multilabel.CDT -I 1000 -Ic 100 -L 3 -t data.arff -W weka.classifiers.functions.SMO -- -M            <br />
+ meta.BaggingML        |m | Ensembles of Classifier Chains (ECC)         | A Bagging ensemble of <code>I</code> chains, bagging <code>P</code> % of the instances                         | java meka.classifiers.multilabel.meta.BaggingML -I 10 -P 100 -t data.arff -W meka.classifiers.multilabel.CC -- -W weka.classifiers.functions.SMO
+ meta.RandomSubspaceML |m | Subspace Ensembles of Classifier Chains      | .. where each chain is given only a <code>A</code> percent of the attributes                        | java meka.classifiers.multilabel.meta.RandomSubspaceML -I 10 -P 80 -A 50 -t data.arff -W meka.classifiers.multilabel.CC -- -W weka.classifiers.functions.SMO
+ PCC                   |p | Probabilistic Classifier Chains              | A classifier chain with Bayes Optimal inference, (exponential trials)                    | java meka.classifiers.multilabel.PCC -t data.arff -W weka.classifiers.functions.Logistic
+ MCC                   |p | Monte-Carlo Classifier Chains                | .. with Monte Carlo search, maximum of <code>Iy</code> inference trials and <code>Is</code> chain-order trails | java meka.classifiers.multilabel.MCC -Iy 100 -Is 10 -t data.arff -W weka.classifiers.functions.Logistic           <br />
+ PMCC                  |p | Population of Monte-Carlo Classifier Chains  | .. a population of <code>M</code> chains is kept (not just the best)                                | java meka.classifiers.multilabel.PMCC -Iy 100 -Is 50 -M 10 -t data.arff -W weka.classifiers.functions.Logistic           <br />
+ BCC                   |  | Bayesian Classifier Chains                   | Tree connectivity based on Maximum Spanning Tree algorithm                               | java meka.classifiers.multilabel.BCC -t data.arff -W weka.classifiers.bayes.NaiveBayes</p>
 <p>Where:</p>
 <ul>
 <li><em>m</em> indicates a meta method, can be used with any other Meka classifier. Only examples are given here. </li>
@@ -656,117 +393,22 @@ All examples are given usen <code>-t data.arff</code> which implies a train/test
 </ul>
 <h3 id="label-powerset-methods">Label Powerset Methods</h3>
 <p>Label powerset inspired classifiers generally provide excellent performance, although only some parameterizations will be able to scale up to larger datasets. In most situations, <code>RAkEL</code> is a good option. <code>PS</code> methods work best when there are only a few typical combinations of labels, and most combinations occur only once and can be pruned away. <code>EPS</code> will work better. MEKA's implementation of <code>RAkELd</code> is in fact a combination of <code>RAkEL</code> + <code>PS</code>, and should scale up to thousands or even tens of thousands of labels (with enough pruning).</p>
-<table>
-<thead>
-<tr>
-<th>Class</th>
-<th></th>
-<th>Name</th>
-<th>Description  / Notes</th>
-<th>Examples</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>MajorityLabelset</td>
-<td></td>
-<td>Majority Lableset</td>
-<td>Always predicts most common labelset</td>
-<td>java meka.classifiers.multilabel.MajorityLabelset -t data.arff</td>
-</tr>
-<tr>
-<td>LC</td>
-<td></td>
-<td>Label Combination / Label Powerset</td>
-<td>As a multi-class problem</td>
-<td>java meka.classifiers.multilabel.LC -t data.arff -W weka.classifiers.functions.SMO</td>
-</tr>
-<tr>
-<td>PS</td>
-<td></td>
-<td>Pruned Sets (Pruned Label Powerset)</td>
-<td>.. with <code>P</code> infrequent classes pruned, but up to <code>N</code> subcopies reintroduced</td>
-<td>java meka.classifiers.multilabel.PS -P 1 -N 1 -t data.arff -W weka.classifiers.functions.SMO</td>
-</tr>
-<tr>
-<td>meta.EnsembleML</td>
-<td>m</td>
-<td>Ensembles of Pruned Sets (EPS)</td>
-<td>.. in an ensemble, <code>P</code> can be selected from a range</td>
-<td>java meka.classifiers.multilabel.meta.EnsembleML -t data.arff -W meka.classifiers.multilabel.PS -P 1-5 -N 1 -W weka.classifiers.functions.SMO</td>
-</tr>
-<tr>
-<td>PSt</td>
-<td>p</td>
-<td>Pruned Sets thresholded</td>
-<td>.. with an internal threshold</td>
-<td>java meka.classifiers.multilabel.PS -P 1 -N 1 -t data.arff -W weka.classifiers.functions.SMO -- -M</td>
-</tr>
-<tr>
-<td>NSR</td>
-<td></td>
-<td>Nearest Set Replacement (NSR)</td>
-<td>Multi-target version of PS</td>
-<td>java -cp "lib/*:target/meka-1.7.4.jar" meka.classifiers.multitarget.NSR -P 1 -N 1 -t data.arff -W weka.classifiers.functions.SMO</td>
-</tr>
-<tr>
-<td>SCC</td>
-<td></td>
-<td>Super Class/Node Classifier</td>
-<td>Creates super nodes, based on <code>I</code> simulated annealing iterations, <code>V</code> internal split validations, and runs NSR on them.</td>
-<td>java meka.classifiers.multitarget.SCC -I 1000 -V 10 -P 1 -t data.arff -W meka.classifiers.multitarget.CC -- -W weka.classifiers.functions.SMO</td>
-</tr>
-<tr>
-<td>RAkEL</td>
-<td></td>
-<td>Random k-labEL Pruned Sets</td>
-<td>.. in subsets of size <code>k</code></td>
-<td>java meka.classifiers.multilabel.RAkEL -P 1 -N 1 -k 3 -t data.arff -W weka.classifiers.functions.SMO</td>
-</tr>
-<tr>
-<td>RAkELd</td>
-<td></td>
-<td>Disjoint Random Pruned Sets</td>
-<td>.. which are non-overlapping</td>
-<td>java meka.classifiers.multilabel.RAkELd -P 1 -N 1 -k 3 -t data.arff -W weka.classifiers.functions.SMO</td>
-</tr>
-<tr>
-<td>SERAkELd</td>
-<td></td>
-<td>Subspace Ensembles of <code>RAkELd</code></td>
-<td>.. an a subset ensemble</td>
-<td>java meka.classifiers.multilabel.meta.RandomSubspaceML -I 10 -P 60 -A 50 -t data.arff -W meka.classifiers.multilabel.RAkELd -- -P 3 -N 1 -k 5 -W weka.classifiers.functions.SMO</td>
-</tr>
-<tr>
-<td>HASEL</td>
-<td></td>
-<td>Hierachical Label Sets</td>
-<td>.. disjoint subsets defined by a hierarchy in the dataset, e.g., <code>@attribute C.C4</code></td>
-<td>java meka.classifiers.multilabel.HASEL -t Enron.arff -P 3 -N 1 -W weka.classifiers.functions.SMO</td>
-</tr>
-<tr>
-<td>MULAN -S RAkEL1</td>
-<td></td>
-<td>Random k-labEL Sets</td>
-<td>MULAN's implementation (no pruning); 10 models, subsets of size [half the number of labels]</td>
-<td>java meka.classifiers.multilabel.MULAN -t data.arff -S RAkEL1</td>
-</tr>
-<tr>
-<td>MULAN -S RAkEL2</td>
-<td></td>
-<td>Random k-labEL Sets</td>
-<td>MULAN's implementation (no pruning); [2 times the number of labels] models, subsets of size 3</td>
-<td>java meka.classifiers.multilabel.MULAN -t data.arff -S RAkEL2</td>
-</tr>
-<tr>
-<td>meta.SubsetMapper</td>
-<td>m</td>
-<td>Subset Mapper</td>
-<td>Like ECOCs. Maps predictions to nearest known label combination (from training set)</td>
-<td>java meka.classifiers.multilabel.meta.SubsetMapper -t data.arff -W meka.classifiers.multilabel.BR -- -W weka.classifiers.functions.SMO</td>
-</tr>
-</tbody>
-</table>
+<p>Class            |   | Name                                 | Description  / Notes                                                                  | Examples
+-----------------|---|--------------------------------------|------------------------------------------------------                                 | Examples
+MajorityLabelset |   | Majority Lableset                    | Always predicts most common labelset                                                  | java meka.classifiers.multilabel.MajorityLabelset -t data.arff
+LC               |   | Label Combination / Label Powerset   | As a multi-class problem                                                              | java meka.classifiers.multilabel.LC -t data.arff -W weka.classifiers.functions.SMO           <br />
+PS               |   | Pruned Sets (Pruned Label Powerset)  | .. with <code>P</code> infrequent classes pruned, but up to <code>N</code> subcopies reintroduced           | java meka.classifiers.multilabel.PS -P 1 -N 1 -t data.arff -W weka.classifiers.functions.SMO             <br />
+meta.EnsembleML  | m | Ensembles of Pruned Sets (EPS)       | .. in an ensemble, <code>P</code> can be selected from a range                                   | java meka.classifiers.multilabel.meta.EnsembleML -t data.arff -W meka.classifiers.multilabel.PS -P 1-5 -N 1 -W weka.classifiers.functions.SMO
+PSt              | p | Pruned Sets thresholded              | .. with an internal threshold                                                         | java meka.classifiers.multilabel.PS -P 1 -N 1 -t data.arff -W weka.classifiers.functions.SMO -- -M          <br />
+NSR              |   | Nearest Set Replacement (NSR)        | Multi-target version of PS                                                            |  java -cp "lib/*:target/meka-1.7.4.jar" meka.classifiers.multitarget.NSR -P 1 -N 1 -t data.arff -W weka.classifiers.functions.SMO
+SCC              |   | Super Class/Node Classifier          | Creates super nodes, based on <code>I</code> simulated annealing iterations, <code>V</code> internal split validations, and runs NSR on them.  | java meka.classifiers.multitarget.SCC -I 1000 -V 10 -P 1 -t data.arff -W meka.classifiers.multitarget.CC -- -W weka.classifiers.functions.SMO
+RAkEL            |   | Random k-labEL Pruned Sets           | .. in subsets of size <code>k</code>                                                             | java meka.classifiers.multilabel.RAkEL -P 1 -N 1 -k 3 -t data.arff -W weka.classifiers.functions.SMO
+RAkELd           |   | Disjoint Random Pruned Sets          | .. which are non-overlapping                                                          | java meka.classifiers.multilabel.RAkELd -P 1 -N 1 -k 3 -t data.arff -W weka.classifiers.functions.SMO
+SERAkELd         |   | Subspace Ensembles of <code>RAkELd</code>       | .. an a subset ensemble                                                               | java meka.classifiers.multilabel.meta.RandomSubspaceML -I 10 -P 60 -A 50 -t data.arff -W meka.classifiers.multilabel.RAkELd -- -P 3 -N 1 -k 5 -W weka.classifiers.functions.SMO
+HASEL            |   | Hierachical Label Sets               | .. disjoint subsets defined by a hierarchy in the dataset, e.g., <code>@attribute C.C4</code>    | java meka.classifiers.multilabel.HASEL -t Enron.arff -P 3 -N 1 -W weka.classifiers.functions.SMO
+MULAN -S RAkEL1  |   | Random k-labEL Sets                  | MULAN's implementation (no pruning); 10 models, subsets of size [half the number of labels] | java meka.classifiers.multilabel.MULAN -t data.arff -S RAkEL1
+MULAN -S RAkEL2  |   | Random k-labEL Sets                  | MULAN's implementation (no pruning); [2 times the number of labels] models, subsets of size 3 | java meka.classifiers.multilabel.MULAN -t data.arff -S RAkEL2
+meta.SubsetMapper| m | Subset Mapper                        | Like ECOCs. Maps predictions to nearest known label combination (from training set)   | java meka.classifiers.multilabel.meta.SubsetMapper -t data.arff -W meka.classifiers.multilabel.BR -- -W weka.classifiers.functions.SMO</p>
 <h3 id="pairwise-and-threshold-methods">Pairwise and Threshold Methods</h3>
 <p>Pairwise methods can work well, but they are very sensitive to the number of labels. One-vs-rest classifiers (e.g., <code>RT</code>) can be faster with large numbers of labels, but may not perform as well.</p>
 <table>
@@ -907,10 +549,10 @@ However, the default classifier is not necessarily the fastest, or the best for 
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../meka.classifiers.multilabel.BCC/" class="btn btn-neutral float-right" title="meka.classifiers.multilabel.BCC"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../meka.classifiers.multilabel.BCC/" class="btn btn-neutral float-right" title="meka.classifiers.multilabel.BCC">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../links/" class="btn btn-neutral" title="Links"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../maven/" class="btn btn-neutral" title="Maven"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -929,22 +571,23 @@ However, the default classifier is not necessarily the fastest, or the best for 
       </div>
 
     </section>
-
+    
   </div>
 
-<div class="rst-versions" role="note" style="cursor: pointer">
+  <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/Waikato/meka" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../links/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../maven/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="../meka.classifiers.multilabel.BCC/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
+    <script src="../js/theme.js"></script>
 
 </body>
 </html>
