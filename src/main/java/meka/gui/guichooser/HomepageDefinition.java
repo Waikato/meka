@@ -13,9 +13,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * ExplorerDefinition.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2018 University of Waikato, Hamilton, NZ
  */
 
 package meka.gui.guichooser;
@@ -26,7 +26,6 @@ import weka.gui.BrowserHelper;
  * Launches the Homepage.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
- * @version $Revision$
  */
 public class HomepageDefinition
   extends AbstractMenuItemDefinition {
@@ -68,6 +67,6 @@ public class HomepageDefinition
 	 */
 	@Override
 	protected void launch() {
-		BrowserHelper.openURL("http://meka.sourceforge.net/");
+		BrowserHelper.openURL("http://waikato.github.io/meka/");
 	}
 }
