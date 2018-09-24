@@ -13,9 +13,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * GUIChooser.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2018 University of Waikato, Hamilton, NZ
  */
 
 package meka.gui.guichooser;
@@ -137,19 +137,6 @@ public class GUIChooser
 			result.add(menu);
 			m_Menus.put(menu.getText(), menu);
 
-			// Program/Close
-			menuitem = new JMenuItem("Close", GUIHelper.getIcon("exit.png"));
-			menuitem.setMnemonic('C');
-			menuitem.setAccelerator(KeyStroke.getKeyStroke("ctrl pressed Q"));
-			menuitem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					close();
-				}
-			});
-			menu.add(menuitem);
-			m_MenuItemProgramClose = menuitem;
-
 			// add the menu item plugins
 			definitions = loadDefinitions();
 
@@ -174,6 +161,19 @@ public class GUIChooser
 				menu = m_Menus.get(definition.getGroup());
 				menu.add(definition.getMenuItem());
 			}
+
+			// Program/Close
+			menuitem = new JMenuItem("Close", GUIHelper.getIcon("exit.png"));
+			menuitem.setMnemonic('C');
+			menuitem.setAccelerator(KeyStroke.getKeyStroke("ctrl pressed Q"));
+			menuitem.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					close();
+				}
+			});
+			m_Menus.get(AbstractMenuItemDefinition.MENU_PROGRAM).add(menuitem);
+			m_MenuItemProgramClose = menuitem;
 
 			m_MenuBar = result;
 		}
