@@ -42,6 +42,10 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         public List<HOMERNode> getChildren() {
             return children;
         }
+        
+        public MultiLabelClassifier getClassifier() {
+            return classifier;
+        }
 
         public void setClassifier(MultiLabelClassifier classifier) {
             this.classifier = classifier;
@@ -182,6 +186,15 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         }
     }
     
+    /**
+     * Train the HOMER tree.
+     * 
+     * @param node
+     *              the root node of the tree/subtree
+     * @param D
+     *              the instances
+     * @throws Exception
+     */
     private void trainTree(HOMERNode node, Instances D) throws Exception {
         int L = D.classIndex();
         List<HOMERNode> children = node.getChildren();
@@ -197,18 +210,19 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         /* Set each meta-label value to the disjunction of instance label values */
         for (int i = 0; i < newInstances.size(); i++) {
             for (int m = 0; m < c; m++) {
+                newInstances.get(i).setValue(m, "0");
                 for (Integer l : children.get(m).getLabels()) {
-                    if (D.get(i).stringValue(l) == "1")
+                    if (D.get(i).stringValue(l).equals("1")) {
                         newInstances.get(i).setValue(m, "1");
-                    else
-                        newInstances.get(i).setValue(m, "0");
+                        break;
+                    }
                 }
             }
         }
         node.setInstances(newInstances);
-        if (getDebug())
-            System.out.println("Training " + m_Classifier.getClass().getName() + " on meta-labels of node " + node.getId());
         node.buildClassifier();
+        if (getDebug())
+            System.out.println("Trained node " + node.getId());
 
         for (HOMERNode child : children) {
             if (child.getLabels().size() > 1)
@@ -234,14 +248,40 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         r = new Random(getSeed());
         buildTree(root);
         trainTree(root, D);
+        if (getDebug())
+            System.out.println("Trained all nodes.");
+    }
+    
+    private double[] classify(Instance x, HOMERNode node, double[] y) throws Exception {
+        List<HOMERNode> children = node.getChildren();
+        int L = children.size();
+        Instance newX = (Instance)x.copy();
+        int oldL = newX.classIndex();
+        newX.setDataset(null);
+        newX = MLUtils.deleteAttributesAt(newX, A.make_sequence(oldL));
+        for (int i = 0; i < L; i++)
+            newX.insertAttributeAt(i);
+        newX.setDataset(node.getInstances());
+        double[] metaDist = node.getClassifier().distributionForInstance(newX); // Distribution on meta-labels
+        for (int i = 0; i < children.size(); i++) {
+            HOMERNode child = children.get(i);
+            if (metaDist[i] == 1.0) { // These doubles should be ints for (binary) nominal classes
+                if (child.getLabels().size() == 1)
+                    y[child.getLabels().iterator().next()] = 1;
+                else
+                    classify(newX, child, y);
+            } else {
+                for (int l : child.getLabels())
+                    y[l] = 0;
+            }
+        }
+        return y;
     }
 
     @Override
     public double[] distributionForInstance(Instance x) throws Exception {
-        int L = x.classIndex();
-        double[] y = new double[L];
-        x.setDataset(null);
-        
+        double[] y = new double[x.classIndex()];
+        classify(x, root, y);
         return y;
     }
     
