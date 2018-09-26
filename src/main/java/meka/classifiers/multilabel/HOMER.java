@@ -20,6 +20,11 @@ import weka.core.TechnicalInformation.Type;
  */
 public class HOMER extends ProblemTransformationMethod implements Randomizable, TechnicalInformationHandler {
     
+    /**
+     * Utility class for storing node info.
+     * 
+     * @author Aaron Keesing
+     */
     private static class HOMERNode {
         private static int _id = 0;
         
@@ -208,21 +213,27 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         }
 
         /* Set each meta-label value to the disjunction of instance label values */
-        for (int i = 0; i < newInstances.size(); i++) {
+        Iterator<Instance> it = newInstances.iterator();
+        for (int i = 0; it.hasNext(); i++) {
+            boolean remove = true;
+            Instance next = it.next();
             for (int m = 0; m < c; m++) {
-                newInstances.get(i).setValue(m, "0");
+                next.setValue(m, "0");
                 for (Integer l : children.get(m).getLabels()) {
                     if (D.get(i).stringValue(l).equals("1")) {
-                        newInstances.get(i).setValue(m, "1");
+                        next.setValue(m, "1");
+                        remove = false;
                         break;
                     }
                 }
             }
+            if (remove)
+                it.remove();
         }
         node.setInstances(newInstances);
         node.buildClassifier();
         if (getDebug())
-            System.out.println("Trained node " + node.getId());
+            System.out.println("Trained node " + node.getId() + " with " + newInstances.size() + " instances.");
 
         for (HOMERNode child : children) {
             if (child.getLabels().size() > 1)
@@ -252,6 +263,18 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
             System.out.println("Trained all nodes.");
     }
     
+    /**
+     * Classify an instance x.
+     * 
+     * @param x
+     *              the instance to classify
+     * @param node
+     *              the current tree node
+     * @param y
+     *              shared array of prediction values
+     * @return y
+     * @throws Exception
+     */
     private double[] classify(Instance x, HOMERNode node, double[] y) throws Exception {
         List<HOMERNode> children = node.getChildren();
         int L = children.size();
@@ -265,7 +288,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         double[] metaDist = node.getClassifier().distributionForInstance(newX); // Distribution on meta-labels
         for (int i = 0; i < children.size(); i++) {
             HOMERNode child = children.get(i);
-            if (metaDist[i] == 1.0) { // These doubles should be ints for (binary) nominal classes
+            if (metaDist[i] > 0.3) {
                 if (child.getLabels().size() == 1)
                     y[child.getLabels().iterator().next()] = 1;
                 else
