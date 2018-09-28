@@ -19,35 +19,33 @@ import weka.core.TechnicalInformation.Type;
  * @author Aaron Keesing
  */
 public class HOMER extends ProblemTransformationMethod implements Randomizable, TechnicalInformationHandler {
-    
+
     /**
      * Utility class for storing node info.
-     * 
-     * @author Aaron Keesing
      */
     private static class HOMERNode {
         private static int _id = 0;
-        
+
         private int id;
         private List<HOMERNode> children;
         private Set<Integer> labels;
         private MultiLabelClassifier classifier;
         private Instances instances;
-        
+
         public HOMERNode() {
             id = _id++;
             children = new ArrayList<>();
             labels = new HashSet<>();
         }
-        
+
         public void buildClassifier() throws Exception {
             classifier.buildClassifier(instances);
         }
-        
+
         public List<HOMERNode> getChildren() {
             return children;
         }
-        
+
         public MultiLabelClassifier getClassifier() {
             return classifier;
         }
@@ -59,7 +57,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         public Set<Integer> getLabels() {
             return labels;
         }
-        
+
         public void setLabels(Set<Integer> labels) {
             this.labels = labels;
         }
@@ -77,18 +75,180 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         }
     }
 
+    /**
+     * Interface that represents a label splitter, that partitions a set of
+     * labels into {@link #k} disjoint subsets.
+     */
+    public interface LabelSplitter {
+        /**
+         * Partition {@code labels} into non-empty disjoint subsets of labels.
+         *
+         * @param parentLabels
+         *              the labels of the parent node
+         * @param D
+         *              the dataset that defines the labels
+         * @return a partition of the labels in {@code parentLabels}
+         */
+        public Collection<Set<Integer>> splitLabels(Collection<Integer> labels, Instances D);
+    }
+
+    /**
+     * A class for randomly splitting the labels into k disjoint subsets.
+     */
+    public class RandomLabelSplitter implements LabelSplitter {
+        @Override
+        public Collection<Set<Integer>> splitLabels(Collection<Integer> labels, Instances D) {
+            List<Set<Integer>> result = new ArrayList<>();
+            int L = labels.size();
+            List<Integer> labelList = Arrays.asList(labels.toArray(new Integer[0]));
+            Collections.shuffle(labelList, r);
+            int idx = 0;
+            if (L <= k) {
+                for (int i = 0; i < L; i++) {
+                    Set<Integer> labelSet = new HashSet<>(1);
+                    labelSet.add(labelList.get(idx++));
+                    result.add(labelSet);
+                }
+            } else {
+                for (int i = 0; i < k; i++) {
+                    Set<Integer> labelSet = new HashSet<>(L/k);
+                    for (int x = 0; x < (i < L%k ? L/k+1 : L/k); x++)
+                        labelSet.add(labelList.get(idx++));
+                    result.add(labelSet);
+                }
+            }
+            return result;
+        }
+    }
+
+    /**
+     * A class for splitting labels into equal clusters based on label similarity.
+     * Label similarity is calculated by treating the labels as column vectors.
+     * This uses the balances k-mean algorithm, which is an extension of the
+     * k-means algorithm.
+     */
+    public class ClusterLabelSplitter implements LabelSplitter {
+        @Override
+        public Collection<Set<Integer>> splitLabels(Collection<Integer> labels, Instances D) {
+            List<List<Integer>> clusters = new ArrayList<>(k);
+            List<Integer> centres = new ArrayList<>(k);
+            List<Integer> labelList = new ArrayList<>(labels);
+            int idx = 0;
+            int Ln = labels.size();
+
+            if (Ln <= k) {
+                List<Set<Integer>> result = new ArrayList<>(Ln);
+                for (int i = 0; i < Ln; i++)
+                    result.add(new HashSet<>(Arrays.asList(labelList.get(idx++))));
+                return result;
+            }
+
+            int L = D.classIndex();
+            int numD = D.numInstances();
+            double[][] labelVectors = new double[L][numD];
+            for (int i = 0; i < numD; i++)
+                for (int l = 0; l < L; l++)
+                    labelVectors[l][i] = D.get(i).value(l);
+            Collections.shuffle(labelList);
+            for (int i = 0; i < k; i++) {
+                clusters.add(new ArrayList<>(L/k));
+                centres.add(labelList.get(idx++));
+            }
+
+            double[][] d = new double[L][k];
+            for (int it = 0; it < 2; it++) {
+                for (Integer l : labels) {
+                    for (int i = 0; i < k; i++) {
+                        /* Calculate distance to cluster centres */
+                        double[] vci = labelVectors[centres.get(i)];
+                        double[] vl = labelVectors[l];
+                        double sum = 0;
+                        for (int j = 0; j < numD; j++)
+                            sum += (vci[j] - vl[j])*(vci[j] - vl[j]);
+                        d[l][i] = Math.sqrt(sum);
+                    }
+
+                    boolean finished = false;
+                    int nu = l;
+                    while (!finished) {
+                        int minj = 0;
+                        double currMin = Double.MAX_VALUE;
+                        for (int j = 0; j < k; j++)
+                            if (d[nu][j] < currMin) {
+                                currMin = d[nu][j];
+                                minj = j;
+                            }
+
+                        List<Integer> Cj = clusters.get(minj);
+                        if (!Cj.contains(nu))
+                            Cj.add(nu);
+                        final int _minj = minj;
+                        Collections.sort(Cj, new Comparator<Integer>() {
+                            @Override
+                            public int compare(Integer o1, Integer o2) {
+                                return Double.compare(d[o1][_minj], d[o2][_minj]);
+                            }
+                        });
+
+                        int size = Cj.size();
+                        if (size > Math.ceil(Ln/(double)k)) {
+                            nu = Cj.remove(size-1);
+                            d[nu][minj] = Double.MAX_VALUE;
+                        } else {
+                            finished = true;
+                        }
+                    }
+                }
+                for (int i = 0; i < k; i++) {
+                    double[] cent = new double[numD];
+                    for (Integer l : clusters.get(i)) {
+                        /* Calculate distance to cluster centres */
+                        double[] vl = labelVectors[l];
+                        for (int j = 0; j < numD; j++)
+                            cent[j] += vl[j];
+                    }
+                    for (int j = 0; j < numD; j++)
+                        cent[j] /= clusters.get(i).size();
+                }
+            }
+            List<Set<Integer>> clusterSets = new ArrayList<>(clusters.size());
+            for (List<Integer> cluster : clusters)
+                clusterSets.add(new HashSet<>(cluster));
+            return clusterSets;
+        }
+    }
+
     private static final long serialVersionUID = 3358633077067198326L;
-    
+
+    /**
+     * The splitting factor.
+     */
     protected int k = 5;
+
+    /**
+     * Random seed.
+     */
     protected int seed = 0;
+
+    /**
+     * Root node of the HOMER tree.
+     */
     protected HOMERNode root;
-    
+
+    /**
+     * The label splitter.
+     */
+    protected LabelSplitter labelSplitter = new RandomLabelSplitter();
+
     private Random r;
-    
+
+    /**
+     * Create a new HOMER classifier with default settings.
+     */
     public HOMER() {
         m_Classifier = new meka.classifiers.multilabel.BR();
     }
-    
+
     @Override
     protected String defaultClassifierString() {
         return meka.classifiers.multilabel.BR.class.getName();
@@ -106,7 +266,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         info.setValue(Field.ORGANIZATION, "sn");
         return info;
     }
-    
+
     @Override
     public String globalInfo() {
         return "HOMER tree algorithm.";
@@ -119,7 +279,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
     public void setK(int k) {
         this.k = k;
     }
-    
+
     public String kTipText() {
         return "The number of partitions per level.";
     }
@@ -133,11 +293,31 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
     public int getSeed() {
         return seed;
     }
-    
+
     public String seedTipText() {
         return "The seed to set.";
     }
-    
+
+    public String getLabelSplitter() {
+        if (labelSplitter instanceof RandomLabelSplitter)
+            return "RandomLabelSplitter";
+        else if (labelSplitter instanceof ClusterLabelSplitter)
+            return "ClusterLabelSplitter";
+        else
+            return "";
+    }
+
+    public void setLabelSplitter(String str) {
+        if (str.equals("ClusterLabelSplitter"))
+            labelSplitter = new ClusterLabelSplitter();
+        else
+            labelSplitter = new RandomLabelSplitter();
+    }
+
+    public String labelSplitterTipText() {
+        return "The label splitter class to use.";
+    }
+
     /**
      * Build the HOMER tree.
      * 
@@ -146,7 +326,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
      * @throws Exception
      *              the {@link AbstractClassifier#makeCopy(weka.classifiers.Classifier)} fails
      */
-    private void buildTree(HOMERNode node) throws Exception {
+    private void buildTree(HOMERNode node, Instances D) throws Exception {
         if (getDebug()) {
             System.out.print("Building subtree of node " + node.getId() + " with labels: ");
             for (Integer label : node.getLabels())
@@ -154,43 +334,20 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
             System.out.println();
         }
 
-        int L = node.getLabels().size();
-        int[] labelArray = new int[L];
-        int idx = 0;
-        for (Integer l : node.getLabels())
-            labelArray[idx++] = l;
-        A.shuffle(labelArray, r);
-
         List<HOMERNode> children = node.getChildren();
         children.clear();
-        idx = 0;
 
-        if (L <= k) {
-            /* All children are leaf nodes */
-            for (int i = 0; i < L; i++) {
-                HOMERNode child = new HOMERNode();
-                child.setClassifier((MultiLabelClassifier)AbstractClassifier.makeCopy(m_Classifier));
-                child.setLabels(new HashSet<>(Arrays.asList(labelArray[idx++])));
-                children.add(child);
-            }
-        } else {
-            for (int i = 0; i < k; i++) {
-                HOMERNode child = new HOMERNode();
-                child.setClassifier((MultiLabelClassifier)AbstractClassifier.makeCopy(m_Classifier));
-                int[] childLabels = new int[i < L%k ? L/k+1 : L/k];
-                for (int x = 0; x < childLabels.length; x++)
-                    childLabels[x] = labelArray[idx++];
-                Set<Integer> labelSet = new HashSet<>(childLabels.length);
-                for (int l : childLabels)
-                    labelSet.add(l);
-                child.setLabels(labelSet);
-                children.add(child);
-                if (L/k > 1 || i < L%k) // Leaves don't need to recurse down any further
-                    buildTree(child);
-            }
+        Collection<Set<Integer>> labelSplits = labelSplitter.splitLabels(node.getLabels(), D);
+        for (Set<Integer> labelSet : labelSplits) {
+            HOMERNode child = new HOMERNode();
+            child.setClassifier((MultiLabelClassifier)AbstractClassifier.makeCopy(m_Classifier));
+            child.setLabels(labelSet);
+            children.add(child);
+            if (labelSet.size() > 1) // Leaves don't need to recurse down any further
+                buildTree(child, D);
         }
     }
-    
+
     /**
      * Train the HOMER tree.
      * 
@@ -244,10 +401,10 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
     @Override
     public void buildClassifier(Instances D) throws Exception {
         testCapabilities(D);
-        
+
         if (!(m_Classifier instanceof MultiLabelClassifier))
             throw new IllegalStateException("Classifier must be a MultiLabelClassifier!");
-        
+
         int L = D.classIndex();
         root = new HOMERNode();
         root.setClassifier((MultiLabelClassifier)AbstractClassifier.makeCopy(m_Classifier));
@@ -257,12 +414,12 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
             labelSet.add(l);
         root.setLabels(labelSet);
         r = new Random(getSeed());
-        buildTree(root);
+        buildTree(root, D);
         trainTree(root, D);
         if (getDebug())
             System.out.println("Trained all nodes.");
     }
-    
+
     /**
      * Classify an instance x.
      * 
@@ -307,30 +464,33 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         classify(x, root, y);
         return y;
     }
-    
+
     @Override
     public Enumeration<Option> listOptions() {
         Vector<Option> options = new Vector<>();
         options.add(new Option(kTipText(), "k", 1, "-k K"));
         options.add(new Option(seedTipText(), "seed", 1, "-S seed"));
+        options.add(new Option(labelSplitterTipText(), "label splitter", 1, "-ls class"));
         OptionUtils.add(options, super.listOptions());
         return options.elements();
     }
-    
+
     @Override
     public String[] getOptions() {
         List<String> result = new ArrayList<>();
         OptionUtils.add(result, 'k', k);
-        OptionUtils.add(result, 'S', getSeed());
+        OptionUtils.add(result, 'S', seed);
+        OptionUtils.add(result, "ls", getLabelSplitter());
         OptionUtils.add(result, super.getOptions());
         return OptionUtils.toArray(result);
     }
-    
+
     @Override
     public void setOptions(String[] options) throws Exception {
         super.setOptions(options);
         k = OptionUtils.parse(options, "k", 3);
-        setSeed(OptionUtils.parse(options, "S", 0));
+        seed = OptionUtils.parse(options, "S", 0);
+        setLabelSplitter(OptionUtils.parse(options, "ls", "RandomLabelSplitter"));
     }
 
     public static void main(String[] args) {
