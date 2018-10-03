@@ -1,3 +1,18 @@
+/*
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package meka.classifiers.multilabel.meta;
 
 import java.io.Serializable;
@@ -5,6 +20,7 @@ import java.util.*;
 
 import meka.classifiers.multilabel.*;
 import meka.core.*;
+import scala.annotation.meta.param;
 import weka.classifiers.AbstractClassifier;
 import weka.core.*;
 import weka.core.TechnicalInformation.Field;
@@ -368,9 +384,9 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
      * Build the HOMER tree.
      * 
      * @param node
-     *              the root node of the tree/subtree
+     *            the root node of the tree/subtree
      * @throws Exception
-     *              the {@link AbstractClassifier#makeCopy(weka.classifiers.Classifier)} fails
+     *             the meta-classifier fails
      */
     private void buildTree(HOMERNode node, Instances D) throws Exception {
         if (getDebug()) {
@@ -398,9 +414,9 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
      * Train the HOMER tree.
      * 
      * @param node
-     *              the root node of the tree/subtree
+     *            the root node of the tree/subtree
      * @param D
-     *              the instances
+     *            the instances
      * @throws Exception
      */
     private void trainTree(HOMERNode node, Instances D) throws Exception {
@@ -469,11 +485,11 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
      * Classify an instance x.
      * 
      * @param x
-     *              the instance to classify
+     *            the instance to classify
      * @param node
-     *              the current tree node
+     *            the current tree node
      * @param y
-     *              shared array of prediction values
+     *            shared array of prediction values
      * @return y
      * @throws Exception
      */
@@ -503,6 +519,13 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         return y;
     }
 
+    /**
+     * Recursively classifies an instance by propagating it down the tree and
+     * classifying at each relevant node.
+     * 
+     * @param x
+     *            the instance to classify
+     */
     @Override
     public double[] distributionForInstance(Instance x) throws Exception {
         double[] y = new double[x.classIndex()];
@@ -544,5 +567,4 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
     public static void main(String[] args) {
         ProblemTransformationMethod.runClassifier(new HOMER(), args);
     }
-
 }

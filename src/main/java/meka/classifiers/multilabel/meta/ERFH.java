@@ -1,6 +1,18 @@
-/**
- * 
+/*
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package meka.classifiers.multilabel.meta;
 
 import java.util.*;
@@ -44,9 +56,15 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
 
     private SingleClassifierEnhancer metaClassifier;
 
+    /**
+     * Threshold probability for committee classification.
+     */
     protected double threshold = 0.4;
     protected String metaClassifierString = "BinaryRelevance";
 
+    /**
+     * Construct a default ERFH instance with default settings.
+     */
     public ERFH() {
         m_Classifier = new RandomForest();
     }
@@ -83,8 +101,12 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
         return "Meta-classifier for each HOMER node. One of {BinaryRelevance, ClassifierChains}";
     }
 
-    /* (non-Javadoc)
-     * @see meka.classifiers.multilabel.AbstractMultiLabelClassifier#buildClassifier(weka.core.Instances)
+    /**
+     * Builds each HOMER tree using bagging, while randomising the settings for
+     * the classifier at each node of the tree.
+     * 
+     * @param instances
+     *            the instances to train with
      */
     @Override
     public void buildClassifier(Instances D) throws Exception {
@@ -123,6 +145,10 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
             System.out.println();
     }
 
+    /**
+     * Calculate the classification probabilities for each label based on the
+     * average committee probabilities per label and the given threshold.
+     */
     @Override
     public double[] distributionForInstance(Instance x) throws Exception {
         double[] p = super.distributionForInstance(x);
