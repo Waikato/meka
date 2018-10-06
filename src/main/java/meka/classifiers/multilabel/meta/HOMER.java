@@ -49,6 +49,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         private Set<Integer> labels;
         private MultiLabelClassifier classifier;
         private Instances instances;
+        private double[] thresholds;
 
         public HOMERNode() {
             id = _id++;
@@ -86,6 +87,14 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
 
         public void setInstances(Instances instances) {
             this.instances = instances;
+        }
+
+        public double[] getThresholds() {
+            return thresholds;
+        }
+
+        public void setThresholds(double[] thresholds) {
+            this.thresholds = thresholds;
         }
 
         public int getId() {
@@ -149,7 +158,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
     /**
      * A class for splitting labels into equal clusters based on label similarity.
      * Label similarity is calculated by treating the labels as column vectors.
-     * This uses the balances k-mean algorithm, which is an extension of the
+     * This uses the balanced k-mean algorithm, which is an extension of the
      * k-means algorithm.
      */
     public static class ClusterLabelSplitter implements LabelSplitter {
@@ -164,10 +173,10 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         @Override
         public Collection<Set<Integer>> splitLabels(int k, Collection<Integer> labels, Instances D) {
             int L = D.classIndex();
-            int numD = D.numInstances();
+            int n = D.numInstances();
             if (labelVectors == null) {
-                labelVectors = new double[L][numD];
-                for (int i = 0; i < numD; i++)
+                labelVectors = new double[L][n];
+                for (int i = 0; i < n; i++)
                     for (int l = 0; l < L; l++)
                         labelVectors[l][i] = D.get(i).value(l);
             }
@@ -183,12 +192,13 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
                 return result;
             }
 
-            List<List<Integer>> clusters = new ArrayList<>(k);
-            List<Integer> centres = new ArrayList<>(k);
+            @SuppressWarnings("unchecked")
+            List<Integer>[] clusters = new ArrayList[k];
+            int[] centres = new int[k];
             Collections.shuffle(labelList, r);
             for (int i = 0; i < k; i++) {
-                clusters.add(new ArrayList<>(L/k));
-                centres.add(labelList.get(idx++));
+                clusters[i] = new ArrayList<>(L/k);
+                centres[i] = labelList.get(idx++);
             }
 
             double[][] d = new double[L][k];
@@ -196,10 +206,10 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
                 for (Integer l : labels) {
                     for (int i = 0; i < k; i++) {
                         /* Calculate distance to cluster centres */
-                        double[] vci = labelVectors[centres.get(i)];
+                        double[] vci = labelVectors[centres[i]];
                         double[] vl = labelVectors[l];
                         double sum = 0;
-                        for (int j = 0; j < numD; j++)
+                        for (int j = 0; j < n; j++)
                             sum += (vci[j] - vl[j])*(vci[j] - vl[j]);
                         d[l][i] = Math.sqrt(sum);
                     }
@@ -216,7 +226,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
                             }
                         }
 
-                        List<Integer> Cj = clusters.get(minj);
+                        List<Integer> Cj = clusters[minj];
                         if (Cj.contains(nu))
                             break;
                         Cj.add(nu);
@@ -238,18 +248,18 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
                     }
                 }
                 for (int i = 0; i < k; i++) {
-                    double[] cent = new double[numD];
-                    for (Integer l : clusters.get(i)) {
-                        /* Calculate distance to cluster centres */
+                    double[] cent = new double[n];
+                    for (Integer l : clusters[i]) {
+                        /* Calculate new cluster centres */
                         double[] vl = labelVectors[l];
-                        for (int j = 0; j < numD; j++)
+                        for (int j = 0; j < n; j++)
                             cent[j] += vl[j];
                     }
-                    for (int j = 0; j < numD; j++)
-                        cent[j] /= clusters.get(i).size();
+                    for (int j = 0; j < n; j++)
+                        cent[j] /= clusters[i].size();
                 }
             }
-            List<Set<Integer>> clusterSets = new ArrayList<>(clusters.size());
+            List<Set<Integer>> clusterSets = new ArrayList<>(clusters.length);
             for (List<Integer> cluster : clusters)
                 clusterSets.add(new HashSet<>(cluster));
             return clusterSets;
@@ -272,7 +282,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
      * The threshold to use for the multi-label classifier distribution at each
      * node. 
      */
-    protected double threshold = 0.3;
+    protected String threshold = "PCut1";
 
     /**
      * Root node of the HOMER tree.
@@ -340,11 +350,11 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         return "The seed to set.";
     }
 
-    public double getThreshold() {
+    public String getThreshold() {
         return threshold;
     }
 
-    public void setThreshold(double threshold) {
+    public void setThreshold(String threshold) {
         this.threshold = threshold;
     }
 
@@ -399,14 +409,23 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         List<HOMERNode> children = node.getChildren();
         children.clear();
 
-        Collection<Set<Integer>> labelSplits = labelSplitter.splitLabels(k, node.getLabels(), D);
+        Instances culledInstances = new Instances(D, 0);
+        for (Instance i : D) {
+            for (Integer label : node.getLabels()) {
+                if (i.stringValue(label).equals("1")) {
+                    culledInstances.add(i);
+                    break;
+                }
+            }
+        }
+        Collection<Set<Integer>> labelSplits = labelSplitter.splitLabels(k, node.getLabels(), culledInstances);
         for (Set<Integer> labelSet : labelSplits) {
             HOMERNode child = new HOMERNode();
             child.setClassifier((MultiLabelClassifier)AbstractClassifier.makeCopy(m_Classifier));
             child.setLabels(labelSet);
             children.add(child);
             if (labelSet.size() > 1) // Leaves don't need to recurse down any further
-                buildTree(child, D);
+                buildTree(child, culledInstances);
         }
     }
 
@@ -454,6 +473,10 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         if (getDebug())
             System.out.println("Trained node " + node.getId() + " with " + newInstances.size() + " instances.");
 
+        Result r = Evaluation.testClassifier(node.getClassifier(), newInstances);
+        String threshStr = MLEvalUtils.getThreshold(r.predictions, newInstances, threshold);
+        node.setThresholds(ThresholdUtils.thresholdStringToArray(threshStr, c));
+
         for (HOMERNode child : children) {
             if (child.getLabels().size() > 1)
                 trainTree(child, D);
@@ -495,18 +518,19 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
      */
     private double[] classify(Instance x, HOMERNode node, double[] y) throws Exception {
         List<HOMERNode> children = node.getChildren();
-        int L = children.size();
+        int c = children.size();
         Instance newX = (Instance)x.copy();
         int oldL = newX.classIndex();
         newX.setDataset(null);
         newX = MLUtils.deleteAttributesAt(newX, A.make_sequence(oldL));
-        for (int i = 0; i < L; i++)
+        for (int i = 0; i < c; i++)
             newX.insertAttributeAt(i);
         newX.setDataset(node.getInstances());
         double[] metaDist = node.getClassifier().distributionForInstance(newX); // Distribution on meta-labels
+        double[] thresholds = node.getThresholds();
         for (int i = 0; i < children.size(); i++) {
             HOMERNode child = children.get(i);
-            if (metaDist[i] > threshold) {
+            if (metaDist[i] > thresholds[i]) {
                 if (child.getLabels().size() == 1)
                     y[child.getLabels().iterator().next()] = 1;
                 else
@@ -560,7 +584,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         super.setOptions(options);
         k = OptionUtils.parse(options, "k", 3);
         seed = OptionUtils.parse(options, "S", 0);
-        threshold = OptionUtils.parse(options, "t", 0.3);
+        threshold = OptionUtils.parse(options, "t", "PCut1");
         setLabelSplitterString(OptionUtils.parse(options, "ls", "RandomLabelSplitter"));
     }
 

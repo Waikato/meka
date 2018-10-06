@@ -135,9 +135,10 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
                 rf.setMaxDepth(r.nextInt(5) + 1);
                 rf.setBagSizePercent(r.nextInt(21) + 60);
                 rf.setNumIterations(r.nextInt(3) + 1);
+            } else if (m_Classifier instanceof Randomizable) {
+                ((Randomizable)m_Classifier).setSeed(m_Seed + i);
             }
             ((SingleClassifierEnhancer)((HOMER)m_Classifiers[i]).getClassifier()).setClassifier(m_Classifier);
-            ((Randomizable)((HOMER)m_Classifiers[i]).getClassifier()).setSeed(m_Seed + i);
             m_Classifiers[i].buildClassifier(bag);
         }
         
