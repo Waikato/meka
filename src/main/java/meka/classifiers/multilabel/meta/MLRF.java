@@ -42,7 +42,9 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
      * The dimensionality reduction parameter.
      */
     protected int numFeatures = 10;
+    protected Instances m_InstancesTemplates[];
 
+    private Matrix[] R;
     /**
      * Construct a default MLRF object.
      */
@@ -107,6 +109,8 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
         int d = D.numAttributes() - L;
 
         m_Classifiers = ProblemTransformationMethod.makeCopies((MultiLabelClassifier)m_Classifier, m_NumIterations);
+        m_InstancesTemplates = new Instances[m_NumIterations];
+        R = new Matrix[m_NumIterations];
         for (int i = 0; i < m_NumIterations; i++) {
             if (getDebug())
                 System.out.println("Building classifier " + i);
@@ -120,10 +124,11 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
                 for (int k = 0; k < d; k++)
                     dataMatrix.set(j, k, data.get(j).value(L+k));
 
-            Matrix Ri = new Matrix(d, numFeatures*K);
+            R[i] = new Matrix(d, numFeatures*K);
             int totalFeatures = 0;
             int[] reverseMap = new int[d];
             for (int s = 0; s < K; s++) {
+                System.out.println(s);
                 List<Integer> subset = subsets.get(s);
                 int m = subset.size();
 
@@ -133,45 +138,65 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
                     bag.add(D.get(r.nextInt(n)));
 
                 Matrix mat = new Matrix(nNew, m);
-                for (int j = 0; j < nNew; j++)
+                for (int j = 0; j < nNew; j++) {
                     for (int k = 0; k < m; k++) {
                         mat.set(j, k, bag.get(j).value(subset.get(k)+L));
-                        reverseMap[subset.get(k)] = totalFeatures+k;
+                        reverseMap[totalFeatures+k] = subset.get(k);
                     }
+                }
 
                 SingularValueDecomposition svd = new SingularValueDecomposition(mat);
                 Matrix partialV = svd.getV().getMatrix(0, m-1, 0, numFeatures-1);
                 Matrix partialSInv = svd.getS().getMatrix(0, numFeatures-1, 0, numFeatures-1).inverse();
                 Matrix transformationMatrix = partialV.times(partialSInv);
-                Ri.setMatrix(totalFeatures, totalFeatures+m-1, numFeatures*s, numFeatures*(s+1)-1, transformationMatrix);
+                for (int j = 0; j < m; j++) {
+                    Matrix row = transformationMatrix.getMatrix(j, j, 0, numFeatures-1);
+                    R[i].setMatrix(subset.get(j), subset.get(j), numFeatures*s, numFeatures*(s+1)-1, row);
+                }
                 totalFeatures += m;
             }
 
-            // TODO: Construct the permuted matrix directly
-            Matrix Ria = new Matrix(d, numFeatures*K);
-            for (int j = 0; j < d; j++) {
-                Matrix row = Ri.getMatrix(j, j, 0, numFeatures*K-1);
-                Ria.setMatrix(reverseMap[j], reverseMap[j], 0, numFeatures*K-1, row);
-            }
-
-            Matrix transformedData = dataMatrix.times(Ria);
+            Matrix transformedData = dataMatrix.times(R[i]);
             Instances transformedInstances = F.remove(D, A.make_sequence(L), true);
-            for (int m = 0; m < numFeatures*K; m++) {
+            for (int m = 0; m < numFeatures*K; m++)
                 transformedInstances.insertAttributeAt(new Attribute("F" + m), L+m);
-            }
-            for (int j = 0; j < n; j++) {
-                for (int m = 0; m < numFeatures*K; m++) {
+            for (int j = 0; j < n; j++)
+                for (int m = 0; m < numFeatures*K; m++)
                     transformedInstances.get(j).setValue(L+m, transformedData.get(j, m));
-                }
-            }
             transformedInstances.setClassIndex(L);
             m_Classifiers[i].buildClassifier(transformedInstances);
+            m_InstancesTemplates[i] = new Instances(transformedInstances, 0);
         }
     }
 
     @Override
     public double[] distributionForInstance(Instance x) throws Exception {
-        return super.distributionForInstance(x);
+        int L = x.classIndex();
+        double[] dist = new double[L];
+        int d = x.numAttributes() - L;
+        double[][] arr = new double[1][d];
+        for (int i = 0; i < d; i++)
+            arr[0][i] = x.value(L+i);
+        Matrix vec = new Matrix(arr);
+
+        for (int h = 0; h < m_NumIterations; h++) {
+            Matrix transformedInstance = vec.times(R[h]);
+            Instance x_ = (Instance)x.copy();
+            x_.setDataset(null);
+            MLUtils.keepAttributesAt(x_, A.make_sequence(L), L+d);
+            for (int i = 0; i < numFeatures*K; i++) {
+                x_.insertAttributeAt(L+i);
+                x_.setValue(L+i, transformedInstance.get(0, i));
+            }
+            x_.setDataset(m_InstancesTemplates[h]);
+            double[] hdist = m_Classifiers[h].distributionForInstance(x_);
+            for (int i = 0; i < L; i++)
+                dist[i] += hdist[i];
+        }
+
+        for (int i = 0; i < L; i++)
+            dist[i] /= (double)m_NumIterations;
+        return dist;
     }
 
     @Override
