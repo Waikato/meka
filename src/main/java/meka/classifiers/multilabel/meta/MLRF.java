@@ -42,7 +42,7 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
      * The dimensionality reduction parameter.
      */
     protected int numFeatures = 10;
-    protected Instances m_InstancesTemplates[];
+    protected Instances[] m_InstancesTemplates;
 
     private Matrix[] R;
     /**
@@ -113,7 +113,7 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
         R = new Matrix[m_NumIterations];
         for (int i = 0; i < m_NumIterations; i++) {
             if (getDebug())
-                System.out.println("Building classifier " + i);
+                System.out.print("Building classifier " + i + ": sebsets");
             Random r = new Random(m_Seed + i);
             Instances data = new Instances(D);
             data = F.removeLabels(data, L);
@@ -128,7 +128,8 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
             int totalFeatures = 0;
             int[] reverseMap = new int[d];
             for (int s = 0; s < K; s++) {
-                System.out.println(s);
+                if (getDebug())
+                    System.out.print(" " + s);
                 List<Integer> subset = subsets.get(s);
                 int m = subset.size();
 
@@ -166,6 +167,8 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
             transformedInstances.setClassIndex(L);
             m_Classifiers[i].buildClassifier(transformedInstances);
             m_InstancesTemplates[i] = new Instances(transformedInstances, 0);
+            if (getDebug())
+                System.out.println();
         }
     }
 
