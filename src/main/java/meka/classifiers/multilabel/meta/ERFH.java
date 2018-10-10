@@ -132,9 +132,9 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
             if (m_Classifier instanceof RandomForest) {
                 RandomForest rf = (RandomForest)m_Classifier;
                 rf.setSeed(m_Seed + i);
-                rf.setMaxDepth(r.nextInt(5) + 1);
-                rf.setBagSizePercent(r.nextInt(21) + 60);
-                rf.setNumIterations(r.nextInt(3) + 1);
+                rf.setMaxDepth(20 + r.nextInt(20));
+                rf.setBagSizePercent(80 + r.nextInt(21));
+                rf.setNumIterations(30 + r.nextInt(30));
             } else if (m_Classifier instanceof Randomizable) {
                 ((Randomizable)m_Classifier).setSeed(m_Seed + i);
             }

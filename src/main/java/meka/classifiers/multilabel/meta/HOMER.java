@@ -20,8 +20,9 @@ import java.util.*;
 
 import meka.classifiers.multilabel.*;
 import meka.core.*;
-import scala.annotation.meta.param;
 import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
+import weka.classifiers.meta.Bagging;
 import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
@@ -469,13 +470,25 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
                 it.remove();
         }
         node.setInstances(newInstances);
-        node.buildClassifier();
+        if (newInstances.size() > 0) { // This should rarely not be the case
+            Classifier classifier = ((ProblemTransformationMethod)node.getClassifier()).getClassifier();
+            if (newInstances.size() == 1 && classifier instanceof Bagging)
+                ((Bagging)classifier).setBagSizePercent(100);
+            node.buildClassifier();
+        }
         if (getDebug())
             System.out.println("Trained node " + node.getId() + " with " + newInstances.size() + " instances.");
 
-        Result r = Evaluation.testClassifier(node.getClassifier(), newInstances);
-        String threshStr = MLEvalUtils.getThreshold(r.predictions, newInstances, threshold);
-        node.setThresholds(ThresholdUtils.thresholdStringToArray(threshStr, c));
+        if (newInstances.size() < c) {
+            double[] thresholds = new double[c];
+            for (int i = 0; i < c; i++)
+                thresholds[i] = 0.5;
+            node.setThresholds(thresholds);
+        } else {
+            Result r = Evaluation.testClassifier(node.getClassifier(), newInstances);
+            String threshStr = MLEvalUtils.getThreshold(r.predictions, newInstances, threshold);
+            node.setThresholds(ThresholdUtils.thresholdStringToArray(threshStr, c));
+        }
 
         for (HOMERNode child : children) {
             if (child.getLabels().size() > 1)
@@ -526,7 +539,11 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         for (int i = 0; i < c; i++)
             newX.insertAttributeAt(i);
         newX.setDataset(node.getInstances());
-        double[] metaDist = node.getClassifier().distributionForInstance(newX); // Distribution on meta-labels
+        double[] metaDist;
+        if (node.getInstances().size() > 0)
+            metaDist = node.getClassifier().distributionForInstance(newX); // Distribution on meta-labels
+        else
+            metaDist = new double[c];
         double[] thresholds = node.getThresholds();
         for (int i = 0; i < children.size(); i++) {
             HOMERNode child = children.get(i);
