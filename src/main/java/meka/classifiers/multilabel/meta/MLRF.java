@@ -113,48 +113,42 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
         R = new Matrix[m_NumIterations];
         for (int i = 0; i < m_NumIterations; i++) {
             if (getDebug())
-                System.out.print("Building classifier " + i + ": sebsets");
+                System.out.print("Building classifier " + i + ": subsets");
             Random r = new Random(m_Seed + i);
-            Instances data = new Instances(D);
-            data = F.removeLabels(data, L);
             List<List<Integer>> subsets = generateFeatureSubsets(d);
 
             Matrix dataMatrix = new Matrix(n, d);
             for (int j = 0; j < n; j++)
                 for (int k = 0; k < d; k++)
-                    dataMatrix.set(j, k, data.get(j).value(L+k));
+                    dataMatrix.set(j, k, D.get(j).value(L+k));
 
             R[i] = new Matrix(d, numFeatures*K);
-            int totalFeatures = 0;
-            int[] reverseMap = new int[d];
             for (int s = 0; s < K; s++) {
                 if (getDebug())
                     System.out.print(" " + s);
                 List<Integer> subset = subsets.get(s);
                 int m = subset.size();
-
-                Instances bag = new Instances(D, 0);
                 int nNew = n*m_BagSizePercent/100;
-                for (int j = 0; j < nNew; j++)
-                    bag.add(D.get(r.nextInt(n)));
 
                 Matrix mat = new Matrix(nNew, m);
-                for (int j = 0; j < nNew; j++) {
-                    for (int k = 0; k < m; k++) {
-                        mat.set(j, k, bag.get(j).value(subset.get(k)+L));
-                        reverseMap[totalFeatures+k] = subset.get(k);
-                    }
-                }
+                for (int j = 0; j < nNew; j++)
+                    for (int k = 0; k < m; k++)
+                        mat.set(j, k, D.get(r.nextInt(n)).value(subset.get(k)+L));
 
                 SingularValueDecomposition svd = new SingularValueDecomposition(mat);
                 Matrix partialV = svd.getV().getMatrix(0, m-1, 0, numFeatures-1);
-                Matrix partialSInv = svd.getS().getMatrix(0, numFeatures-1, 0, numFeatures-1).inverse();
+                Matrix partialSInv = svd.getS().getMatrix(0, numFeatures-1, 0, numFeatures-1);//.inverse();
+                for (int j = 0; j < numFeatures; j++) {
+                    double val = partialSInv.get(j, j);
+                    if (val > 0)
+                        val = 1/val;
+                    partialSInv.set(j, j, val);
+                }
                 Matrix transformationMatrix = partialV.times(partialSInv);
                 for (int j = 0; j < m; j++) {
                     Matrix row = transformationMatrix.getMatrix(j, j, 0, numFeatures-1);
                     R[i].setMatrix(subset.get(j), subset.get(j), numFeatures*s, numFeatures*(s+1)-1, row);
                 }
-                totalFeatures += m;
             }
 
             Matrix transformedData = dataMatrix.times(R[i]);
