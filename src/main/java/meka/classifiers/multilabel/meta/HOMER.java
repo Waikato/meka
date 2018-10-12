@@ -283,7 +283,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
      * The threshold to use for the multi-label classifier distribution at each
      * node. 
      */
-    protected String threshold = "PCut1";
+    protected String threshold = "0.3";
 
     /**
      * Root node of the HOMER tree.
@@ -424,6 +424,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
             HOMERNode child = new HOMERNode();
             child.setClassifier((MultiLabelClassifier)AbstractClassifier.makeCopy(m_Classifier));
             child.setLabels(labelSet);
+            child.setInstances(culledInstances);
             children.add(child);
             if (labelSet.size() > 1) // Leaves don't need to recurse down any further
                 buildTree(child, culledInstances);
@@ -439,7 +440,8 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
      *            the instances
      * @throws Exception
      */
-    private void trainTree(HOMERNode node, Instances D) throws Exception {
+    private void trainTree(HOMERNode node) throws Exception {
+        Instances D = node.getInstances();
         int L = D.classIndex();
         List<HOMERNode> children = node.getChildren();
         int c = children.size();
@@ -450,6 +452,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
             Attribute att = new Attribute("MetaLabel" + i, Arrays.asList("0", "1"));
             newInstances.insertAttributeAt(att, i);
         }
+        newInstances.setClassIndex(c);
 
         /* Set each meta-label value to the disjunction of instance label values */
         Iterator<Instance> it = newInstances.iterator();
@@ -485,14 +488,19 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
                 thresholds[i] = 0.5;
             node.setThresholds(thresholds);
         } else {
-            Result r = Evaluation.testClassifier(node.getClassifier(), newInstances);
-            String threshStr = MLEvalUtils.getThreshold(r.predictions, newInstances, threshold);
-            node.setThresholds(ThresholdUtils.thresholdStringToArray(threshStr, c));
+            try {
+                Double.parseDouble(threshold);
+                node.setThresholds(ThresholdUtils.thresholdStringToArray(threshold, c));
+            } catch (NumberFormatException e) {
+                Result r = Evaluation.testClassifier(node.getClassifier(), newInstances);
+                String threshStr = MLEvalUtils.getThreshold(r.predictions, newInstances, threshold);
+                node.setThresholds(ThresholdUtils.thresholdStringToArray(threshStr, c));
+            }
         }
 
         for (HOMERNode child : children) {
             if (child.getLabels().size() > 1)
-                trainTree(child, D);
+                trainTree(child);
         }
     }
 
@@ -511,8 +519,9 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         for (int l : labels)
             labelSet.add(l);
         root.setLabels(labelSet);
+        root.setInstances(D);
         buildTree(root, D);
-        trainTree(root, D);
+        trainTree(root);
         if (getDebug())
             System.out.println("Trained all nodes.");
     }
@@ -601,7 +610,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         super.setOptions(options);
         k = OptionUtils.parse(options, "k", 3);
         seed = OptionUtils.parse(options, "S", 0);
-        threshold = OptionUtils.parse(options, "t", "PCut1");
+        threshold = OptionUtils.parse(options, "t", "0.3");
         setLabelSplitterString(OptionUtils.parse(options, "ls", "RandomLabelSplitter"));
     }
 
