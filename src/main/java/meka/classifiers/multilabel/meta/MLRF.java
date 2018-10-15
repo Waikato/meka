@@ -16,11 +16,12 @@
 package meka.classifiers.multilabel.meta;
 
 import java.util.*;
+import java.util.Vector;
 
-import Jama.Matrix;
-import Jama.SingularValueDecomposition;
 import meka.classifiers.multilabel.*;
 import meka.core.*;
+import no.uib.cipr.matrix.*;
+import no.uib.cipr.matrix.Matrix;
 import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
@@ -42,9 +43,8 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
      * The dimensionality reduction parameter.
      */
     protected int numFeatures = 10;
-    protected Instances[] m_InstancesTemplates;
 
-    private Matrix[] R;
+    private DenseMatrix[] R;
     /**
      * Construct a default MLRF object.
      */
@@ -109,58 +109,59 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
         int d = D.numAttributes() - L;
 
         m_Classifiers = ProblemTransformationMethod.makeCopies((MultiLabelClassifier)m_Classifier, m_NumIterations);
-        m_InstancesTemplates = new Instances[m_NumIterations];
-        R = new Matrix[m_NumIterations];
+        R = new DenseMatrix[m_NumIterations];
+        int nNew = n*m_BagSizePercent/100;
+        DenseMatrix dataMatrix = new DenseMatrix(n, d);
+        for (int j = 0; j < n; j++)
+            for (int k = 0; k < d; k++)
+                dataMatrix.set(j, k, D.get(j).value(L+k));
+        DenseMatrix transformedData = new DenseMatrix(n, numFeatures*K);
+        DenseMatrix partialSInv = new DenseMatrix(numFeatures, numFeatures);
+        Instances transformedInstances = F.remove(D, A.make_sequence(L), true);
+        for (int m = 0; m < numFeatures*K; m++)
+            transformedInstances.insertAttributeAt(new Attribute("F" + m), L+m);
+        transformedInstances.setClassIndex(L);
+        m_InstancesTemplate = transformedInstances;
         for (int i = 0; i < m_NumIterations; i++) {
             if (getDebug())
                 System.out.print("Building classifier " + i + ": subsets");
             Random r = new Random(m_Seed + i);
+
+            R[i] = new DenseMatrix(d, numFeatures*K);
             List<List<Integer>> subsets = generateFeatureSubsets(d);
-
-            Matrix dataMatrix = new Matrix(n, d);
-            for (int j = 0; j < n; j++)
-                for (int k = 0; k < d; k++)
-                    dataMatrix.set(j, k, D.get(j).value(L+k));
-
-            R[i] = new Matrix(d, numFeatures*K);
             for (int s = 0; s < K; s++) {
                 if (getDebug())
                     System.out.print(" " + s);
                 List<Integer> subset = subsets.get(s);
                 int m = subset.size();
-                int nNew = n*m_BagSizePercent/100;
-
-                Matrix mat = new Matrix(nNew, m);
+                DenseMatrix mat = new DenseMatrix(nNew, m);
                 for (int j = 0; j < nNew; j++)
                     for (int k = 0; k < m; k++)
                         mat.set(j, k, D.get(r.nextInt(n)).value(subset.get(k)+L));
 
-                SingularValueDecomposition svd = new SingularValueDecomposition(mat);
-                Matrix partialV = svd.getV().getMatrix(0, m-1, 0, numFeatures-1);
-                Matrix partialSInv = svd.getS().getMatrix(0, numFeatures-1, 0, numFeatures-1);//.inverse();
-                for (int j = 0; j < numFeatures; j++) {
-                    double val = partialSInv.get(j, j);
-                    if (val > 0)
-                        val = 1/val;
-                    partialSInv.set(j, j, val);
-                }
-                Matrix transformationMatrix = partialV.times(partialSInv);
+                SVD svd = new SVD(nNew, m);
+                svd = svd.factor(mat);
+                double[] singVals = svd.getS();
+                Matrix partialVt = Matrices.getSubMatrix(svd.getVt(), A.make_sequence(numFeatures), A.make_sequence(m));
+
+                for (int j = 0; j < numFeatures; j++)
+                    if (singVals[j] > 0)
+                        partialSInv.set(j, j, 1/singVals[j]);
+
+                DenseMatrix transformationMatrix = new DenseMatrix(m, numFeatures);
+                partialVt.transAmult(partialSInv, transformationMatrix);
                 for (int j = 0; j < m; j++) {
-                    Matrix row = transformationMatrix.getMatrix(j, j, 0, numFeatures-1);
-                    R[i].setMatrix(subset.get(j), subset.get(j), numFeatures*s, numFeatures*(s+1)-1, row);
+                    Matrix row = Matrices.getSubMatrix(transformationMatrix, new int[] {j}, A.make_sequence(numFeatures));
+                    Matrices.getSubMatrix(R[i], new int[] {subset.get(j)}, A.make_sequence(numFeatures*s, numFeatures*(s+1))).set(row);
                 }
             }
 
-            Matrix transformedData = dataMatrix.times(R[i]);
-            Instances transformedInstances = F.remove(D, A.make_sequence(L), true);
+            dataMatrix.mult(R[i], transformedData);
+
             for (int m = 0; m < numFeatures*K; m++)
-                transformedInstances.insertAttributeAt(new Attribute("F" + m), L+m);
-            for (int j = 0; j < n; j++)
-                for (int m = 0; m < numFeatures*K; m++)
+                for (int j = 0; j < n; j++)
                     transformedInstances.get(j).setValue(L+m, transformedData.get(j, m));
-            transformedInstances.setClassIndex(L);
             m_Classifiers[i].buildClassifier(transformedInstances);
-            m_InstancesTemplates[i] = new Instances(transformedInstances, 0);
             if (getDebug())
                 System.out.println();
         }
@@ -171,21 +172,23 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
         int L = x.classIndex();
         double[] dist = new double[L];
         int d = x.numAttributes() - L;
-        double[][] arr = new double[1][d];
+
+        DenseMatrix vec = new DenseMatrix(1, d);
         for (int i = 0; i < d; i++)
-            arr[0][i] = x.value(L+i);
-        Matrix vec = new Matrix(arr);
+            vec.set(0, i, x.value(L+i));
+
+        DenseMatrix transformedInstance = new DenseMatrix(1, numFeatures*K);
+        Instance x_ = (Instance)x.copy();
+        x_.setDataset(null);
+        MLUtils.keepAttributesAt(x_, A.make_sequence(L), L+d);
+        for (int i = 0; i < numFeatures*K; i++)
+            x_.insertAttributeAt(L+i);
+        x_.setDataset(m_InstancesTemplate);
 
         for (int h = 0; h < m_NumIterations; h++) {
-            Matrix transformedInstance = vec.times(R[h]);
-            Instance x_ = (Instance)x.copy();
-            x_.setDataset(null);
-            MLUtils.keepAttributesAt(x_, A.make_sequence(L), L+d);
-            for (int i = 0; i < numFeatures*K; i++) {
-                x_.insertAttributeAt(L+i);
+            vec.mult(R[h], transformedInstance);
+            for (int i = 0; i < numFeatures*K; i++)
                 x_.setValue(L+i, transformedInstance.get(0, i));
-            }
-            x_.setDataset(m_InstancesTemplates[h]);
             double[] hdist = m_Classifiers[h].distributionForInstance(x_);
             for (int i = 0; i < L; i++)
                 dist[i] += hdist[i];
