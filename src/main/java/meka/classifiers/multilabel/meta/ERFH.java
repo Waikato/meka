@@ -20,6 +20,7 @@ import java.util.*;
 import meka.classifiers.multilabel.*;
 import meka.classifiers.multilabel.meta.HOMER.ClusterLabelSplitter;
 import meka.core.*;
+import weka.classifiers.AbstractClassifier;
 import weka.classifiers.SingleClassifierEnhancer;
 import weka.classifiers.trees.RandomForest;
 import weka.core.*;
@@ -138,7 +139,7 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
             } else if (m_Classifier instanceof Randomizable) {
                 ((Randomizable)m_Classifier).setSeed(m_Seed + i);
             }
-            ((SingleClassifierEnhancer)((HOMER)m_Classifiers[i]).getClassifier()).setClassifier(m_Classifier);
+            ((SingleClassifierEnhancer)((HOMER)m_Classifiers[i]).getClassifier()).setClassifier(AbstractClassifier.makeCopy(m_Classifier));
             m_Classifiers[i].buildClassifier(bag);
         }
         

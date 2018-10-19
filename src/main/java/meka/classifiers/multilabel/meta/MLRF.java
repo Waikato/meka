@@ -22,6 +22,7 @@ import meka.classifiers.multilabel.*;
 import meka.core.*;
 import no.uib.cipr.matrix.*;
 import no.uib.cipr.matrix.Matrix;
+import no.uib.cipr.matrix.sparse.CompRowMatrix;
 import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
@@ -110,18 +111,38 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
 
         m_Classifiers = ProblemTransformationMethod.makeCopies((MultiLabelClassifier)m_Classifier, m_NumIterations);
         R = new DenseMatrix[m_NumIterations];
+        Instances transformedInstances = F.remove(D, A.make_sequence(L), true);
         int nNew = n*m_BagSizePercent/100;
-        DenseMatrix dataMatrix = new DenseMatrix(n, d);
-        for (int j = 0; j < n; j++)
-            for (int k = 0; k < d; k++)
-                dataMatrix.set(j, k, D.get(j).value(L+k));
+
+        Matrix dataMatrix;
+        try {
+            dataMatrix = new DenseMatrix(n, d);
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < d; j++)
+                    dataMatrix.set(i, j, D.get(i).value(L+j));
+        } catch (OutOfMemoryError e) {
+            int[][] nz = new int[n][];
+            for (int i = 0; i < n; i++) {
+                Instance inst = transformedInstances.get(i);
+                nz[i] = new int[inst.numValues()];
+                for (int j = 0; j < inst.numValues(); j++)
+                    nz[i][j] = inst.index(j);
+            }
+            dataMatrix = new CompRowMatrix(n, d, nz);
+            for (int i = 0; i < n; i++) {
+                Instance inst = transformedInstances.get(i);
+                for (int j = 0; j < inst.numValues(); j++)
+                    dataMatrix.set(i, nz[i][j], inst.valueSparse(j));
+            }
+        }
         DenseMatrix transformedData = new DenseMatrix(n, numFeatures*K);
         DenseMatrix partialSInv = new DenseMatrix(numFeatures, numFeatures);
-        Instances transformedInstances = F.remove(D, A.make_sequence(L), true);
+
         for (int m = 0; m < numFeatures*K; m++)
             transformedInstances.insertAttributeAt(new Attribute("F" + m), L+m);
         transformedInstances.setClassIndex(L);
         m_InstancesTemplate = transformedInstances;
+
         for (int i = 0; i < m_NumIterations; i++) {
             if (getDebug())
                 System.out.print("Building classifier " + i + ": subsets");
