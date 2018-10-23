@@ -62,7 +62,7 @@ public class CRUpdateable extends CR implements IncrementalMultiTargetClassifier
 			Instance x_j = (Instance)x.copy();
 			x_j.setDataset(null);
 			x_j = MLUtils.keepAttributesAt(x_j,new int[]{j},L);
-			x_j.setDataset(m_InstancesTemplates[j]);
+			x_j.setDataset(m_Templates[j]);
 			((UpdateableClassifier)m_MultiClassifiers[j]).updateClassifier(x_j);
 		}
 
