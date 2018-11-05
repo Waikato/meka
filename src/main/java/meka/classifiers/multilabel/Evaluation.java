@@ -244,7 +244,7 @@ public class Evaluation {
 						double pred[] = h.distributionForInstance(D_test.instance(i));
 						// Cut off any [no-longer-needed] probabalistic information from MT classifiers.
 						if (h instanceof MultiTargetClassifier)
-							pred = Arrays.copyOf(pred, D_test.classIndex());
+                                                    pred = Arrays.copyOfRange(pred, D_test.classIndex(), D_test.classIndex()*2);
 						Instance predInst = (Instance) D_test.instance(i).copy();
 						for (int j = 0; j < pred.length; j++)
 							predInst.setValue(j, Math.round(pred[j])); // ML have probabilities; MT have discrete label indices
@@ -530,7 +530,7 @@ public class Evaluation {
 			double y[] = h.distributionForInstance(x);
 			// Cut off any [no-longer-needed] probabalistic information from MT classifiers.
 			if (h instanceof MultiTargetClassifier)
-				y = Arrays.copyOf(y,L);
+                            y = Arrays.copyOfRange(y, L, L*2);
 
 			// Store the result
 			result.addResult(y,D_test.instance(i));
