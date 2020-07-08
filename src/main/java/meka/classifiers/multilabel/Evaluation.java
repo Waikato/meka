@@ -15,8 +15,8 @@
 
 package meka.classifiers.multilabel;
 
-import meka.classifiers.multitarget.MultiTargetClassifier;
 import meka.classifiers.MultiXClassifier;
+import meka.classifiers.multitarget.MultiTargetClassifier;
 import meka.core.MLEvalUtils;
 import meka.core.MLUtils;
 import meka.core.Result;
@@ -33,6 +33,7 @@ import weka.core.converters.ConverterUtils.DataSource;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -380,12 +381,28 @@ public class Evaluation {
 	 * @return	Result	raw prediction data with evaluation statistics included.
 	 */
 	public static Result cvModel(MultiLabelClassifier h, Instances D, int numFolds, String top, String vop) throws Exception {
+		return cvModel(h, D, numFolds, top, vop, null);
+	}
+
+	/**
+	 * CVModel - Split D into train/test folds, and then train and evaluate on each one.
+	 * @param	h		 a multi-output classifier
+	 * @param	D      	 test data Instances
+	 * @param	numFolds number of folds of CV
+	 * @param	top    	 Threshold OPtion (pertains to multi-label data only)
+	 * @param	vop    	Verbosity OPtion (which measures do we want to calculate/output)
+	 * @param   perFold  the per fold data (0: train Instances, 1: test Instances, 2: Results), ignored if null
+	 * @return	Result	raw prediction data with evaluation statistics included.
+	 */
+	public static Result cvModel(MultiLabelClassifier h, Instances D, int numFolds, String top, String vop, Map<Integer,Object[]> perFold) throws Exception {
 		Result r_[] = new Result[numFolds];
 		for(int i = 0; i < numFolds; i++) {
 			Instances D_train = D.trainCV(numFolds,i);
 			Instances D_test = D.testCV(numFolds,i);
 			if (h.getDebug()) System.out.println(":- Fold ["+i+"/"+numFolds+"] -: "+MLUtils.getDatasetName(D)+"\tL="+D.classIndex()+"\tD(t:T)=("+D_train.numInstances()+":"+D_test.numInstances()+")\tLC(t:T)="+Utils.roundDouble(MLUtils.labelCardinality(D_train,D.classIndex()),2)+":"+Utils.roundDouble(MLUtils.labelCardinality(D_test,D.classIndex()),2)+")");
 			r_[i] = evaluateModel(h, D_train, D_test); // <-- should not run stats yet!
+			if (perFold != null)
+				perFold.put(i, new Object[]{D_train, D_test, r_[i]});
 		}
 		Result r = MLEvalUtils.combinePredictions(r_);
 		if (h instanceof MultiTargetClassifier || isMT(D)) {
