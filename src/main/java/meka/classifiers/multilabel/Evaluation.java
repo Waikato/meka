@@ -28,11 +28,14 @@ import weka.core.Utils;
 import weka.core.converters.AbstractFileSaver;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.ConverterUtils;
+import weka.core.converters.ConverterUtils.DataSink;
 import weka.core.converters.ConverterUtils.DataSource;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -145,10 +148,36 @@ public class Evaluation {
 					System.err.println("Predictions cannot be saved when using cross-validation!");
 
 				int numFolds = MLUtils.getIntegerOption(Utils.getOption('x',options),10); // default 10
+				String cvOutDir = null;
+				Map<Integer,Object[]> cvData = null;
+				if (Utils.getOptionPos("x-out-dir", options) >= 0) {
+					cvOutDir = Utils.getOption("x-out-dir", options);
+					File dir = new File(cvOutDir);
+					if (!dir.exists())
+						throw new IOException("Cross-validation output directory (-x-out-dir) does not exist: " + cvOutDir);
+					if (!dir.isDirectory())
+						throw new IOException("Cross-validation output directory (-x-out-dir) does not point to a directory: " + cvOutDir);
+					cvData = new HashMap<>();
+				}
 				// Check for remaining options
 				Utils.checkForRemainingOptions(options);
-				r = Evaluation.cvModel(h,D_train,numFolds,top,voption);
+				r = Evaluation.cvModel(h,D_train,numFolds,top,voption, cvData);
 				System.out.println(r.toString());
+				// save per-fold data
+				if (cvData != null) {
+					Result.writeResultToFile(r, cvOutDir + "/results-cv.txt");
+					for (int i = 0; i < numFolds; i++) {
+						Object[] data = cvData.get(i);
+						Instances train = (Instances) data[0];
+						Instances test = (Instances) data[1];
+						Result result = (Result) data[2];
+						Instances performance = Result.getPredictionsAsInstances(result);
+						DataSink.write(cvOutDir + "/train-" + i + ".arff", train);
+						DataSink.write(cvOutDir + "/test-" + i + ".arff", test);
+						DataSink.write(cvOutDir + "/predictions-" + i + ".arff", performance);
+						Result.writeResultToFile(result, cvOutDir + "/results-" + i + ".txt");
+					}
+				}
 			}
 			else {
 				// TRAIN-TEST SPLIT
@@ -710,6 +739,8 @@ public class Evaluation {
 		text.append("\tSets the file to store the predictions in (does not work with cross-validation).\n");
 		text.append("-x <number of folds>\n");
 		text.append("\tDo cross-validation with this many folds.\n");
+		text.append("-x-out-dir <dir>\n");
+		text.append("\tOptional (existing) directory for storing cross-validation output per fold\n\t(train, test, performance, results).\n");
 		text.append("-no-eval\n");
 		text.append("\tSkips evaluation, e.g., used when test set contains no class labels.\n");
 		text.append("-R\n");
