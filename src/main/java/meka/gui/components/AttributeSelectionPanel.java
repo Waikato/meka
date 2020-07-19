@@ -15,21 +15,13 @@
 
 /*
  *    AttributeSelectionPanel.java
- *    Copyright (C) 1999-2015 University of Waikato, Hamilton, New Zealand
+ *    Copyright (C) 1999-2020 University of Waikato, Hamilton, New Zealand
  *
  */
 
 package meka.gui.components;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.regex.Pattern;
+import weka.core.Instances;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -42,8 +34,14 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
-
-import weka.core.Instances;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.regex.Pattern;
 
 /**
  * Creates a panel that displays the attributes contained in a set of instances,
@@ -63,7 +61,6 @@ import weka.core.Instances;
  *
  * @author Len Trigg (trigg@cs.waikato.ac.nz)
  * @author FracPete (fracpete at waikato dot ac dot nz)
- * @version $Revision$
  */
 public class AttributeSelectionPanel extends JPanel {
 
@@ -483,7 +480,7 @@ public class AttributeSelectionPanel extends JPanel {
 			m_Table.setModel(m_Model);
 			TableColumnModel tcm = m_Table.getColumnModel();
 			tcm.getColumn(0).setMaxWidth(60);
-			tcm.getColumn(1).setMaxWidth(tcm.getColumn(1).getMinWidth());
+			tcm.getColumn(1).setMaxWidth(tcm.getColumn(1).getMinWidth()+5);
 			tcm.getColumn(2).setMinWidth(100);
 		} else {
 			m_Model.setInstances(newInstances);
@@ -493,6 +490,8 @@ public class AttributeSelectionPanel extends JPanel {
 		m_RemoveAll.setEnabled(true);
 		m_Invert.setEnabled(true);
 		m_Pattern.setEnabled(true);
+		m_Table.sizeColumnsToFit(0);
+		m_Table.sizeColumnsToFit(1);
 		m_Table.sizeColumnsToFit(2);
 		m_Table.revalidate();
 		m_Table.repaint();
