@@ -13,7 +13,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package meka.classifiers.multiltarget.incremental;
+package meka.classifiers.multitarget.incremental;
 
 import meka.classifiers.incremental.IncrementalEvaluation;
 import meka.classifiers.multitarget.CR;

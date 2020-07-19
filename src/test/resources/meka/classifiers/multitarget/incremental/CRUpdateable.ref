@@ -1,29 +1,29 @@
 == Model info
 
 Model                          
-meka.classifiers.multilabel.incremental.BRUpdateable: Node #1
+meka.classifiers.multitarget.incremental.CRUpdateable: Node #1
 
 0 (346.000) NB1 NB adaptive1
-meka.classifiers.multilabel.incremental.BRUpdateable: Node #2
+meka.classifiers.multitarget.incremental.CRUpdateable: Node #2
 
 0 (357.000) NB1 NB adaptive1
-meka.classifiers.multilabel.incremental.BRUpdateable: Node #3
+meka.classifiers.multitarget.incremental.CRUpdateable: Node #3
 
 0 (280.000) NB1 NB adaptive1
-meka.classifiers.multilabel.incremental.BRUpdateable: Node #4
+meka.classifiers.multitarget.incremental.CRUpdateable: Node #4
 
 0 (370.000) NB1 NB adaptive1
-meka.classifiers.multilabel.incremental.BRUpdateable: Node #5
+meka.classifiers.multitarget.incremental.CRUpdateable: Node #5
 
 0 (356.000) NB1 NB adaptive1
-meka.classifiers.multilabel.incremental.BRUpdateable: Node #6
+meka.classifiers.multitarget.incremental.CRUpdateable: Node #6
 
 0 (332.000) NB1 NB adaptive1
 
 
 == Evaluation Info
 
-Classifier                     meka.classifiers.multilabel.incremental.BRUpdateable
+Classifier                     meka.classifiers.multitarget.incremental.CRUpdateable
 Options                        [-W, weka.classifiers.trees.HoeffdingTree, --, -L, 2, -S, 1, -E, 1.0E-7, -H, 0.05, -M, 0.01, -G, 200.0, -N, 0.0]
 Additional Info                
 Dataset                        Music

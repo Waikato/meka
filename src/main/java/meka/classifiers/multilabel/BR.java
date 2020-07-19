@@ -147,6 +147,18 @@ public class BR extends ProblemTransformationMethod implements MultiLabelDrawabl
 		return result;
 	}
 
+	public String getModel()
+	{
+		if (m_MultiClassifiers != null) {
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < m_MultiClassifiers.length; ++i) {
+				sb.append(getClass().getName()).append(": Node #").append(i + 1).append("\n\n");
+				sb.append(m_MultiClassifiers[i].toString()).append("\n");
+			}
+			return sb.toString();
+		}
+		return "";
+	}
 
 	@Override
 	public String getRevision() {
