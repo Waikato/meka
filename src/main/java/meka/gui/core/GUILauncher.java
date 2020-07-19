@@ -13,15 +13,16 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * MekaApplicationLauncher.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2020 University of Waikato, Hamilton, NZ
  */
 
 package meka.gui.core;
 
 import meka.core.Project;
 import meka.gui.goe.GenericObjectEditor;
+import meka.gui.laf.LookAndFeel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -95,6 +96,7 @@ public class GUILauncher {
 	public static MekaFrame launchApplication(Class panelCls, String title, boolean center, String[] args) throws Exception {
 		Project.initialize();
 		GenericObjectEditor.registerAllEditors();
+		LookAndFeel.install();
 		JPanel panel = (JPanel) panelCls.newInstance();
 		MekaFrame result = new MekaFrame();
 		result.setTitle(title);

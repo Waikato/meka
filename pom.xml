@@ -109,6 +109,24 @@
     </dependency>
 
     <dependency>
+      <groupId>com.formdev</groupId>
+      <artifactId>flatlaf</artifactId>
+      <version>0.38</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.formdev</groupId>
+      <artifactId>flatlaf-jide-oss</artifactId>
+      <version>0.38</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.jidesoft</groupId>
+          <artifactId>jide-oss</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
       <groupId>com.github.fracpete</groupId>
       <artifactId>jfilechooser-bookmarks</artifactId>
       <version>0.1.6</version>

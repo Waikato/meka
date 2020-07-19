@@ -1,0 +1,4 @@
+# The classname of the look and feel to use
+#Theme=meka.gui.laf.CrossplatformLookAndFeel
+Theme=meka.gui.laf.FlatLookAndFeel
+#Theme=meka.gui.laf.SystemLookAndFeel

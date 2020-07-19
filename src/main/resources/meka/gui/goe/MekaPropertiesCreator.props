@@ -121,3 +121,7 @@ weka.core.setupgenerator.AbstractParameter=\
 # search algorithms for multisearch
 weka.classifiers.meta.multisearch.AbstractSearch=\
   weka.classifiers.meta.multisearch
+
+# the look and feel schemes
+meka.gui.laf.AbstractLookAndFeel=\
+  meka.gui.laf
