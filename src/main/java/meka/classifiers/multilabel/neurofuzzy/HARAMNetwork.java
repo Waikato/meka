@@ -95,14 +95,14 @@ private boolean relearned=false;
 
 
     }
+
   /**
    * Generates the classifier.
    *
-   * @param instances set of instances serving as training data 
+   * @param D set of instances serving as training data
    * @exception Exception if the classifier has not been generated 
    * successfully
    */
-   
   public void buildClassifier(Instances D) throws Exception {
 
 		int L = D.classIndex();

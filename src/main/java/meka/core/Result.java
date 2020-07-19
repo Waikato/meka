@@ -310,7 +310,7 @@ public class Result implements Serializable {
 
 	/**
 	 * Convert a list of Results into an Instances.
-	 * @param results An ArrayList of Results
+	 * @param metrics An ArrayList of Results
 	 * @return	Instances
 	 */
 	public static Instances getResultsAsInstances(ArrayList<HashMap<String,Object>> metrics) {

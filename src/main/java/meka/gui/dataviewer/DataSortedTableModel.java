@@ -228,7 +228,7 @@ public class DataSortedTableModel
 	}
 
 	/**
-	 * Insert a new instance (all values 0) at the given index. If index is < 0,
+	 * Insert a new instance (all values 0) at the given index. If index is &lt; 0,
 	 * then inserts at the end of the dataset
 	 *
 	 * @param index the index to insert at

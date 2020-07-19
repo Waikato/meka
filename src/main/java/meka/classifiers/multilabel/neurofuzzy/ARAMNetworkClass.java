@@ -8,29 +8,14 @@
  */
 package meka.classifiers.multilabel.neurofuzzy;
 
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
-import java.util.Arrays;
-import java.util.HashMap;
-
-
-
-import meka.classifiers.multilabel.*;
-import weka.classifiers.Classifier;
-import weka.classifiers.Evaluation;
+import meka.classifiers.multilabel.IncrementalMultiLabelClassifier;
+import meka.classifiers.multilabel.MultiLabelClassifierThreaded;
 import weka.classifiers.SingleClassifierEnhancer;
-import weka.classifiers.UpdateableClassifier;
 import weka.core.Attribute;
 import weka.core.Capabilities;
-import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.Option;
-import weka.core.OptionHandler;
-import weka.core.Utils;
-import meka.core.MLUtils;
-import weka.core.WeightedInstancesHandler;
-import weka.core.RevisionUtils;
+
+import java.util.List;
 
 /**
  * ****REPLACE THE FOLLOWING WITH SIMILAR INFORMATION.
@@ -101,19 +86,14 @@ IncrementalMultiLabelClassifier{
    * displaying in the explorer/experimenter gui.
    * ****MODIFY WITH CORRECT INFORMATION****
    */
+
   /**
    * Generates the classifier.
    *
-   * @param instances set of instances serving as training data 
+   * @param D set of instances serving as training data
    * @exception Exception if the classifier has not been generated 
    * successfully
    */
-  
-  //public int[] getneuronsactivated();
-  
- // public double[] getneuronsactivity();
-
-	
 	public void testCapabilities(Instances D) throws Exception {
 		// get the classifier's capabilities, enable all class attributes and do the usual test
 		Capabilities cap = getCapabilities();

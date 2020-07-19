@@ -109,6 +109,7 @@ public class ARAMNetworkSparseV extends ARAMNetworkClass {
 
 
     }
+
   /**
    * Returns a string describing this classifier
    * @return a description of the classifier suitable for
@@ -118,14 +119,14 @@ public class ARAMNetworkSparseV extends ARAMNetworkClass {
   public String globalInfo() {
     return "This is ARAM.";
   }
+
   /**
    * Generates the classifier.
    *
-   * @param instances set of instances serving as training data 
+   * @param D set of instances serving as training data
    * @exception Exception if the classifier has not been generated 
    * successfully
    */
-   
   public void buildClassifier(Instances D) throws Exception {
 
 		int L = D.classIndex();

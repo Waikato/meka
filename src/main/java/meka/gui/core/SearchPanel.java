@@ -362,7 +362,7 @@ public class SearchPanel
 	 * Sets the minimum number of characters that the user needs to enter
 	 * before triggering a search event.
 	 *
-	 * @param value	the minimum number of characters (>= 1)
+	 * @param value	the minimum number of characters (&gt;= 1)
 	 */
 	public void setMinimumChars(int value) {
 		if (value >= 1)
@@ -373,7 +373,7 @@ public class SearchPanel
 	 * Returns the minimum number of characters that the user needs to enter
 	 * before triggering a search event.
 	 *
-	 * @return		the minimum number of characters (>= 1)
+	 * @return		the minimum number of characters (&gt;= 1)
 	 */
 	public int getMinimumChars() {
 		return m_MinimumChars;
@@ -382,7 +382,7 @@ public class SearchPanel
 	/**
 	 * Sets the number of columns for the text field.
 	 *
-	 * @param value	the number of columns (>0)
+	 * @param value	the number of columns (&gt;0)
 	 */
 	public void setTextColumns(int value) {
 		if (value > 0)
@@ -394,7 +394,7 @@ public class SearchPanel
 	/**
 	 * Returns the number of columns of the text field.
 	 *
-	 * @return		the number of columns (>0)
+	 * @return		the number of columns (&gt;0)
 	 */
 	public int getTextColumns() {
 		return m_TextSearch.getColumns();

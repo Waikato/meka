@@ -47,7 +47,7 @@ public class ExceptionUtils {
    * Returns the stacktrace of the throwable as string.
    *
    * @param t		the throwable to get the stacktrace for
-   * @param maxLines	the maximum number of lines to print, <= 0 for all
+   * @param maxLines	the maximum number of lines to print, &lt;= 0 for all
    * @return		the stacktrace
    */
   public static String throwableToString(Throwable t, int maxLines) {

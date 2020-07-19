@@ -8,30 +8,35 @@
  */
 package meka.classifiers.multilabel.neurofuzzy;
 
+import meka.classifiers.multilabel.Evaluation;
+import meka.classifiers.multilabel.MultiLabelClassifier;
+import weka.classifiers.UpdateableClassifier;
+import weka.core.AbstractInstance;
+import weka.core.Attribute;
+import weka.core.Capabilities;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.Option;
+import weka.core.OptionHandler;
+import weka.core.Randomizable;
+import weka.core.TechnicalInformation;
+import weka.core.TechnicalInformation.Field;
+import weka.core.TechnicalInformation.Type;
+import weka.core.TechnicalInformationHandler;
+import weka.core.Utils;
+import weka.core.WeightedInstancesHandler;
+
+import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Random;
 import java.util.Vector;
-import java.util.Arrays;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 
-
-
-import meka.classifiers.multilabel.*;
-import weka.classifiers.Classifier;
 //import weka.classifiers.Evaluation;
-import meka.classifiers.multilabel.Evaluation;
-import meka.classifiers.multilabel.neurofuzzy.ARAMNetworkClass;
-import meka.classifiers.multitarget.MultiTargetClassifier;
-import weka.classifiers.UpdateableClassifier;
-import weka.core.*;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
 
 
 /**
@@ -94,7 +99,7 @@ public class WvARAM extends ARAMNetworkClass
   /**
    * Generates the classifier.
    *
-   * @param instances set of instances serving as training data 
+   * @param D set of instances serving as training data
    * @exception Exception if the classifier has not been generated 
    * successfully
    */

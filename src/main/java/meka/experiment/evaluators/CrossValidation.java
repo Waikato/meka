@@ -95,7 +95,7 @@ public class CrossValidation
 	/**
 	 * Set the number of folds.
 	 *
-	 * @param value the folds (>= 2)
+	 * @param value the folds (&gt;= 2)
 	 */
 	public void setNumFolds(int value) {
 		if (value >= 2)
@@ -107,7 +107,7 @@ public class CrossValidation
 	/**
 	 * Gets the number of folds
 	 *
-	 * @return the folds (>= 2)
+	 * @return the folds (&gt;= 2)
 	 */
 	public int getNumFolds() {
 		return m_NumFolds;

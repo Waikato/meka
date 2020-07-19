@@ -15,13 +15,17 @@
 
 package meka.core;
 
-import meka.filters.multilabel.SuperNodeFilter;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.Range;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * SuperLabelUtils.java - Handy Utils for working with Meta Labels.
@@ -368,7 +372,7 @@ public abstract class SuperLabelUtils {
 	/**
 	 * Super Label Transformation - transform dataset D into a dataset with <code>k</code> multi-class target attributes.
 	 * Use the NSR/PS-style pruning and recomposition, according to partition 'indices', and pruning values 'p' and 'n'.
-	 * @see PSUtils.PSTransformation
+	 * @see PSUtils#PSTransformation
 	 * @param indices	m by k: m super variables, each relating to k original variables
 	 * @param 	D	either multi-label or multi-target dataset
 	 * @param 	p	pruning value

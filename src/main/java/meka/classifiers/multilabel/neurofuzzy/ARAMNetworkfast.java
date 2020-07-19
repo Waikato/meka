@@ -14,32 +14,26 @@
  */
 package meka.classifiers.multilabel.neurofuzzy;
 
+import meka.classifiers.multilabel.Evaluation;
+import meka.classifiers.multilabel.MultiLabelClassifier;
+import weka.core.Attribute;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.Option;
+import weka.core.Utils;
+
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Vector;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Vector;
 
-import meka.classifiers.multilabel.*;
-import meka.classifiers.multilabel.neurofuzzy.ARAMNetworkSparseHT.SortPair2;
-import meka.classifiers.multilabel.Evaluation;
-import weka.classifiers.Classifier;
 //import weka.classifiers.Evaluation;
-import weka.classifiers.UpdateableClassifier;
-import weka.core.Attribute;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.Option;
-import weka.core.OptionHandler;
-import weka.core.Utils;
-import meka.core.MLUtils;
-import weka.core.WeightedInstancesHandler;
-import weka.core.RevisionUtils;
 
 /**
  * ****REPLACE THE FOLLOWING WITH SIMILAR INFORMATION.
@@ -111,6 +105,7 @@ public class ARAMNetworkfast extends ARAMNetworkClass {
 
 
     }
+
   /**
    * Returns a string describing this classifier
    * @return a description of the classifier suitable for
@@ -120,14 +115,14 @@ public class ARAMNetworkfast extends ARAMNetworkClass {
   public String globalInfo() {
     return "This is ARAM.";
   }
+
   /**
    * Generates the classifier.
    *
-   * @param instances set of instances serving as training data 
+   * @param D set of instances serving as training data
    * @exception Exception if the classifier has not been generated 
    * successfully
    */
-   
   public void buildClassifier(Instances D) throws Exception {
 
 		int L = D.classIndex();
