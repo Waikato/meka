@@ -735,6 +735,32 @@ Note that \framework{\MOA} now also supports \framework{\MEKA} classifiers via a
 
 Semi-supervised classifiers implement \texttt{SemisupervisedClassifier} interface and must implement the method \texttt{setUnlabelledData(Instances)} which is called automatically by the \texttt{Evaluation} class prior to \texttt{buildClassifier(Instances)}. It is up to the classifier to decide what to do with the unlabelled instances. Currently, \framework{\MEKA} assumes that unlabelled instances are the test instances (e.g., supplied with the \texttt{-T} flag). It sets all labels to missing beforehand just in case. In the case of a separate set of unlabelled instances, a model can be built, given unlabelled instances with \texttt{-T}, and then saved/dumped into a file with the \texttt{-d <filename>} option, and loaded again (with the \texttt{-l} option) along with a \emph{different} set with \texttt{-T}.  See the example in \Sec{sec:examples}.
 
+
+\subsubsection{GenericObjectEditor}
+\label{goe}
+If the classifier does not use an existing package in MEKA, e.g., \textit{meka.classifiers.multilabel},
+then this new package must be defined in the properties file \textit{MekaPropertiesCreator.props}
+in your MEKA package (see Section \ref{packages}). Check out the properties file that
+comes with MEKA, which is available from the following directory in MEKA's source tree:
+
+\begin{verbatim}
+src/main/resources/meka/gui/goe
+\end{verbatim}
+
+
+\subsubsection{Packages}
+\label{packages}
+Since MEKA uses Weka's package manager, additional MEKA classifiers can be
+added via packages. Distributing your classifier(s) via packages allows you make
+releases independent of MEKA.
+However, since MEKA packages are not hosted in the Weka package repository, this
+is only possible through the \textit{File/URL} button of the package manager.
+
+\noindent For more information on Weka packages and their structure, see the Weka wiki:
+
+\url{https://waikato.github.io/weka-wiki/packages/}{}
+
+
 \subsection{Miscellaneous}
 
 Note that \framework{\MEKA}'s home directory is OS-specific,
