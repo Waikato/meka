@@ -935,12 +935,12 @@ Std_Acc1298_Mean_Mem40_MFCC_11 <= 0.145896
 |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_8 <= 0.150309
 |   |   |   |   |   |   BH_LowPeakAmp <= 0.055533: 0 (7.0)
 |   |   |   |   |   |   BH_LowPeakAmp > 0.055533
-|   |   |   |   |   |   |   BH_HighPeakBPM <= 0.345865
+|   |   |   |   |   |   |   BH_HighPeakBPM <= 0.330827
 |   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_Rolloff <= 0.10393: 1 (4.0)
 |   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_Rolloff > 0.10393
 |   |   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_Flux <= 0.218328: 0 (8.0)
 |   |   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_Flux > 0.218328: 1 (4.0)
-|   |   |   |   |   |   |   BH_HighPeakBPM > 0.345865: 1 (9.0)
+|   |   |   |   |   |   |   BH_HighPeakBPM > 0.330827: 1 (9.0)
 |   |   |   |   |   Std_Acc1298_Std_Mem40_MFCC_8 > 0.150309: 0 (14.0)
 |   |   Mean_Acc1298_Std_Mem40_MFCC_4 > 0.578848: 1 (13.0)
 |   Std_Acc1298_Mean_Mem40_MFCC_10 > 0.205049: 0 (7.0)
@@ -1158,12 +1158,12 @@ quiet-still- = 0
 |   |   |   |   |   Std_Acc1298_Mean_Mem40_Centroid <= 0.056409: 1 (4.0)
 |   |   |   |   |   Std_Acc1298_Mean_Mem40_Centroid > 0.056409
 |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_9 <= 0.861764
-|   |   |   |   |   |   |   BH_HighPeakBPM <= 0.421053
+|   |   |   |   |   |   |   BH_HighPeakBPM <= 0.413534
 |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_4 <= 0.454401
 |   |   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_6 <= 0.322633: 0 (11.0/1.0)
 |   |   |   |   |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_6 > 0.322633: 1 (2.0)
 |   |   |   |   |   |   |   |   Mean_Acc1298_Std_Mem40_MFCC_4 > 0.454401: 1 (4.0)
-|   |   |   |   |   |   |   BH_HighPeakBPM > 0.421053: 0 (11.0)
+|   |   |   |   |   |   |   BH_HighPeakBPM > 0.413534: 0 (11.0)
 |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_9 > 0.861764: 1 (3.0)
 |   |   angry-aggresive- = 1
 |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_3 <= 0.424079: 0 (48.0)

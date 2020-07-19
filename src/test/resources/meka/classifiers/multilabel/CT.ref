@@ -417,8 +417,8 @@ Std_Acc1298_Mean_Mem40_MFCC_11 <= 0.168353
 |   |   |   |   BH_HighPeakBPM > 0.503759: 1 (31.0/1.0)
 |   |   |   Std_Acc1298_Std_Mem40_MFCC_11 > 0.145508
 |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_2 <= 0.209833
-|   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_4 <= 0.348299: 1 (6.0)
-|   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_4 > 0.348299: 0 (3.0)
+|   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_4 <= 0.348294: 1 (6.0)
+|   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_4 > 0.348294: 0 (3.0)
 |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_2 > 0.209833
 |   |   |   |   |   Std_Acc1298_Mean_Mem40_MFCC_11 <= 0.120315
 |   |   |   |   |   |   Mean_Acc1298_Mean_Mem40_MFCC_1 <= 0.279445: 1 (2.0)

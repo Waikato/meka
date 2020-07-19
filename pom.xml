@@ -79,7 +79,7 @@
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-dev</artifactId>
-      <version>3.9.3</version>
+      <version>3.9.4</version>
       <scope>test</scope>
       <type>test-jar</type>
     </dependency>
@@ -87,7 +87,7 @@
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-dev</artifactId>
-      <version>3.9.3</version>
+      <version>3.9.4</version>
     </dependency>
 
     <dependency>
@@ -103,9 +103,9 @@
     </dependency>
 
     <dependency>
-      <groupId>com.jidesoft</groupId>
+      <groupId>com.github.fracpete</groupId>
       <artifactId>jide-oss</artifactId>
-      <version>3.6.18</version>
+      <version>3.6.18.1</version>
     </dependency>
 
     <dependency>
@@ -117,13 +117,19 @@
     <dependency>
       <groupId>com.github.fracpete</groupId>
       <artifactId>jclipboardhelper</artifactId>
-      <version>0.1.1</version>
+      <version>0.1.2</version>
     </dependency>
 
     <dependency>
       <groupId>com.github.fracpete</groupId>
       <artifactId>jshell-scripting</artifactId>
-      <version>0.0.1</version>
+      <version>0.1.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.jidesoft</groupId>
+          <artifactId>jide-oss</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -166,7 +172,7 @@
     <dependency>
       <groupId>com.github.fracpete</groupId>
       <artifactId>multisearch-weka-package</artifactId>
-      <version>2018.9.2</version>
+      <version>2020.2.17</version>
       <type>jar</type>
       <exclusions>
         <exclusion>
@@ -511,6 +517,7 @@
           <!-- avoids "-SNAPSHOT" in title when using the release.xml configuration -->
           <doctitle>${project.name}</doctitle>
           <additionalparam>-Xdoclint:none</additionalparam>
+          <detectJavaApiLink>false</detectJavaApiLink>
         </configuration>
       </plugin>
 
