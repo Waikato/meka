@@ -595,7 +595,12 @@ mvn test
 
 \subsection{\label{sec:extending}Extending \framework{\MEKA}}%: Writing New Classifiers
 
-\framework{\MEKA} classifiers are regular \framework{\WEKA} classifiers that extend either the \texttt{MultilabelClassifier} or \texttt{MultiTargetClassifier} class (most of them are \texttt{ProblemTransformationMethod}s), and expect the \texttt{classIndex()} of \texttt{Instance}s and \texttt{Instances}s to indicate the number of target attributes (indexed at the beginning) rather than the class index (see Section \ref{sec:format}). 
+\framework{\MEKA} classifiers are regular \framework{\WEKA} classifiers that extend
+either the \texttt{MultiLabelClassifier} or \texttt{MultiTargetClassifier} class
+(most of them are \texttt{ProblemTransformationMethod}s), and expect the
+\texttt{classIndex()} of \texttt{Instance}s and \texttt{Instances}s to indicate
+the number of target attributes (indexed at the beginning) rather than the class
+index (see Section \ref{sec:format}).
 
 The following is an example of a functioning (but extremely minimalistic) classifier, \texttt{TestClassifier}, that predicts $0$-relevance for all labels:
 
