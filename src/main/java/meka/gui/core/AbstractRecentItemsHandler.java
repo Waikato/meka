@@ -15,12 +15,13 @@
 
 /*
  * AbstractRecentItemsHandler.java
- * Copyright (C) 2013-2015 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2013-2020 University of Waikato, Hamilton, New Zealand
  */
 
 package meka.gui.core;
 
 import meka.core.Project;
+import meka.core.PropsUtils;
 import meka.gui.events.RecentItemEvent;
 import meka.gui.events.RecentItemListener;
 
@@ -30,10 +31,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -289,44 +288,13 @@ public abstract class AbstractRecentItemsHandler<M, T>
 	protected synchronized void writeProps() {
 		Properties		props;
 		int				i;
-		BufferedWriter	bwriter;
-		FileWriter		fwriter;
 
 		props = loadProps();
 		props.setProperty(getCountKey(), "" + m_RecentItems.size());
 		for (i = 0; i < m_RecentItems.size(); i++)
 			props.setProperty(getItemPrefix() + i, toString(m_RecentItems.get(i)));
 
-		fwriter = null;
-		bwriter = null;
-		try {
-			fwriter = new FileWriter(m_PropertiesFile);
-			bwriter = new BufferedWriter(fwriter);
-			props.store(bwriter, null);
-			bwriter.flush();
-		}
-		catch (Exception e) {
-			System.err.println("Failed to write properties: " + m_PropertiesFile);
-			e.printStackTrace();
-		}
-		finally {
-			if (bwriter != null) {
-				try {
-					bwriter.close();
-				}
-				catch (Exception e) {
-					// ignored
-				}
-			}
-			if (fwriter != null) {
-				try {
-					fwriter.close();
-				}
-				catch (Exception e) {
-					// ignored
-				}
-			}
-		}
+		PropsUtils.write(props, m_PropertiesFile);
 	}
 
 	/**
