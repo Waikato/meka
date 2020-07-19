@@ -743,10 +743,11 @@ Semi-supervised classifiers implement \texttt{SemisupervisedClassifier} interfac
 
 \subsubsection{GenericObjectEditor}
 \label{goe}
-If the classifier does not use an existing package in MEKA, e.g., \textit{meka.classifiers.multilabel},
+If the classifier is not located in an existing package in MEKA, e.g., \textit{meka.classifiers.multilabel},
 then this new package must be defined in the properties file \textit{MekaPropertiesCreator.props}
-in your MEKA package (see Section \ref{packages}). Check out the properties file that
-comes with MEKA, which is available from the following directory in MEKA's source tree:
+in either the MEKA source tree or in MEKA's home directory (see Section \ref{misc}).
+Check out the properties file that comes with MEKA, which is available from the
+following directory in MEKA's source tree:
 
 \begin{verbatim}
 src/main/resources/meka/gui/goe
@@ -760,6 +761,9 @@ added via packages. Distributing your classifier(s) via packages allows you make
 releases independent of MEKA.
 However, since MEKA packages are not hosted in the Weka package repository, this
 is only possible through the \textit{File/URL} button of the package manager.
+Unfortunately, changes to \textit{MekaPropertiesCreator.props} are not picked up
+by Weka's package manager and needs manually adding to a props file in Meka's
+home directory (see Section \ref{misc}).
 
 \noindent For more information on Weka packages and their structure, see the Weka wiki:
 
@@ -767,15 +771,15 @@ is only possible through the \textit{File/URL} button of the package manager.
 
 
 \subsection{Miscellaneous}
-
+\label{misc}
 Note that \framework{\MEKA}'s home directory is OS-specific,
 
 \begin{itemize}
-	\item In Microsoft Windows: \texttt{\%USERPROFILE\%\\mekafiles}
+	\item In Microsoft Windows: \texttt{\%USERPROFILE\%\textbackslash mekafiles}
 	\item In Unix-based systems: \texttt{\$HOME/.meka}
 \end{itemize}
 
-Note that the \texttt{.props} files have preference the following order: 
+\noindent Note that the \texttt{.props} files have preference the following order:
 \begin{enumerate}
 	\item the \texttt{jar}
 	\item user's home directory
