@@ -63,6 +63,8 @@ public class MULAN extends ProblemTransformationMethod {
 
 	protected String m_MethodString = "RAkEL1";
 
+	protected boolean m_RenameAttributes = true;
+
 	/**
 	 * Description to display in the GUI.
 	 *
@@ -91,10 +93,27 @@ public class MULAN extends ProblemTransformationMethod {
 		return "Any of "+MethodSelection+". If you wish to add more, you will have to add code to the buildClassifier(Instances) function in MULAN.java";
 	}
 
+	/**
+	 * Set whether to rename the attributes to avoid problems with MULAN.
+	 * @param value true if to rename
+	 */
+	public void setRenameAttributes(boolean value) {
+		m_RenameAttributes = value;
+	}
+
+	public boolean getRenameAttributes() {
+		return m_RenameAttributes;
+	}
+
+	public String renameAttributesTipText() {
+		return "If enabled, the attributes get renamed to avoid issues with MULAN throwing exceptions regarding invalid characters in attribute names.";
+	}
+
 	@Override
 	public Enumeration listOptions() {
 		Vector result = new Vector();
 		result.addElement(new Option("\tMethod Name\n\tdefault: RAkEL1", "S", 1, "-S <value>"));
+		result.addElement(new Option("\tDon't rename attributes\n\tdefault: rename", "no-rename", 0, "-no-rename"));
 		OptionUtils.add(result, super.listOptions());
 		return OptionUtils.toEnumeration(result);
 	}
@@ -102,6 +121,7 @@ public class MULAN extends ProblemTransformationMethod {
 	@Override
 	public void setOptions(String[] options) throws Exception {
 		setMethod(OptionUtils.parse(options, 'S', "RAkEL1"));
+		setRenameAttributes(!OptionUtils.parse(options, "no-rename", false));
 		super.setOptions(options);
 	}
 
@@ -109,6 +129,7 @@ public class MULAN extends ProblemTransformationMethod {
 	public String [] getOptions() {
 		List<String> result = new ArrayList<>();
 		OptionUtils.add(result, 'S', getMethod());
+		OptionUtils.add(result, "no-rename", !getRenameAttributes());
 		OptionUtils.add(result, super.getOptions());
 		return OptionUtils.toArray(result);
 
@@ -135,8 +156,10 @@ public class MULAN extends ProblemTransformationMethod {
 		int L = instances.classIndex();
 
 		// rename attributes, because MULAN doesn't deal well with hypens etc
-		for(int i = L; i < instances.numAttributes(); i++) {
-			instances.renameAttribute(i,"a_"+i);
+		if (m_RenameAttributes) {
+			for (int i = L; i < instances.numAttributes(); i++) {
+				instances.renameAttribute(i, "a_" + i);
+			}
 		}
 		BufferedWriter writer = new BufferedWriter(new FileWriter(name));
 		m_InstancesTemplate = F.meka2mulan(new Instances(instances),L);
