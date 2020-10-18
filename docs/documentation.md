@@ -45,19 +45,24 @@ and other multi-label links:
 
 ## Getting Help 
 
-Have a specific problem or query? You can post it to MEKA's Mailing List. [Subscribe here](https://lists.sourceforge.net/lists/listinfo/meka-list), or write directly to `meka-list@lists.sourceforge.net`. Please keep in mind:
-	
-* Check if your question has already been answered [on the mailing list](http://sourceforge.net/mailarchive/forum.php?forum_name=meka-list)
-* Avoid contacting developers directly for MEKA-related help.
+Have a specific problem or query? Then create an issue on our Github project 
+page (but please search beforehand whether not someone already asked the same question):
 
-You may also find that someone has [raised an issue on github](https://github.com/Waikato/meka/issues) relating to your question. 
+https://github.com/Waikato/meka/issues 
+
+**NB:** Avoid contacting developers directly for MEKA-related help.
 
 
 ## Bugs
 
-A list of current issues in Meka (known bugs, planned improvements, feature wishlist) can be found at [https://github.com/Waikato/meka/issues](https://github.com/Waikato/meka/issues). Please add one if you believe you have another (but please check first to make sure it hasn't been raised already!)
+A list of current issues in Meka (known bugs, planned improvements, feature wishlist) 
+can be found at [https://github.com/Waikato/meka/issues](https://github.com/Waikato/meka/issues). 
+Please add one if you believe you have another (but please check first to make sure it hasn't been raised already!)
 
 
 ## Participating
 
-The Meka developers never have enough time to implement everything that should be in Meka. If you would like to contribute something new to Meka (add a feature, improve some existing code), or help with any of the existing issues, please get in touch with the developers. 
+The Meka developers never have enough time to implement everything that should 
+be in Meka. If you would like to contribute something new to Meka (add a feature, 
+improve some existing code), or help with any of the existing issues, please get 
+in touch with the developers. 
