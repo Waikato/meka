@@ -39,3 +39,9 @@ syntax: glob
 
 # mkdocs
 site/
+venv/
+clean.sh
+build.sh
+serve.sh
+deploy.sh
+
