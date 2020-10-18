@@ -48,7 +48,7 @@ and other multi-label links:
 Have a specific problem or query? Then create an issue on our Github project 
 page (but please search beforehand whether not someone already asked the same question):
 
-https://github.com/Waikato/meka/issues 
+[github.com/Waikato/meka/issues](https://github.com/Waikato/meka/issues ) 
 
 **NB:** Avoid contacting developers directly for MEKA-related help.
 
@@ -56,7 +56,7 @@ https://github.com/Waikato/meka/issues
 ## Bugs
 
 A list of current issues in Meka (known bugs, planned improvements, feature wishlist) 
-can be found at [https://github.com/Waikato/meka/issues](https://github.com/Waikato/meka/issues). 
+can be found at [github.com/Waikato/meka/issues](https://github.com/Waikato/meka/issues). 
 Please add one if you believe you have another (but please check first to make sure it hasn't been raised already!)
 
 
