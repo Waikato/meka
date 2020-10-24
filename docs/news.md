@@ -1,3 +1,5 @@
+* **October 25, 2020**: [Meka 1.9.3](https://github.com/Waikato/meka/releases/tag/meka-1.9.3) is released.
+
 * **October 19, 2020**: Sourceforget.net decommissioned mailing lists, please
   use [Github issues](https://github.com/Waikato/meka/issues) instead for asking
   questions. 
