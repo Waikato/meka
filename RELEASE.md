@@ -59,9 +59,9 @@ Deploying artifacts
 - The artifacts will get transferred to Maven Central in the background, should happen
   within 15min. You can check the following URL whether they have been pushed out:
 
-  http://repo1.maven.org/maven2/net/sf/meka/meka/
+  https://repo1.maven.org/maven2/net/sf/meka/meka/
 
-- The artifacts might not be searchable through http://search.maven.org/ for a few
+- The artifacts might not be searchable through https://search.maven.org/ for a few
   hours, as the search index only gets updated every 3 hours or so
 
 - log out of sonatype
