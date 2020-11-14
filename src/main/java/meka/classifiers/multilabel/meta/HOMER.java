@@ -29,12 +29,12 @@ import weka.core.TechnicalInformation.Type;
 
 /**
  * HOMER (Hierarchy Of Multi-label classifiERs algorithm.
- * 
+ *
  * This algorithm divides the multilabel classification problem into a tree
  * structure where at each level the labels are paritioned into k subsets and
  * one multilabel classifier classifies the labels per subset, using k
  * metalabels representing disjoint sets of labels.
- * 
+ *
  * @author Aaron Keesing
  */
 public class HOMER extends ProblemTransformationMethod implements Randomizable, TechnicalInformationHandler {
@@ -281,7 +281,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
 
     /**
      * The threshold to use for the multi-label classifier distribution at each
-     * node. 
+     * node.
      */
     protected String threshold = "0.3";
 
@@ -393,7 +393,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
 
     /**
      * Build the HOMER tree.
-     * 
+     *
      * @param node
      *            the root node of the tree/subtree
      * @throws Exception
@@ -433,7 +433,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
 
     /**
      * Train the HOMER tree.
-     * 
+     *
      * @param node
      *            the root node of the tree/subtree
      * @param D
@@ -528,7 +528,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
 
     /**
      * Classify an instance x.
-     * 
+     *
      * @param x
      *            the instance to classify
      * @param node
@@ -572,7 +572,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
     /**
      * Recursively classifies an instance by propagating it down the tree and
      * classifying at each relevant node.
-     * 
+     *
      * @param x
      *            the instance to classify
      */

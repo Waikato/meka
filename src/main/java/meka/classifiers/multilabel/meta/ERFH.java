@@ -29,7 +29,7 @@ import weka.core.TechnicalInformation.Type;
 
 /**
  * Extremely Randomised Forest with HOMER trees algorithm.
- * 
+ *
  * @author Aaron Keesing
  */
 public class ERFH extends MetaProblemTransformationMethod implements Randomizable, TechnicalInformationHandler {
@@ -105,7 +105,7 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
     /**
      * Builds each HOMER tree using bagging, while randomising the settings for
      * the classifier at each node of the tree.
-     * 
+     *
      * @param instances
      *            the instances to train with
      */
@@ -119,7 +119,7 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
         m_Classifiers = new HOMER[m_NumIterations];
         for(int i = 0; i < m_NumIterations; i++) {
             Random r = new Random(m_Seed + i);
-            Instances bag = new Instances(D, 0);    
+            Instances bag = new Instances(D, 0);
             m_Classifiers[i] = new HOMER();
             ((HOMER)m_Classifiers[i]).setClassifier(ProblemTransformationMethod.makeCopy(metaClassifier));
             ((HOMER)m_Classifiers[i]).setSeed(m_Seed + i);
@@ -142,7 +142,7 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
             ((SingleClassifierEnhancer)((HOMER)m_Classifiers[i]).getClassifier()).setClassifier(AbstractClassifier.makeCopy(m_Classifier));
             m_Classifiers[i].buildClassifier(bag);
         }
-        
+
         if (getDebug())
             System.out.println();
     }

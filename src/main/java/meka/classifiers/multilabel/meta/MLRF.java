@@ -29,7 +29,7 @@ import weka.core.TechnicalInformation.Type;
 
 /**
  * Multi-label rotation forest.
- * 
+ *
  * @author Aaron Keesing
  */
 public class MLRF extends MetaProblemTransformationMethod implements Randomizable, TechnicalInformationHandler {
@@ -80,7 +80,7 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
 
     /**
      * Partitions the features into disjoint subsets.
-     * 
+     *
      * @param d the number of features
      * @return a list of subsets of indices corresponding to feature sets
      */
