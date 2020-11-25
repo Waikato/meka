@@ -40,7 +40,7 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
      */
     public static class VariableKLabelSplitter extends ClusterLabelSplitter {
         private static final long serialVersionUID = 9211371179003763478L;
-        private Random r;
+        private final Random r;
 
         public VariableKLabelSplitter(int seed) {
             super(seed);
@@ -106,7 +106,7 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
      * Builds each HOMER tree using bagging, while randomising the settings for
      * the classifier at each node of the tree.
      *
-     * @param instances
+     * @param D
      *            the instances to train with
      */
     @Override

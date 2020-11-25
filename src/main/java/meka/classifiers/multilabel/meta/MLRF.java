@@ -216,7 +216,7 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
         }
 
         for (int i = 0; i < L; i++)
-            dist[i] /= (double)m_NumIterations;
+            dist[i] /= m_NumIterations;
         return dist;
     }
 

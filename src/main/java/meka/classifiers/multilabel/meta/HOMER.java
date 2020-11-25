@@ -31,7 +31,7 @@ import weka.core.TechnicalInformation.Type;
  * HOMER (Hierarchy Of Multi-label classifiERs algorithm.
  *
  * This algorithm divides the multilabel classification problem into a tree
- * structure where at each level the labels are paritioned into k subsets and
+ * structure where at each level the labels are partitioned into k subsets and
  * one multilabel classifier classifies the labels per subset, using k
  * metalabels representing disjoint sets of labels.
  *
@@ -45,8 +45,8 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
     private static class HOMERNode {
         private static int _id = 0;
 
-        private int id;
-        private List<HOMERNode> children;
+        private final int id;
+        private final List<HOMERNode> children;
         private Set<Integer> labels;
         private MultiLabelClassifier classifier;
         private Instances instances;
@@ -105,19 +105,21 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
 
     /**
      * Interface that represents a label splitter, that partitions a set of
-     * labels into {@link #k} disjoint subsets.
+     * labels into {@code k} disjoint subsets.
      */
     public interface LabelSplitter extends Serializable {
         /**
          * Partition {@code labels} into non-empty disjoint subsets of labels.
          *
-         * @param parentLabels
-         *              the labels of the parent node
+         * @param k
+         *              maximum number of subsets
+         * @param labels
+         *              the labels to split
          * @param D
          *              the dataset that defines the labels
          * @return a partition of the labels in {@code parentLabels}
          */
-        public Collection<Set<Integer>> splitLabels(int k, Collection<Integer> labels, Instances D);
+        Collection<Set<Integer>> splitLabels(int k, Collection<Integer> labels, Instances D);
     }
 
     /**
@@ -125,7 +127,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
      */
     public static class RandomLabelSplitter implements LabelSplitter {
         private static final long serialVersionUID = -4151444787544325296L;
-        private Random r;
+        private final Random r;
 
         public RandomLabelSplitter(int seed) {
             r = new Random(seed);
@@ -165,7 +167,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
     public static class ClusterLabelSplitter implements LabelSplitter {
         private static final long serialVersionUID = 3545709733670034266L;
         private double[][] labelVectors = null;
-        private Random r;
+        private final Random r;
 
         public ClusterLabelSplitter(int seed) {
             r = new Random(seed);
@@ -189,7 +191,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
             if (Ln <= k) {
                 List<Set<Integer>> result = new ArrayList<>(Ln);
                 for (int i = 0; i < Ln; i++)
-                    result.add(new HashSet<>(Arrays.asList(labelList.get(idx++))));
+                    result.add(new HashSet<>(Collections.singletonList(labelList.get(idx++))));
                 return result;
             }
 
@@ -232,12 +234,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
                             break;
                         Cj.add(nu);
                         final int _minj = minj;
-                        Cj.sort(new Comparator<Integer>() {
-                            @Override
-                            public int compare(Integer o1, Integer o2) {
-                                return Double.compare(d[o1][_minj], d[o2][_minj]);
-                            }
-                        });
+                        Cj.sort(Comparator.comparingDouble(o -> d[o][_minj]));
 
                         int size = Cj.size();
                         if (size > Math.ceil(Ln/(double)k)) {
@@ -436,9 +433,9 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
      *
      * @param node
      *            the root node of the tree/subtree
-     * @param D
-     *            the instances
      * @throws Exception
+     *      If an exception is thrown during label preprocessing, training the
+     *      base classifier, or training any children of this node.
      */
     private void trainTree(HOMERNode node) throws Exception {
         Instances D = node.getInstances();
@@ -515,7 +512,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         root = new HOMERNode();
         root.setClassifier((MultiLabelClassifier)ProblemTransformationMethod.makeCopy(m_Classifier));
         int[] labels = A.make_sequence(L);
-        Set<Integer> labelSet = new HashSet<Integer>(L);
+        Set<Integer> labelSet = new HashSet<>(L);
         for (int l : labels)
             labelSet.add(l);
         root.setLabels(labelSet);
@@ -535,16 +532,17 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
      *            the current tree node
      * @param y
      *            shared array of prediction values
-     * @return y
      * @throws Exception
+     *      If this node's classifier or any child classifiers throw an
+     *      exception.
      */
-    private double[] classify(Instance x, HOMERNode node, double[] y) throws Exception {
+    private void classify(Instance x, HOMERNode node, double[] y) throws Exception {
         List<HOMERNode> children = node.getChildren();
         int c = children.size();
         Instance newX = (Instance)x.copy();
         int oldL = newX.classIndex();
         newX.setDataset(null);
-        newX = MLUtils.deleteAttributesAt(newX, A.make_sequence(oldL));
+        MLUtils.deleteAttributesAt(newX, A.make_sequence(oldL));
         for (int i = 0; i < c; i++)
             newX.insertAttributeAt(i);
         newX.setDataset(node.getInstances());
@@ -566,7 +564,6 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
                     y[l] = 0;
             }
         }
-        return y;
     }
 
     /**
