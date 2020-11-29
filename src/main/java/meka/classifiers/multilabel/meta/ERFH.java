@@ -15,17 +15,15 @@
 
 package meka.classifiers.multilabel.meta;
 
-import java.util.*;
-
 import meka.classifiers.multilabel.*;
 import meka.classifiers.multilabel.meta.HOMER.ClusterLabelSplitter;
-import meka.core.*;
-import weka.classifiers.AbstractClassifier;
-import weka.classifiers.SingleClassifierEnhancer;
+import meka.core.OptionUtils;
+import weka.classifiers.*;
 import weka.classifiers.trees.RandomForest;
 import weka.core.*;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
+import weka.core.TechnicalInformation.*;
+
+import java.util.*;
 
 /**
  * Extremely Randomised Forest with HOMER trees algorithm.
@@ -34,40 +32,14 @@ import weka.core.TechnicalInformation.Type;
  */
 public class ERFH extends MetaProblemTransformationMethod implements Randomizable, TechnicalInformationHandler {
 
-    /**
-     * The same as {@link ClusterLabelSplitter} except uses a random number of
-     * splits at each node of the tree, within fixed bounds.
-     */
-    public static class VariableKLabelSplitter extends ClusterLabelSplitter {
-        private static final long serialVersionUID = 9211371179003763478L;
-        private final Random r;
-
-        public VariableKLabelSplitter(int seed) {
-            super(seed);
-            r = new Random(seed);
-        }
-
-        @Override
-        public Collection<Set<Integer>> splitLabels(int k, Collection<Integer> labels, Instances D) {
-            return super.splitLabels(r.nextInt(5) + 2, labels, D);
-        }
-    }
-
     private static final long serialVersionUID = 5482843422132209885L;
-
-    private SingleClassifierEnhancer metaClassifier;
-
     /**
      * Threshold probability for committee classification.
      */
     protected double threshold = 0.4;
-    protected String metaClassifierString = "BinaryRelevance";
 
-    /**
-     * Construct a default ERFH instance with default settings.
-     */
-    public ERFH() {
-        m_Classifier = new RandomForest();
+    public static void main(String[] args) {
+        ProblemTransformationMethod.runClassifier(new ERFH(), args);
     }
 
     public double getThreshold() {
@@ -82,64 +54,46 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
         return "Prediction threshold for the multi-label classifier distribution.";
     }
 
-    public void setMetaClassifier(SingleClassifierEnhancer classifier) {
-        metaClassifier = classifier;
-    }
-
-    public String getMetaClassifierString() {
-        return metaClassifierString;
-    }
-
-    public void setMetaClassifierString(String str) {
-        if (str.equals("ClassifierChains")) {
-            metaClassifier = new CC();
-        } else {
-            metaClassifier = new BR();
-        }
-    }
-
-    public String metaClassifierStringTipText() {
-        return "Meta-classifier for each HOMER node. One of {BinaryRelevance, ClassifierChains}";
-    }
-
     /**
-     * Builds each HOMER tree using bagging, while randomising the settings for
-     * the classifier at each node of the tree.
+     * Builds each HOMER tree using bagging, while randomising the settings for the classifier at each node of the
+     * tree.
      *
-     * @param D
-     *            the instances to train with
+     * @param D the instances to train with
      */
     @Override
     public void buildClassifier(Instances D) throws Exception {
         testCapabilities(D);
-        int numInstances = D.numInstances();
 
         if (getDebug())
             System.out.print("Building " + m_NumIterations + " HOMER trees:");
+
         m_Classifiers = new HOMER[m_NumIterations];
-        for(int i = 0; i < m_NumIterations; i++) {
+        for (int i = 0; i < m_NumIterations; i++) {
             Random r = new Random(m_Seed + i);
             Instances bag = new Instances(D, 0);
-            m_Classifiers[i] = new HOMER();
-            ((HOMER)m_Classifiers[i]).setClassifier(ProblemTransformationMethod.makeCopy(metaClassifier));
-            ((HOMER)m_Classifiers[i]).setSeed(m_Seed + i);
-            ((HOMER)m_Classifiers[i]).setLabelSplitter(new VariableKLabelSplitter(m_Seed + i));
-            if (getDebug())
-                System.out.print(" " + i);
+            for (int j = 0; j < D.numInstances(); j++)
+                bag.add(D.get(r.nextInt(D.numInstances())));
 
-            for (int j = 0; j < numInstances; j++)
-                bag.add(D.get(r.nextInt(numInstances)));
-
-            if (m_Classifier instanceof RandomForest) {
-                RandomForest rf = (RandomForest)m_Classifier;
-                rf.setSeed(m_Seed + i);
+            // Modify base single-label classifier
+            Classifier baseClassifier = ((SingleClassifierEnhancer) m_Classifier).getClassifier();
+            if (baseClassifier instanceof Randomizable) {
+                ((Randomizable) baseClassifier).setSeed(m_Seed + i);
+            }
+            if (baseClassifier instanceof RandomForest) {
+                RandomForest rf = (RandomForest) baseClassifier;
                 rf.setMaxDepth(20 + r.nextInt(20));
                 rf.setBagSizePercent(80 + r.nextInt(21));
                 rf.setNumIterations(30 + r.nextInt(30));
-            } else if (m_Classifier instanceof Randomizable) {
-                ((Randomizable)m_Classifier).setSeed(m_Seed + i);
             }
-            ((SingleClassifierEnhancer)((HOMER)m_Classifiers[i]).getClassifier()).setClassifier(AbstractClassifier.makeCopy(m_Classifier));
+
+            // Modify i'th HOMER tree
+            HOMER homer = new HOMER();
+            homer.setClassifier(AbstractMultiLabelClassifier.makeCopy(m_Classifier));
+            homer.setLabelSplitter(new VariableKLabelSplitter(m_Seed + i));
+            homer.setSeed(m_Seed + i);
+            if (getDebug())
+                System.out.print(" " + i);
+            m_Classifiers[i] = homer;
             m_Classifiers[i].buildClassifier(bag);
         }
 
@@ -147,10 +101,6 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
             System.out.println();
     }
 
-    /**
-     * Calculate the classification probabilities for each label based on the
-     * average committee probabilities per label and the given threshold.
-     */
     @Override
     public double[] distributionForInstance(Instance x) throws Exception {
         double[] p = super.distributionForInstance(x);
@@ -162,8 +112,7 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
     @Override
     public String[] getOptions() {
         List<String> result = new ArrayList<>();
-        OptionUtils.add(result, "t", threshold);
-        OptionUtils.add(result, "M", metaClassifierString);
+        OptionUtils.add(result, "T", threshold);
         OptionUtils.add(result, super.getOptions());
         return OptionUtils.toArray(result);
     }
@@ -171,16 +120,15 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
     @Override
     public void setOptions(String[] options) throws Exception {
         super.setOptions(options);
-        threshold = OptionUtils.parse(options, "t", 0.4);
-        setMetaClassifierString(OptionUtils.parse(options, "M", ""));
+        threshold = OptionUtils.parse(options, "T", 0.4);
     }
 
     @Override
     public Enumeration<Option> listOptions() {
-        Vector<Option> options = new Vector<>();
-        options.add(new Option(thresholdTipText(), "threshold", 1, "-t threshold"));
-        options.add(new Option(metaClassifierStringTipText(), "metaClassifier", 1, "-M string"));
+        Vector<Option> options = new Vector<>(2);
+        options.add(new Option(thresholdTipText(), "threshold", 1, "-T threshold"));
         OptionUtils.add(options, super.listOptions());
+        //OptionUtils.add(options, homerClassifier.listOptions());
         return options.elements();
     }
 
@@ -204,7 +152,21 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
         return info;
     }
 
-    public static void main(String[] args) {
-        ProblemTransformationMethod.runClassifier(new ERFH(), args);
+    /**
+     * The same as {@link ClusterLabelSplitter} except uses a random number of splits at each node of the tree, within
+     * fixed bounds.
+     */
+    public static class VariableKLabelSplitter extends ClusterLabelSplitter {
+
+        private static final long serialVersionUID = 9211371179003763478L;
+
+        public VariableKLabelSplitter(int seed) {
+            super(seed);
+        }
+
+        @Override
+        public Collection<Set<Integer>> splitLabels(int k, Collection<Integer> labels, Instances D) {
+            return super.splitLabels(rng.nextInt(5) + 2, labels, D);
+        }
     }
 }

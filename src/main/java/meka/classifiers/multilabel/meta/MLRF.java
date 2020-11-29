@@ -15,17 +15,16 @@
 
 package meka.classifiers.multilabel.meta;
 
-import java.util.*;
-import java.util.Vector;
-
 import meka.classifiers.multilabel.*;
 import meka.core.*;
-import no.uib.cipr.matrix.*;
 import no.uib.cipr.matrix.Matrix;
+import no.uib.cipr.matrix.*;
 import no.uib.cipr.matrix.sparse.CompRowMatrix;
 import weka.core.*;
-import weka.core.TechnicalInformation.Field;
-import weka.core.TechnicalInformation.Type;
+import weka.core.TechnicalInformation.*;
+
+import java.util.Vector;
+import java.util.*;
 
 /**
  * Multi-label rotation forest.
@@ -40,18 +39,21 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
      * The number of subsets to generate.
      */
     protected int K = 10;
+
     /**
      * The dimensionality reduction parameter.
      */
     protected int numFeatures = 10;
 
     private DenseMatrix[] R;
-    /**
-     * Construct a default MLRF object.
-     */
+
     public MLRF() {
         m_Classifier = new BR();
         m_BagSizePercent = 75;
+    }
+
+    public static void main(String[] args) {
+        ProblemTransformationMethod.runClassifier(new MLRF(), args);
     }
 
     public int getK() {
@@ -91,10 +93,10 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
         A.shuffle(indices, r);
         for (int i = 0; i < K; i++) {
             List<Integer> subset = new ArrayList<>();
-            for (int j = 0; j < d/K; j++) {
-                if (i*(d/K)+j >= d)
+            for (int j = 0; j < d / K; j++) {
+                if (i * (d / K) + j >= d)
                     break;
-                subset.add(indices[i*(d/K)+j]);
+                subset.add(indices[i * (d / K) + j]);
             }
             Collections.sort(subset);
             result.add(subset);
@@ -109,17 +111,17 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
         int L = D.classIndex();
         int d = D.numAttributes() - L;
 
-        m_Classifiers = ProblemTransformationMethod.makeCopies((MultiLabelClassifier)m_Classifier, m_NumIterations);
+        m_Classifiers = ProblemTransformationMethod.makeCopies((MultiLabelClassifier) m_Classifier, m_NumIterations);
         R = new DenseMatrix[m_NumIterations];
         Instances transformedInstances = F.remove(D, A.make_sequence(L), true);
-        int nNew = n*m_BagSizePercent/100;
+        int nNew = n * m_BagSizePercent / 100;
 
         Matrix dataMatrix;
         try {
             dataMatrix = new DenseMatrix(n, d);
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < d; j++)
-                    dataMatrix.set(i, j, D.get(i).value(L+j));
+                    dataMatrix.set(i, j, D.get(i).value(L + j));
         } catch (OutOfMemoryError e) {
             int[][] nz = new int[n][];
             for (int i = 0; i < n; i++) {
@@ -135,11 +137,11 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
                     dataMatrix.set(i, nz[i][j], inst.valueSparse(j));
             }
         }
-        DenseMatrix transformedData = new DenseMatrix(n, numFeatures*K);
+        DenseMatrix transformedData = new DenseMatrix(n, numFeatures * K);
         DenseMatrix partialSInv = new DenseMatrix(numFeatures, numFeatures);
 
-        for (int m = 0; m < numFeatures*K; m++)
-            transformedInstances.insertAttributeAt(new Attribute("F" + m), L+m);
+        for (int m = 0; m < numFeatures * K; m++)
+            transformedInstances.insertAttributeAt(new Attribute("F" + m), L + m);
         transformedInstances.setClassIndex(L);
         m_InstancesTemplate = transformedInstances;
 
@@ -148,7 +150,7 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
                 System.out.print("Building classifier " + i + ": subsets");
             Random r = new Random(m_Seed + i);
 
-            R[i] = new DenseMatrix(d, numFeatures*K);
+            R[i] = new DenseMatrix(d, numFeatures * K);
             List<List<Integer>> subsets = generateFeatureSubsets(d);
             for (int s = 0; s < K; s++) {
                 if (getDebug())
@@ -158,7 +160,7 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
                 DenseMatrix mat = new DenseMatrix(nNew, m);
                 for (int j = 0; j < nNew; j++)
                     for (int k = 0; k < m; k++)
-                        mat.set(j, k, D.get(r.nextInt(n)).value(subset.get(k)+L));
+                        mat.set(j, k, D.get(r.nextInt(n)).value(subset.get(k) + L));
 
                 SVD svd = new SVD(nNew, m);
                 svd = svd.factor(mat);
@@ -167,21 +169,22 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
 
                 for (int j = 0; j < numFeatures; j++)
                     if (singVals[j] > 0)
-                        partialSInv.set(j, j, 1/singVals[j]);
+                        partialSInv.set(j, j, 1 / singVals[j]);
 
                 DenseMatrix transformationMatrix = new DenseMatrix(m, numFeatures);
                 partialVt.transAmult(partialSInv, transformationMatrix);
                 for (int j = 0; j < m; j++) {
-                    Matrix row = Matrices.getSubMatrix(transformationMatrix, new int[] {j}, A.make_sequence(numFeatures));
-                    Matrices.getSubMatrix(R[i], new int[] {subset.get(j)}, A.make_sequence(numFeatures*s, numFeatures*(s+1))).set(row);
+                    Matrix row = Matrices.getSubMatrix(transformationMatrix, new int[]{j}, A.make_sequence(numFeatures));
+                    Matrices.getSubMatrix(R[i], new int[]{subset.get(j)}, A.make_sequence(
+                            numFeatures * s, numFeatures * (s + 1))).set(row);
                 }
             }
 
             dataMatrix.mult(R[i], transformedData);
 
-            for (int m = 0; m < numFeatures*K; m++)
+            for (int m = 0; m < numFeatures * K; m++)
                 for (int j = 0; j < n; j++)
-                    transformedInstances.get(j).setValue(L+m, transformedData.get(j, m));
+                    transformedInstances.get(j).setValue(L + m, transformedData.get(j, m));
             m_Classifiers[i].buildClassifier(transformedInstances);
             if (getDebug())
                 System.out.println();
@@ -196,20 +199,20 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
 
         DenseMatrix vec = new DenseMatrix(1, d);
         for (int i = 0; i < d; i++)
-            vec.set(0, i, x.value(L+i));
+            vec.set(0, i, x.value(L + i));
 
-        DenseMatrix transformedInstance = new DenseMatrix(1, numFeatures*K);
-        Instance x_ = (Instance)x.copy();
+        DenseMatrix transformedInstance = new DenseMatrix(1, numFeatures * K);
+        Instance x_ = (Instance) x.copy();
         x_.setDataset(null);
-        MLUtils.keepAttributesAt(x_, A.make_sequence(L), L+d);
-        for (int i = 0; i < numFeatures*K; i++)
-            x_.insertAttributeAt(L+i);
+        MLUtils.keepAttributesAt(x_, A.make_sequence(L), L + d);
+        for (int i = 0; i < numFeatures * K; i++)
+            x_.insertAttributeAt(L + i);
         x_.setDataset(m_InstancesTemplate);
 
         for (int h = 0; h < m_NumIterations; h++) {
             vec.mult(R[h], transformedInstance);
-            for (int i = 0; i < numFeatures*K; i++)
-                x_.setValue(L+i, transformedInstance.get(0, i));
+            for (int i = 0; i < numFeatures * K; i++)
+                x_.setValue(L + i, transformedInstance.get(0, i));
             double[] hdist = m_Classifiers[h].distributionForInstance(x_);
             for (int i = 0; i < L; i++)
                 dist[i] += hdist[i];
@@ -256,9 +259,5 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
         info.setValue(Field.PUBLISHER, "Elsevier");
         info.setValue(Field.PAGES, "1--11");
         return info;
-    }
-
-    public static void main(String[] args) {
-        ProblemTransformationMethod.runClassifier(new MLRF(), args);
     }
 }
