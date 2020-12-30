@@ -62,7 +62,7 @@
         },
         {
             "location": "/maven/",
-            "text": "Add the following dependency to your \npom.xml\n:\n\n\n  <dependency>\n    <groupId>net.sf.meka</groupId>\n    <artifactId>meka</artifactId>\n    <version>1.9.3</version>\n  </dependency>",
+            "text": "Add the following dependency to your \npom.xml\n:\n\n\n  <dependency>\n    <groupId>net.sf.meka</groupId>\n    <artifactId>meka</artifactId>\n    <version>1.9.4</version>\n  </dependency>",
             "title": "Maven"
         },
         {
