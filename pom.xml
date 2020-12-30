@@ -23,9 +23,9 @@
     <developer>
       <id>jread</id>
       <name>Jesse Read</name>
-	  <url>http://jmread.github.io/</url>
-      <organization>École Polytechnique, Paris, France</organization>
-	  <organizationUrl>https://www.polytechnique.edu/</organizationUrl>
+      <url>http://jmread.github.io/</url>
+      <organization>LIX, École Polytechnique, Paris, France</organization>
+      <organizationUrl>http://www.lix.polytechnique.fr/dascim/</organizationUrl>
       <roles>
         <role>architect</role>
         <role>developer</role>
