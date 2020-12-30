@@ -3,7 +3,7 @@
 
   <groupId>net.sf.meka</groupId>
   <artifactId>meka-release</artifactId>
-  <version>1.9.4</version>  <!-- adjust -->
+  <version>1.9.5-SNAPSHOT</version>  <!-- adjust -->
   <packaging>pom</packaging>
 
   <name>meka</name>
