@@ -1,0 +1,242 @@
+== Model info
+
+Model                          
+meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable: Model #1
+
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #1
+
+0 (231.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #2
+
+0 (232.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #3
+
+0 (192.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #4
+
+0 (252.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #5
+
+0 (242.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #6
+
+0 (223.000) NB1 NB adaptive1
+
+
+meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable: Model #2
+
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #1
+
+0 (239.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #2
+
+0 (241.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #3
+
+0 (191.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #4
+
+0 (242.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #5
+
+0 (233.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #6
+
+0 (219.000) NB1 NB adaptive1
+
+
+meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable: Model #3
+
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #1
+
+0 (235.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #2
+
+0 (228.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #3
+
+0 (185.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #4
+
+0 (254.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #5
+
+0 (242.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #6
+
+0 (227.000) NB1 NB adaptive1
+
+
+meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable: Model #4
+
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #1
+
+0 (230.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #2
+
+0 (230.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #3
+
+0 (189.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #4
+
+0 (255.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #5
+
+0 (243.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #6
+
+0 (221.000) NB1 NB adaptive1
+
+
+meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable: Model #5
+
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #1
+
+0 (228.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #2
+
+0 (241.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #3
+
+0 (179.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #4
+
+0 (248.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #5
+
+0 (240.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #6
+
+0 (224.000) NB1 NB adaptive1
+
+
+meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable: Model #6
+
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #1
+
+0 (231.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #2
+
+0 (237.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #3
+
+0 (188.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #4
+
+0 (246.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #5
+
+0 (241.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #6
+
+0 (221.000) NB1 NB adaptive1
+
+
+meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable: Model #7
+
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #1
+
+0 (240.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #2
+
+0 (235.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #3
+
+0 (184.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #4
+
+0 (242.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #5
+
+0 (233.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #6
+
+0 (225.000) NB1 NB adaptive1
+
+
+meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable: Model #8
+
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #1
+
+0 (226.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #2
+
+0 (247.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #3
+
+0 (197.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #4
+
+0 (244.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #5
+
+0 (231.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #6
+
+0 (221.000) NB1 NB adaptive1
+
+
+meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable: Model #9
+
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #1
+
+0 (224.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #2
+
+0 (241.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #3
+
+0 (189.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #4
+
+0 (250.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #5
+
+0 (242.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #6
+
+0 (226.000) NB1 NB adaptive1
+
+
+meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable: Model #10
+
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #1
+
+0 (231.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #2
+
+0 (247.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #3
+
+0 (188.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #4
+
+0 (250.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #5
+
+0 (237.000) NB1 NB adaptive1
+meka.classifiers.multilabel.incremental.BRUpdateable: Node #6
+
+0 (217.000) NB1 NB adaptive1
+
+
+== Evaluation Info
+
+Classifier                     meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable
+Options                        [-S, 1, -I, 10, -P, 67, -W, meka.classifiers.multilabel.incremental.BRUpdateable, --, -W, weka.classifiers.trees.HoeffdingTree, --, -L, 2, -S, 1, -E, 1.0E-7, -H, 0.05, -M, 0.01, -G, 200.0, -N, 0.0]
+Additional Info                
+Dataset                        Music
+Number of labels (L)           6
+
+
+== Predictive Performance
+
+
+
+== Additional Measurements
+
+Number of training instances   491
+Number of test instances       101
+Label cardinality (train set)  1.855
+Label cardinality (test set)   1.941

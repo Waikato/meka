@@ -1,0 +1,19 @@
+== Evaluation Info
+
+Classifier                     meka.classifiers.multitarget.SCC
+Options                        [-I, 1000, -V, 0, -P, 0, -N, 0, -S, 0, -W, meka.classifiers.multitarget.CC, --, -S, 0, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
+Additional Info                
+Dataset                        Music
+Number of labels (L)           6
+
+
+== Predictive Performance
+
+
+
+== Additional Measurements
+
+Number of training instances   491
+Number of test instances       101
+Label cardinality (train set)  1.855
+Label cardinality (test set)   1.941
