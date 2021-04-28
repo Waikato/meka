@@ -37,6 +37,8 @@ import java.util.*;
  */
 public class SCC extends NSR implements Randomizable, MultiTargetClassifier, TechnicalInformationHandler {
 
+	private static final long serialVersionUID = 6517394813440480854L;
+
 	private SuperNodeFilter f = new SuperNodeFilter();
 
 	private int m_Iv = 0;
@@ -375,12 +377,20 @@ public class SCC extends NSR implements Randomizable, MultiTargetClassifier, Tec
 		return m_I;
 	}
 
+	public String iTipText() {
+		return "the number of simulated annealing iterations";
+	}
+
 	public void setIv(int v) {
 		m_Iv = v;
 	}
 
 	public int getIv() {
 		return m_Iv;
+	}
+
+	public String ivTipText() {
+		return "the number of internal-validation iterations";
 	}
 
 	public static void main(String args[]) {
