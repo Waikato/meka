@@ -72,6 +72,8 @@ public class Evaluation {
 
 	public static final String FLAG_CROSSVALIDATION_OUTDIR = "x-out-dir";
 
+	public static final char FLAG_TRAINFILE = 't';
+
 	public static final char FLAG_TESTFILE = 'T';
 
 	public static final String FLAG_SPLITPERCENTAGE = "split-percentage";
@@ -79,8 +81,6 @@ public class Evaluation {
 	public static final String FLAG_SPLITNUMBER = "split-number";
 
 	public static final char FLAG_INVERTSPLIT = 'i';
-
-	public static final char FLAG_TRAINFILE = 't';
 
 	/**
 	 * RunExperiment - Build and evaluate a model with command-line options.
@@ -96,12 +96,35 @@ public class Evaluation {
 			return;
 		}
 
+		// collect general commandline flags
+		// cannot be done later on, as classifier will have a Utils.checkRemainingOptions call
+		// resulting in an Exception of unhandled options
+		String optTrainFile = Utils.getOption(FLAG_TRAINFILE, options);
+		String optTestFile = Utils.getOption(FLAG_TESTFILE, options);
+		String optClasses = Utils.getOption(FLAG_CLASSES, options);
+		String optSeed = Utils.getOption(FLAG_SEED, options);
+		boolean optRandomize = Utils.getFlag(FLAG_RANDOMIZE, options);
+		boolean optThreaded = Utils.getFlag(FLAG_THREADED, options);
+		String optVerbosity = Utils.getOption(FLAG_VERBOSITY, options);
+		String optDumpModel = Utils.getOption(FLAG_DUMPMODEL, options);
+		String optLoadModel = Utils.getOption(FLAG_LOADMODEL, options);
+		String optThreshold = Utils.getOption(FLAG_THRESHOLD, options);
+		String optPredictions = Utils.getOption(FLAG_PREDICTIONS, options);
+		boolean optNoEval = Utils.getFlag(FLAG_NOEVAL, options);
+		boolean optCrossvalidation = (Utils.getOptionPos(FLAG_CROSSVALIDATION, options) >= 0);
+		String optCrossvalidationFolds = Utils.getOption(FLAG_CROSSVALIDATION, options);
+		String optCrossvalidationOutDir = Utils.getOption(FLAG_CROSSVALIDATION_OUTDIR, options);
+		String optSplitPercentage = Utils.getOption(FLAG_SPLITPERCENTAGE, options);
+		String optSplitNumber = Utils.getOption(FLAG_SPLITNUMBER, options);
+		boolean optInvertSplit = Utils.getFlag(FLAG_INVERTSPLIT, options);
+
+		// use remaining options for classifier
 		h.setOptions(options);
 
 		if (h.getDebug()) System.out.println("Loading and preparing dataset ...");
 
 		// Load Instances from a file
-		Instances D_train = loadDataset(options, FLAG_TRAINFILE);
+		Instances D_train = loadDataset(optTrainFile);
 
 		Instances D_full = D_train;
 
@@ -109,8 +132,8 @@ public class Evaluation {
 		MLUtils.prepareData(D_train);
 
 		// Override the number of classes with command-line option (optional)
-		if(Utils.getOptionPos(FLAG_CLASSES,options) >= 0) {
-			int L = Integer.parseInt(Utils.getOption(FLAG_CLASSES,options));
+		if(!optClasses.isEmpty()) {
+			int L = Integer.parseInt(optClasses);
 			D_train.setClassIndex(L);
 		}
 
@@ -123,42 +146,25 @@ public class Evaluation {
 
 
 		// Randomize (Instances) 
-		int seed = (Utils.getOptionPos(FLAG_SEED,options) >= 0) ? Integer.parseInt(Utils.getOption(FLAG_SEED,options)) : 0;
-		if(Utils.getFlag(FLAG_RANDOMIZE,options)) {
+		int seed = (!optSeed.isEmpty()) ? Integer.parseInt(optSeed) : 0;
+		if(optRandomize) {
 			D_train.randomize(new Random(seed));
-		}
-		boolean Threaded =false;
-		if(Utils.getOptionPos(FLAG_THREADED,options) >= 0) {
-			Threaded = Utils.getFlag(FLAG_THREADED,options);
 		}
 
 		// Verbosity Option
 		String voption = "1";
-		if (Utils.getOptionPos(FLAG_VERBOSITY,options) >= 0) {
-			voption = Utils.getOption(FLAG_VERBOSITY,options);
+		if (!optVerbosity.isEmpty()) {
+			voption = optVerbosity;
 		}
 
-		// Save for later?
-		//String fname = null;
-		//if (Utils.getOptionPos('f',options) >= 0) {
-		//	fname = Utils.getOption('f',options);
-		//}
-		// Dump for later?
-		String dname = null;
-		if (Utils.getOptionPos(FLAG_DUMPMODEL,options) >= 0) {
-			dname = Utils.getOption(FLAG_DUMPMODEL,options);
-		}
 		// Load from file?
 		String lname = null;
 		Instances dataHeader = null;
-		if (Utils.getOptionPos(FLAG_LOADMODEL,options) >= 0) {
-			lname = Utils.getOption(FLAG_LOADMODEL,options);
-			Object[] data = SerializationHelper.readAll(lname);
+		if (!optLoadModel.isEmpty()) {
+			Object[] data = SerializationHelper.readAll(optLoadModel);
 			h = (MultiLabelClassifier)data[0];
 			if (data.length > 1)
 				dataHeader = (Instances) data[1];
-			//Object o[] = SerializationHelper.readAll(lname);
-			//h = (MultilabelClassifier)o[0];
 		}
 
 		try {
@@ -167,51 +173,44 @@ public class Evaluation {
 
 			// Threshold OPtion
 			String top = "PCut1"; // default
-			if (Utils.getOptionPos(FLAG_THRESHOLD,options) >= 0)
-				top = Utils.getOption(FLAG_THRESHOLD,options);
-
-			// output predictions to file?
-			String predictions = Utils.getOption(FLAG_PREDICTIONS, options);
+			if (!optThreshold.isEmpty())
+				top = optThreshold;
 
 			// suppress evaluation?
-			boolean doEval = !Utils.getFlag(FLAG_NOEVAL, options);
+			boolean doEval = !optNoEval;
 
-			if(Utils.getOptionPos(FLAG_CROSSVALIDATION,options) >= 0) {
+			if(optCrossvalidation) {
 				// CROSS-FOLD-VALIDATION
 
 				// TODO output predictions?
-				if (!predictions.isEmpty())
+				if (!optPredictions.isEmpty())
 					System.err.println("Predictions cannot be saved when using cross-validation!");
 
-				int numFolds = MLUtils.getIntegerOption(Utils.getOption(FLAG_CROSSVALIDATION,options),10); // default 10
-				String cvOutDir = null;
+				int numFolds = MLUtils.getIntegerOption(optCrossvalidationFolds,10); // default 10
 				Map<Integer,Object[]> cvData = null;
-				if (Utils.getOptionPos(FLAG_CROSSVALIDATION_OUTDIR, options) >= 0) {
-					cvOutDir = Utils.getOption(FLAG_CROSSVALIDATION_OUTDIR, options);
-					File dir = new File(cvOutDir);
+				if (!optCrossvalidationOutDir.isEmpty()) {
+					File dir = new File(optCrossvalidationOutDir);
 					if (!dir.exists())
-						throw new IOException("Cross-validation output directory (-" + FLAG_CROSSVALIDATION_OUTDIR + ") does not exist: " + cvOutDir);
+						throw new IOException("Cross-validation output directory (-" + FLAG_CROSSVALIDATION_OUTDIR + ") does not exist: " + optCrossvalidationOutDir);
 					if (!dir.isDirectory())
-						throw new IOException("Cross-validation output directory (-" + FLAG_CROSSVALIDATION_OUTDIR + ") does not point to a directory: " + cvOutDir);
+						throw new IOException("Cross-validation output directory (-" + FLAG_CROSSVALIDATION_OUTDIR + ") does not point to a directory: " + optCrossvalidationOutDir);
 					cvData = new HashMap<>();
 				}
-				// Check for remaining options
-				Utils.checkForRemainingOptions(options);
 				r = Evaluation.cvModel(h,D_train,numFolds,top,voption, cvData);
 				System.out.println(r.toString());
 				// save per-fold data
 				if (cvData != null) {
-					Result.writeResultToFile(r, cvOutDir + "/results-cv.txt");
+					Result.writeResultToFile(r, optCrossvalidationOutDir + "/results-cv.txt");
 					for (int i = 0; i < numFolds; i++) {
 						Object[] data = cvData.get(i);
 						Instances train = (Instances) data[0];
 						Instances test = (Instances) data[1];
 						Result result = (Result) data[2];
 						Instances performance = Result.getPredictionsAsInstances(result);
-						DataSink.write(cvOutDir + "/train-" + i + ".arff", train);
-						DataSink.write(cvOutDir + "/test-" + i + ".arff", test);
-						DataSink.write(cvOutDir + "/predictions-" + i + ".arff", performance);
-						Result.writeResultToFile(result, cvOutDir + "/results-" + i + ".txt");
+						DataSink.write(optCrossvalidationOutDir + "/train-" + i + ".arff", train);
+						DataSink.write(optCrossvalidationOutDir + "/test-" + i + ".arff", test);
+						DataSink.write(optCrossvalidationOutDir + "/predictions-" + i + ".arff", performance);
+						Result.writeResultToFile(result, optCrossvalidationOutDir + "/results-" + i + ".txt");
 					}
 				}
 			}
@@ -220,10 +219,10 @@ public class Evaluation {
 
 				Instances D_test = null;
 
-				if(Utils.getOptionPos(FLAG_TESTFILE,options) >= 0) {
+				if(!optTestFile.isEmpty()) {
 					// load separate test set
 					try {
-						D_test = loadDataset(options, FLAG_TESTFILE);
+						D_test = loadDataset(optTestFile);
 						MLUtils.prepareData(D_test);
 					} catch(Exception e) {
 						throw new Exception("[Error] Failed to Load Test Instances from file.", e);
@@ -233,14 +232,14 @@ public class Evaluation {
 					// split training set into train and test sets
 					// default split
 					int N_T = (int)(D_train.numInstances() * 0.60);
-					if(Utils.getOptionPos(FLAG_SPLITPERCENTAGE,options) >= 0) {
+					if(!optSplitPercentage.isEmpty()) {
 						// split by percentage
-						double percentTrain = Double.parseDouble(Utils.getOption(FLAG_SPLITPERCENTAGE,options));
+						double percentTrain = Double.parseDouble(optSplitPercentage);
 						N_T = (int)Math.round((D_train.numInstances() * (percentTrain/100.0)));
 					}
-					else if(Utils.getOptionPos(FLAG_SPLITNUMBER,options) >= 0) {
+					else if(!optSplitNumber.isEmpty()) {
 						// split by number
-						N_T = Integer.parseInt(Utils.getOption(FLAG_SPLITNUMBER,options));
+						N_T = Integer.parseInt(optSplitNumber);
 					}
 
 					int N_t = D_train.numInstances() - N_T;
@@ -249,14 +248,11 @@ public class Evaluation {
 				}
 
 				// Invert the split?
-				if(Utils.getFlag(FLAG_INVERTSPLIT,options)) { //boolean INVERT 			= Utils.getFlag('i',options);
+				if(optInvertSplit) {
 					Instances temp = D_test;
 					D_test = D_train;
 					D_train = temp;
 				}
-
-				// Check for remaining options
-				Utils.checkForRemainingOptions(options);
 
 				if (h.getDebug()) System.out.println(":- Dataset -: "+MLUtils.getDatasetName(D_train)+"\tL="+L+"\tD(t:T)=("+D_train.numInstances()+":"+D_test.numInstances()+")\tLC(t:T)="+Utils.roundDouble(MLUtils.labelCardinality(D_train,L),2)+":"+Utils.roundDouble(MLUtils.labelCardinality(D_test,L),2)+")");
 
@@ -280,7 +276,7 @@ public class Evaluation {
 					if(D_train.numInstances() > 0 &&
 						D_test.numInstances() > 0){
 						if (doEval) {
-							if (Threaded) {
+							if (optThreaded) {
 								r = evaluateModelM(h, D_train, D_test, top, voption);
 							}
 							else {
@@ -304,7 +300,7 @@ public class Evaluation {
 				}
 
 				// predictions
-				if (!predictions.isEmpty()) {
+				if (!optPredictions.isEmpty()) {
 					Instances predicted = new Instances(D_test, 0);
 					for (int i = 0; i < D_test.numInstances(); i++) {
 						double pred[] = h.distributionForInstance(D_test.instance(i));
@@ -316,22 +312,22 @@ public class Evaluation {
 							predInst.setValue(j, Math.round(pred[j])); // ML have probabilities; MT have discrete label indices
 						predicted.add(predInst);
 					}
-					AbstractFileSaver saver = ConverterUtils.getSaverForFile(predictions);
+					AbstractFileSaver saver = ConverterUtils.getSaverForFile(optPredictions);
 					if (saver == null) {
-						System.err.println("Failed to determine saver for '" + predictions + "', using " + ArffSaver.class.getName());
+						System.err.println("Failed to determine saver for '" + optPredictions + "', using " + ArffSaver.class.getName());
 						saver = new ArffSaver();
 					}
-					saver.setFile(new File(predictions));
+					saver.setFile(new File(optPredictions));
 					saver.setInstances(predicted);
 					saver.writeBatch();
-					System.out.println("Predictions saved to: " + predictions);
+					System.out.println("Predictions saved to: " + optPredictions);
 				}
 			}
 
 			// Save model to file?
-			if (dname != null) {
+			if (!optDumpModel.isEmpty()) {
 				dataHeader = new Instances(D_train, 0);
-				SerializationHelper.writeAll(dname, new Object[]{h, dataHeader});
+				SerializationHelper.writeAll(optDumpModel, new Object[]{h, dataHeader});
 			}
 
 		} catch(Exception e) {
@@ -702,9 +698,17 @@ public class Evaluation {
 	 * @return	the dataset
 	 */
 	public static Instances loadDataset(String options[], char T) throws Exception {
+		return loadDataset(Utils.getOption(T, options));
+	}
+
+	/**
+	 * loadDataset - load a dataset, given command line options specifying an arff file.
+	 * @param	filename	the filename to load
+	 * @return	the dataset
+	 */
+	public static Instances loadDataset(String filename) throws Exception {
 
 		Instances D = null;
-		String filename = Utils.getOption(T, options);
 
 		// Check for filename
 		if (filename == null || filename.isEmpty())
@@ -765,41 +769,39 @@ public class Evaluation {
 		// Evaluation Options
 		StringBuffer text = new StringBuffer();
 		text.append("\n\nEvaluation Options:\n\n");
-		text.append("-h\n");
+		text.append("-" + FLAG_HELP + "\n");
 		text.append("\tOutput help information.\n");
-		text.append("-t <name of training file>\n");
+		text.append("-" + FLAG_TRAINFILE + " <name of training file>\n");
 		text.append("\tSets training file.\n");
-		text.append("-T <name of test file>\n");
+		text.append("-" + FLAG_TESTFILE + " <name of test file>\n");
 		text.append("\tSets test file (will be used for making predictions).\n");
-		text.append("-predictions <name of output file for predictions>\n");
+		text.append("-" + FLAG_PREDICTIONS + " <name of output file for predictions>\n");
 		text.append("\tSets the file to store the predictions in (does not work with cross-validation).\n");
-		text.append("-x <number of folds>\n");
+		text.append("-" + FLAG_CROSSVALIDATION + " <number of folds>\n");
 		text.append("\tDo cross-validation with this many folds.\n");
-		text.append("-x-out-dir <dir>\n");
+		text.append("-" + FLAG_CROSSVALIDATION_OUTDIR + " <dir>\n");
 		text.append("\tOptional (existing) directory for storing cross-validation output per fold\n\t(train, test, performance, results).\n");
-		text.append("-no-eval\n");
+		text.append("-" + FLAG_NOEVAL + "\n");
 		text.append("\tSkips evaluation, e.g., used when test set contains no class labels.\n");
-		text.append("-R\n");
+		text.append("-" + FLAG_RANDOMIZE + "\n");
 		text.append("\tRandomize the order of instances in the dataset.\n");
-		text.append("-split-percentage <percentage>\n");
+		text.append("-" + FLAG_SPLITPERCENTAGE + " <percentage>\n");
 		text.append("\tSets the percentage for the train/test set split, e.g., 66.\n");
-		text.append("-split-number <number>\n");
+		text.append("-" + FLAG_SPLITNUMBER + " <number>\n");
 		text.append("\tSets the number of training examples, e.g., 800\n");
-		text.append("-i\n");
+		text.append("-" + FLAG_INVERTSPLIT + "\n");
 		text.append("\tInvert the specified train/test split.\n");
-		text.append("-s <random number seed>\n");
+		text.append("-" + FLAG_SEED + " <random number seed>\n");
 		text.append("\tSets random number seed (use with -R, for different CV or train/test splits).\n");
-		text.append("-threshold <threshold>\n");
+		text.append("-" + FLAG_THRESHOLD + " <threshold>\n");
 		text.append("\tSets the type of thresholding; where\n\t\t'PCut1' automatically calibrates a threshold (the default);\n\t\t'PCutL' automatically calibrates one threshold for each label;\n\t\tany number, e.g. '0.5', specifies that threshold.\n");
-		text.append("-C <number of labels>\n");
+		text.append("-" + FLAG_CLASSES + " <number of labels>\n");
 		text.append("\tSets the number of target variables (labels) to assume (indexed from the beginning).\n");
-		//text.append("-f <results_file>\n");
-		//text.append("\tSpecify a file to output results and evaluation statistics into.\n");
-		text.append("-d <classifier_file>\n");
+		text.append("-" + FLAG_DUMPMODEL + " <classifier_file>\n");
 		text.append("\tSpecify a file to dump classifier into.\n");
-		text.append("-l <classifier_file>\n");
+		text.append("-" + FLAG_LOADMODEL + " <classifier_file>\n");
 		text.append("\tSpecify a file to load classifier from.\n");
-		text.append("-verbosity <verbosity level>\n");
+		text.append("-" + FLAG_VERBOSITY + " <verbosity level>\n");
 		text.append("\tSpecify more/less evaluation output\n");
 		// Multilabel Options
 		text.append("\n\nClassifier Options:\n\n");
