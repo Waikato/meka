@@ -60,8 +60,8 @@
   </parent>
 
   <scm>
-    <connection>scm:git:https://github.com/waikato/meka</connection>
-    <developerConnection>scm:git:https://github.com/waikato/meka</developerConnection>
+    <connection>scm:git:ssh://git@github.com/waikato/meka</connection>
+    <developerConnection>scm:git:ssh://git@github.com/waikato/meka</developerConnection>
     <url>https://github.com/waikato/meka</url>
     <tag>HEAD</tag>
   </scm>
@@ -129,7 +129,7 @@
     <dependency>
       <groupId>com.github.fracpete</groupId>
       <artifactId>jfilechooser-bookmarks</artifactId>
-      <version>0.1.6</version>
+      <version>0.1.7</version>
     </dependency>
 
     <dependency>
