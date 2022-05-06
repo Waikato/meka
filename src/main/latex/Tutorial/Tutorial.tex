@@ -7,7 +7,7 @@
 \newcommand{\MOA}{Moa}
 \newcommand{\WEKA}{Weka}
 \newcommand{\MULAN}{Mulan}
-\def\version{{\tt 1.9.1}}
+\def\version{{\tt 1.9.5}}
 \usepackage{listings}
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
@@ -56,7 +56,7 @@
 \begin{center}
 	\includegraphics{MEKA.png}\\
 		A Multilabel/multitarget Extension to WEKA.\\
-		\url{http://meka.sourceforge.net}
+		\url{https://waikato.github.io/meka/}
 \end{center}
 
 \tableofcontents
@@ -74,13 +74,13 @@ The multi-label problem is in fact a special case of \keyword{multi-target} lear
 
 \framework{\MEKA} can also includes \emph{incremental} classifiers suitable for the \keyword{data streams} context. An overview of some of the methods included in \framework{\MEKA} for learning from incremental data streams is given in \cite{MEDS2}.
 
-\framework{\MEKA} is released under the GNU GPL v3 licence. The latest release, source code, API reference, this tutorial, and further information and links to additional material, can be found at the website: \url{http://meka.sourceforge.net}. 
+\framework{\MEKA} is released under the GNU GPL v3 licence. The latest release, source code, API reference, this tutorial, and further information and links to additional material, can be found at the website: \url{https://waikato.github.io/meka/}.
 
 This tutorial applies to \framework{\MEKA} version {\version}. 
 
 \section{Getting Started}
 
-\framework{\MEKA} can be download from: \url{http://sourceforge.net/projects/meka/files/}. This tutorial is written for version \version; and assumes that you have downloaded and extracted the \texttt{meka-release-\version.zip} and that the \texttt{meka-\version/}, found within, is your current working directory.
+\framework{\MEKA} can be download from: \url{https://github.com/Waikato/meka/releases}. This tutorial is written for version \version; and assumes that you have downloaded and extracted the \texttt{meka-release-\version.zip} and that the \texttt{meka-\version/}, found within, is your current working directory.
 
 \subsection{Requirements}
 
@@ -122,7 +122,7 @@ Run \texttt{run.bat} instead if you are using Microsoft windows.
 
 \section{\label{sec:format}\framework{\MEKA}'s Dataset Format}
 
-\framework{\MEKA} uses \framework{\WEKA}'s ARFF file format. See \url{http://weka.wikispaces.com/ARFF} to learn about this format. \framework{\MEKA} uses multiple attributes -- one for each target or label -- rather than a single class attribute. The \emph{number} of target attributes is specified with either \texttt{-C} or \texttt{-c}; \emph{unlike} in \framework{\WEKA} where the \texttt{-c} flag indicates the position of the \emph{class index}. \framework{\MEKA} uses the reference to the \texttt{classIndex} internally to denote the number of target attributes. %This is important when creating new \framework{\MEKA} classifiers (see Section \ref{sec:extending}).
+\framework{\MEKA} uses \framework{\WEKA}'s ARFF file format. See \url{https://waikato.github.io/weka-wiki/formats_and_processing/arff/} to learn about this format. \framework{\MEKA} uses multiple attributes -- one for each target or label -- rather than a single class attribute. The \emph{number} of target attributes is specified with either \texttt{-C} or \texttt{-c}; \emph{unlike} in \framework{\WEKA} where the \texttt{-c} flag indicates the position of the \emph{class index}. \framework{\MEKA} uses the reference to the \texttt{classIndex} internally to denote the number of target attributes. %This is important when creating new \framework{\MEKA} classifiers (see Section \ref{sec:extending}).
 
 Since the number of target attributes tends to vary with each dataset, for convenience \framework{\MEKA} allows this option (as well as other dataset options like the train/test split percentage) to be stored in the \texttt{@relation} name of an ARFF file, where a colon (\texttt{:}) is used to separate the dataset name and the options. The following is an example ARFF header for multi-target classification with three target variables and four attributes:
  
@@ -255,7 +255,7 @@ conducts 10 fold cross validation on a randomised version of the \textit{Music} 
 \subsubsection{Examples} 
 \label{sec:examples}
 
-In the following we give some examples, with an emphasis on general usage and parameters. An extensive list of examples is given at \url{http://meka.sourceforge.net/methods.html}. 
+In the following we give some examples, with an emphasis on general usage and parameters. An extensive list of examples is given at \url{https://waikato.github.io/meka/methods/}.
 
 %\paragraph{Multi-label}
 
@@ -339,6 +339,9 @@ java meka.classifiers.multilabel.meta.EM -t data-train.arff \
 java meka.classifiers.multilabel.meta.EM -t data-train.arff \
   -T data-test.arff -l em.saved
 \end{lstlisting}
+\textbf{NB:} The unlabelled set has exactly the same structure as the training set (same order of
+attributes and nominal labels) and all the class label columns need to contain missing
+values\footnote{Missing values package: \url{https://github.com/fracpete/missing-values-imputation-weka-package}}.
 %\begin{lstlisting}
 %java -cp meka.jar:weka.jar weka.classifiers.multitarget.meta.BaggingMT -x 5 -R -t data/solar_flare.arff -W weka.%classifiers.multitarget.C    C -- -W weka.classifiers.functions.Logistic
 %\end{lstlisting}
@@ -552,7 +555,7 @@ The sourcecode for MEKA is hosted on github: \url{https://github.com/Waikato/mek
 \subsection{Compiling}
 \label{compiling}
 \heading{Using \texttt{Maven}}
-\framework{\MEKA} uses \textit{Apache Maven}\footnote{\url{http://maven.apache.org/}} as build tool. You can compile \framework{\MEKA} as follows:
+\framework{\MEKA} uses \textit{Apache Maven}\footnote{\url{https://maven.apache.org/}} as build tool. You can compile \framework{\MEKA} as follows:
 \begin{lstlisting}
 mvn clean install
 \end{lstlisting}
@@ -789,15 +792,13 @@ Note that \framework{\MEKA}'s home directory is OS-specific,
 
 \section{Getting Help / Reporting Bugs / Contributing}
 
-A list of methods available using \framework{\MEKA} is maintained at \url{http://meka.sourceforge.net/methods.html} with descriptions and command-line examples.
+A list of methods available using \framework{\MEKA} is maintained at \url{https://waikato.github.io/meka/methods/} with descriptions and command-line examples.
 
-If you need help with \framework{\MEKA}, you can post your problem on \MEKA's \textsf{Mailing List}: \url{http://sourceforge.net/p/meka/mailman/}.
-
-If you have found a bug with \framework{\MEKA}, you can report in via the \textsf{Tracker}  of \framework{\MEKA}'s \url{SourceForge.net} site: \url{http://sourceforge.net/p/meka/bugs/}.
+If you need help with \framework{\MEKA} or have found a bug, you can open an issue on \MEKA's \textsf{Github repository}: \url{https://github.com/Waikato/meka}.
 
 If you would like to contribute to \framework{\MEKA}, such as adding new classifiers, please get in touch with the developers.
 
-More information (such as contact information) can be found at the \framework{\MEKA} website: \url{http://meka.sourceforge.net}.
+More information (such as contact information) can be found at the \framework{\MEKA} website: \url{https://waikato.github.io/meka/}.
 
 \include{bibliography}
 
