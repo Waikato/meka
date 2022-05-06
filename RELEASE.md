@@ -34,6 +34,8 @@ Deploying artifacts
 
 - Ensure all changes have been committed and all tests succeed
 
+- updated `\version` tag in `src/main/latex/Tutorial/Tutorial.tex`
+
 - run the following command (and accept or change the version numbers):
   ```
   mvn release:prepare release:perform
