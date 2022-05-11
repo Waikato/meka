@@ -114,14 +114,7 @@ Update documentation
   Replace the TOC items in `mkdocs.yml` below `Methods` with the ones output
   on stdout from the above command. 
 
-* test 
+* any changes committed trigger a rebuild of the documentation via  
+  [this](https://github.com/Waikato/weka-wiki/blob/master/.github/workflows/main.yml)
+  [Github Action](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions)
   
-  ```
-  mkdocs build --clean && mkdocs serve
-  ```
-  
-* deploy
-
-  ```
-  mkdocs gh-deploy --clean
-  ```
