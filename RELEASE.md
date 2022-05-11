@@ -34,7 +34,7 @@ Deploying artifacts
 
 - Ensure all changes have been committed and all tests succeed
 
-- updated `\version` tag in `src/main/latex/Tutorial/Tutorial.tex`
+- update `\version` tag in `src/main/latex/Tutorial/Tutorial.tex`
 
 - run the following command (and accept or change the version numbers):
   ```
@@ -103,6 +103,7 @@ Update documentation
 --------------------
 
 * update artifact version (`maven.md`)
+* add bullet point in `news.md`, pointing to new release
 * Update methods using the following command (add any additional methods to git),
   which will place markdown files in the `docs` directory for each classifier:
 
