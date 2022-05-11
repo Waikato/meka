@@ -1,3 +1,7 @@
+* **May 28, 2021**: [Meka 1.9.5](https://github.com/Waikato/meka/releases/tag/meka-1.9.5) is released.
+
+* **December 31, 2020**: [Meka 1.9.4](https://github.com/Waikato/meka/releases/tag/meka-1.9.4) is released.
+
 * **October 25, 2020**: [Meka 1.9.3](https://github.com/Waikato/meka/releases/tag/meka-1.9.3) is released.
 
 * **October 19, 2020**: Sourceforget.net decommissioned mailing lists, please
