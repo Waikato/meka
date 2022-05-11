@@ -1,396 +1,313 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-    
     <url>
-     <loc>/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
     <url>
-     <loc>/news/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
     <url>
-     <loc>/documentation/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
     <url>
-     <loc>/downloads/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
     <url>
-     <loc>/datasets/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
     <url>
-     <loc>/citing/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
     <url>
-     <loc>/maven/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
     <url>
-     <loc>/methods/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
-        
     <url>
-     <loc>/meka.classifiers.multilabel.BCC/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.BPNN/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.BR/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.BRq/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.CC/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.CCq/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.CDN/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.CDT/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.CT/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.DBPNN/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.FW/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.HASEL/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.incremental.BRUpdateable/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.incremental.CCUpdateable/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.incremental.MajorityLabelsetUpdateable/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.incremental.PSUpdateable/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.incremental.RTUpdateable/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.LC/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.MajorityLabelset/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.Maniac/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.MCC/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.meta.BaggingML/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.meta.BaggingMLdup/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.meta.CM/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.meta.DeepML/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.meta.EM/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.meta.EnsembleML/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.meta.FilteredClassifier/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.meta.MBR/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.meta.MultiSearch/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.meta.RandomSubspaceML/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.meta.SubsetMapper/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.MLCBMaD/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.MULAN/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.PCC/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.PLST/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.PMCC/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.PS/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.PSt/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.RAkEL/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.RAkELd/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multilabel.RT/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multitarget.BCC/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multitarget.CC/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multitarget.CCp/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multitarget.CR/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multitarget.meta.BaggingMT/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multitarget.meta.EnsembleMT/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multitarget.meta.FilteredClassifier/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multitarget.meta.MultiSearch/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multitarget.NSR/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multitarget.RAkELd/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/meka.classifiers.multitarget.SCC/</loc>
-     <lastmod>2020-12-31</lastmod>
+     <loc>None</loc>
+     <lastmod>2022-05-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
-    
-
 </urlset>
