@@ -15,206 +15,77 @@
 
 /*
  * DirectoryChooser.java
- * Copyright (C) 2010-2017 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2022 University of Waikato, Hamilton, New Zealand
  */
 
 package meka.gui.core;
 
-import com.jidesoft.swing.FolderChooser;
+import nz.ac.waikato.cms.gui.core.BaseFileChooser;
 
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileSystemView;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.HeadlessException;
 import java.io.File;
 
 /**
- * Extended version of the com.jidesoft.swing.FolderChooser to
- * handle PlaceholderFile objects.
+ * Simple directory chooser based on JFileChooser.
  *
- * @author FracPete (fracpete at waikat dot ac dot nz)
+ * @author fracpete (fracpete at waikato dot ac dot nz)
  */
 public class DirectoryChooser
-	extends FolderChooser {
+    extends BaseFileChooser {
 
-	/** for serialization. */
-	private static final long serialVersionUID = -7252242971482953986L;
+  /**
+   * Constructs a <code>BaseFileChooser</code> pointing to the user's
+   * default directory. This default depends on the operating system.
+   * It is typically the "My Documents" folder on Windows, and the
+   * user's home directory on Unix.
+   */
+  public DirectoryChooser() {
+    super();
+  }
 
-	/** the bookmarks. */
-	protected FileChooserBookmarksPanel m_PanelBookmarks;
+  /**
+   * Constructs a <code>BaseFileChooser</code> using the given path.
+   * Passing in a <code>null</code>
+   * string causes the file chooser to point to the user's default directory.
+   * This default depends on the operating system. It is
+   * typically the "My Documents" folder on Windows, and the user's
+   * home directory on Unix.
+   *
+   * @param currentDirectoryPath  a <code>String</code> giving the path
+   *				to a file or directory
+   */
+  public DirectoryChooser(String currentDirectoryPath) {
+    super(new File(currentDirectoryPath).getAbsolutePath());
+  }
 
-	/** the panel for showing/hiding the bookmarks. */
-	protected OneTouchPanel m_OneTouchPanel;
+  /**
+   * Constructs a <code>BaseFileChooser</code> using the given <code>File</code>
+   * as the path. Passing in a <code>null</code> file
+   * causes the file chooser to point to the user's default directory.
+   * This default depends on the operating system. It is
+   * typically the "My Documents" folder on Windows, and the user's
+   * home directory on Unix.
+   *
+   * @param currentDirectory  a <code>File</code> object specifying
+   *				the path to a file or directory
+   */
+  public DirectoryChooser(File currentDirectory) {
+    super(currentDirectory);
+  }
 
-	/**
-	 * Creates a BaseDirectoryChooser pointing to the user's home directory.
-	 */
-	public DirectoryChooser() {
-		super();
-		initialize();
-	}
+  /**
+   * For initializing some stuff.
+   */
+  @Override
+  protected void initialize() {
+    super.initialize();
 
-	/**
-	 * Creates a BaseDirectoryChooser using the given File as the path.
-	 *
-	 * @param currentDirectory the directory to start in
-	 */
-	public DirectoryChooser(File currentDirectory) {
-		super(currentDirectory.getAbsoluteFile());
-		initialize();
-	}
+    super.setFileSelectionMode(BaseFileChooser.DIRECTORIES_ONLY);
+  }
 
-	/**
-	 * Creates a BaseDirectoryChooser using the given current directory and
-	 * FileSystemView.
-	 *
-	 * @param currentDirectory the directory to start in
-	 * @param fsv              the view to use
-	 */
-	public DirectoryChooser(File currentDirectory, FileSystemView fsv) {
-		super(currentDirectory.getAbsoluteFile(), fsv);
-		initialize();
-	}
-
-	/**
-	 * Creates a BaseDirectoryChooser using the given FileSystemView.
-	 *
-	 * @param fsv the view to use
-	 */
-	public DirectoryChooser(FileSystemView fsv) {
-		super(fsv);
-		initialize();
-	}
-
-	/**
-	 * Creates a BaseDirectoryChooser using the given path.
-	 *
-	 * @param currentDirectoryPath the directory to start in
-	 */
-	public DirectoryChooser(String currentDirectoryPath) {
-		super(currentDirectoryPath);
-		initialize();
-	}
-
-	/**
-	 * Creates a BaseDirectoryChooser using the given path and FileSystemView.
-	 *
-	 * @param currentDirectoryPath the directory to start in
-	 * @param fsv                  the view to use
-	 */
-	public DirectoryChooser(String currentDirectoryPath, FileSystemView fsv) {
-		super(currentDirectoryPath, fsv);
-		initialize();
-	}
-
-	/**
-	 * For initializing some stuff.
-	 * <br><br>
-	 * Default implementation does nothing.
-	 */
-	protected void initialize() {
-		JComponent accessory;
-
-		setRecentListVisible(false);
-		setNavigationFieldVisible(true);
-
-		accessory = createAccessoryPanel();
-		if (accessory != null)
-			setAccessory(accessory);
-
-		showBookmarks(false);
-
-		setPreferredSize(new Dimension(400, 500));
-	}
-
-	/**
-	 * Creates an accessory panel displayed next to the files.
-	 *
-	 * @return the panel or null if none available
-	 */
-	protected JComponent createAccessoryPanel() {
-		m_PanelBookmarks = new FileChooserBookmarksPanel();
-		m_PanelBookmarks.setOwner(this);
-
-		m_OneTouchPanel = new OneTouchPanel(OneTouchPanel.Location.TOP);
-		m_OneTouchPanel.getContentPanel().add(m_PanelBookmarks, BorderLayout.CENTER);
-		m_OneTouchPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-		m_OneTouchPanel.setToolTipVisible("Click to hide bookmarks");
-		m_OneTouchPanel.setToolTipHidden("Click to show bookmarks");
-
-		return m_OneTouchPanel;
-	}
-
-	/**
-	 * Either displays or hides the bookmarks.
-	 *
-	 * @param value true if to show bookmarks
-	 */
-	protected void showBookmarks(boolean value) {
-		m_OneTouchPanel.setContentVisible(value);
-	}
-
-	/**
-	 * Does nothing.
-	 *
-	 * @param filter ignored
-	 */
-	@Override
-	public void addChoosableFileFilter(FileFilter filter) {
-	}
-
-	/**
-	 * Sets the selected file. If the file's parent directory is
-	 * not the current directory, changes the current directory
-	 * to be the file's parent directory.
-	 *
-	 * @param file the selected file
-	 * @beaninfo preferred: true
-	 * bound: true
-	 * @see #getSelectedFile
-	 */
-	@Override
-	public void setSelectedFile(File file) {
-		File selFile;
-
-		selFile = null;
-
-		if (file != null)
-			selFile = new File(file.getAbsolutePath());
-
-		super.setSelectedFile(selFile);
-	}
-
-	/**
-	 * Displays the dialog.
-	 *
-	 * @param parent            the parent component of the dialog;
-	 *                          can be <code>null</code>
-	 * @param approveButtonText the text of the <code>ApproveButton</code>
-	 * @return the return state of the file chooser on popdown
-	 * @throws HeadlessException if GraphicsEnvironment.isHeadless()
-	 *                           returns true.
-	 * @see java.awt.GraphicsEnvironment#isHeadless
-	 */
-	@Override
-	public int showDialog(Component parent, String approveButtonText) throws HeadlessException {
-		m_PanelBookmarks.reload();
-		return super.showDialog(parent, approveButtonText);
-	}
-
-	/**
-	 * For testing only.
-	 *
-	 * @param args ignored
-	 */
-	public static void main(String[] args) {
-		DirectoryChooser chooser = new DirectoryChooser();
-		chooser.setCurrentDirectory(new File(System.getProperty("java.io.tmpdir")));
-		if (chooser.showOpenDialog(null) == DirectoryChooser.APPROVE_OPTION)
-			System.out.println(chooser.getSelectedFile());
-	}
+  /**
+   * Ignored.
+   */
+  public void setFileSelectionMode(int model) {
+    // ignored
+  }
 }
