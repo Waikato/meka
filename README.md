@@ -11,7 +11,7 @@ See http://waikato.github.io/meka/documentation/ for sources of documentation re
 In particular, 
 
 * See the `Tutorial.pdf` for detailed information on obtaining, using and extending MEKA.
-* For a list of included methods and command line examples for them, see: http://meka.sourceforge.net/methods.html
+* For a list of included methods and command line examples for them, see: http://waikato.github.io/meka/methods/
 * For examples on how to use MEKA in your Java code: https://github.com/Waikato/meka/tree/master/src/main/java/mekaexamples
 
 If you have a specific question, search the Github issues and, if you can't find
