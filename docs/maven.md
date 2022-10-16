@@ -3,6 +3,6 @@ Add the following dependency to your `pom.xml`:
   <dependency>
     <groupId>net.sf.meka</groupId>
     <artifactId>meka</artifactId>
-    <version>1.9.6</version>
+    <version>1.9.7</version>
   </dependency>
 ```
