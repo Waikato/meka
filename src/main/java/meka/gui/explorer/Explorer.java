@@ -40,6 +40,7 @@ import weka.core.converters.ConverterUtils;
 import weka.core.converters.SerializedInstancesLoader;
 import weka.gui.ConverterFileChooser;
 
+import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -493,7 +494,7 @@ public class Explorer
 		chooser = new DirectoryChooser();
 		chooser.setDialogTitle("Import text directory...");
 		retVal = chooser.showOpenDialog(this);
-		if (retVal != DirectoryChooser.APPROVE_OPTION)
+		if (retVal != JFileChooser.APPROVE_OPTION)
 			return;
 
 		dir = chooser.getSelectedFile();

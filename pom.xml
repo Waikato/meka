@@ -111,7 +111,13 @@
     <dependency>
       <groupId>com.github.fracpete</groupId>
       <artifactId>jfilechooser-bookmarks</artifactId>
-      <version>0.1.8</version>
+      <version>0.1.9</version>
+    </dependency>
+
+    <dependency>
+      <groupId>nz.ac.waikato.cms.adams</groupId>
+      <artifactId>simple-directory-chooser</artifactId>
+      <version>0.0.1</version>
     </dependency>
 
     <dependency>
