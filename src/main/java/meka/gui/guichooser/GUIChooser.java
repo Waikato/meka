@@ -104,7 +104,7 @@ public class GUIChooser
 		classnames  = AbstractMenuItemDefinition.getDefinitions();
 		for (String classname: classnames) {
 			try {
-				AbstractMenuItemDefinition definition = (AbstractMenuItemDefinition) Class.forName(classname).newInstance();
+				AbstractMenuItemDefinition definition = (AbstractMenuItemDefinition) Class.forName(classname).getDeclaredConstructor().newInstance();
 				result.add(definition);
 			}
 			catch (Exception e) {
