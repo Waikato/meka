@@ -58,7 +58,7 @@ public class ExtensionFileFilterComparator
 		}
 
 		if ((result == 0) && (o1.getExtensions().length != o2.getExtensions().length))
-			result = new Integer(o1.getExtensions().length).compareTo(o2.getExtensions().length);
+			result = Integer.compare(o1.getExtensions().length, o2.getExtensions().length);
 
 		return result;
 	}

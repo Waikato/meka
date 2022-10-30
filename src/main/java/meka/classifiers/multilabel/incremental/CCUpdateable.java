@@ -18,6 +18,7 @@ package meka.classifiers.multilabel.incremental;
 import meka.classifiers.incremental.IncrementalEvaluation;
 import meka.classifiers.multilabel.CC;
 import meka.classifiers.multilabel.IncrementalMultiLabelClassifier;
+import meka.core.A;
 import meka.core.MLUtils;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.UpdateableClassifier;
@@ -161,8 +162,8 @@ public class CCUpdateable extends CC implements IncrementalMultiLabelClassifier 
 
 		int indices[] = retrieveChain();
 		if (indices == null) {
-			indices = MLUtils.gen_indices(L);
-			MLUtils.randomize(indices,new Random(m_S));
+			indices = A.make_sequence(L);
+			A.shuffle(indices,new Random(m_S));
 		}
 		if(getDebug()) System.out.print(":- Chain (");
 		root = new ULink(indices,0,D);

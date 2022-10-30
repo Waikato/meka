@@ -50,7 +50,7 @@ public class FlatLookAndFeel
 	 */
 	@Override
 	protected boolean doInstall() throws Exception {
-		FlatLightLaf.install();
+		FlatLightLaf.setup();
 		UIManager.put("Table.showHorizontalLines", true);
 		UIManager.put("Table.showVerticalLines", true);
 		return true;

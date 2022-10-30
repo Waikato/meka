@@ -154,7 +154,7 @@ public class TestHelper {
 	 * @param decimals      the number of decimals to check
 	 */
 	public static void assertAlmostEquals(double expected, double actual, int decimals) {
-		assertAlmostEquals(null, new Double(expected), new Double(actual), decimals);
+		assertAlmostEquals(null, expected, actual, decimals);
 	}
 
 	/**
@@ -177,7 +177,7 @@ public class TestHelper {
 	 * @param decimals      the number of decimals to check
 	 */
 	public static void assertAlmostEquals(String message, double expected, double actual, int decimals) {
-		assertAlmostEquals(message, new Double(expected), new Double(actual), decimals);
+		assertAlmostEquals(message, expected, actual, decimals);
 	}
 
 	/**

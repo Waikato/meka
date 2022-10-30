@@ -45,7 +45,7 @@ public abstract class StatUtils {
 	 */
 	public static double[] P(double Y[][], int x[]) {
 		int L = x.length;
-		return P(Y,MLUtils.gen_indices(L),x);
+		return P(Y,A.make_sequence(L),x);
 	}
 
 	/**

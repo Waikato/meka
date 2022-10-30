@@ -162,8 +162,8 @@ public class PMCC extends MCC {
 			//HashMap<String,CC> id2cc = new HashMap<String,CC>();
 
 			// Make CC
-			int s[] = MLUtils.gen_indices(L); 
-			MLUtils.randomize(s,m_R);
+			int s[] = A.make_sequence(L);
+		  	A.shuffle(s,m_R);
 			h[0] = buildCC(Arrays.copyOf(s,s.length),D); // @todo move into setChain(..)
 			w[0] = payoff(h[0],D);
 			//id2cc.put(Arrays.toString(s),h[0]);			// save a copy

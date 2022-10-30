@@ -154,9 +154,9 @@ public class AttributeSelectionPanel extends JPanel {
 
 			switch (column) {
 				case 0:
-					return new Integer(row + 1);
+					return row + 1;
 				case 1:
-					return new Boolean(m_Selected[row]);
+					return m_Selected[row];
 				case 2:
 					return m_Instances.attribute(row).name();
 				default:

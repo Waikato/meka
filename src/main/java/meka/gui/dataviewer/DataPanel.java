@@ -52,6 +52,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -763,7 +764,7 @@ public class DataPanel extends JPanel implements ActionListener,
 	public void deleteAttributes() {
 		ListSelectorDialog dialog;
 		DataSortedTableModel model;
-		Object[] atts;
+		List atts;
 		int[] indices;
 		int i;
 		JList list;
@@ -777,19 +778,19 @@ public class DataPanel extends JPanel implements ActionListener,
 			return;
 		}
 
-		atts = list.getSelectedValues();
+		atts = list.getSelectedValuesList();
 
 		// really?
 		if (ComponentHelper.showMessageBox(getParent(), "Confirm...",
-			"Do you really want to delete these " + atts.length + " attributes?",
+			"Do you really want to delete these " + atts.size() + " attributes?",
 			JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION) {
 			return;
 		}
 
 		model = (DataSortedTableModel) m_TableData.getModel();
-		indices = new int[atts.length];
-		for (i = 0; i < atts.length; i++) {
-			indices[i] = model.getAttributeColumn(atts[i].toString());
+		indices = new int[atts.size()];
+		for (i = 0; i < atts.size(); i++) {
+			indices[i] = model.getAttributeColumn(atts.get(i).toString());
 		}
 
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));

@@ -114,7 +114,7 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 		//int max_j = (int)m_Classifier.classifyInstance(x_sl);			// where comb_i is selected
 		String y_max = m_InstancesTemplate.classAttribute().value(max_j);									// comb_i e.g. "0+3+0+0+1+2+0+0"
 
-		double y[] = Arrays.copyOf(A.toDoubleArray(MLUtils.decodeValue(y_max)),L*2);					// "0+3+0+0+1+2+0+0" -> [0.0,3.0,0.0,...,0.0]
+		double y[] = Arrays.copyOf(A.toDoubleArray(MLUtils.toIntArray(y_max)),L*2);					// "0+3+0+0+1+2+0+0" -> [0.0,3.0,0.0,...,0.0]
 
 		HashMap<Double,Double> votes[] = new HashMap[L];
 		for(int j = 0; j < L; j++) {
@@ -122,7 +122,7 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 		}
 
 		for(int i = 0; i < w.length; i++) {
-			double y_i[] = A.toDoubleArray(MLUtils.decodeValue(m_InstancesTemplate.classAttribute().value(i)));
+			double y_i[] = A.toDoubleArray(MLUtils.toIntArray(m_InstancesTemplate.classAttribute().value(i)));
 			for(int j = 0; j < y_i.length; j++) {
 				votes[j].put(y_i[j] , votes[j].containsKey(y_i[j]) ? votes[j].get(y_i[j]) + w[i] : w[i]);
 			}
@@ -189,7 +189,7 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 			System.out.println("Pruned to "+distinctCombinations.size()+" with P="+m_P);
 
 		// Remove all class attributes
-		Instances D_ = MLUtils.deleteAttributesAt(new Instances(D),MLUtils.gen_indices(L));
+		Instances D_ = MLUtils.deleteAttributesAt(new Instances(D),A.make_sequence(L));
 		// Add a new class attribute
 		D_.insertAttributeAt(new Attribute("CLASS", new ArrayList(distinctCombinations.keySet())),0); // create the class attribute
 		D_.setClassIndex(0);

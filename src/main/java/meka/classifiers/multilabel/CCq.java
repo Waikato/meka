@@ -15,6 +15,7 @@
 
 package meka.classifiers.multilabel;
 
+import meka.core.A;
 import meka.core.MLUtils;
 import meka.core.OptionUtils;
 import weka.classifiers.AbstractClassifier;
@@ -223,8 +224,8 @@ public class CCq extends ProblemTransformationMethod implements Randomizable, Te
 	  	
 		this.m_NumClasses = Train.classIndex();
 
-		int indices[] = MLUtils.gen_indices(m_NumClasses);
-		MLUtils.randomize(indices,new Random(m_S));
+		int indices[] = A.make_sequence(m_NumClasses);
+	  	A.shuffle(indices,new Random(m_S));
 		if(getDebug()) System.out.print(":- Chain (");
 		root = new QLink(indices,0,Train);
 		if (getDebug()) System.out.println(" ) -:");

@@ -96,7 +96,7 @@ public class EvaluationStatisticsComparator
 				else if (n2 == null)
 					result = +1;
 				else
-					result = new Double(n1.doubleValue()).compareTo(n2.doubleValue());
+					result = Double.compare(n1.doubleValue(), n2.doubleValue());
 			}
 
 			if (result != 0)

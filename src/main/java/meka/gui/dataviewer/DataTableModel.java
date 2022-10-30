@@ -758,7 +758,7 @@ public class DataTableModel extends DefaultTableModel implements Undoable {
 		if ((rowIndex >= 0) && (rowIndex < getRowCount()) && (columnIndex >= 0)
 			&& (columnIndex < getColumnCount())) {
 			if (columnIndex == 0) {
-				result = new Integer(rowIndex + 1);
+				result = rowIndex + 1;
 			} else {
 				if (isMissingAt(rowIndex, columnIndex)) {
 					result = null;
@@ -774,8 +774,7 @@ public class DataTableModel extends DefaultTableModel implements Undoable {
 								result = m_Data.instance(rowIndex).stringValue(columnIndex - 1);
 								break;
 							case Attribute.NUMERIC:
-								result =
-									new Double(m_Data.instance(rowIndex).value(columnIndex - 1));
+								result = m_Data.instance(rowIndex).value(columnIndex - 1);
 								break;
 							default:
 								result = "-can't display-";

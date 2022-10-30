@@ -132,7 +132,7 @@ public class CT extends MCC implements TechnicalInformationHandler {
 		 */
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		for (int i : trel.indices) {
-			list.add(new Integer(i));
+			list.add(i);
 		}
 
 		/*
@@ -156,7 +156,7 @@ public class CT extends MCC implements TechnicalInformationHandler {
 					j_ = j_prop;
 				}
 			}
-			list.remove(new Integer(j_));
+			list.remove(j_);
 
 		//	if (getDebug()) {
 		//		System.out.print(" "+String.format("%4d", j_));
