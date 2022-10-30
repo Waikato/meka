@@ -13,7 +13,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * GenericObjectEditor.java
  * Copyright (C) 2012 University of Waikato, Hamilton, New Zealand
  */
@@ -23,15 +23,17 @@ import meka.classifiers.multilabel.MultiLabelClassifier;
 import meka.core.Project;
 import meka.core.PropsUtils;
 import weka.core.OptionHandler;
+import weka.core.PluginManager;
 import weka.core.Utils;
 import weka.core.logging.Logger;
 import weka.gui.HierarchyPropertyParser;
 import weka.gui.PropertyDialog;
 import weka.gui.PropertyPanel;
-import weka.gui.beans.PluginManager;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyEditor;
