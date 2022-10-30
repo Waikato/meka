@@ -22,6 +22,9 @@ import weka.core.*;
 import weka.core.TechnicalInformation.Field;
 import weka.core.TechnicalInformation.Type;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * MBR.java - Meta BR: BR stacked with feature outputs into another BR.
  * Described in: Godbole and Sarawagi, <i>Discriminative Methods for Multi-labeled Classification</i>. 
@@ -90,9 +93,9 @@ public class MBR extends ProblemTransformationMethod implements TechnicalInforma
 		if (getDebug()) System.out.println("Prepare Meta data           ");
 		Instances meta_data = new Instances(data);
 
-		FastVector BinaryClass = new FastVector(c);
-		BinaryClass.addElement("0");
-		BinaryClass.addElement("1");
+	  	List<String> BinaryClass = new ArrayList<>(c);
+		BinaryClass.add("0");
+		BinaryClass.add("1");
 
 		for(int i = 0; i < c; i++) {
 			meta_data.insertAttributeAt(new Attribute("metaclass"+i,BinaryClass),c);

@@ -18,6 +18,9 @@ package meka.classifiers.multilabel;
 import weka.classifiers.*;
 import weka.core.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * FW.java Four-class pairWise classification. 
  * Trains a multi-class base classifier for each pair of labels -- (L*(L-1))/2 in total --, each with four possible class values: {00,01,10,11} representing the possible combinations of relevant (1) /irrelevant (0) for the pair. Uses a voting + threshold scheme at testing time where e.g., 01 from pair jk gives one vote to label k; any label with votes above the threshold is considered relevant.
@@ -62,11 +65,11 @@ public class FW extends ProblemTransformationMethod {
 	public void buildClassifier(Instances D) throws Exception {
 		testCapabilities(D);
 
-		FastVector values = new FastVector(4);
-		values.addElement("00");
-		values.addElement("10");
-		values.addElement("01");
-		values.addElement("11");
+	  	List<String> values = new ArrayList<>(4);
+		values.add("00");
+		values.add("10");
+		values.add("01");
+		values.add("11");
 		classAttribute = new Attribute("TheCLass",values);
 
 

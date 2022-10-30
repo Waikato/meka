@@ -158,7 +158,7 @@ public class DataViewerMainPanel extends JPanel implements ActionListener,
 		m_MenuFileOpen = new JMenuItem("Open...",
 			GUIHelper.getIcon("open.gif"));
 		m_MenuFileOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
-			KeyEvent.CTRL_MASK));
+			KeyEvent.CTRL_DOWN_MASK));
 		m_MenuFileOpen.addActionListener(this);
 
 		// File/Recent files
@@ -181,17 +181,17 @@ public class DataViewerMainPanel extends JPanel implements ActionListener,
 		m_MenuFileSave = new JMenuItem("Save",
 			GUIHelper.getIcon("save.gif"));
 		m_MenuFileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-			KeyEvent.CTRL_MASK));
+			KeyEvent.CTRL_DOWN_MASK));
 		m_MenuFileSave.addActionListener(this);
 		m_MenuFileSaveAs = new JMenuItem("Save as...",
 			GUIHelper.getIcon("empty.gif"));
 		m_MenuFileSaveAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-			KeyEvent.CTRL_MASK + KeyEvent.SHIFT_MASK));
+			KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK));
 		m_MenuFileSaveAs.addActionListener(this);
 		m_MenuFileClose = new JMenuItem("Close",
 			GUIHelper.getIcon("empty.gif"));
 		m_MenuFileClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W,
-			KeyEvent.CTRL_MASK));
+			KeyEvent.CTRL_DOWN_MASK));
 		m_MenuFileClose.addActionListener(this);
 		m_MenuFileCloseAll = new JMenuItem("Close all",
 			GUIHelper.getIcon("empty.gif"));
@@ -199,12 +199,12 @@ public class DataViewerMainPanel extends JPanel implements ActionListener,
 		m_MenuFileProperties = new JMenuItem("Properties",
 			GUIHelper.getIcon("empty.gif"));
 		m_MenuFileProperties.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,
-			KeyEvent.CTRL_MASK));
+			KeyEvent.CTRL_DOWN_MASK));
 		m_MenuFileProperties.addActionListener(this);
 		m_MenuFileExit = new JMenuItem("Exit",
 			GUIHelper.getIcon("exit.png"));
 		m_MenuFileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
-			KeyEvent.ALT_MASK));
+			KeyEvent.ALT_DOWN_MASK));
 		m_MenuFileExit.addActionListener(this);
 
 		m_MenuFile.add(m_MenuFileOpen);
@@ -223,22 +223,22 @@ public class DataViewerMainPanel extends JPanel implements ActionListener,
 		m_MenuEditUndo = new JMenuItem("Undo",
 			GUIHelper.getIcon("undo.gif"));
 		m_MenuEditUndo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
-			KeyEvent.CTRL_MASK));
+			KeyEvent.CTRL_DOWN_MASK));
 		m_MenuEditUndo.addActionListener(this);
 		m_MenuEditCopy = new JMenuItem("Copy",
 			GUIHelper.getIcon("copy.gif"));
 		m_MenuEditCopy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_INSERT,
-			KeyEvent.CTRL_MASK));
+			KeyEvent.CTRL_DOWN_MASK));
 		m_MenuEditCopy.addActionListener(this);
 		m_MenuEditSearch = new JMenuItem("Search...",
 			GUIHelper.getIcon("find.gif"));
 		m_MenuEditSearch.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F,
-			KeyEvent.CTRL_MASK));
+			KeyEvent.CTRL_DOWN_MASK));
 		m_MenuEditSearch.addActionListener(this);
 		m_MenuEditClearSearch = new JMenuItem("Clear search",
 			GUIHelper.getIcon("empty.gif"));
 		m_MenuEditClearSearch.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F,
-			KeyEvent.CTRL_MASK + KeyEvent.SHIFT_MASK));
+			KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK));
 		m_MenuEditClearSearch.addActionListener(this);
 		m_MenuEditRenameAttribute = new JMenuItem("Rename attribute",
 			GUIHelper.getIcon("empty.gif"));
@@ -283,12 +283,12 @@ public class DataViewerMainPanel extends JPanel implements ActionListener,
 		m_MenuViewAttributes = new JMenuItem("Attributes...",
 			GUIHelper.getIcon("objects.gif"));
 		m_MenuViewAttributes.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
-			KeyEvent.CTRL_MASK + KeyEvent.SHIFT_MASK));
+			KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK));
 		m_MenuViewAttributes.addActionListener(this);
 		m_MenuViewValues = new JMenuItem("Values...",
 			GUIHelper.getIcon("properties.gif"));
 		m_MenuViewValues.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
-			KeyEvent.CTRL_MASK + KeyEvent.SHIFT_MASK));
+			KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK));
 		m_MenuViewValues.addActionListener(this);
 		m_MenuViewOptimalColWidths = new JMenuItem("Optimal column width (all)",
 			GUIHelper.getIcon("resize.gif"));

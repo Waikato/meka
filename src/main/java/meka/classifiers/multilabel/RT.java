@@ -21,6 +21,9 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.RevisionUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * RT.java - The 'Ranking + Threshold' classifier. 
  * Duplicates each multi-labelled example, and assigns one of the labels (only) to each copy; then trains a regular multi-class base classifier.
@@ -58,9 +61,9 @@ public class RT extends ProblemTransformationMethod {
 			D_.deleteAttributeAt(0); 
 
 		//Make the new class attribute
-		FastVector classes = new FastVector(L);
+	  	List<String> classes = new ArrayList<>(L);
 		for (int j = 0; j < L; j++)
-			classes.addElement("C"+j);
+			classes.add("C"+j);
 
 		//Add the new class attribute
 		D_.insertAttributeAt(new Attribute("ClassY",classes),0);
