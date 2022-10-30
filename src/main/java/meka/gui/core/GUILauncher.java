@@ -46,7 +46,7 @@ public class GUILauncher {
 	 * @throws Exception if failed to instantiate panel
 	 */
 	public static MekaFrame launchFrame(Class panelCls, String title, boolean center) throws Exception {
-		JPanel panel = (JPanel) panelCls.newInstance();
+		JPanel panel = (JPanel) panelCls.getDeclaredConstructor().newInstance();
 		return launchFrame(panel, title, center);
 	}
 
@@ -97,7 +97,7 @@ public class GUILauncher {
 		Project.initialize();
 		GenericObjectEditor.registerAllEditors();
 		LookAndFeel.install();
-		JPanel panel = (JPanel) panelCls.newInstance();
+		JPanel panel = (JPanel) panelCls.getDeclaredConstructor().newInstance();
 		MekaFrame result = new MekaFrame();
 		result.setTitle(title);
 		result.setDefaultCloseOperation(MekaFrame.EXIT_ON_CLOSE);

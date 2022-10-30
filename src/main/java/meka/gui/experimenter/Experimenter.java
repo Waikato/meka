@@ -165,7 +165,7 @@ public class Experimenter
 		classnames = AbstractExperimenterTab.getTabs();
 		for (String classname: classnames) {
 			try {
-				AbstractExperimenterTab tab = (AbstractExperimenterTab) Class.forName(classname).newInstance();
+				AbstractExperimenterTab tab = (AbstractExperimenterTab) Class.forName(classname).getDeclaredConstructor().newInstance();
 				if (tab.getClass() == BasicSetup.class)
 					continue;
 				if (tab.getClass() == ExpertSetup.class)
@@ -397,7 +397,7 @@ public class Experimenter
 			clsnames = AbstractExperimenterMenuItem.getMenuItems();
 			for (String clsname: clsnames) {
 				try {
-					additional = (AbstractExperimenterMenuItem) Class.forName(clsname).newInstance();
+					additional = (AbstractExperimenterMenuItem) Class.forName(clsname).getDeclaredConstructor().newInstance();
 					additional.setOwner(this);
 					action     = additional.getAction();
 					m_AdditionalMenuItems.put(additional, action);
@@ -497,7 +497,7 @@ public class Experimenter
 	 */
 	public void newSetup(Class cls) {
 		try {
-			Experiment exp = (Experiment) cls.newInstance();
+			Experiment exp = (Experiment) cls.getDeclaredConstructor().newInstance();
 			notifyTabsExperimentChanged(null, exp);
 		}
 		catch (Exception e) {

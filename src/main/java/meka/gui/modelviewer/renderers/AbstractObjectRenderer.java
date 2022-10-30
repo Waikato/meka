@@ -101,7 +101,7 @@ public abstract class AbstractObjectRenderer
 		result = new ArrayList<AbstractObjectRenderer>();
 		for (i = 0; i < renderers.size(); i++) {
 			try {
-				result.add((AbstractObjectRenderer) renderers.get(i).newInstance());
+				result.add((AbstractObjectRenderer) renderers.get(i).getDeclaredConstructor().newInstance());
 			}
 			catch (Exception e) {
 				System.err.println("Failed to instantiate object renderer '" + renderers.get(i).getName() + "':");
@@ -135,7 +135,7 @@ public abstract class AbstractObjectRenderer
 			if (m_RendererClasses[i] == PlainTextRenderer.class)
 				continue;
 			try {
-				renderer = (AbstractObjectRenderer) m_RendererClasses[i].newInstance();
+				renderer = (AbstractObjectRenderer) m_RendererClasses[i].getDeclaredConstructor().newInstance();
 				if (renderer.handles(cls)) {
 					renderers.add(m_RendererClasses[i]);
 					break;

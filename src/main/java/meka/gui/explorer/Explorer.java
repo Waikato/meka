@@ -162,7 +162,7 @@ public class Explorer
 		classnames = AbstractExplorerTab.getTabs();
 		for (String classname: classnames) {
 			try {
-				AbstractExplorerTab tab = (AbstractExplorerTab) Class.forName(classname).newInstance();
+				AbstractExplorerTab tab = (AbstractExplorerTab) Class.forName(classname).getDeclaredConstructor().newInstance();
 				if (tab instanceof PreprocessTab)
 					continue;
 				if (tab instanceof VisualizeTab)

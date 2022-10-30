@@ -771,7 +771,7 @@ public class ClassifyTab
 			menuitemclasses = PluginManager.getPluginNamesOfTypeList(AbstractClassifyTabMenuItem.class.getName());
 			for (String menuitemclass: menuitemclasses) {
 				try {
-					menuitemplugin = (AbstractClassifyTabMenuItem) Class.forName(menuitemclass).newInstance();
+					menuitemplugin = (AbstractClassifyTabMenuItem) Class.forName(menuitemclass).getDeclaredConstructor().newInstance();
 					menuitem = new JMenuItem(menuitemplugin.getName());
 					if (menuitemplugin.getIcon() == null)
 						menuitem.setIcon(GUIHelper.getEmptyIcon());

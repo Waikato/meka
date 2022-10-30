@@ -180,7 +180,7 @@ public class ClassMarkdown
 
 		result = new StringBuilder();
 		cls = Class.forName(m_Classname);
-		instance = cls.newInstance();
+		instance = cls.getDeclaredConstructor().newInstance();
 
 		// title
 		if (!m_SkipTitle)

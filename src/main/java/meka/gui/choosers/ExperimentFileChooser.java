@@ -135,7 +135,7 @@ public class ExperimentFileChooser
 		for (ExtensionFileFilterWithClass filter: m_FileFilters) {
 			if (filter.accept(file)) {
 				try {
-					result = (ExperimentFileHandler) Class.forName(filter.getClassname()).newInstance();
+					result = (ExperimentFileHandler) Class.forName(filter.getClassname()).getDeclaredConstructor().newInstance();
 				}
 				catch (Exception e) {
 					handleException("Failed to instantiate reader: " + filter.getClassname(), e);
@@ -180,7 +180,7 @@ public class ExperimentFileChooser
     for (ExtensionFileFilterWithClass filter: m_FileFilters) {
       if (filter.accept(file)) {
 	try {
-	  result = (ExperimentFileHandler) Class.forName(filter.getClassname()).newInstance();
+	  result = (ExperimentFileHandler) Class.forName(filter.getClassname()).getDeclaredConstructor().newInstance();
 	}
 	catch (Exception e) {
           handleException("Failed to instantiate writer: " + filter.getClassname(), e);

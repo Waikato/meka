@@ -192,7 +192,7 @@ public abstract class AbstractResultHistoryPlugin
 		plugins    = new ArrayList<>();
 		for (String classname: classnames) {
 			try {
-				plugin = (AbstractResultHistoryPlugin) Class.forName(classname).newInstance();
+				plugin = (AbstractResultHistoryPlugin) Class.forName(classname).getDeclaredConstructor().newInstance();
 				plugin.setOwner(tab);
 				plugins.add(plugin);
 			}

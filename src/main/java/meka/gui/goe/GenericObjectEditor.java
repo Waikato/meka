@@ -244,7 +244,7 @@ public class GenericObjectEditor
 			if (args.length > 0){
 				ce.setClassType(Class.forName(args[0]));
 				if (args.length > 1) {
-					initial = Class.forName(args[1]).newInstance();
+					initial = Class.forName(args[1]).getDeclaredConstructor().newInstance();
 					ce.setValue(initial);
 				}
 				else {
