@@ -66,7 +66,7 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 	 */
 	@Override
 	public String globalInfo() {
-		return "The Nearest Set Relpacement (NSR) method.\n"+
+		return "The Nearest Set Replacement (NSR) method.\n"+
 			"A multi-target version of PS: The nearest sets are used to replace outliers, rather than subsets (as in PS).";
 	}
 	
@@ -234,7 +234,7 @@ public class NSR extends meka.classifiers.multilabel.PS implements MultiTargetCl
 	    return RevisionUtils.extract("$Revision: 9117 $");
 	}
 
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		ProblemTransformationMethod.evaluation(new meka.classifiers.multitarget.NSR(), args);
 	}
 
