@@ -121,34 +121,39 @@ public class Evaluation {
 		// use remaining options for classifier
 		h.setOptions(options);
 
-		if (h.getDebug()) System.out.println("Loading and preparing dataset ...");
+		boolean testOnly = optTrainFile.isEmpty() && !optTestFile.isEmpty();
 
-		// Load Instances from a file
-		Instances D_train = loadDataset(optTrainFile);
+		Instances D_train = null;
+		int L = 0;
 
-		Instances D_full = D_train;
+		if (!testOnly) {
+			if (h.getDebug())
+				System.out.println("Loading and preparing dataset ...");
 
-		// Try extract and set a class index from the @relation name
-		MLUtils.prepareData(D_train);
+			// Load Instances from a file
+			D_train = loadDataset(optTrainFile);
 
-		// Override the number of classes with command-line option (optional)
-		if(!optClasses.isEmpty()) {
-			int L = Integer.parseInt(optClasses);
-			D_train.setClassIndex(L);
-		}
+			// Try extract and set a class index from the @relation name
+			MLUtils.prepareData(D_train);
 
-		// We we still haven't found -C option, we can't continue (don't know how many labels)
-		int L = D_train.classIndex();
-		if(L <= 0) {
-			throw new Exception("[Error] Number of labels not specified.\n\tYou must set the number of labels with the -C option, either inside the @relation tag of the Instances file, or on the command line.");
-			// apparently the dataset didn't contain the '-C' flag, check in the command line options ...
-		}
+			// Override the number of classes with command-line option (optional)
+			if (!optClasses.isEmpty()) {
+				L = Integer.parseInt(optClasses);
+				D_train.setClassIndex(L);
+			}
 
+			// We we still haven't found -C option, we can't continue (don't know how many labels)
+			L = D_train.classIndex();
+			if (L <= 0) {
+				throw new Exception("[Error] Number of labels not specified.\n\tYou must set the number of labels with the -C option, either inside the @relation tag of the Instances file, or on the command line.");
+				// apparently the dataset didn't contain the '-C' flag, check in the command line options ...
+			}
 
-		// Randomize (Instances) 
-		int seed = (!optSeed.isEmpty()) ? Integer.parseInt(optSeed) : 0;
-		if(optRandomize) {
-			D_train.randomize(new Random(seed));
+			// Randomize (Instances)
+			int seed = (!optSeed.isEmpty()) ? Integer.parseInt(optSeed) : 0;
+			if (optRandomize) {
+				D_train.randomize(new Random(seed));
+			}
 		}
 
 		// Verbosity Option
@@ -224,6 +229,8 @@ public class Evaluation {
 					try {
 						D_test = loadDataset(optTestFile);
 						MLUtils.prepareData(D_test);
+						if (D_train == null)
+							D_train = new Instances(D_test, 0);
 					} catch(Exception e) {
 						throw new Exception("[Error] Failed to Load Test Instances from file.", e);
 					}
@@ -288,13 +295,15 @@ public class Evaluation {
 						}
 					} else {
 						// otherwise just train on full set. Maybe better throw an exception.
-						h.buildClassifier(D_full);
+						if (D_train.numInstances() > 0)
+							h.buildClassifier(D_train);
+						if (doEval && D_test.numInstances() > 0)
+							r = evaluateModel(h, D_test, top, voption);
 					}
 				}
 
 				// @todo, if D_train==null, assume h is already trained
-				if(D_train.numInstances() > 0 &&
-					D_test.numInstances() > 0 &&
+				if(D_test.numInstances() > 0 &&
 				    r != null) {
 					System.out.println(r.toString());
 				}
