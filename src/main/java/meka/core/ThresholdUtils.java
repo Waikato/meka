@@ -46,32 +46,37 @@ public abstract class ThresholdUtils {
 	 * @param	Y			labels
 	 * @param	LC_train	label cardinality of the training set
 	 */
-	public static double calibrateThreshold(ArrayList<double[]> Y, double LC_train) { 
+	public static double calibrateThreshold(ArrayList<double[]> Y, double LC_train) {
 
-		if (Y.size() <= 0) 
+		if (Y.size() <= 0)
 			return 0.5;
 
 		int N = Y.size();
 		ArrayList<Double> big = new ArrayList<Double>();
-		for(double y[] : Y) {
+		for (double y[] : Y) {
 			for (double y_ : y) {
 				big.add(y_);
 			}
 		}
 		Collections.sort(big);
 
-		int i = big.size() - (int)Math.round(LC_train * (double)N);
-		
+		int i = big.size() - (int) Math.round(LC_train * (double) N);
+
 		if (N == big.size()) { // special cases
-			if (i+1 == N) // only one!
-				return (big.get(N-2)+big.get(N-1)/2.0);
-			if (i+1 >= N) // zero!
+			if (i + 1 == N) // only one!
+				return (big.get(N - 2) + big.get(N - 1)) / 2.0;
+			if (i + 1 >= N) // zero!
 				return 1.0;
 			else
-			    return Math.max(((double)(big.get(i)+big.get(i+1))/2.0), 0.00001);
+				return Math.max(((big.get(i) + big.get(i + 1)) / 2.0), 0.00001);
 		}
 
-		return Math.max(((double)(big.get(i)+big.get(Math.max(i+1,N-1))))/2.0 , 0.00001);
+		// special cases for low LC
+		if (i == big.size() || i + 1 == big.size()) {
+			return Math.max((big.get(big.size() - 2) + big.get(big.size() - 1)) / 2.0, 0.00001);
+		}
+
+		return Math.max((big.get(i) + big.get(Math.max(i + 1, N - 1))) / 2.0, 0.00001);
 	}
 
 	/**
