@@ -38,6 +38,10 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
      */
     protected double threshold = 0.4;
 
+    public ERFH() {
+        this.m_Classifier = new BR();
+    }
+
     public static void main(String[] args) {
         ProblemTransformationMethod.runClassifier(new ERFH(), args);
     }
@@ -51,7 +55,13 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
     }
 
     public String thresholdTipText() {
-        return "Prediction threshold for the multi-label classifier distribution.";
+        return "Prediction threshold";
+    }
+
+    @Override
+    protected String defaultClassifierString() {
+        // default classifier for CLI
+        return "meka.classifiers.multilabel.BR";
     }
 
     /**
@@ -88,11 +98,12 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
 
             // Modify i'th HOMER tree
             HOMER homer = new HOMER();
+            homer.setDebug(getDebug());
             homer.setClassifier(AbstractMultiLabelClassifier.makeCopy(m_Classifier));
             homer.setLabelSplitter(new VariableKLabelSplitter(m_Seed + i));
             homer.setSeed(m_Seed + i);
             if (getDebug())
-                System.out.print(" " + i);
+                System.out.print(" " + i + ":\n");
             m_Classifiers[i] = homer;
             m_Classifiers[i].buildClassifier(bag);
         }
@@ -119,8 +130,8 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
 
     @Override
     public void setOptions(String[] options) throws Exception {
+        setThreshold(OptionUtils.parse(options, "T", 0.4));
         super.setOptions(options);
-        threshold = OptionUtils.parse(options, "T", 0.4);
     }
 
     @Override
@@ -128,7 +139,6 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
         Vector<Option> options = new Vector<>(2);
         options.add(new Option(thresholdTipText(), "threshold", 1, "-T threshold"));
         OptionUtils.add(options, super.listOptions());
-        //OptionUtils.add(options, homerClassifier.listOptions());
         return options.elements();
     }
 
@@ -165,7 +175,7 @@ public class ERFH extends MetaProblemTransformationMethod implements Randomizabl
         }
 
         @Override
-        public Collection<Set<Integer>> splitLabels(int k, Collection<Integer> labels, Instances D) {
+        public Collection<Set<Integer>> splitLabels(int k, Set<Integer> labels, Instances D) {
             return super.splitLabels(rng.nextInt(5) + 2, labels, D);
         }
     }

@@ -80,6 +80,16 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
         return "The dimensionality reduction parameter.";
     }
 
+    @Override
+    public String globalInfo() {
+        return "Multi-label rotation forest.";
+    }
+
+    @Override
+    protected String defaultClassifierString() {
+        return "meka.classifiers.multilabel.BR";
+    }
+
     /**
      * Partitions the features into disjoint subsets.
      *
@@ -107,39 +117,39 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
     @Override
     public void buildClassifier(Instances D) throws Exception {
         testCapabilities(D);
-        int n = D.numInstances();
+        int numInstances = D.numInstances();
         int L = D.classIndex();
         int d = D.numAttributes() - L;
 
         m_Classifiers = ProblemTransformationMethod.makeCopies((MultiLabelClassifier) m_Classifier, m_NumIterations);
         R = new DenseMatrix[m_NumIterations];
         Instances transformedInstances = F.remove(D, A.make_sequence(L), true);
-        int nNew = n * m_BagSizePercent / 100;
+        int nNew = numInstances * m_BagSizePercent / 100;
 
         Matrix dataMatrix;
         try {
-            dataMatrix = new DenseMatrix(n, d);
-            for (int i = 0; i < n; i++)
+            dataMatrix = new DenseMatrix(numInstances, d);
+            for (int i = 0; i < numInstances; i++)
                 for (int j = 0; j < d; j++)
                     dataMatrix.set(i, j, D.get(i).value(L + j));
         } catch (OutOfMemoryError e) {
-            int[][] nz = new int[n][];
-            for (int i = 0; i < n; i++) {
+            int[][] nz = new int[numInstances][];
+            for (int i = 0; i < numInstances; i++) {
                 Instance inst = transformedInstances.get(i);
                 nz[i] = new int[inst.numValues()];
                 for (int j = 0; j < inst.numValues(); j++)
                     nz[i][j] = inst.index(j);
             }
-            dataMatrix = new CompRowMatrix(n, d, nz);
-            for (int i = 0; i < n; i++) {
+            dataMatrix = new CompRowMatrix(numInstances, d, nz);
+            for (int i = 0; i < numInstances; i++) {
                 Instance inst = transformedInstances.get(i);
                 for (int j = 0; j < inst.numValues(); j++)
                     dataMatrix.set(i, nz[i][j], inst.valueSparse(j));
             }
         }
-        DenseMatrix transformedData = new DenseMatrix(n, numFeatures * K);
-        DenseMatrix partialSInv = new DenseMatrix(numFeatures, numFeatures);
+        DenseMatrix transformedData = new DenseMatrix(numInstances, numFeatures * K);
 
+        // Instance attributes after dimensionality reduction
         for (int m = 0; m < numFeatures * K; m++)
             transformedInstances.insertAttributeAt(new Attribute("F" + m), L + m);
         transformedInstances.setClassIndex(L);
@@ -147,48 +157,64 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
 
         for (int i = 0; i < m_NumIterations; i++) {
             if (getDebug())
-                System.out.print("Building classifier " + i + ": subsets");
+                System.out.print("Building classifier " + i + ": subsets ");
             Random r = new Random(m_Seed + i);
 
             R[i] = new DenseMatrix(d, numFeatures * K);
             List<List<Integer>> subsets = generateFeatureSubsets(d);
-            for (int s = 0; s < K; s++) {
+            for (int subId = 0; subId < K; subId++) {
                 if (getDebug())
-                    System.out.print(" " + s);
-                List<Integer> subset = subsets.get(s);
-                int m = subset.size();
-                DenseMatrix mat = new DenseMatrix(nNew, m);
-                for (int j = 0; j < nNew; j++)
-                    for (int k = 0; k < m; k++)
-                        mat.set(j, k, D.get(r.nextInt(n)).value(subset.get(k) + L));
+                    System.out.print(subId + " ");
+                List<Integer> subset = subsets.get(subId);
+                int subSize = subset.size();
+                DenseMatrix mat = new DenseMatrix(nNew, subSize);
+                // Bootstrap sample from data
+                for (int j = 0; j < nNew; j++) {
+                    int sampId = r.nextInt(numInstances);
+                    for (int k = 0; k < subSize; k++)
+                        mat.set(j, k, dataMatrix.get(sampId, subset.get(k)));
+                }
 
-                SVD svd = new SVD(nNew, m);
+                // Latent semantic indexing
+                SVD svd = new SVD(nNew, subSize);
                 svd = svd.factor(mat);
-                double[] singVals = svd.getS();
-                Matrix partialVt = Matrices.getSubMatrix(svd.getVt(), A.make_sequence(numFeatures), A.make_sequence(m));
+                DenseMatrix transformationMatrix = getTransformationMatrix(svd, subSize);
 
-                for (int j = 0; j < numFeatures; j++)
-                    if (singVals[j] > 0)
-                        partialSInv.set(j, j, 1 / singVals[j]);
-
-                DenseMatrix transformationMatrix = new DenseMatrix(m, numFeatures);
-                partialVt.transAmult(partialSInv, transformationMatrix);
-                for (int j = 0; j < m; j++) {
-                    Matrix row = Matrices.getSubMatrix(transformationMatrix, new int[]{j}, A.make_sequence(numFeatures));
-                    Matrices.getSubMatrix(R[i], new int[]{subset.get(j)}, A.make_sequence(
-                            numFeatures * s, numFeatures * (s + 1))).set(row);
+                // Insert each subset transformation matrix into full rotation matrix R[i]
+                for (int j = 0; j < subSize; j++) {
+                    Matrix row = Matrices.getSubMatrix(transformationMatrix,
+                                                       new int[]{j},
+                                                       A.make_sequence(numFeatures));
+                    Matrices.getSubMatrix(R[i],
+                                          new int[]{subset.get(j)},
+                                          A.make_sequence(numFeatures * subId, numFeatures * (subId + 1))).set(row);
                 }
             }
 
+            // Transform data and train classifier on transformed instances
             dataMatrix.mult(R[i], transformedData);
-
             for (int m = 0; m < numFeatures * K; m++)
-                for (int j = 0; j < n; j++)
+                for (int j = 0; j < numInstances; j++)
                     transformedInstances.get(j).setValue(L + m, transformedData.get(j, m));
+            if (getDebug())
+                System.out.print("Training base multi-label classifier on transformed data.");
             m_Classifiers[i].buildClassifier(transformedInstances);
             if (getDebug())
                 System.out.println();
         }
+    }
+
+    private DenseMatrix getTransformationMatrix(SVD svd, int m) {
+        double[] singVals = svd.getS();
+        Matrix partialVt = Matrices.getSubMatrix(svd.getVt(), A.make_sequence(numFeatures), A.make_sequence(m));
+        DenseMatrix partialSInv = new DenseMatrix(numFeatures, numFeatures);
+        for (int j = 0; j < numFeatures; j++)
+            if (singVals[j] > 0)
+                partialSInv.set(j, j, 1 / singVals[j]);
+
+        DenseMatrix transformationMatrix = new DenseMatrix(m, numFeatures);
+        partialVt.transAmult(partialSInv, transformationMatrix);
+        return transformationMatrix;
     }
 
     @Override
@@ -234,9 +260,9 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
 
     @Override
     public void setOptions(String[] options) throws Exception {
-        super.setOptions(options);
         K = OptionUtils.parse(options, "K", 10);
         numFeatures = OptionUtils.parse(options, "k", 10);
+        super.setOptions(options);
     }
 
     @Override
@@ -252,7 +278,8 @@ public class MLRF extends MetaProblemTransformationMethod implements Randomizabl
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation info = new TechnicalInformation(Type.ARTICLE);
         info.setValue(Field.AUTHOR, "Elghazel, Haytham and Aussem, Alex and Gharroudi, Ouadie and Saadaoui, Wafa");
-        info.setValue(Field.TITLE, "Ensemble multi-label text categorization based on rotation forest and latent semantic indexing");
+        info.setValue(Field.TITLE,
+                      "Ensemble multi-label text categorization based on rotation forest and latent semantic indexing");
         info.setValue(Field.JOURNAL, "Expert Systems with Applications");
         info.setValue(Field.VOLUME, "57");
         info.setValue(Field.YEAR, "2016");

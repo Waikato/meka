@@ -17,7 +17,7 @@ package meka.classifiers.multilabel.meta;
 
 import meka.classifiers.multilabel.*;
 import meka.core.*;
-import weka.classifiers.*;
+import weka.classifiers.Classifier;
 import weka.classifiers.meta.Bagging;
 import weka.core.*;
 import weka.core.TechnicalInformation.*;
@@ -26,7 +26,7 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * HOMER (Hierarchy Of Multi-label classifiERs algorithm.
+ * HOMER (Hierarchy Of Multi-label classifiERs) algorithm.
  * <p>
  * This algorithm divides the multilabel classification problem into a tree structure where at each level the labels are
  * partitioned into k subsets and one multilabel classifier classifies the labels per subset, using k metalabels
@@ -50,13 +50,13 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
      */
     protected String threshold = "0.3";
     /**
-     * Root node of the HOMER tree.
-     */
-    private HOMERNode root;
-    /**
      * The label splitter.
      */
     protected LabelSplitter labelSplitter = new RandomLabelSplitter(0);
+    /**
+     * Root node of the HOMER tree.
+     */
+    private HOMERNode root;
     /**
      * HOMER node ID counter for debugging purposes.
      */
@@ -87,10 +87,6 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
 
     public void setThreshold(String t) {
         threshold = t;
-    }
-
-    public LabelSplitter getLabelSplitter() {
-        return labelSplitter;
     }
 
     public void setLabelSplitter(LabelSplitter splitter) {
@@ -138,7 +134,8 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
     public TechnicalInformation getTechnicalInformation() {
         TechnicalInformation info = new TechnicalInformation(Type.INPROCEEDINGS);
         info.setValue(Field.AUTHOR, "Tsoumakas, Grigorios and Katakis, Ioannis and Vlahavas, Ioannis");
-        info.setValue(Field.TITLE, "Effective and efficient multilabel classification in domains with large number of labels");
+        info.setValue(Field.TITLE,
+                      "Effective and efficient multilabel classification in domains with large number of labels");
         info.setValue(Field.YEAR, "2008");
         info.setValue(Field.PAGES, "53--59");
         info.setValue(Field.BOOKTITLE, "Proc. ECML/PKDD 2008 Workshop on Mining Multidimensional Data (MMD’08)");
@@ -164,10 +161,8 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         if (!(m_Classifier instanceof MultiLabelClassifier))
             throw new IllegalStateException("Classifier must be a MultiLabelClassifier!");
 
-        root = new HOMERNode();
-        root.setClassifier(ProblemTransformationMethod.makeCopy(m_Classifier));
-        root.setSplitter(labelSplitter);
-        root.buildClassifier(D);
+        root = new HOMERNode((ProblemTransformationMethod) ProblemTransformationMethod.makeCopy(m_Classifier));
+        root.buildTree(D);
         if (getDebug())
             System.out.println("Trained all nodes.");
     }
@@ -203,11 +198,11 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
 
     @Override
     public void setOptions(String[] options) throws Exception {
-        super.setOptions(options);
         k = OptionUtils.parse(options, "k", 3);
         seed = OptionUtils.parse(options, "S", 0);
         threshold = OptionUtils.parse(options, "t", "0.3");
         setLabelSplitterString(OptionUtils.parse(options, "ls", "RandomLabelSplitter"));
+        super.setOptions(options);
     }
 
     @Override
@@ -241,7 +236,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
          * @param D      the dataset that defines the labels
          * @return a partition of the labels in {@code parentLabels}
          */
-        Collection<Set<Integer>> splitLabels(int k, Collection<Integer> labels, Instances D);
+        Collection<Set<Integer>> splitLabels(int k, Set<Integer> labels, Instances D);
     }
 
     /**
@@ -256,7 +251,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         /**
          * Random seed for {@link #rng}.
          */
-        protected int seed;
+        private int seed;
 
         public RandomizableLabelSplitter(int seed) {
             this.seed = seed;
@@ -287,25 +282,24 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         }
 
         @Override
-        public Collection<Set<Integer>> splitLabels(int k, Collection<Integer> labels, Instances D) {
+        public Collection<Set<Integer>> splitLabels(int k, Set<Integer> labels, Instances D) {
             List<Set<Integer>> result = new ArrayList<>();
-            int L = labels.size();
-            List<Integer> labelList = Arrays.asList(labels.toArray(new Integer[0]));
+            int Ln = labels.size();
+            if (Ln <= k) {
+                // Ln children, each with a single label
+                for (int label : labels)
+                    result.add(new HashSet<>(Collections.singletonList(label)));
+                return result;
+            }
+            List<Integer> labelList = new ArrayList<>(labels);
             Collections.shuffle(labelList, rng);
             int idx = 0;
-            if (L <= k) {
-                for (int i = 0; i < L; i++) {
-                    Set<Integer> labelSet = new HashSet<>(1);
+            for (int i = 0; i < k; i++) {
+                // k children, with either Ln / k or Ln / k + 1 labels per child
+                Set<Integer> labelSet = new HashSet<>(Ln / k);
+                for (int x = 0; x < Ln / k + (i < Ln % k ? 1 : 0); x++)
                     labelSet.add(labelList.get(idx++));
-                    result.add(labelSet);
-                }
-            } else {
-                for (int i = 0; i < k; i++) {
-                    Set<Integer> labelSet = new HashSet<>(L / k);
-                    for (int x = 0; x < (i < L % k ? L / k + 1 : L / k); x++)
-                        labelSet.add(labelList.get(idx++));
-                    result.add(labelSet);
-                }
+                result.add(labelSet);
             }
             return result;
         }
@@ -319,59 +313,71 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
     public static class ClusterLabelSplitter extends RandomizableLabelSplitter {
 
         private static final long serialVersionUID = 3545709733670034266L;
-        private double[][] labelVectors = null;
 
         public ClusterLabelSplitter(int seed) {
             super(seed);
         }
 
         @Override
-        public Collection<Set<Integer>> splitLabels(int k, Collection<Integer> labels, Instances D) {
-            int L = D.classIndex();
-            int n = D.numInstances();
-            if (labelVectors == null) {
-                labelVectors = new double[L][n];
-                for (int i = 0; i < n; i++)
-                    for (int l = 0; l < L; l++)
-                        labelVectors[l][i] = D.get(i).value(l);
-            }
-
-            List<Integer> labelList = new ArrayList<>(labels);
-            int idx = 0;
+        public Collection<Set<Integer>> splitLabels(int k, Set<Integer> labels, Instances D) {
             int Ln = labels.size();
-
             if (Ln <= k) {
+                // Ln children, each with a single label
                 List<Set<Integer>> result = new ArrayList<>(Ln);
-                for (int i = 0; i < Ln; i++)
-                    result.add(new HashSet<>(Collections.singletonList(labelList.get(idx++))));
+                for (int label : labels)
+                    result.add(new HashSet<>(Collections.singletonList(label)));
                 return result;
             }
 
+            int L = D.classIndex();
+            int n = D.numInstances();
+
+            /*
+             * L x n label matrix. Each row corresponds to a label and represents the presence of that label for
+             * each of the n instances.
+             */
+            double[][] labelMatrix = new double[L][n];
+            for (int i = 0; i < n; i++)
+                for (int l = 0; l < L; l++)
+                    labelMatrix[l][i] = D.get(i).value(l);
+
+            /* See Fig. 2 of the paper for the below steps */
+
+            // Init kmeans centroids to random labels
+            Set<Integer> centreIdx = new HashSet<>(k);
+            while (centreIdx.size() != k)
+                centreIdx.add(rng.nextInt(labels.size()));
+            List<Integer> centreIdxList = List.copyOf(centreIdx);
+            List<Integer> labelList = List.copyOf(labels);
+            double[][] centroids = new double[k][n];
+            for (int i = 0; i < k; i++)
+                centroids[i] = labelMatrix[labelList.get(centreIdxList.get(i))];
+
             List<List<Integer>> clusters = new ArrayList<>(k);
-            int[] centres = new int[k];
-            Collections.shuffle(labelList, rng);
-            for (int i = 0; i < k; i++) {
+            for (int i = 0; i < k; i++)
                 clusters.add(new ArrayList<>(L / k));
-                centres[i] = labelList.get(idx++);
-            }
 
             double[][] d = new double[L][k];
-            for (int it = 0; it < 2; it++) {
-                for (Integer l : labels) {
+            for (int it = 0; it < 2; it++) { // kmeans iterations
+                for (List<Integer> cluster : clusters)
+                    cluster.clear();
+                for (Integer label : labelList) {
                     for (int i = 0; i < k; i++) {
-                        /* Calculate distance to cluster centres */
-                        double[] vci = labelVectors[centres[i]];
-                        double[] vl = labelVectors[l];
+                        // Calculate distance to cluster centres
                         double sum = 0;
-                        for (int j = 0; j < n; j++)
-                            sum += (vci[j] - vl[j]) * (vci[j] - vl[j]);
-                        d[l][i] = Math.sqrt(sum);
+                        for (int j = 0; j < n; j++) {
+                            double diff = centroids[i][j] - labelMatrix[label][j];
+                            sum += diff * diff;
+                        }
+                        d[label][i] = Math.sqrt(sum);
                     }
 
                     boolean finished = false;
-                    int nu = l;
+                    int nu = label;
                     while (!finished) {
                         int minj = 0;
+
+                        // argmin distance over centroids
                         double currMin = Double.MAX_VALUE;
                         for (int j = 0; j < k; j++) {
                             if (d[nu][j] < currMin) {
@@ -385,7 +391,7 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
                             break;
                         Cj.add(nu);
                         final int _minj = minj;
-                        Cj.sort(Comparator.comparingDouble(o -> d[o][_minj]));
+                        Cj.sort(Comparator.comparingDouble(val -> d[val][_minj]));
 
                         int size = Cj.size();
                         if (size > Math.ceil(Ln / (double) k)) {
@@ -397,15 +403,15 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
                     }
                 }
                 for (int i = 0; i < k; i++) {
-                    double[] cent = new double[n];
-                    for (Integer l : clusters.get(i)) {
-                        /* Calculate new cluster centres */
-                        double[] vl = labelVectors[l];
+                    // Calculate new cluster centres
+                    List<Integer> cluster = clusters.get(i);
+                    for (Integer l : cluster) {
+                        double[] vl = labelMatrix[l];
                         for (int j = 0; j < n; j++)
-                            cent[j] += vl[j];
+                            centroids[i][j] += vl[j];
                     }
                     for (int j = 0; j < n; j++)
-                        cent[j] /= clusters.get(i).size();
+                        centroids[i][j] /= cluster.size();
                 }
             }
             Collection<Set<Integer>> clusterSets = new ArrayList<>(clusters.size());
@@ -418,19 +424,18 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
     /**
      * Utility class for storing node info.
      */
-    private class HOMERNode extends SingleClassifierEnhancer {
+    private class HOMERNode {
 
         private final int id;
-        private final List<HOMERNode> children;
-        private Set<Integer> labels;
+        private final List<HOMERNode> children = new ArrayList<>();
+        private final ProblemTransformationMethod classifier;
+        private Set<Integer> labels = new HashSet<>();
         private Instances instances;
         private double[] thresholds;
-        private LabelSplitter splitter;
 
-        public HOMERNode() {
+        private HOMERNode(ProblemTransformationMethod classifier) {
             id = debugNodeId++;
-            children = new ArrayList<>();
-            labels = new HashSet<>();
+            this.classifier = classifier;
         }
 
         /**
@@ -447,24 +452,18 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
             }
 
             Instances culledInstances = new Instances(instances, 0);
-            for (Instance i : getInstances()) {
-                for (Integer label : labels) {
-                    if (i.stringValue(label).equals("1")) {
-                        culledInstances.add(i);
-                        break;
-                    }
-                }
-            }
+            for (Instance instance : instances)
+                if (labels.stream().anyMatch(label -> instance.stringValue(label).equals("1")))
+                    culledInstances.add(instance);
 
-            getChildren().clear();
-            Collection<Set<Integer>> labelSplits = splitter.splitLabels(k, labels, culledInstances);
+            children.clear();
+            Collection<Set<Integer>> labelSplits = labelSplitter.splitLabels(k, labels, culledInstances);
             for (Set<Integer> labelSet : labelSplits) {
-                HOMERNode child = new HOMERNode();
-                child.setClassifier(AbstractClassifier.makeCopy(m_Classifier));
-                child.setSplitter(splitter);
-                child.setInstances(culledInstances);
-                child.setLabels(labelSet);
-                getChildren().add(child);
+                HOMERNode child = new HOMERNode((ProblemTransformationMethod) ProblemTransformationMethod.makeCopy(
+                        classifier));
+                child.instances = culledInstances;
+                child.labels = labelSet;
+                children.add(child);
                 if (labelSet.size() > 1) // Leaves don't need to recurse down any further
                     child.buildNode();
             }
@@ -473,8 +472,8 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
         /**
          * Train the HOMER tree.
          *
-         * @throws Exception If an exception is thrown during label preprocessing, training the base classifier, or training any
-         *                   children of this node.
+         * @throws Exception If an exception is thrown during label preprocessing, training the base classifier, or
+         *                   training any children of this node.
          */
         private void trainNode() throws Exception {
             int L = instances.classIndex();
@@ -488,53 +487,52 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
             }
             newInstances.setClassIndex(c);
 
-            /* Set each meta-label value to the disjunction of instance label values */
+            /* Set each meta-label value to the disjunction of instance values of child labels. Remove instance if it
+             * has no labels among child labels.
+             */
             Iterator<Instance> it = newInstances.iterator();
             for (int i = 0; it.hasNext(); i++) {
                 boolean remove = true;
-                Instance next = it.next();
+                Instance newInstance = it.next();
+                Instance oldInstance = instances.get(i);
                 for (int m = 0; m < c; m++) {
-                    next.setValue(m, "0");
-                    for (Integer l : children.get(m).getLabels()) {
-                        if (instances.get(i).stringValue(l).equals("1")) {
-                            next.setValue(m, "1");
-                            remove = false;
-                            break;
-                        }
+                    newInstance.setValue(m, "0");
+                    if (children.get(m).labels.stream().anyMatch(lab -> oldInstance.stringValue(lab).equals("1"))) {
+                        newInstance.setValue(m, "1");
+                        remove = false;
                     }
                 }
                 if (remove)
                     it.remove();
             }
-            setInstances(newInstances);
-            if (!newInstances.isEmpty()) { // This should rarely not be the case
-                Classifier classifier = ((ProblemTransformationMethod) m_Classifier).getClassifier();
-                if (newInstances.size() == 1 && classifier instanceof Bagging)
-                    ((Bagging) classifier).setBagSizePercent(100);
-                m_Classifier.buildClassifier(newInstances);
+            instances = newInstances;
+            if (!newInstances.isEmpty()) { // This should usually be true
+                Classifier baseClassifier = classifier.getClassifier();
+                if (newInstances.size() == 1 && baseClassifier instanceof Bagging)
+                    ((Bagging) baseClassifier).setBagSizePercent(100);
+                classifier.buildClassifier(newInstances);
             }
             if (getDebug())
-                System.out.println("Trained node " + getId() + " with " + newInstances.size() + " instances.");
+                System.out.println("Trained node " + id + " with " + newInstances.size() + " instances.");
 
             if (newInstances.size() < c) {
                 double[] thresholds = new double[c];
                 Arrays.fill(thresholds, 0.5);
-                setThresholds(thresholds);
+                this.thresholds = thresholds;
             } else {
                 try {
                     Double.parseDouble(threshold);
-                    setThresholds(ThresholdUtils.thresholdStringToArray(threshold, c));
+                    this.thresholds = ThresholdUtils.thresholdStringToArray(threshold, c);
                 } catch (NumberFormatException e) {
-                    Result r = meka.classifiers.multilabel.Evaluation.testClassifier((MultiLabelClassifier) m_Classifier, newInstances);
+                    Result r = meka.classifiers.multilabel.Evaluation.testClassifier(classifier, newInstances);
                     String threshStr = MLEvalUtils.getThreshold(r.predictions, newInstances, threshold);
-                    setThresholds(ThresholdUtils.thresholdStringToArray(threshStr, c));
+                    this.thresholds = ThresholdUtils.thresholdStringToArray(threshStr, c);
                 }
             }
 
-            for (HOMERNode child : children) {
-                if (child.getLabels().size() > 1)
+            for (HOMERNode child : children)
+                if (child.labels.size() > 1)
                     child.trainNode();
-            }
         }
 
         /**
@@ -544,80 +542,39 @@ public class HOMER extends ProblemTransformationMethod implements Randomizable, 
          * @param y shared array of prediction values
          * @throws Exception If this node's classifier or any child classifiers throw an exception.
          */
-        public void classify(Instance x, double[] y) throws Exception {
-            int c = getChildren().size();
+        private void classify(Instance x, double[] y) throws Exception {
+            int c = children.size();
             Instance newX = (Instance) x.copy();
             int oldL = newX.classIndex();
             newX.setDataset(null);
             MLUtils.deleteAttributesAt(newX, A.make_sequence(oldL));
             for (int i = 0; i < c; i++)
                 newX.insertAttributeAt(i);
-            newX.setDataset(getInstances());
-            double[] metaDist;
-            if (!getInstances().isEmpty())
-                metaDist = getClassifier().distributionForInstance(newX); // Distribution on meta-labels
-            else
-                metaDist = new double[c];
-            double[] thresholds = getThresholds();
-            for (int i = 0; i < getChildren().size(); i++) {
-                HOMERNode child = getChildren().get(i);
+            newX.setDataset(instances);
+            // Distribution over meta-labels
+            double[] metaDist = instances.isEmpty() ? new double[c] : classifier.distributionForInstance(newX);
+            for (int i = 0; i < children.size(); i++) {
+                HOMERNode child = children.get(i);
                 if (metaDist[i] > thresholds[i]) {
-                    if (child.getLabels().size() == 1)
-                        y[child.getLabels().iterator().next()] = 1;
+                    if (child.labels.size() == 1)
+                        y[child.labels.iterator().next()] = 1;
                     else
                         child.classify(newX, y);
                 } else {
-                    for (int l : child.getLabels())
+                    for (int l : child.labels)
                         y[l] = 0;
                 }
             }
         }
 
-        public List<HOMERNode> getChildren() {
-            return children;
-        }
-
-        public Set<Integer> getLabels() {
-            return labels;
-        }
-
-        public void setLabels(Set<Integer> labels) {
-            this.labels = labels;
-        }
-
-        public Instances getInstances() {
-            return instances;
-        }
-
-        public void setInstances(Instances instances) {
-            this.instances = instances;
-        }
-
-        public double[] getThresholds() {
-            return thresholds;
-        }
-
-        public void setThresholds(double[] thresholds) {
-            this.thresholds = thresholds;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setSplitter(LabelSplitter splitter) {
-            this.splitter = splitter;
-        }
-
-        @Override
-        public void buildClassifier(Instances D) throws Exception {
+        private void buildTree(Instances D) throws Exception {
             int L = D.classIndex();
             Set<Integer> labelSet = new HashSet<>(L);
             for (int l = 0; l < L; l++)
                 labelSet.add(l);
 
-            setInstances(D);
-            setLabels(labelSet);
+            instances = D;
+            labels = labelSet;
             buildNode();
             trainNode();
         }
