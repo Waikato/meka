@@ -15,7 +15,7 @@
 
 /*
  * FlatLookAndFeel.java
- * Copyright (C) 2020 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2020-2024 University of Waikato, Hamilton, NZ
  */
 
 package meka.gui.laf;
@@ -53,6 +53,7 @@ public class FlatLookAndFeel
 		FlatLightLaf.setup();
 		UIManager.put("Table.showHorizontalLines", true);
 		UIManager.put("Table.showVerticalLines", true);
+		UIManager.put("ScrollBar.showButtons", true);
 		return true;
 	}
 }
