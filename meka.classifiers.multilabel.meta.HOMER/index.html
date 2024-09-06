@@ -9,7 +9,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>meka.classifiers.multilabel.RT - MEKA</title>
+  <title>meka.classifiers.multilabel.meta.HOMER - MEKA</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../css/theme.css" />
@@ -18,8 +18,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "meka.classifiers.multilabel.RT";
-    var mkdocs_page_input_path = "meka.classifiers.multilabel.RT.md";
+    var mkdocs_page_name = "meka.classifiers.multilabel.meta.HOMER";
+    var mkdocs_page_input_path = "meka.classifiers.multilabel.meta.HOMER.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -141,7 +141,9 @@
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.FilteredClassifier/">meka.classifiers.multilabel.meta.FilteredClassifier</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.HOMER/">meka.classifiers.multilabel.meta.HOMER</a>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">meka.classifiers.multilabel.meta.HOMER</a>
+    <ul class="current">
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.MBR/">meka.classifiers.multilabel.meta.MBR</a>
                     </li>
@@ -171,9 +173,7 @@
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.RAkELd/">meka.classifiers.multilabel.RAkELd</a>
                     </li>
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">meka.classifiers.multilabel.RT</a>
-    <ul class="current">
-    </ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.RT/">meka.classifiers.multilabel.RT</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multitarget.BCC/">meka.classifiers.multitarget.BCC</a>
                     </li>
@@ -223,10 +223,10 @@
         
       
     
-    <li>meka.classifiers.multilabel.RT</li>
+    <li>meka.classifiers.multilabel.meta.HOMER</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/Waikato/meka/edit/master/docs/meka.classifiers.multilabel.RT.md"
+        <a href="https://github.com/Waikato/meka/edit/master/docs/meka.classifiers.multilabel.meta.HOMER.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -238,9 +238,62 @@
             <div class="section">
               
                 <h3 id="synopsis">Synopsis<a class="headerlink" href="#synopsis" title="Permanent link">#</a></h3>
-<p>Duplicates each multi-labelled example, and assigns one of the labels (only) to each copy; then trains a regular multi-class base classifier.
-At test time, a threshold separates relevant from irrelevant labels using the posterior for each class value (i.e., label).</p>
+<p>HOMER tree algorithm. For more information see:
+Tsoumakas, Grigorios, Katakis, Ioannis, Vlahavas, Ioannis: Effective and efficient multilabel classification in domains with large number of labels. In: Proc. ECML/PKDD 2008 Workshop on Mining Multidimensional Data (MMD’08), 53--59, 2008.</p>
+<h3 id="bibtex">BibTeX<a class="headerlink" href="#bibtex" title="Permanent link">#</a></h3>
+<pre><code>@inproceedings{Tsoumakas2008,
+   author = {Tsoumakas, Grigorios and Katakis, Ioannis and Vlahavas, Ioannis},
+   booktitle = {Proc. ECML/PKDD 2008 Workshop on Mining Multidimensional Data (MMD’08)},
+   organization = {sn},
+   pages = {53--59},
+   title = {Effective and efficient multilabel classification in domains with large number of labels},
+   volume = {21},
+   year = {2008}
+}
+</code></pre>
 <h3 id="options">Options<a class="headerlink" href="#options" title="Permanent link">#</a></h3>
+<ul>
+<li>
+<p><code>-k K</code></p>
+<p>The number of partitions per level.</p>
+</li>
+<li>
+<p><code>-S seed</code></p>
+<p>The seed to set.</p>
+</li>
+<li>
+<p><code>-ls class</code></p>
+<p>The label splitter class to use.</p>
+</li>
+<li>
+<p><code>-t threshold</code></p>
+<p>The threshold for the multi-label classifier distribution</p>
+</li>
+<li>
+<p><code>-W &lt;classifier name&gt;</code></p>
+<p>Full name of base classifier.
+(default: meka.classifiers.multilabel.BR)</p>
+</li>
+<li>
+<p><code>-output-debug-info</code></p>
+<p>If set, classifier is run in debug mode and
+may output additional info to the console</p>
+</li>
+<li>
+<p><code>-do-not-check-capabilities</code></p>
+<p>If set, classifier capabilities are not checked before classifier is built
+(use with caution).</p>
+</li>
+<li>
+<p><code>-num-decimal-places</code></p>
+<p>The number of decimal places for the output of numbers in the model (default 2).</p>
+</li>
+<li>
+<p><code>-batch-size</code></p>
+<p>The desired batch size for batch prediction  (default 100).</p>
+</li>
+</ul>
+<p><strong>Options specific to classifier meka.classifiers.multilabel.BR:</strong></p>
 <ul>
 <li>
 <p><code>-W &lt;classifier name&gt;</code></p>
@@ -350,10 +403,10 @@ may output additional info to the console</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../meka.classifiers.multitarget.BCC/" class="btn btn-neutral float-right" title="meka.classifiers.multitarget.BCC">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../meka.classifiers.multilabel.meta.MBR/" class="btn btn-neutral float-right" title="meka.classifiers.multilabel.meta.MBR">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../meka.classifiers.multilabel.RAkELd/" class="btn btn-neutral" title="meka.classifiers.multilabel.RAkELd"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../meka.classifiers.multilabel.meta.FilteredClassifier/" class="btn btn-neutral" title="meka.classifiers.multilabel.meta.FilteredClassifier"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -381,10 +434,10 @@ may output additional info to the console</p>
           <a href="https://github.com/Waikato/meka/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../meka.classifiers.multilabel.RAkELd/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../meka.classifiers.multilabel.meta.FilteredClassifier/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../meka.classifiers.multitarget.BCC/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../meka.classifiers.multilabel.meta.MBR/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

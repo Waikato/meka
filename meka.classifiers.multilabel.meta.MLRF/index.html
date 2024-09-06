@@ -9,7 +9,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>meka.classifiers.multilabel.RT - MEKA</title>
+  <title>meka.classifiers.multilabel.meta.MLRF - MEKA</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../css/theme.css" />
@@ -18,8 +18,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "meka.classifiers.multilabel.RT";
-    var mkdocs_page_input_path = "meka.classifiers.multilabel.RT.md";
+    var mkdocs_page_name = "meka.classifiers.multilabel.meta.MLRF";
+    var mkdocs_page_input_path = "meka.classifiers.multilabel.meta.MLRF.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -145,7 +145,9 @@
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.MBR/">meka.classifiers.multilabel.meta.MBR</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.MLRF/">meka.classifiers.multilabel.meta.MLRF</a>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">meka.classifiers.multilabel.meta.MLRF</a>
+    <ul class="current">
+    </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.MultiSearch/">meka.classifiers.multilabel.meta.MultiSearch</a>
                     </li>
@@ -171,9 +173,7 @@
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.RAkELd/">meka.classifiers.multilabel.RAkELd</a>
                     </li>
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">meka.classifiers.multilabel.RT</a>
-    <ul class="current">
-    </ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.RT/">meka.classifiers.multilabel.RT</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multitarget.BCC/">meka.classifiers.multitarget.BCC</a>
                     </li>
@@ -223,10 +223,10 @@
         
       
     
-    <li>meka.classifiers.multilabel.RT</li>
+    <li>meka.classifiers.multilabel.meta.MLRF</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/Waikato/meka/edit/master/docs/meka.classifiers.multilabel.RT.md"
+        <a href="https://github.com/Waikato/meka/edit/master/docs/meka.classifiers.multilabel.meta.MLRF.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -238,9 +238,65 @@
             <div class="section">
               
                 <h3 id="synopsis">Synopsis<a class="headerlink" href="#synopsis" title="Permanent link">#</a></h3>
-<p>Duplicates each multi-labelled example, and assigns one of the labels (only) to each copy; then trains a regular multi-class base classifier.
-At test time, a threshold separates relevant from irrelevant labels using the posterior for each class value (i.e., label).</p>
+<p>Multi-label rotation forest.</p>
+<h3 id="bibtex">BibTeX<a class="headerlink" href="#bibtex" title="Permanent link">#</a></h3>
+<pre><code>@article{Elghazel2016,
+   author = {Elghazel, Haytham and Aussem, Alex and Gharroudi, Ouadie and Saadaoui, Wafa},
+   journal = {Expert Systems with Applications},
+   pages = {1--11},
+   publisher = {Elsevier},
+   title = {Ensemble multi-label text categorization based on rotation forest and latent semantic indexing},
+   volume = {57},
+   year = {2016}
+}
+</code></pre>
 <h3 id="options">Options<a class="headerlink" href="#options" title="Permanent link">#</a></h3>
+<ul>
+<li>
+<p><code>-K k</code></p>
+<p>The number of feature subsets to generate.</p>
+</li>
+<li>
+<p><code>-k numFeatures</code></p>
+<p>The dimensionality reduction parameter.</p>
+</li>
+<li>
+<p><code>-I &lt;num&gt;</code></p>
+<p>Sets the number of models (default 10)</p>
+</li>
+<li>
+<p><code>-P &lt;size percentage&gt;</code></p>
+<p>Size of each bag, as a percentage of total training size (default 67)</p>
+</li>
+<li>
+<p><code>-S &lt;seed&gt;</code></p>
+<p>Random number seed for sampling (default 1)</p>
+</li>
+<li>
+<p><code>-W &lt;classifier name&gt;</code></p>
+<p>Full name of base classifier.
+(default: meka.classifiers.multilabel.BR)</p>
+</li>
+<li>
+<p><code>-output-debug-info</code></p>
+<p>If set, classifier is run in debug mode and
+may output additional info to the console</p>
+</li>
+<li>
+<p><code>-do-not-check-capabilities</code></p>
+<p>If set, classifier capabilities are not checked before classifier is built
+(use with caution).</p>
+</li>
+<li>
+<p><code>-num-decimal-places</code></p>
+<p>The number of decimal places for the output of numbers in the model (default 2).</p>
+</li>
+<li>
+<p><code>-batch-size</code></p>
+<p>The desired batch size for batch prediction  (default 100).</p>
+</li>
+</ul>
+<p><strong>Options specific to classifier meka.classifiers.multilabel.BR:</strong></p>
 <ul>
 <li>
 <p><code>-W &lt;classifier name&gt;</code></p>
@@ -350,10 +406,10 @@ may output additional info to the console</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../meka.classifiers.multitarget.BCC/" class="btn btn-neutral float-right" title="meka.classifiers.multitarget.BCC">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../meka.classifiers.multilabel.meta.MultiSearch/" class="btn btn-neutral float-right" title="meka.classifiers.multilabel.meta.MultiSearch">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../meka.classifiers.multilabel.RAkELd/" class="btn btn-neutral" title="meka.classifiers.multilabel.RAkELd"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../meka.classifiers.multilabel.meta.MBR/" class="btn btn-neutral" title="meka.classifiers.multilabel.meta.MBR"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -381,10 +437,10 @@ may output additional info to the console</p>
           <a href="https://github.com/Waikato/meka/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../meka.classifiers.multilabel.RAkELd/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../meka.classifiers.multilabel.meta.MBR/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../meka.classifiers.multitarget.BCC/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../meka.classifiers.multilabel.meta.MultiSearch/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
