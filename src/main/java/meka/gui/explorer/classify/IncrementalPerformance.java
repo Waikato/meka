@@ -13,9 +13,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * IncrementalPerformance.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2024 University of Waikato, Hamilton, NZ
  */
 
 package meka.gui.explorer.classify;
@@ -23,6 +23,7 @@ package meka.gui.explorer.classify;
 import meka.classifiers.multilabel.IncrementalMultiLabelClassifier;
 import meka.core.Result;
 import meka.gui.core.ResultHistoryList;
+import nz.ac.waikato.cms.gui.core.GUIHelper;
 import weka.core.Instances;
 import weka.gui.visualize.PlotData2D;
 import weka.gui.visualize.ThresholdVisualizePanel;
@@ -34,10 +35,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Allows the user to displays graphs of the performance of an incremental classifier if available.
+ * Allows the user to display graphs of the performance of an incremental classifier if available.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
- * @version $Revision$
  */
 public class IncrementalPerformance
 		extends AbstractClassifyResultHistoryPlugin {
@@ -119,6 +119,10 @@ public class IncrementalPerformance
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.getContentPane().setLayout(new BorderLayout());
 				Instances performance = (Instances) result.getMeasurement(RESULTS_SAMPLED_OVER_TIME);
+				if (performance == null) {
+					GUIHelper.showErrorMessage(getOwner().getParent(), "No performance data available for plotting! The classifier needs to be evaluated in prequential or batch-incremental mode.");
+					return;
+				}
 				try {
 					VisualizePanel panel = createPanel(performance);
 					dialog.getContentPane().add(panel, BorderLayout.CENTER);
