@@ -97,7 +97,8 @@ Release archive
 - update the version in the `release.xml` to the new `-SNAPSHOT` version of the
   `pom.xml` file and commit changes
 
-- upload the release archive to sf.net
+- upload the release archive to sf.net (sftp://frs.sourceforge.net/home/frs/project/meka/) 
+  and github (https://github.com/Waikato/meka/releases/)
 
 
 
