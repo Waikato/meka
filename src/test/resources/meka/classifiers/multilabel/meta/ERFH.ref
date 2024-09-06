@@ -1,0 +1,62 @@
+== Model info
+
+Model                          
+meka.classifiers.multilabel.meta.ERFH: Model #1
+
+No model representation available
+
+meka.classifiers.multilabel.meta.ERFH: Model #2
+
+No model representation available
+
+meka.classifiers.multilabel.meta.ERFH: Model #3
+
+No model representation available
+
+meka.classifiers.multilabel.meta.ERFH: Model #4
+
+No model representation available
+
+meka.classifiers.multilabel.meta.ERFH: Model #5
+
+No model representation available
+
+meka.classifiers.multilabel.meta.ERFH: Model #6
+
+No model representation available
+
+meka.classifiers.multilabel.meta.ERFH: Model #7
+
+No model representation available
+
+meka.classifiers.multilabel.meta.ERFH: Model #8
+
+No model representation available
+
+meka.classifiers.multilabel.meta.ERFH: Model #9
+
+No model representation available
+
+meka.classifiers.multilabel.meta.ERFH: Model #10
+
+No model representation available
+
+== Evaluation Info
+
+Classifier                     meka.classifiers.multilabel.meta.ERFH
+Options                        [-T, 0.4, -S, 1, -I, 10, -P, 67, -W, meka.classifiers.multilabel.BR, --, -W, weka.classifiers.trees.J48, --, -C, 0.25, -M, 2]
+Additional Info                
+Dataset                        Music
+Number of labels (L)           6
+
+
+== Predictive Performance
+
+
+
+== Additional Measurements
+
+Number of training instances   491
+Number of test instances       101
+Label cardinality (train set)  1.855
+Label cardinality (test set)   1.941
