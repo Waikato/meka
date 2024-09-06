@@ -87,7 +87,7 @@ Release archive
   Maven Central, you can create a release archive
 
 - update the version in the `release.xml` file to match the version of the just
-  released Meka artifacts (also remove the -SNAPSHOT suffix) and commit changes
+  released Meka artifacts (also remove the `-SNAPSHOT` suffix) and commit changes
 
 - run the following command to create the release archive in the `target` directory:
   ```
