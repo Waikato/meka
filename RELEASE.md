@@ -36,7 +36,7 @@ Deploying artifacts
 
 - update `\version` tag in `src/main/latex/Tutorial/Tutorial.tex`
 
-- switch to Java 8
+- switch to Java 11
 
 - run the following command (and accept or change the version numbers):
   ```
