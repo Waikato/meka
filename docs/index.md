@@ -22,4 +22,6 @@ The main developers of MEKA:
 
 ![Classify tab - results](img/GUI04.png)
 
-![Classifier performance graph](img/GUI06.png)
+![Classifier incremental performance graph](img/GUI05.png)
+
+![Classifier ROC graph](img/GUI06.png)
