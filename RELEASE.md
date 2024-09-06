@@ -36,6 +36,8 @@ Deploying artifacts
 
 - update `\version` tag in `src/main/latex/Tutorial/Tutorial.tex`
 
+- switch to Java 8
+
 - run the following command (and accept or change the version numbers):
   ```
   mvn release:prepare release:perform
