@@ -100,6 +100,10 @@ J"org Wicker, Andrey Tyukin, Stefan Kramer: A Nonlinear Label Compression and Tr
 
     Output additional statistics.
 
+* `-use-qr`
+
+    Use QR decomposition to find coefficients
+
 * `-output-debug-info`
 
     If set, classifier is run in debug mode and

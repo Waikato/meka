@@ -97,6 +97,10 @@ For more information see:
 
     Output additional statistics.
 
+* `-use-qr`
+
+    Use QR decomposition to find coefficients
+
 * `-output-debug-info`
 
     If set, classifier is run in debug mode and

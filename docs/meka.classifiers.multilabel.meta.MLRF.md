@@ -1,17 +1,63 @@
 ## Synopsis
-A wrapper for MULAN classifiers.
-http://mulan.sourceforge.net
+Multi-label rotation forest.
 
+## BibTeX
+```
+@article{Elghazel2016,
+   author = {Elghazel, Haytham and Aussem, Alex and Gharroudi, Ouadie and Saadaoui, Wafa},
+   journal = {Expert Systems with Applications},
+   pages = {1--11},
+   publisher = {Elsevier},
+   title = {Ensemble multi-label text categorization based on rotation forest and latent semantic indexing},
+   volume = {57},
+   year = {2016}
+}
+```
 ## Options
-* `-S <value>`
+* `-K k`
 
-    Method Name
-    default: RAkEL1
+    The number of feature subsets to generate.
 
-* `-no-rename`
+* `-k numFeatures`
 
-    Don't rename attributes
-    default: rename
+    The dimensionality reduction parameter.
+
+* `-I <num>`
+
+    Sets the number of models (default 10)
+
+* `-P <size percentage>`
+
+    Size of each bag, as a percentage of total training size (default 67)
+
+* `-S <seed>`
+
+    Random number seed for sampling (default 1)
+
+* `-W <classifier name>`
+
+    Full name of base classifier.
+    (default: meka.classifiers.multilabel.BR)
+
+* `-output-debug-info`
+
+    If set, classifier is run in debug mode and
+    may output additional info to the console
+
+* `-do-not-check-capabilities`
+
+    If set, classifier capabilities are not checked before classifier is built
+    (use with caution).
+
+* `-num-decimal-places`
+
+    The number of decimal places for the output of numbers in the model (default 2).
+
+* `-batch-size`
+
+    The desired batch size for batch prediction  (default 100).
+
+**Options specific to classifier meka.classifiers.multilabel.BR:**
 
 * `-W <classifier name>`
 

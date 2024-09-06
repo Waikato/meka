@@ -1,5 +1,5 @@
 ## Synopsis
-The Nearest Set Relpacement (NSR) method.
+The Nearest Set Replacement (NSR) method.
 A multi-target version of PS: The nearest sets are used to replace outliers, rather than subsets (as in PS).
 
 ## BibTeX

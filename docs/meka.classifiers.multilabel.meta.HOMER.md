@@ -1,17 +1,60 @@
 ## Synopsis
-A wrapper for MULAN classifiers.
-http://mulan.sourceforge.net
+HOMER tree algorithm. For more information see:
+Tsoumakas, Grigorios, Katakis, Ioannis, Vlahavas, Ioannis: Effective and efficient multilabel classification in domains with large number of labels. In: Proc. ECML/PKDD 2008 Workshop on Mining Multidimensional Data (MMD’08), 53--59, 2008.
 
+## BibTeX
+```
+@inproceedings{Tsoumakas2008,
+   author = {Tsoumakas, Grigorios and Katakis, Ioannis and Vlahavas, Ioannis},
+   booktitle = {Proc. ECML/PKDD 2008 Workshop on Mining Multidimensional Data (MMD’08)},
+   organization = {sn},
+   pages = {53--59},
+   title = {Effective and efficient multilabel classification in domains with large number of labels},
+   volume = {21},
+   year = {2008}
+}
+```
 ## Options
-* `-S <value>`
+* `-k K`
 
-    Method Name
-    default: RAkEL1
+    The number of partitions per level.
 
-* `-no-rename`
+* `-S seed`
 
-    Don't rename attributes
-    default: rename
+    The seed to set.
+
+* `-ls class`
+
+    The label splitter class to use.
+
+* `-t threshold`
+
+    The threshold for the multi-label classifier distribution
+
+* `-W <classifier name>`
+
+    Full name of base classifier.
+    (default: meka.classifiers.multilabel.BR)
+
+* `-output-debug-info`
+
+    If set, classifier is run in debug mode and
+    may output additional info to the console
+
+* `-do-not-check-capabilities`
+
+    If set, classifier capabilities are not checked before classifier is built
+    (use with caution).
+
+* `-num-decimal-places`
+
+    The number of decimal places for the output of numbers in the model (default 2).
+
+* `-batch-size`
+
+    The desired batch size for batch prediction  (default 100).
+
+**Options specific to classifier meka.classifiers.multilabel.BR:**
 
 * `-W <classifier name>`
 
