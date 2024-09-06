@@ -5,7 +5,7 @@
 
   <groupId>net.sf.meka</groupId>
   <artifactId>meka</artifactId>
-  <version>1.9.8</version>
+  <version>1.9.9-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>meka</name>
@@ -63,7 +63,7 @@
     <connection>scm:git:ssh://git@github.com/waikato/meka</connection>
     <developerConnection>scm:git:ssh://git@github.com/waikato/meka</developerConnection>
     <url>https://github.com/waikato/meka</url>
-    <tag>meka-1.9.8</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <mailingLists>
