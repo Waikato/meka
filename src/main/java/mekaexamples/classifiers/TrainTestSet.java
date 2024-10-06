@@ -35,7 +35,6 @@ import weka.core.converters.ConverterUtils.DataSource;
  * Note: The datasets must have been prepared for Meka already and compatible.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
- * @version $Revision$
  */
 public class TrainTestSet {
 
@@ -56,11 +55,10 @@ public class TrainTestSet {
     if (msg != null)
       throw new IllegalStateException(msg);
 
-    System.out.println("Build BR classifier on " + args[0]);
     BR classifier = new BR();
     // further configuration of classifier
-    classifier.buildClassifier(train);
 
+    System.out.println("Build BR classifier on " + args[0]);
     System.out.println("Evaluate BR classifier on " + args[1]);
     String top = "PCut1";
     String vop = "3";

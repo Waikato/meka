@@ -36,7 +36,6 @@ import weka.core.converters.ConverterUtils.DataSource;
  * And the percentage must be between 0 and 100.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
- * @version $Revision$
  */
 public class TrainTestSplit {
 
@@ -53,11 +52,10 @@ public class TrainTestSplit {
     Instances train = new Instances(data, 0, trainSize);
     Instances test = new Instances(data, trainSize, data.numInstances() - trainSize);
 
-    System.out.println("Build BR classifier on " + percentage + "%");
     BR classifier = new BR();
     // further configuration of classifier
-    classifier.buildClassifier(train);
 
+    System.out.println("Build BR classifier on " + percentage + "%");
     System.out.println("Evaluate BR classifier on " + (100.0 - percentage) + "%");
     String top = "PCut1";
     String vop = "3";
