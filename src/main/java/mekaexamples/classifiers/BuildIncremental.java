@@ -13,29 +13,29 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * JustBuild.java
- * Copyright (C) 2016 University of Waikato, Hamilton, NZ
+/*
+ * BuildIncremental.java
+ * Copyright (C) 2024 University of Waikato, Hamilton, NZ
  */
 
 package mekaexamples.classifiers;
 
-import meka.classifiers.multilabel.BR;
+import meka.classifiers.multilabel.incremental.BRUpdateable;
 import meka.core.MLUtils;
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
 /**
- * Builds a BR Meka classifier on a dataset supplied by the user.
+ * Builds a BRUpdateable Meka classifier incrementally on a dataset supplied by the user.
  * <br>
  * Expected parameters: &lt;dataset&gt;
  * <br>
  * Note: The dataset must have been prepared for Meka already.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
- * @version $Revision$
  */
-public class JustBuild {
+public class BuildIncremental {
 
   public static void main(String[] args) throws Exception {
     if (args.length != 1)
@@ -45,9 +45,12 @@ public class JustBuild {
     Instances data = DataSource.read(args[0]);
     MLUtils.prepareData(data);
 
-    System.out.println("Build BR classifier");
-    BR classifier = new BR();
+    System.out.println("Build BRUpdateable classifier");
+    BRUpdateable classifier = new BRUpdateable();
     // further configuration of classifier
-    classifier.buildClassifier(data);
+    classifier.buildClassifier(new Instances(data, 0));
+    for (Instance inst: data)
+      classifier.updateClassifier(inst);
+    System.out.println(classifier.getModel());
   }
 }
