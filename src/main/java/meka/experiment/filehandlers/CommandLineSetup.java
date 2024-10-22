@@ -13,9 +13,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * CommandLineSetup.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2024 University of Waikato, Hamilton, NZ
  */
 
 package meka.experiment.filehandlers;
@@ -31,7 +31,6 @@ import java.io.*;
  * Stores the setup of the experiment as a commandline.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
- * @version $Revision$
  */
 public class CommandLineSetup
 		extends AbstractExperimentFileHandler {
@@ -102,7 +101,7 @@ public class CommandLineSetup
 	}
 
 	/**
-	 * Writes and experiment to disk.
+	 * Writes an experiment to disk.
 	 *
 	 * @param exp       the experiment to save
 	 * @param file      the file to save to

@@ -13,9 +13,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * SerializedExperiment.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2024 University of Waikato, Hamilton, NZ
  */
 
 package meka.experiment.filehandlers;
@@ -29,7 +29,6 @@ import java.io.File;
  * Stores the experiment as a Java serialized object.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
- * @version $Revision$
  */
 public class SerializedExperiment
 		extends AbstractExperimentFileHandler {
@@ -83,7 +82,7 @@ public class SerializedExperiment
 	}
 
 	/**
-	 * Writes and experiment to disk.
+	 * Writes an experiment to disk.
 	 *
 	 * @param exp       the experiment to save
 	 * @param file      the file to save to

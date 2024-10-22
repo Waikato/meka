@@ -13,9 +13,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * ExperimentFileHandler.java
- * Copyright (C) 2015 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2024 University of Waikato, Hamilton, NZ
  */
 
 package meka.experiment.filehandlers;
@@ -31,7 +31,6 @@ import java.io.Serializable;
  * Interface for classes load/save experiments.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
- * @version $Revision$
  */
 public interface ExperimentFileHandler
 	extends OptionHandler, Serializable, LogSupporter {
@@ -59,7 +58,7 @@ public interface ExperimentFileHandler
 	public Experiment read(File file);
 
 	/**
-	 * Writes and experiment to disk.
+	 * Writes an experiment to disk.
 	 *
 	 * @param exp       the experiment to save
 	 * @param file      the file to save to
