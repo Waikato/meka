@@ -13,9 +13,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * ExperimentExample.java
- * Copyright (C) 2015-2016 University of Waikato, Hamilton, NZ
+ * Copyright (C) 2015-2024 University of Waikato, Hamilton, NZ
  */
 
 package mekaexamples.experiment;
@@ -35,16 +35,9 @@ import meka.experiment.evaluationstatistics.KeyValuePairs;
 import meka.experiment.evaluators.CrossValidation;
 import meka.experiment.evaluators.RepeatedRuns;
 import meka.experiment.events.ExecutionStageEvent;
-import meka.experiment.events.ExecutionStageListener;
 import meka.experiment.events.IterationNotificationEvent;
-import meka.experiment.events.IterationNotificationListener;
 import meka.experiment.events.StatisticsNotificationEvent;
-import meka.experiment.events.StatisticsNotificationListener;
-import meka.experiment.statisticsexporters.EvaluationStatisticsExporter;
-import meka.experiment.statisticsexporters.MultiExporter;
-import meka.experiment.statisticsexporters.SimpleAggregate;
-import meka.experiment.statisticsexporters.TabSeparated;
-import meka.experiment.statisticsexporters.TabSeparatedMeasurement;
+import meka.experiment.statisticsexporters.*;
 import weka.core.Utils;
 
 import java.io.File;
@@ -56,9 +49,16 @@ import java.util.List;
  * user-supplied datasets.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
- * @version $Revision$
  */
 public class ExperimentExample {
+
+  protected static String errorMsg(String error) {
+    if (error == null)
+      return "success!";
+    else
+      return error;
+  }
+
   public static void main(String[] args) throws Exception {
     if (args.length == 0)
       throw new IllegalArgumentException("Requirement arguments: <dataset1> [<dataset2> [...]]");
@@ -69,70 +69,50 @@ public class ExperimentExample {
     Experiment exp = new DefaultExperiment();
     // classifiers
     exp.setClassifiers(new MultiLabelClassifier[]{
-      new BR(),
-      new CC()
+            new BR(),
+            new CC()
     });
     // datasets
     List<File> files = new ArrayList<>();
     for (String f: args)
       files.add(new File(f));
     LocalDatasetProvider dp1 = new LocalDatasetProvider();
-    dp1.setDatasets(files.toArray(new File[files.size()]));
+    dp1.setDatasets(files.toArray(new File[0]));
     LocalDatasetProvider dp2 = new LocalDatasetProvider();
     dp2.setDatasets(new File[]{
-      new File("src/main/data/solar_flare.arff"),
+            new File("src/main/data/solar_flare.arff"),
     });
     MultiDatasetProvider mdp = new MultiDatasetProvider();
     mdp.setProviders(new DatasetProvider[]{dp1, dp2});
     exp.setDatasetProvider(mdp);
     // output of metrics
-    KeyValuePairs sh = new KeyValuePairs();
-    sh.setFile(new File(tmpDir + "/mekaexp.txt"));
-    sh.getFile().delete();  // remove old run
-    exp.setStatisticsHandler(sh);
+    KeyValuePairs kvp = new KeyValuePairs();
+    kvp.setFile(new File(tmpDir + "/mekaexp.txt"));
+    kvp.getFile().delete();  // remove old run
+    exp.setStatisticsHandler(kvp);
     // evaluation
     RepeatedRuns eval = new RepeatedRuns();
     eval.setEvaluator(new CrossValidation());
     exp.setEvaluator(eval);
     // stage
-    exp.addExecutionStageListener(new ExecutionStageListener() {
-      @Override
-      public void experimentStage(ExecutionStageEvent e) {
-	System.err.println("[STAGE] " + e.getStage());
-      }
-    });
+    exp.addExecutionStageListener((ExecutionStageEvent e) -> System.err.println("[STAGE] " + e.getStage()));
     // iterations
-    exp.addIterationNotificationListener(new IterationNotificationListener() {
-      @Override
-      public void nextIteration(IterationNotificationEvent e) {
-	System.err.println("[ITERATION] " + Utils.toCommandLine(e.getClassifier()) + " --> " + e.getDataset().relationName());
-      }
-    });
+    exp.addIterationNotificationListener((IterationNotificationEvent e) -> System.err.println("[ITERATION] " + Utils.toCommandLine(e.getClassifier()) + " --> " + e.getDataset().relationName()));
     // statistics
-    exp.addStatisticsNotificationListener(new StatisticsNotificationListener() {
-      @Override
-      public void statisticsAvailable(StatisticsNotificationEvent e) {
-	System.err.println("[STATISTICS] #" + e.getStatistics().size());
-      }
-    });
+    exp.addStatisticsNotificationListener((StatisticsNotificationEvent e) -> System.err.println("[STATISTICS] #" + e.getStatistics().size()));
     // log events
-    exp.addLogListener(new LogListener() {
-      @Override
-      public void logMessage(LogEvent e) {
-	System.err.println("[LOG] " + e.getSource().getClass().getName() + ": " + e.getMessage());
-      }
-    });
+    exp.addLogListener((LogEvent e) -> System.err.println("[LOG] " + e.getSource().getClass().getName() + ": " + e.getMessage()));
     // output options
     System.out.println("Setup:\n" + OptionUtils.toCommandLine(exp) + "\n");
     // execute
     String msg = exp.initialize();
-    System.out.println("initialize: " + msg);
+    System.out.println("initialize: " + errorMsg(msg));
     if (msg != null)
       return;
     msg = exp.run();
-    System.out.println("run: " + msg);
+    System.out.println("run: " + errorMsg(msg));
     msg = exp.finish();
-    System.out.println("finish: " + msg);
+    System.out.println("finish: " + errorMsg(msg));
     // export them
     TabSeparated tabsepAgg = new TabSeparated();
     tabsepAgg.setFile(new File(tmpDir + "/mekaexp-agg.tsv"));
@@ -153,14 +133,9 @@ public class ExperimentExample {
     tabsepZOL.setFile(new File(tmpDir + "/mekaexp-ZOL.tsv"));
     MultiExporter multiexp = new MultiExporter();
     multiexp.setExporters(new EvaluationStatisticsExporter[]{aggregate, tabsepFull, tabsepHL, tabsepZOL});
-    multiexp.addLogListener(new LogListener() {
-      @Override
-      public void logMessage(LogEvent e) {
-	System.err.println("[EXPORT] " + e.getSource().getClass().getName() + ": " + e.getMessage());
-      }
-    });
+    multiexp.addLogListener((LogEvent e) -> System.err.println("[EXPORT] " + e.getSource().getClass().getName() + ": " + e.getMessage()));
     System.out.println(OptionUtils.toCommandLine(multiexp));
     msg = multiexp.export(exp.getStatistics());
-    System.out.println("export: " + msg);
+    System.out.println("export: " + errorMsg(msg));
   }
 }
