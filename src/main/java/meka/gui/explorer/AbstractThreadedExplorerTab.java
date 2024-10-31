@@ -13,9 +13,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
+/*
  * AbstractThreadedExplorerTab.java
- * Copyright (C) 2012-2015 University of Waikato, Hamilton, New Zealand
+ * Copyright (C) 2012-2024 University of Waikato, Hamilton, New Zealand
  */
 package meka.gui.explorer;
 
@@ -25,7 +25,6 @@ import javax.swing.SwingUtilities;
  * Supports long-running tasks in a separate thread.
  * 
  * @author  fracpete (fracpete at waikato dot ac dot nz)
- * @version $Revision$
  */
 public abstract class AbstractThreadedExplorerTab
 	extends AbstractExplorerTab {
@@ -85,7 +84,7 @@ public abstract class AbstractThreadedExplorerTab
 						m_Owner.executionFinished(null);
 					  else
 						m_Owner.executionFinished(t);
-						m_Owner.executionFinalized();
+					  m_Owner.executionFinalized();
 					}
 				};
 				SwingUtilities.invokeLater(r);
@@ -138,7 +137,7 @@ public abstract class AbstractThreadedExplorerTab
 	 */
 	public void stop() {
 		if (m_Task != null) {
-		    m_Task.stop();
+		    m_Task.interrupt();
 		}
 	}
 	
