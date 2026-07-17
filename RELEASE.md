@@ -58,15 +58,6 @@ Deploying artifacts
 - log out of sonatype
 
 
-Troubleshooting
----------------
-
-- In case artifacts shouldn't get deployed for some reason (give it a few hours), go
-  to the following URL and open a ticket:
-
-  https://issues.sonatype.org/
-
-
 Release archive
 ---------------
 
