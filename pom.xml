@@ -54,9 +54,9 @@
   </developers>
 
   <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>7</version>
+    <groupId>com.github.fracpete</groupId>
+    <artifactId>central-portal-parent</artifactId>
+    <version>0.0.3</version>
   </parent>
 
   <scm>
