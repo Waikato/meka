@@ -1,14 +1,28 @@
 site_name: MEKA
-theme: readthedocs
 repo_url: https://github.com/Waikato/meka
 site_description: MEKA Documentation
+theme:
+    name: material
+    logo: MEKA.png
+    features:
+        - content.code.copy
 markdown_extensions:
-  - toc:
-      baselevel: 2
-      permalink: "#"
+    - toc:
+          baselevel: 2
+          permalink: "#"
+    - attr_list
+    - sane_lists
+    - pymdownx.highlight:
+          anchor_linenums: true
+          line_spans: __span
+          pygments_lang_class: true
+    - pymdownx.inlinehilite
+    - pymdownx.snippets
+    - pymdownx.superfences
 plugins:
   - search
-pages:
+  - mkdocs-video
+nav:
     - MEKA: index.md
     - News: news.md
     - Documentation: documentation.md
