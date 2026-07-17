@@ -11,12 +11,9 @@ Prerequisites
 
 - You need a Sonatype account, which you can create here:
 
-  https://issues.sonatype.org/
+  https://central.sonatype.com/publishing/
 
-- The Sonatype user needs to be added to the MEKA project, just open the
-  following ticket again and specify the user that needs adding:
-
-  https://issues.sonatype.org/browse/OSSRH-9969
+- The Sonatype user needs to be added to the MEKA project - **TODO**
 
 - Artifacts get signed using GPG, so you need to have a GPG key and deploy it
 
@@ -44,29 +41,19 @@ Deploying artifacts
   ```
 - log into sonatype
 
-  https://oss.sonatype.org/
+  https://central.sonatype.com/publishing/deployments
 
-- select the *Staging repositories*
+- click on *Publish* if valid, otherwise *Drop*
 
-- scroll down and check the *netsfmeka* repository
-
-- check deployed artifacts on the *Content* tab (bottom of the screen) using the
-  *Archive Browser* once a jar has been selected
-
-- *Close* the repository (top of the screen) with a message like *new release X.Y.Z*
-
-- artifacts will get prepared for being release, which will take some time, keep
-  clicking on *Refresh* till the *Release* action is available and *Close* is disabled
+- wait till the *Deployment* switches from *Publishing* to *Published*, keep
+  refreshing via the *Refresh* button
 
 - *Release* the repository with a message like *new release X.Y.Z*
 
 - The artifacts will get transferred to Maven Central in the background, should happen
-  within 15min. You can check the following URL whether they have been pushed out:
+  within a few minutes. You can check the following URL whether they have been pushed out:
 
   https://repo1.maven.org/maven2/net/sf/meka/meka/
-
-- The artifacts might not be searchable through https://search.maven.org/ for a few
-  hours, as the search index only gets updated every 3 hours or so
 
 - log out of sonatype
 
