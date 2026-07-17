@@ -3,7 +3,7 @@ repo_url: https://github.com/Waikato/meka
 site_description: MEKA Documentation
 theme:
     name: material
-    logo: MEKA.png
+    logo: img/MEKA.png
     features:
         - content.code.copy
 markdown_extensions:
