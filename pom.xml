@@ -79,15 +79,15 @@
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-dev</artifactId>
-      <version>3.9.6</version>
-      <scope>test</scope>
-      <type>test-jar</type>
+      <version>3.9.7</version>
     </dependency>
 
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-dev</artifactId>
-      <version>3.9.6</version>
+      <version>3.9.7</version>
+      <scope>test</scope>
+      <type>test-jar</type>
     </dependency>
 
     <dependency>
@@ -105,19 +105,19 @@
     <dependency>
       <groupId>com.formdev</groupId>
       <artifactId>flatlaf</artifactId>
-      <version>3.4</version>
+      <version>3.7.2</version>
     </dependency>
 
     <dependency>
       <groupId>com.github.fracpete</groupId>
       <artifactId>jfilechooser-bookmarks</artifactId>
-      <version>0.1.9</version>
+      <version>0.1.11</version>
     </dependency>
 
     <dependency>
       <groupId>nz.ac.waikato.cms.adams</groupId>
       <artifactId>simple-directory-chooser</artifactId>
-      <version>0.0.4</version>
+      <version>0.0.5</version>
     </dependency>
 
     <dependency>
@@ -165,7 +165,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13.1</version>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
 
