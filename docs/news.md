@@ -1,3 +1,5 @@
+* **July 17, 2026**: [Meka 1.9.9](https://github.com/Waikato/meka/releases/tag/meka-1.9.9) is released.
+* 
 * **September 6, 2024**: [Meka 1.9.8](https://github.com/Waikato/meka/releases/tag/meka-1.9.8) is released.
 
 * **October 17, 2022**: [Meka 1.9.7](https://github.com/Waikato/meka/releases/tag/meka-1.9.7) is released.
