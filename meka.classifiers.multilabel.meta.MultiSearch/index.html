@@ -1,243 +1,2220 @@
-<!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  
-  
-  <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>meka.classifiers.multilabel.meta.MultiSearch - MEKA</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
-  <link rel="stylesheet" href="../css/theme.css" />
-  <link rel="stylesheet" href="../css/theme_extra.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
-  
-  <script>
-    // Current page data
-    var mkdocs_page_name = "meka.classifiers.multilabel.meta.MultiSearch";
-    var mkdocs_page_input_path = "meka.classifiers.multilabel.meta.MultiSearch.md";
-    var mkdocs_page_url = null;
-  </script>
-  
-  <script src="../js/jquery-2.1.1.min.js" defer></script>
-  <script src="../js/modernizr-2.8.3.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script> 
-  
-</head>
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="MEKA Documentation">
+      
+      
+      
+      
+        <link rel="prev" href="../meka.classifiers.multilabel.meta.MLRF/">
+      
+      
+        <link rel="next" href="../meka.classifiers.multilabel.meta.RandomSubspaceML/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>meka.classifiers.multilabel.meta.MultiSearch - MEKA</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
 
-<body class="wy-body-for-nav" role="document">
-
-  <div class="wy-grid-for-nav">
 
     
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
-    <div class="wy-side-scroll">
-      <div class="wy-side-nav-search">
-        <a href=".." class="icon icon-home"> MEKA</a>
-        <div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
-  </form>
-</div>
-      </div>
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
 
-      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="..">MEKA</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../news/">News</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../documentation/">Documentation</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../downloads/">Downloads</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../citing/">Citing</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../maven/">Maven</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../methods/">An Overview of Methods in MEKA</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">Methods (API)</span></p>
-                <ul class="current">
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.BCC/">meka.classifiers.multilabel.BCC</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.BPNN/">meka.classifiers.multilabel.BPNN</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.BR/">meka.classifiers.multilabel.BR</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.BRq/">meka.classifiers.multilabel.BRq</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.CC/">meka.classifiers.multilabel.CC</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.CCq/">meka.classifiers.multilabel.CCq</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.CDN/">meka.classifiers.multilabel.CDN</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.CDT/">meka.classifiers.multilabel.CDT</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.CT/">meka.classifiers.multilabel.CT</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.DBPNN/">meka.classifiers.multilabel.DBPNN</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.FW/">meka.classifiers.multilabel.FW</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.HASEL/">meka.classifiers.multilabel.HASEL</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.incremental.BRUpdateable/">meka.classifiers.multilabel.incremental.BRUpdateable</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.incremental.CCUpdateable/">meka.classifiers.multilabel.incremental.CCUpdateable</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.incremental.MajorityLabelsetUpdateable/">meka.classifiers.multilabel.incremental.MajorityLabelsetUpdateable</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable/">meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.incremental.PSUpdateable/">meka.classifiers.multilabel.incremental.PSUpdateable</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.incremental.RTUpdateable/">meka.classifiers.multilabel.incremental.RTUpdateable</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.LC/">meka.classifiers.multilabel.LC</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.MajorityLabelset/">meka.classifiers.multilabel.MajorityLabelset</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.Maniac/">meka.classifiers.multilabel.Maniac</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.MCC/">meka.classifiers.multilabel.MCC</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.BaggingML/">meka.classifiers.multilabel.meta.BaggingML</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.BaggingMLdup/">meka.classifiers.multilabel.meta.BaggingMLdup</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.CM/">meka.classifiers.multilabel.meta.CM</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.DeepML/">meka.classifiers.multilabel.meta.DeepML</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.EM/">meka.classifiers.multilabel.meta.EM</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.EnsembleML/">meka.classifiers.multilabel.meta.EnsembleML</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.ERFH/">meka.classifiers.multilabel.meta.ERFH</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.FilteredClassifier/">meka.classifiers.multilabel.meta.FilteredClassifier</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.HOMER/">meka.classifiers.multilabel.meta.HOMER</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.MBR/">meka.classifiers.multilabel.meta.MBR</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.MLRF/">meka.classifiers.multilabel.meta.MLRF</a>
-                    </li>
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">meka.classifiers.multilabel.meta.MultiSearch</a>
-    <ul class="current">
-    </ul>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.RandomSubspaceML/">meka.classifiers.multilabel.meta.RandomSubspaceML</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.meta.SubsetMapper/">meka.classifiers.multilabel.meta.SubsetMapper</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.MLCBMaD/">meka.classifiers.multilabel.MLCBMaD</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.MULAN/">meka.classifiers.multilabel.MULAN</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.PCC/">meka.classifiers.multilabel.PCC</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.PLST/">meka.classifiers.multilabel.PLST</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.PMCC/">meka.classifiers.multilabel.PMCC</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.PS/">meka.classifiers.multilabel.PS</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.PSt/">meka.classifiers.multilabel.PSt</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.RAkEL/">meka.classifiers.multilabel.RAkEL</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.RAkELd/">meka.classifiers.multilabel.RAkELd</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multilabel.RT/">meka.classifiers.multilabel.RT</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multitarget.BCC/">meka.classifiers.multitarget.BCC</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multitarget.CC/">meka.classifiers.multitarget.CC</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multitarget.CCp/">meka.classifiers.multitarget.CCp</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multitarget.CR/">meka.classifiers.multitarget.CR</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multitarget.meta.BaggingMT/">meka.classifiers.multitarget.meta.BaggingMT</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multitarget.meta.EnsembleMT/">meka.classifiers.multitarget.meta.EnsembleMT</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multitarget.meta.FilteredClassifier/">meka.classifiers.multitarget.meta.FilteredClassifier</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multitarget.meta.MultiSearch/">meka.classifiers.multitarget.meta.MultiSearch</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multitarget.NSR/">meka.classifiers.multitarget.NSR</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multitarget.RAkELd/">meka.classifiers.multitarget.RAkELd</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../meka.classifiers.multitarget.SCC/">meka.classifiers.multitarget.SCC</a>
-                    </li>
-                </ul>
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#synopsis" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="MEKA" class="md-header__button md-logo" aria-label="MEKA" data-md-component="logo">
+      
+  <img src="../MEKA.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MEKA
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              meka.classifiers.multilabel.meta.MultiSearch
+            
+          </span>
+        </div>
       </div>
     </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="..">MEKA</a>
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
       </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Waikato/meka" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
 
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="MEKA" class="md-nav__button md-logo" aria-label="MEKA" data-md-component="logo">
       
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="breadcrumbs navigation">
-  <ul class="wy-breadcrumbs">
-    <li><a href="..">Docs</a> &raquo;</li>
+  <img src="../MEKA.png" alt="logo">
+
+    </a>
+    MEKA
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Waikato/meka" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
     
       
-        
-          <li>Methods (API) &raquo;</li>
-        
       
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
     
-    <li>meka.classifiers.multilabel.meta.MultiSearch</li>
-    <li class="wy-breadcrumbs-aside">
+  
+    MEKA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
       
-        <a href="https://github.com/Waikato/meka/edit/master/docs/meka.classifiers.multilabel.meta.MultiSearch.md"
-          class="icon icon-github"> Edit on GitHub</a>
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../news/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    News
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../downloads/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Downloads
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datasets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../citing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Citing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../maven/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maven
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    An Overview of Methods in MEKA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Methods (API)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Methods (API)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.BCC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.BCC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.BPNN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.BPNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.BR/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.BR
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.BRq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.BRq
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.CC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.CC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.CCq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.CCq
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.CDN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.CDN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.CDT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.CDT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.CT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.CT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.DBPNN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.DBPNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.FW/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.FW
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.HASEL/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.HASEL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.incremental.BRUpdateable/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.incremental.BRUpdateable
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.incremental.CCUpdateable/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.incremental.CCUpdateable
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.incremental.MajorityLabelsetUpdateable/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.incremental.MajorityLabelsetUpdateable
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.incremental.meta.BaggingMLUpdateable
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.incremental.PSUpdateable/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.incremental.PSUpdateable
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.incremental.RTUpdateable/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.incremental.RTUpdateable
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.LC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.LC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.MajorityLabelset/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.MajorityLabelset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.Maniac/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.Maniac
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.MCC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.MCC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.meta.BaggingML/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.meta.BaggingML
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.meta.BaggingMLdup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.meta.BaggingMLdup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.meta.CM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.meta.CM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.meta.DeepML/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.meta.DeepML
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.meta.EM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.meta.EM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.meta.EnsembleML/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.meta.EnsembleML
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.meta.ERFH/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.meta.ERFH
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.meta.FilteredClassifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.meta.FilteredClassifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.meta.HOMER/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.meta.HOMER
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.meta.MBR/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.meta.MBR
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.meta.MLRF/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.meta.MLRF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.meta.MultiSearch
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.meta.MultiSearch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#synopsis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Synopsis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Options
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
-  </ul>
   
-  <hr/>
-</div>
-          <div role="main">
-            <div class="section">
+
               
-                <h3 id="synopsis">Synopsis<a class="headerlink" href="#synopsis" title="Permanent link">#</a></h3>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.meta.RandomSubspaceML/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.meta.RandomSubspaceML
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.meta.SubsetMapper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.meta.SubsetMapper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.MLCBMaD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.MLCBMaD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.MULAN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.MULAN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.PCC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.PCC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.PLST/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.PLST
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.PMCC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.PMCC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.PS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.PS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.PSt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.PSt
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.RAkEL/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.RAkEL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.RAkELd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.RAkELd
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multilabel.RT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multilabel.RT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multitarget.BCC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multitarget.BCC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multitarget.CC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multitarget.CC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multitarget.CCp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multitarget.CCp
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multitarget.CR/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multitarget.CR
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multitarget.meta.BaggingMT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multitarget.meta.BaggingMT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multitarget.meta.EnsembleMT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multitarget.meta.EnsembleMT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multitarget.meta.FilteredClassifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multitarget.meta.FilteredClassifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multitarget.meta.MultiSearch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multitarget.meta.MultiSearch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multitarget.NSR/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multitarget.NSR
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multitarget.RAkELd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multitarget.RAkELd
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../meka.classifiers.multitarget.SCC/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    meka.classifiers.multitarget.SCC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#synopsis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Synopsis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Options
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>meka.classifiers.multilabel.meta.MultiSearch</h1>
+
+<div><h3 id="synopsis">Synopsis<a class="headerlink" href="#synopsis" title="Permanent link">#</a></h3>
 <p>Performs a search of an arbitrary number of parameters of a classifier and chooses the best combination found.
 The properties being explored are totally up to the user.</p>
 <p>E.g., if you have a FilteredClassifier selected as base classifier, sporting a PLSFilter and you want to explore the number of PLS components, then your property will be made up of the following components:
@@ -451,60 +2428,61 @@ may output additional info to the console</p>
 <p><code>-batch-size</code></p>
 <p>The desired batch size for batch prediction  (default 100).</p>
 </li>
-</ul>
-              
+</ul></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
             </div>
-          </div>
-          <footer>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
   
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../meka.classifiers.multilabel.meta.RandomSubspaceML/" class="btn btn-neutral float-right" title="meka.classifiers.multilabel.meta.RandomSubspaceML">Next <span class="icon icon-circle-arrow-right"></span></a>
-      
-      
-        <a href="../meka.classifiers.multilabel.meta.MLRF/" class="btn btn-neutral" title="meka.classifiers.multilabel.meta.MLRF"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
       
     </div>
-  
-
-  <hr/>
-
-  <div role="contentinfo">
-    <!-- Copyright etc -->
-    
   </div>
-
-  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
       
-        </div>
-      </div>
-
-    </section>
-
-  </div>
-
-  <div class="rst-versions" role="note" aria-label="versions">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-      
-          <a href="https://github.com/Waikato/meka/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
       
       
-        <span><a href="../meka.classifiers.multilabel.meta.MLRF/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
-      
-        <span style="margin-left: 15px"><a href="../meka.classifiers.multilabel.meta.RandomSubspaceML/" style="color: #fcfcfc">Next &raquo;</a></span>
-      
-    </span>
-</div>
-    <script>var base_url = '..';</script>
-    <script src="../js/theme.js" defer></script>
-      <script src="../search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
-            SphinxRtdTheme.Navigation.enable(true);
-        };
-    </script>
-
-</body>
+    
+  </body>
 </html>
