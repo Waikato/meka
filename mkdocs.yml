@@ -22,7 +22,7 @@ plugins:
   - search
   - mkdocs-video
 nav:
-    - MEKA: index.md
+    - Intro: index.md
     - News: news.md
     - Documentation: documentation.md
     - Downloads: downloads.md
