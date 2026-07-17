@@ -1,5 +1,3 @@
-![MEKA](img/MEKA.png)
-
 The **MEKA project** provides an open source implementation of methods for **multi-label** 
 learning and evaluation. In [multi-label classification](http://users.ics.aalto.fi/jesse/talks/Multilabel-Part01.pdf), 
 we want to predict multiple output variables for each input instance. This different from the 
