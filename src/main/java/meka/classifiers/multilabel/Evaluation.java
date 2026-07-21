@@ -617,7 +617,7 @@ public class Evaluation {
 			double y[] = h.distributionForInstance(x);
 			// Cut off any [no-longer-needed] probabalistic information from MT classifiers.
 			if (h instanceof MultiTargetClassifier)
-                            y = Arrays.copyOfRange(y, L, L*2);
+                            y = Arrays.copyOfRange(y, 0, L);
 
 			// Store the result
 			result.addResult(y,D_test.instance(i));
